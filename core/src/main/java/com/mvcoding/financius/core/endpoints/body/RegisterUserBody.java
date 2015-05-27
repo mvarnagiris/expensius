@@ -12,4 +12,24 @@
  * GNU General Public License for more details.
  */
 
-include ':backend', ':app', ':core'
+package com.mvcoding.financius.core.endpoints.body;
+
+import com.google.common.base.Strings;
+
+import static com.google.common.base.Preconditions.checkState;
+
+public class RegisterUserBody implements Body {
+    private String googleId;
+
+    @Override public void validate() throws RuntimeException {
+        checkState(!Strings.isNullOrEmpty(googleId), "Google Id cannot be empty.");
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+}

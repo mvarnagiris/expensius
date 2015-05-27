@@ -12,4 +12,8 @@
  * GNU General Public License for more details.
  */
 
-include ':backend', ':app', ':core'
+package com.mvcoding.financius.core.endpoints.body;
+
+public interface Body {
+    void validate() throws RuntimeException;
+}

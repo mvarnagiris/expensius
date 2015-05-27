@@ -17,13 +17,9 @@ package com.mvcoding.financius.backend;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
+import com.mvcoding.financius.backend.entity.UserAccount;
 
-/**
- * Objectify service wrapper so we can statically register our persistence classes More on Objectify here :
- * https://code.google.com/p/objectify-appengine/
- */
 public class OfyService {
-
     public static Objectify ofy() {
         return ObjectifyService.ofy();
     }
@@ -33,6 +29,6 @@ public class OfyService {
     }
 
     static {
-        ObjectifyService.register(RegistrationRecord.class);
+        ObjectifyService.register(UserAccount.class);
     }
 }

@@ -12,4 +12,12 @@
  * GNU General Public License for more details.
  */
 
-include ':backend', ':app', ':core'
+package com.mvcoding.financius.backend.util;
+
+import com.google.appengine.api.users.User;
+
+public class BaseTest {
+    protected static User mockUser() {
+        return new User("example@email.com", "email.com");
+    }
+}
