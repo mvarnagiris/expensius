@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Mantas Varnagiris.
   ~
@@ -14,9 +15,109 @@
 
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Text -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+
+    <style name="Text.Body2" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+    </style>
+
+    <style name="Text.Button" parent="TextAppearance.AppCompat.Button">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+    </style>
+
+    <style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+
+    <style name="Text.Display1" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+
+    <style name="Text.Display2" parent="TextAppearance.AppCompat.Display2">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+
+    <style name="Text.Display3" parent="TextAppearance.AppCompat.Display3">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+
+    <style name="Text.Display4" parent="TextAppearance.AppCompat.Display4">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Light.ttf</item>
+    </style>
+
+    <style name="Text.Headline" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+
+    <style name="Text.Subhead" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+    </style>
+
+    <style name="Text.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+    </style>
+
+    <!-- Button -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="Button" parent="Widget.AppCompat.Button" />
+
+    <style name="Button.Flat" parent="Widget.AppCompat.Button.Borderless" />
+
+    <style name="Button.Flat.Borderless">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
+
+    <!-- CardView -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="Card" parent="CardView">
+        <item name="cardBackgroundColor">?backgroundPrimary</item>
+    </style>
+
+    <!-- EditText -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="EditText.Big">
+        <item name="android:textAppearance">@style/Text.Display1</item>
+    </style>
+
+    <!-- RecyclerView -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="RecyclerView">
+        <item name="android:clipToPadding">false</item>
+    </style>
+
+    <style name="RecyclerView.Cards">
+        <item name="android:padding">@dimen/keyline_half</item>
+    </style>
+
+    <!-- Divider -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.67dp</item>
+        <item name="android:background">?colorDivider</item>
     </style>
 
 </resources>

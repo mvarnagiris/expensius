@@ -437,6 +437,16 @@
                 <rule>
                   <match>
                     <AND>
+                      <METHOD>true</METHOD>
+                      <NAME>onViewResumed</NAME>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
                       <METHOD />
                       <NAME>onPostResume</NAME>
                     </AND>
@@ -499,6 +509,16 @@
                     <AND>
                       <METHOD />
                       <NAME>onUserLeaveHint</NAME>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <METHOD>true</METHOD>
+                      <NAME>onViewPaused</NAME>
                     </AND>
                   </match>
                 </rule>

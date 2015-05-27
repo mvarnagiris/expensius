@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dagger.ObjectGraph;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class App extends Application {
     private final Map<String, ObjectGraph> scopedObjectGraphs = new HashMap<>();
@@ -37,6 +38,10 @@ public class App extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/Roboto-Regular.ttf")
+                                              .setFontAttrId(R.attr.fontPath)
+                                              .build());
 
         LeakCanary.install(this);
         objectGraph = ObjectGraph.create(getModules());

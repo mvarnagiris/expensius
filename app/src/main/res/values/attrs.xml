@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<resources>
+    <declare-styleable name="Theme">
+        <attr name="colorPrimaryLight" format="color" />
+        <attr name="colorAccentDark" format="color" />
+        <attr name="colorActionIcon" format="color" />
+        <attr name="colorDivider" format="color" />
+        <attr name="backgroundPrimary" format="color" />
+        <attr name="floatingActionButtonStyle" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="FloatingActionButton">
+        <attr name="android:src" />
+        <attr name="android:tint" />
+    </declare-styleable>
+
+    <declare-styleable name="AspectLayout">
+        <attr name="aspectBase" format="enum">
+            <enum name="width" value="0" />
+            <enum name="height" value="1" />
+            <enum name="smallest" value="2" />
+            <enum name="biggest" value="3" />
+        </attr>
+        <attr name="aspect" format="float" />
+    </declare-styleable>
+</resources>
