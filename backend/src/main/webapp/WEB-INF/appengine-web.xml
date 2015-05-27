@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+    <application>myApplicationId</application>
+    <version>1</version>
+    <threadsafe>true</threadsafe>
+
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
+
+        <!--
+            TODO: Before you run your application, you need a Google Cloud Messaging API key.
+
+            To get one, follow this link, follow the directions and press "Create" at the end:
+
+              https://console.developers.google.com/flows/enableapi?apiid=googlecloudmessaging&keyType=SERVER_SIDE&r=0.0.0.0/0
+
+            Once you have your API key (which starts with â€œAIza...â€�), replace the "gcm.api.key" string in this file.
+            -->
+
+        <property name="gcm.api.key" value="YOUR_KEY_HERE" />
+    </system-properties>
+</appengine-web-app>
