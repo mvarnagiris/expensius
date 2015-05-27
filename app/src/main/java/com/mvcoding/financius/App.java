@@ -69,6 +69,6 @@ public class App extends Application {
     }
 
     @NonNull protected Object[] getModules() {
-        return new Object[]{AppModule.class};
+        return new Object[]{new AppModule(this)};
     }
 }
