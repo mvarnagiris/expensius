@@ -20,7 +20,7 @@
         <item name="colorPrimaryLight">#ffecb3</item>
         <item name="colorAccent">#7c4dff</item>
         <item name="colorAccentDark">#651fff</item>
-        <item name="colorActionIcon">#ffffff</item>
+        <item name="colorActionIcon">#212121</item>
         <item name="colorDivider">#88333333</item>
         <item name="colorControlHighlight">?colorAccent</item>
         <item name="backgroundPrimary">#fdfdfd</item>

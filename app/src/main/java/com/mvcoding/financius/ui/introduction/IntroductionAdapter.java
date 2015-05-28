@@ -12,16 +12,7 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: 'java'
+package com.mvcoding.financius.ui.introduction;
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
-
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.guava:guava:18.0'
-
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:2.0.0'
-    testCompile "org.mockito:mockito-core:2.0.8-beta"
+public class IntroductionAdapter {
 }

@@ -33,7 +33,7 @@ public class IntroductionActivity extends BaseActivity<IntroductionPresenter.Vie
     }
 
     @Override protected int getLayoutId() {
-        return R.layout.activity_tutorial;
+        return R.layout.activity_introduction;
     }
 
     @NonNull @Override protected Presenter<IntroductionPresenter.View> getPresenter() {

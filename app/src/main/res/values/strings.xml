@@ -16,4 +16,6 @@
     <string name="app_name">Financius</string>
     <string name="introduction">Introduction</string>
     <string name="overview">Overview</string>
+    <string name="next">Next</string>
+    <string name="log_in">Log in</string>
 </resources>
