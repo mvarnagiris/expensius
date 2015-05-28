@@ -12,15 +12,19 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.backend.util;
+package com.mvcoding.financius.backend;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.googlecode.objectify.ObjectifyService;
 import com.mvcoding.financius.backend.entity.UserAccount;
 
 import org.junit.After;
 import org.junit.Before;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
@@ -28,6 +32,7 @@ import static com.mvcoding.financius.backend.OfyService.ofy;
 
 public class BaseTest {
     private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    private Closeable objectifyService;
 
     protected static User mockUser() {
         return new User("example@email.com", "email.com");
@@ -35,9 +40,11 @@ public class BaseTest {
 
     @Before public void setUp() {
         helper.setUp();
+        objectifyService = ObjectifyService.begin();
     }
 
-    @After public void tearDown() {
+    @After public void tearDown() throws IOException {
+        objectifyService.close();
         helper.tearDown();
     }
 

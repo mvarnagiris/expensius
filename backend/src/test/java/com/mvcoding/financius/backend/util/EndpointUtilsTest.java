@@ -19,6 +19,7 @@ import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
 import com.googlecode.objectify.ObjectifyService;
+import com.mvcoding.financius.backend.BaseTest;
 import com.mvcoding.financius.backend.entity.UserAccount;
 import com.mvcoding.financius.core.endpoints.body.Body;
 
