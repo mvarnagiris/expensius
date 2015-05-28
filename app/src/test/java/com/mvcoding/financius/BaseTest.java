@@ -12,18 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius;
 
-import com.mvcoding.financius.ui.ActivityModule;
+import org.junit.Before;
+import org.mockito.MockitoAnnotations;
 
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-
-@Module(addsTo = ActivityModule.class)
-class TutorialModule {
-    @Provides @Singleton public TutorialPresenter provideTutorialPresenter() {
-        return new TutorialPresenter();
+public class BaseTest {
+    @Before public void setUp() {
+        MockitoAnnotations.initMocks(this);
     }
 }

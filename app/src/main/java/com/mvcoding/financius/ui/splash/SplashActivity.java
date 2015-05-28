@@ -12,39 +12,45 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.ui.splash;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mvcoding.financius.R;
-import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.ui.overview.OverviewActivity;
+import com.mvcoding.financius.ui.tutorial.TutorialActivity;
 
 import javax.inject.Inject;
 
-public class TutorialActivity extends BaseActivity<TutorialPresenter.View> implements TutorialPresenter.View {
-    @Inject TutorialPresenter presenter;
-
-    public static void start(@NonNull Context context) {
-        ActivityStarter.with(context, TutorialActivity.class).start();
-    }
+public class SplashActivity extends BaseActivity<SplashPresenter.View> implements SplashPresenter.View {
+    @Inject SplashPresenter presenter;
 
     @Override protected int getLayoutId() {
-        return R.layout.activity_tutorial;
+        return R.layout.activity_splash;
     }
 
-    @NonNull @Override protected Presenter<TutorialPresenter.View> getPresenter() {
+    @NonNull @Override protected Presenter<SplashPresenter.View> getPresenter() {
         return presenter;
     }
 
-    @Nullable @Override protected TutorialPresenter.View getPresenterView() {
+    @Nullable @Override protected SplashPresenter.View getPresenterView() {
         return this;
     }
 
     @Nullable @Override protected Object[] getModules() {
-        return new Object[]{new TutorialModule()};
+        return new Object[]{new SplashModule()};
+    }
+
+    @Override public void startOverviewAndClose() {
+        OverviewActivity.start(this);
+        close();
+    }
+
+    @Override public void startTutorialAndClose() {
+        TutorialActivity.start(this);
+        close();
     }
 }

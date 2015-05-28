@@ -12,18 +12,20 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.ui.overview;
 
-import com.mvcoding.financius.ui.ActivityModule;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-import javax.inject.Singleton;
+import com.mvcoding.financius.ui.ActivityStarter;
+import com.mvcoding.financius.ui.BaseActivity;
 
-import dagger.Module;
-import dagger.Provides;
+public class OverviewActivity extends BaseActivity {
+    public static void start(@NonNull Context context) {
+        ActivityStarter.with(context, OverviewActivity.class).start();
+    }
 
-@Module(addsTo = ActivityModule.class)
-class TutorialModule {
-    @Provides @Singleton public TutorialPresenter provideTutorialPresenter() {
-        return new TutorialPresenter();
+    @Override protected int getLayoutId() {
+        return 0;
     }
 }

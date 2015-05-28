@@ -29,7 +29,7 @@ import dagger.ObjectGraph;
 import icepick.Icepick;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public abstract class BaseActivity<V extends PresenterView> extends AppCompatActivity {
+public abstract class BaseActivity<V extends PresenterView> extends AppCompatActivity implements CloseablePresenterView {
     @LayoutRes protected abstract int getLayoutId();
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +111,10 @@ public abstract class BaseActivity<V extends PresenterView> extends AppCompatAct
 
     @Override protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    @Override public void close() {
+        finish();
     }
 
     @NonNull protected Presenter<V> getPresenter() {

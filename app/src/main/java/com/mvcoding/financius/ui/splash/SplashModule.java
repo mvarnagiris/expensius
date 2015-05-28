@@ -12,8 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.ui.splash;
 
+import com.mvcoding.financius.api.Session;
 import com.mvcoding.financius.ui.ActivityModule;
 
 import javax.inject.Singleton;
@@ -22,8 +23,8 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(addsTo = ActivityModule.class)
-class TutorialModule {
-    @Provides @Singleton public TutorialPresenter provideTutorialPresenter() {
-        return new TutorialPresenter();
+class SplashModule {
+    @Provides @Singleton public SplashPresenter provideSplashPresenter(Session session) {
+        return new SplashPresenter(session);
     }
 }

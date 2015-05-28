@@ -12,18 +12,26 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.api;
 
-import com.mvcoding.financius.ui.ActivityModule;
+import android.content.Context;
+
+import com.mvcoding.financius.ApplicationContext;
+import com.mvcoding.financius.util.PreferencesUtils;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(addsTo = ActivityModule.class)
-class TutorialModule {
-    @Provides @Singleton public TutorialPresenter provideTutorialPresenter() {
-        return new TutorialPresenter();
+@Module(library = true, complete = false)
+public class ApiModule {
+    @Provides @Singleton public Session provideSession(@ApplicationContext Context context) {
+        Session session = PreferencesUtils.get(context, Session.class.getName(), Session.class);
+        if (session == null) {
+            session = new Session();
+        }
+        session.context = context;
+        return session;
     }
 }

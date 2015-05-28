@@ -12,18 +12,23 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.ui.splash;
 
-import com.mvcoding.financius.ui.ActivityModule;
+import com.mvcoding.financius.BaseTest;
+import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.ui.PresenterView;
 
-import javax.inject.Singleton;
+public abstract class BasePresenterTest<P extends Presenter<V>, V extends PresenterView> extends BaseTest {
+    protected P presenter;
+    protected V view;
 
-import dagger.Module;
-import dagger.Provides;
-
-@Module(addsTo = ActivityModule.class)
-class TutorialModule {
-    @Provides @Singleton public TutorialPresenter provideTutorialPresenter() {
-        return new TutorialPresenter();
+    @Override public void setUp() {
+        super.setUp();
+        presenter = createPresenter();
+        view = createView();
     }
+
+    protected abstract P createPresenter();
+
+    protected abstract V createView();
 }
