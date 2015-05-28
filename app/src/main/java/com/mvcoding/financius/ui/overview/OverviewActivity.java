@@ -17,6 +17,7 @@ package com.mvcoding.financius.ui.overview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 
@@ -26,6 +27,6 @@ public class OverviewActivity extends BaseActivity {
     }
 
     @Override protected int getLayoutId() {
-        return 0;
+        return R.layout.activity_overview;
     }
 }

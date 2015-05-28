@@ -12,11 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.splash;
+package com.mvcoding.financius.ui;
 
 import com.mvcoding.financius.BaseTest;
-import com.mvcoding.financius.ui.Presenter;
-import com.mvcoding.financius.ui.PresenterView;
 
 public abstract class BasePresenterTest<P extends Presenter<V>, V extends PresenterView> extends BaseTest {
     protected P presenter;
@@ -31,4 +29,33 @@ public abstract class BasePresenterTest<P extends Presenter<V>, V extends Presen
     protected abstract P createPresenter();
 
     protected abstract V createView();
+
+    protected void presenterOnCreate() {
+        presenter.onCreate();
+    }
+
+    protected void presenterOnViewAttached() {
+        presenter.onViewAttached(view);
+    }
+
+    protected void presenterJumpToOnViewAttached() {
+        presenterOnCreate();
+        presenterOnViewAttached();
+    }
+
+    protected void presenterOnViewResumed() {
+        presenter.onViewResumed(view);
+    }
+
+    protected void presenterOnViewPaused() {
+        presenter.onViewPaused(view);
+    }
+
+    protected void presenterOnViewDetached() {
+        presenter.onViewDetached(view);
+    }
+
+    protected void presenterOnDestroy() {
+        presenter.onDestroy();
+    }
 }

@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.ui.introduction;
 
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 
-class TutorialPresenter extends Presenter<TutorialPresenter.View> {
+class IntroductionPresenter extends Presenter<IntroductionPresenter.View> {
     public interface View extends PresenterView {
     }
 }

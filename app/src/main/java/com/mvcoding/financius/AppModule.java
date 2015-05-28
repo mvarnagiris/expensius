@@ -16,12 +16,14 @@ package com.mvcoding.financius;
 
 import android.content.Context;
 
+import com.mvcoding.financius.api.ApiModule;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true)
+@Module(library = true, includes = ApiModule.class)
 public class AppModule {
     private final App app;
 

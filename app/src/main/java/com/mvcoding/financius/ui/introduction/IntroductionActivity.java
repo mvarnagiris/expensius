@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.ui.introduction;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -25,26 +25,26 @@ import com.mvcoding.financius.ui.Presenter;
 
 import javax.inject.Inject;
 
-public class TutorialActivity extends BaseActivity<TutorialPresenter.View> implements TutorialPresenter.View {
-    @Inject TutorialPresenter presenter;
+public class IntroductionActivity extends BaseActivity<IntroductionPresenter.View> implements IntroductionPresenter.View {
+    @Inject IntroductionPresenter presenter;
 
     public static void start(@NonNull Context context) {
-        ActivityStarter.with(context, TutorialActivity.class).start();
+        ActivityStarter.with(context, IntroductionActivity.class).start();
     }
 
     @Override protected int getLayoutId() {
         return R.layout.activity_tutorial;
     }
 
-    @NonNull @Override protected Presenter<TutorialPresenter.View> getPresenter() {
+    @NonNull @Override protected Presenter<IntroductionPresenter.View> getPresenter() {
         return presenter;
     }
 
-    @Nullable @Override protected TutorialPresenter.View getPresenterView() {
+    @Nullable @Override protected IntroductionPresenter.View getPresenterView() {
         return this;
     }
 
     @Nullable @Override protected Object[] getModules() {
-        return new Object[]{new TutorialModule()};
+        return new Object[]{new IntroductionModule()};
     }
 }

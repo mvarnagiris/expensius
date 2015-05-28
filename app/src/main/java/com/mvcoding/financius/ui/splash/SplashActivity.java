@@ -20,8 +20,8 @@ import android.support.annotation.Nullable;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.ui.introduction.IntroductionActivity;
 import com.mvcoding.financius.ui.overview.OverviewActivity;
-import com.mvcoding.financius.ui.tutorial.TutorialActivity;
 
 import javax.inject.Inject;
 
@@ -50,7 +50,7 @@ public class SplashActivity extends BaseActivity<SplashPresenter.View> implement
     }
 
     @Override public void startTutorialAndClose() {
-        TutorialActivity.start(this);
+        IntroductionActivity.start(this);
         close();
     }
 }

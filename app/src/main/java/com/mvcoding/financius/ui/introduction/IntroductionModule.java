@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.tutorial;
+package com.mvcoding.financius.ui.introduction;
 
 import com.mvcoding.financius.ui.ActivityModule;
 
@@ -21,9 +21,9 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(addsTo = ActivityModule.class)
-class TutorialModule {
-    @Provides @Singleton public TutorialPresenter provideTutorialPresenter() {
-        return new TutorialPresenter();
+@Module(addsTo = ActivityModule.class, injects = IntroductionActivity.class)
+class IntroductionModule {
+    @Provides @Singleton public IntroductionPresenter provideTutorialPresenter() {
+        return new IntroductionPresenter();
     }
 }

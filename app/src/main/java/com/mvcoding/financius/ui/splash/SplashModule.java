@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(addsTo = ActivityModule.class)
+@Module(addsTo = ActivityModule.class, injects = SplashActivity.class)
 class SplashModule {
     @Provides @Singleton public SplashPresenter provideSplashPresenter(Session session) {
         return new SplashPresenter(session);
