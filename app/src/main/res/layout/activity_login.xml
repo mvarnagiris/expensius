@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
@@ -12,12 +12,9 @@
   ~ GNU General Public License for more details.
   -->
 
-<resources>
-    <string name="app_name">Financius</string>
-    <string name="introduction">Introduction</string>
-    <string name="overview">Overview</string>
-    <string name="next">Next</string>
-    <string name="log_in">Log in</string>
-    <string name="log_in_with_google">Log in with Google</string>
-    <string name="skip">Skip</string>
-</resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+</LinearLayout>

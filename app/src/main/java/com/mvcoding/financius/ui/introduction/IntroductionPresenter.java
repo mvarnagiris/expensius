@@ -14,10 +14,28 @@
 
 package com.mvcoding.financius.ui.introduction;
 
+import android.support.annotation.NonNull;
+
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 
+import rx.Observable;
+import rx.android.view.OnClickEvent;
+
 class IntroductionPresenter extends Presenter<IntroductionPresenter.View> {
+    @Override protected void onViewAttached(@NonNull View view) {
+        super.onViewAttached(view);
+        unsubscribeOnDetach(view.onSkipLoginClick().subscribe(onClickEvent -> view.startOverviewAndClose()));
+        unsubscribeOnDetach(view.onLoginClick().subscribe(onClickEvent -> view.startLoginAndClose()));
+    }
+
     public interface View extends PresenterView {
+        Observable<OnClickEvent> onSkipLoginClick();
+
+        Observable<OnClickEvent> onLoginClick();
+
+        void startOverviewAndClose();
+
+        void startLoginAndClose();
     }
 }

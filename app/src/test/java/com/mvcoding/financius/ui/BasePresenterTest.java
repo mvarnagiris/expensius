@@ -14,7 +14,14 @@
 
 package com.mvcoding.financius.ui;
 
+import android.support.annotation.NonNull;
+
 import com.mvcoding.financius.BaseTest;
+
+import rx.android.view.OnClickEvent;
+import rx.subjects.Subject;
+
+import static org.mockito.Mockito.mock;
 
 public abstract class BasePresenterTest<P extends Presenter<V>, V extends PresenterView> extends BaseTest {
     protected P presenter;
@@ -57,5 +64,10 @@ public abstract class BasePresenterTest<P extends Presenter<V>, V extends Presen
 
     protected void presenterOnDestroy() {
         presenter.onDestroy();
+    }
+
+    protected void performClick(@NonNull Subject<OnClickEvent, OnClickEvent> subject) {
+        final OnClickEvent event = mock(OnClickEvent.class);
+        subject.onNext(event);
     }
 }

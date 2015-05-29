@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import com.mvcoding.financius.App;
 import com.mvcoding.financius.R;
 
+import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import icepick.Icepick;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -36,6 +37,7 @@ public abstract class BaseActivity<V extends PresenterView> extends AppCompatAct
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         setupToolbar();
+        ButterKnife.inject(this);
 
         Icepick.restoreInstanceState(this, savedInstanceState);
 
