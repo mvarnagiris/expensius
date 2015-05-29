@@ -12,21 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.api.model;
+package com.mvcoding.financius.core.model;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-
-public class User implements Serializable {
-    @SerializedName("email") private String email;
-    @SerializedName("googleId") private String googleId;
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getGoogleId() {
-        return googleId;
-    }
+public enum TransactionType {
+    Income, Expense
 }
