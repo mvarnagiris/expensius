@@ -49,8 +49,19 @@
             android:name=".ui.introduction.IntroductionActivity"
             android:label="@string/introduction" />
         <activity
+            android:name=".ui.user.LoginActivity"
+            android:label="@string/log_in" />
+        <activity
             android:name=".ui.overview.OverviewActivity"
             android:label="@string/overview" />
+
+        <!-- Meta data -->
+        <!-- =========================================================================================================================== -->
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="a0fed0de33f7f506e0acd0e0eb605f9f3a3da96f" />
+
     </application>
 
 </manifest>

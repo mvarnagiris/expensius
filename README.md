@@ -1,4 +1,11 @@
 # Financius
+# Project setup
+- Create a file `app/financius.properties`.
+
+```
+endpoint_web_client_id=your_id_goes_here
+```
+
 # License
 ```
 Copyright (C) 2015 Mantas Varnagiris.

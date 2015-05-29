@@ -12,21 +12,19 @@
  * GNU General Public License for more details.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0-beta1'
-        classpath 'me.tatarka:gradle-retrolambda:3.1.0'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.16.0'
-    }
-}
+package com.mvcoding.financius.api.model;
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
+import com.google.gson.annotations.SerializedName;
+
+public class User {
+    @SerializedName("email") private String email;
+    @SerializedName("google_id") private String googleId;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getGoogleId() {
+        return googleId;
     }
 }

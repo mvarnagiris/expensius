@@ -12,21 +12,24 @@
  * GNU General Public License for more details.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0-beta1'
-        classpath 'me.tatarka:gradle-retrolambda:3.1.0'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.16.0'
-    }
-}
+package com.mvcoding.financius.api;
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
+import android.support.annotation.NonNull;
+
+import javax.inject.Inject;
+
+import retrofit.RequestInterceptor;
+
+public class EndpointInterceptor implements RequestInterceptor {
+    private final Session session;
+
+    @Inject public EndpointInterceptor(@NonNull Session session) {
+        this.session = session;
+    }
+
+    @Override public void intercept(RequestFacade request) {
+        if (session.isLoggedIn()) {
+            request.addHeader("Authorization", session.getTokenForRequest());
+        }
     }
 }

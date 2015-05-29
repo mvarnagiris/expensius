@@ -19,8 +19,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.squareup.leakcanary.LeakCanary;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +41,7 @@ public class App extends Application {
                                               .setFontAttrId(R.attr.fontPath)
                                               .build());
 
-        LeakCanary.install(this);
+        //        LeakCanary.install(this);
         objectGraph = ObjectGraph.create(getModules());
     }
 

@@ -12,21 +12,15 @@
  * GNU General Public License for more details.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0-beta1'
-        classpath 'me.tatarka:gradle-retrolambda:3.1.0'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.16.0'
-    }
-}
+package com.mvcoding.financius.api.service;
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
+import com.mvcoding.financius.api.model.User;
+import com.mvcoding.financius.core.endpoints.body.RegisterUserBody;
+
+import retrofit.http.Body;
+import retrofit.http.POST;
+import rx.Observable;
+
+public interface UsersService {
+    @POST("/v1/users") Observable<User> registerUser(@Body RegisterUserBody body);
 }
