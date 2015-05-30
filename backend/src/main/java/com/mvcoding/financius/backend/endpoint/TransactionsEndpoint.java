@@ -22,7 +22,7 @@ import com.google.api.server.spi.response.ForbiddenException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
-import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Ref;
 import com.mvcoding.financius.backend.entity.Transaction;
 import com.mvcoding.financius.backend.entity.UserAccount;
 import com.mvcoding.financius.backend.util.EndpointUtils;
@@ -43,13 +43,11 @@ public class TransactionsEndpoint {
     private static final String PATH = "transactions";
 
     @ApiMethod(name = "getTransactions", httpMethod = "GET", path = PATH)
-    public CollectionResponse<Transaction> listTransactions(@Named("timestamp") long timestamp, User user) throws OAuthRequestException, BadRequestException, IOException, NotFoundException, ForbiddenException {
-        final UserAccount userAccount = EndpointUtils.getRequiredUserAccountAndVerifyPermissions(user);
+    public CollectionResponse<Transaction> listTransactions(@Named("timestamp") long timestamp, User user) throws OAuthRequestException, NotFoundException {
+        final UserAccount userAccount = EndpointUtils.getRequiredUserAccount(user);
 
         final List<Transaction> entities = ofy().load()
-                .type(Transaction.class)
-                .filter("userAccount", Key.create(UserAccount.class, userAccount.getId()))
-                .filter("editTimestamp >", timestamp)
+                .type(Transaction.class).filter("userAccountRef", Ref.create(userAccount)).filter("timestamp >", timestamp)
                 .list();
 
         return CollectionResponse.<Transaction>builder().setItems(entities).build();
@@ -57,12 +55,13 @@ public class TransactionsEndpoint {
 
     @ApiMethod(name = "saveTransactions", httpMethod = "POST", path = PATH)
     public UpdateData saveTransactions(TransactionsBody body, User user) throws OAuthRequestException, BadRequestException, IOException, NotFoundException, ForbiddenException {
-        final UserAccount userAccount = EndpointUtils.getRequiredUserAccountAndVerifyPermissions(user);
+        final UserAccount userAccount = EndpointUtils.getRequiredUserAccount(user);
         EndpointUtils.validateBody(body);
 
         final List<Transaction> entities = new ArrayList<Transaction>();
         final long timestamp = System.currentTimeMillis();
         for (TransactionBody transactionBody : body.getTransactions()) {
+            EndpointUtils.validateBody(transactionBody);
             final Transaction transaction = Transaction.from(userAccount, transactionBody);
             transaction.setTimestamp(timestamp);
             entities.add(transaction);

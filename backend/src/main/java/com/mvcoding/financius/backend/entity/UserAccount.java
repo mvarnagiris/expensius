@@ -25,6 +25,7 @@ import static com.mvcoding.financius.backend.OfyService.ofy;
 public class UserAccount extends BaseEntity {
     @Index @ApiResourceProperty(name = "email") private String email;
     @ApiResourceProperty(name = "googleId") private String googleId;
+    @ApiResourceProperty(name = "isPremium") private boolean isPremium;
 
     public static UserAccount find(User user) {
         return ofy().load().type(UserAccount.class).filter("email", user.getEmail()).first().now();
@@ -44,6 +45,14 @@ public class UserAccount extends BaseEntity {
 
     public void setGoogleId(String googleId) {
         this.googleId = googleId;
+    }
+
+    public boolean isPremium() {
+        return isPremium;
+    }
+
+    public void setIsPremium(boolean isPremium) {
+        this.isPremium = isPremium;
     }
 }
 

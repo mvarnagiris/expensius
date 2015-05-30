@@ -17,7 +17,8 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'crashlytics'
 
 Properties props = new Properties()
-props.load(new FileInputStream('app/financius.properties'))
+File propsFile = new File('app/financius.properties')
+props.load(propsFile.newDataInputStream())
 
 android {
     compileSdkVersion 'android-MNC'
@@ -29,7 +30,7 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "ENDPOINT_WEB_CLIENT_ID", "\"" + props['endpoint_web_client_id'] + "\""
+        buildConfigField "String", "ENDPOINT_WEB_CLIENT_ID", "\"" + props.getProperty('endpoint_web_client_id') + "\""
         buildConfigField "String", "LOCAL_SERVER_IP", "\"" + getLocalIp() + "\""
     }
     buildTypes {

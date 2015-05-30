@@ -66,7 +66,7 @@ public class UsersEndpointTest extends BaseTest {
 
     @Test public void register_updatesExistingUserAccount_whenUserAccountExists() throws Exception {
         final User user = mockUser();
-        final long existingUserAccountTimestamp = saveUserAccount(user).getTimestamp();
+        final long existingUserAccountTimestamp = saveEntity(mockUserAccount(user)).getTimestamp();
 
         final RegisterUserBody body = mock(RegisterUserBody.class);
         final String googleId = UUID.randomUUID().toString();

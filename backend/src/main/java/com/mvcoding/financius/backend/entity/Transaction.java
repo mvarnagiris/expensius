@@ -20,6 +20,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.OnLoad;
 import com.mvcoding.financius.core.endpoints.body.TransactionBody;
@@ -41,7 +42,7 @@ public class Transaction extends BaseEntity {
     @ApiResourceProperty(name = "tags") @Ignore private Set<Tag> tags;
     @ApiResourceProperty(name = "note") private String note;
 
-    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE) @Load private Ref<UserAccount> userAccountRef;
+    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE) @Load @Index private Ref<UserAccount> userAccountRef;
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE) @Load private Ref<Place> placeRef;
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE) @Load private Set<Ref<Tag>> tagsRef;
 

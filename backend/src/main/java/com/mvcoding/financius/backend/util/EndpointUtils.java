@@ -60,9 +60,9 @@ public final class EndpointUtils {
 
     public static UserAccount getRequiredUserAccountAndVerifyPermissions(@Nullable User user) throws OAuthRequestException, NotFoundException, ForbiddenException {
         final UserAccount userAccount = getRequiredUserAccount(user);
-        //        if (!userAccount.isPremium()) {
-        //            throw new ForbiddenException("User does not have permission to call this API because it's not a premium account.");
-        //        }
+        if (!userAccount.isPremium()) {
+            throw new ForbiddenException("User does not have permission to call this API because it's not a premium account.");
+        }
 
         return userAccount;
     }

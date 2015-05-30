@@ -17,6 +17,7 @@ package com.mvcoding.financius.backend;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.impl.translate.opt.BigDecimalLongTranslatorFactory;
 import com.mvcoding.financius.backend.entity.Place;
 import com.mvcoding.financius.backend.entity.Tag;
 import com.mvcoding.financius.backend.entity.Transaction;
@@ -32,6 +33,7 @@ public class OfyService {
     }
 
     static {
+        factory().getTranslators().add(new BigDecimalLongTranslatorFactory());
         ObjectifyService.register(UserAccount.class);
         ObjectifyService.register(Tag.class);
         ObjectifyService.register(Place.class);

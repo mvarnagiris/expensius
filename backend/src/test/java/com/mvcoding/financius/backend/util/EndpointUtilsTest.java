@@ -15,17 +15,15 @@
 package com.mvcoding.financius.backend.util;
 
 import com.google.api.server.spi.response.BadRequestException;
+import com.google.api.server.spi.response.ForbiddenException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
-import com.googlecode.objectify.ObjectifyService;
 import com.mvcoding.financius.backend.BaseTest;
 import com.mvcoding.financius.backend.entity.UserAccount;
 import com.mvcoding.financius.core.endpoints.body.Body;
 
 import org.junit.Test;
-
-import java.io.Closeable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -58,21 +56,32 @@ public class EndpointUtilsTest extends BaseTest {
 
     @Test(expected = NotFoundException.class)
     public void getRequiredUserAccount_throwsNotFoundException_whenUserAccountIsNotRegistered() throws Exception {
-        final Closeable service = ObjectifyService.begin();
         EndpointUtils.getRequiredUserAccount(mockUser());
-        service.close();
     }
 
     @Test public void getRequiredUserAccount_returnsRegisteredUserAccount_whenUserAccountIsRegistered() throws Exception {
         final User user = mockUser();
-        final UserAccount userAccount = saveUserAccount(user);
+        final UserAccount userAccount = saveEntity(mockUserAccount(user));
 
         final UserAccount foundUserAccount = EndpointUtils.getRequiredUserAccount(user);
 
         assertThat(foundUserAccount.getId()).isEqualTo(userAccount.getId());
     }
 
-    @Test public void getRequiredUserAccountAndVerifyPermissions() throws Exception {
-        // TODO Implement.
+    @Test(expected = ForbiddenException.class)
+    public void getRequiredUserAccountAndVerifyPermissions_throwsNotFoundException_whenUserAccountIsRegisteredButNotPremium() throws Exception {
+        final User user = mockUser();
+        UserAccount userAccount = mockUserAccount(user);
+        userAccount.setIsPremium(false);
+        saveEntity(userAccount);
+
+        EndpointUtils.getRequiredUserAccountAndVerifyPermissions(user);
+    }
+
+    @Test
+    public void getRequiredUserAccountAndVerifyPermissions_doesNotThrowException_whenUserAccountIsRegisteredAndPremium() throws Exception {
+        final User user = registerUser();
+
+        EndpointUtils.getRequiredUserAccountAndVerifyPermissions(user);
     }
 }

@@ -44,6 +44,7 @@ public class UsersEndpoint {
 
         userAccount.updateDefaults();
         userAccount.setGoogleId(body.getGoogleId());
+        userAccount.setIsPremium(true);
 
         ofy().save().entity(userAccount).now();
 
