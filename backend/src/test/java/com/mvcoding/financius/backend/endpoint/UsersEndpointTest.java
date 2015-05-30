@@ -30,9 +30,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by Mantas_2 on 28/05/2015.
- */
 public class UsersEndpointTest extends BaseTest {
     private final UsersEndpoint usersEndpoint = new UsersEndpoint();
 
@@ -64,12 +61,12 @@ public class UsersEndpointTest extends BaseTest {
         assertThat(userAccount).isNotNull();
         assertThat(userAccount.getEmail()).isEqualTo(user.getEmail());
         assertThat(userAccount.getGoogleId()).isEqualTo("any");
-        assertThat(userAccount.getCreateTimestamp()).isEqualTo(userAccount.getEditTimestamp());
+        assertThat(userAccount.getTimestamp()).isEqualTo(userAccount.getTimestamp());
     }
 
     @Test public void register_updatesExistingUserAccount_whenUserAccountExists() throws Exception {
         final User user = mockUser();
-        saveUserAccount(user);
+        final long existingUserAccountTimestamp = saveUserAccount(user).getTimestamp();
 
         final RegisterUserBody body = mock(RegisterUserBody.class);
         final String googleId = UUID.randomUUID().toString();
@@ -80,6 +77,6 @@ public class UsersEndpointTest extends BaseTest {
 
         assertThat(userAccount).isNotNull();
         assertThat(userAccount.getGoogleId()).isEqualTo(googleId);
-        assertThat(userAccount.getCreateTimestamp()).isLessThan(userAccount.getEditTimestamp());
+        assertThat(userAccount.getTimestamp()).isGreaterThan(existingUserAccountTimestamp);
     }
 }
