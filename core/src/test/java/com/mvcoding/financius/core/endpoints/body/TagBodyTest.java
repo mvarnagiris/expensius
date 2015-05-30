@@ -17,11 +17,13 @@ package com.mvcoding.financius.core.endpoints.body;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RegisterUserBodyTest {
-    private RegisterUserBody body;
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
+
+public class TagBodyTest {
+    private TagBody body;
 
     @Before public void setUp() {
-        body = new RegisterUserBody();
+        body = new TagBody();
     }
 
     @Test public void validate_doesNotThrowException_whenAllFieldsAreValid() {
@@ -30,21 +32,26 @@ public class RegisterUserBodyTest {
         body.validate();
     }
 
-    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenGoogleIdIsNull() {
-        makeAllFieldsValid(body);
-        body.setGoogleId(null);
+    @Test public void validate_throwsRuntimeException_whenTitleIsNullOrEmpty() {
+        try {
+            makeAllFieldsValid(body);
+            body.setTitle(null);
+            body.validate();
+            failBecauseExceptionWasNotThrown(RuntimeException.class);
+        } catch (RuntimeException ignore) {
+        }
 
-        body.validate();
+        try {
+            makeAllFieldsValid(body);
+            body.setTitle("");
+            body.validate();
+            failBecauseExceptionWasNotThrown(RuntimeException.class);
+        } catch (RuntimeException ignore) {
+        }
     }
 
-    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenGoogleIdIsEmpty() {
-        makeAllFieldsValid(body);
-        body.setGoogleId("");
-
-        body.validate();
-    }
-
-    private void makeAllFieldsValid(RegisterUserBody body) {
-        body.setGoogleId("any");
+    private void makeAllFieldsValid(TagBody body) {
+        body.setTitle("any");
+        body.setColor(0);
     }
 }

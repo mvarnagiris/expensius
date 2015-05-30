@@ -50,7 +50,7 @@ public class BaseTest {
 
     protected UserAccount saveUserAccount(@Nonnull User user) {
         final UserAccount userAccount = new UserAccount();
-        userAccount.onCreate();
+        userAccount.updateDefaults();
         userAccount.setEmail(user.getEmail());
         userAccount.setGoogleId("any");
 

@@ -17,13 +17,24 @@ package com.mvcoding.financius.backend.endpoint;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.response.BadRequestException;
+import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.ForbiddenException;
+import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.api.users.User;
+import com.googlecode.objectify.Key;
+import com.mvcoding.financius.backend.entity.Transaction;
 import com.mvcoding.financius.backend.entity.UserAccount;
 import com.mvcoding.financius.backend.util.EndpointUtils;
-import com.mvcoding.financius.core.endpoints.body.RegisterUserBody;
+import com.mvcoding.financius.core.endpoints.UpdateData;
+import com.mvcoding.financius.core.endpoints.body.TransactionBody;
+import com.mvcoding.financius.core.endpoints.body.TransactionsBody;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Named;
 
 import static com.mvcoding.financius.backend.OfyService.ofy;
 
@@ -31,24 +42,33 @@ import static com.mvcoding.financius.backend.OfyService.ofy;
 public class TransactionsEndpoint {
     private static final String PATH = "transactions";
 
+    @ApiMethod(name = "getTransactions", httpMethod = "GET", path = PATH)
+    public CollectionResponse<Transaction> listTransactions(@Named("timestamp") long timestamp, User user) throws OAuthRequestException, BadRequestException, IOException, NotFoundException, ForbiddenException {
+        final UserAccount userAccount = EndpointUtils.getRequiredUserAccountAndVerifyPermissions(user);
+
+        final List<Transaction> entities = ofy().load()
+                .type(Transaction.class)
+                .filter("userAccount", Key.create(UserAccount.class, userAccount.getId()))
+                .filter("editTimestamp >", timestamp)
+                .list();
+
+        return CollectionResponse.<Transaction>builder().setItems(entities).build();
+    }
+
     @ApiMethod(name = "saveTransactions", httpMethod = "POST", path = PATH)
-    public void save(RegisterUserBody body, User user) throws OAuthRequestException, BadRequestException, IOException {
-        EndpointUtils.verifyAuthenticated(user);
+    public UpdateData saveTransactions(TransactionsBody body, User user) throws OAuthRequestException, BadRequestException, IOException, NotFoundException, ForbiddenException {
+        final UserAccount userAccount = EndpointUtils.getRequiredUserAccountAndVerifyPermissions(user);
         EndpointUtils.validateBody(body);
 
-        UserAccount userAccount = UserAccount.find(user);
-        if (userAccount == null) {
-            userAccount = new UserAccount();
-            userAccount.onCreate();
-            userAccount.setEmail(user.getEmail());
-        } else {
-            userAccount.onUpdate();
+        final List<Transaction> entities = new ArrayList<Transaction>();
+        final long timestamp = System.currentTimeMillis();
+        for (TransactionBody transactionBody : body.getTransactions()) {
+            final Transaction transaction = Transaction.from(userAccount, transactionBody);
+            transaction.setTimestamp(timestamp);
+            entities.add(transaction);
         }
 
-        userAccount.setGoogleId(body.getGoogleId());
-
-        ofy().save().entity(userAccount).now();
-
-        return userAccount;
+        ofy().save().entities(entities).now();
+        return new UpdateData(timestamp);
     }
 }

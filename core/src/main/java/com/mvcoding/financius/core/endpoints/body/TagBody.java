@@ -14,22 +14,31 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import java.util.List;
+import com.google.common.base.Strings;
 
 import static com.google.common.base.Preconditions.checkState;
 
-public class TransactionsBody implements Body {
-    private List<TransactionBody> transactions;
+public class TagBody implements Body {
+    private String title;
+    private int color;
 
     @Override public void validate() throws RuntimeException {
-        checkState(transactions != null && !transactions.isEmpty(), "Transactions cannot be empty.");
+        checkState(!Strings.isNullOrEmpty(title), "Title cannot be empty.");
     }
 
-    public List<TransactionBody> getTransactions() {
-        return transactions;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTransactions(List<TransactionBody> transactions) {
-        this.transactions = transactions;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 }

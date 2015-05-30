@@ -18,25 +18,25 @@ import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.base.Strings;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.mvcoding.financius.core.model.ModelState;
 
 import java.util.UUID;
 
 public class BaseEntity {
     @Id @ApiResourceProperty(name = "id") private String id;
-    @Index @ApiResourceProperty(name = "create_ts") private long createTimestamp;
-    @Index @ApiResourceProperty(name = "edit_ts") private long editTimestamp;
+    @Index @ApiResourceProperty(name = "timestamp") private long timestamp;
+    @ApiResourceProperty(name = "modelState") private ModelState modelState;
 
-    public void onCreate() {
-        if (Strings.isNullOrEmpty(getId())) {
-            setId(UUID.randomUUID().toString());
+    public void updateDefaults() {
+        if (Strings.isNullOrEmpty(id)) {
+            id = UUID.randomUUID().toString();
         }
-        final long timestamp = System.currentTimeMillis();
-        setCreateTimestamp(timestamp);
-        setEditTimestamp(timestamp);
-    }
 
-    public void onUpdate() {
-        setEditTimestamp(System.currentTimeMillis());
+        if (modelState == null) {
+            modelState = ModelState.Normal;
+        }
+
+        setTimestamp(System.currentTimeMillis());
     }
 
     public String getId() {
@@ -47,19 +47,19 @@ public class BaseEntity {
         this.id = id;
     }
 
-    public long getCreateTimestamp() {
-        return createTimestamp;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setCreateTimestamp(long createTimestamp) {
-        this.createTimestamp = createTimestamp;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public long getEditTimestamp() {
-        return editTimestamp;
+    public ModelState getModelState() {
+        return modelState;
     }
 
-    public void setEditTimestamp(long editTimestamp) {
-        this.editTimestamp = editTimestamp;
+    public void setModelState(ModelState modelState) {
+        this.modelState = modelState;
     }
 }

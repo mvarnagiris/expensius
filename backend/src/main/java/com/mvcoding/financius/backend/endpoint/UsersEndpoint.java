@@ -39,12 +39,10 @@ public class UsersEndpoint {
         UserAccount userAccount = UserAccount.find(user);
         if (userAccount == null) {
             userAccount = new UserAccount();
-            userAccount.onCreate();
             userAccount.setEmail(user.getEmail());
-        } else {
-            userAccount.onUpdate();
         }
 
+        userAccount.updateDefaults();
         userAccount.setGoogleId(body.getGoogleId());
 
         ofy().save().entity(userAccount).now();
