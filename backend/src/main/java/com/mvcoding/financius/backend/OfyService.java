@@ -17,6 +17,9 @@ package com.mvcoding.financius.backend;
 import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
+import com.mvcoding.financius.backend.entity.Place;
+import com.mvcoding.financius.backend.entity.Tag;
+import com.mvcoding.financius.backend.entity.Transaction;
 import com.mvcoding.financius.backend.entity.UserAccount;
 
 public class OfyService {
@@ -30,5 +33,8 @@ public class OfyService {
 
     static {
         ObjectifyService.register(UserAccount.class);
+        ObjectifyService.register(Tag.class);
+        ObjectifyService.register(Place.class);
+        ObjectifyService.register(Transaction.class);
     }
 }
