@@ -20,4 +20,5 @@
     <string name="log_in">Log in</string>
     <string name="log_in_with_google">Log in with Google</string>
     <string name="skip">Skip</string>
+    <string name="calculator">Calculator</string>
 </resources>

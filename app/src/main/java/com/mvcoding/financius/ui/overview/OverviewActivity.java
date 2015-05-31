@@ -22,6 +22,7 @@ import android.support.design.widget.FloatingActionButton;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
+import com.mvcoding.financius.ui.transaction.calculator.CalculatorActivity;
 
 import javax.inject.Inject;
 
@@ -60,6 +61,6 @@ public class OverviewActivity extends BaseActivity<OverviewPresenter.View> imple
     }
 
     @Override public void startNewTransaction() {
-        // TODO: Implement.
+        CalculatorActivity.start(this);
     }
 }

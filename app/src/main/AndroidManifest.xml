@@ -55,6 +55,9 @@
         <activity
             android:name=".ui.overview.OverviewActivity"
             android:label="@string/overview" />
+        <activity
+            android:name=".ui.transaction.calculator.CalculatorActivity"
+            android:label="@string/calculator" />
 
         <!-- Meta data -->
         <!-- =========================================================================================================================== -->

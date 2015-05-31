@@ -25,8 +25,10 @@
 
     <dimen name="actionbar_2x">112dp</dimen>
 
-    <dimen name="elevation_toolbar">8dp</dimen>
-    <dimen name="elevation_fab">10dp</dimen>
+    <dimen name="elevation_toolbar">4dp</dimen>
+    <dimen name="elevation_fab">6dp</dimen>
+    <dimen name="elevation_fab_pressed">12dp</dimen>
+    <dimen name="elevation_card">2dp</dimen>
 
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_size_half_negative">-28dp</dimen>
