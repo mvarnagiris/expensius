@@ -16,17 +16,50 @@ package com.mvcoding.financius.ui.overview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 
-public class OverviewActivity extends BaseActivity {
+import javax.inject.Inject;
+
+import butterknife.InjectView;
+import rx.Observable;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
+
+public class OverviewActivity extends BaseActivity<OverviewPresenter.View> implements OverviewPresenter.View {
+    @InjectView(R.id.newTransactionFloatingActionButton) FloatingActionButton newTransactionFloatingActionButton;
+
+    @Inject OverviewPresenter presenter;
+
     public static void start(@NonNull Context context) {
         ActivityStarter.with(context, OverviewActivity.class).start();
     }
 
     @Override protected int getLayoutId() {
         return R.layout.activity_overview;
+    }
+
+    @NonNull @Override protected OverviewPresenter getPresenter() {
+        return presenter;
+    }
+
+    @Nullable @Override protected OverviewPresenter.View getPresenterView() {
+        return this;
+    }
+
+    @Nullable @Override protected Object[] getModules() {
+        return new Object[]{new OverviewModule()};
+    }
+
+    @NonNull @Override public Observable<OnClickEvent> onNewTransactionClick() {
+        return ViewObservable.clicks(newTransactionFloatingActionButton);
+    }
+
+    @Override public void startNewTransaction() {
+        // TODO: Implement.
     }
 }

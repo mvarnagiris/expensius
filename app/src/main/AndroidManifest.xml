@@ -47,7 +47,8 @@
         </activity>
         <activity
             android:name=".ui.introduction.IntroductionActivity"
-            android:label="@string/introduction" />
+            android:label="@string/introduction"
+            android:theme="@style/AppThemeDark" />
         <activity
             android:name=".ui.user.LoginActivity"
             android:label="@string/log_in" />

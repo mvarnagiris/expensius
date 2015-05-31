@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.introduction;
+package com.mvcoding.financius.ui.overview;
 
 import android.support.annotation.NonNull;
 
@@ -22,20 +22,15 @@ import com.mvcoding.financius.ui.PresenterView;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 
-class IntroductionPresenter extends Presenter<IntroductionPresenter.View> {
+class OverviewPresenter extends Presenter<OverviewPresenter.View> {
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
-        unsubscribeOnDetach(view.onSkipLoginClick().subscribe(onClickEvent -> view.startOverviewAndClose()));
-        unsubscribeOnDetach(view.onLoginClick().subscribe(onClickEvent -> view.startLoginAndClose()));
+        unsubscribeOnDetach(view.onNewTransactionClick().subscribe(onClickEvent -> view.startNewTransaction()));
     }
 
     public interface View extends PresenterView {
-        @NonNull Observable<OnClickEvent> onSkipLoginClick();
+        @NonNull Observable<OnClickEvent> onNewTransactionClick();
 
-        @NonNull Observable<OnClickEvent> onLoginClick();
-
-        void startOverviewAndClose();
-
-        void startLoginAndClose();
+        void startNewTransaction();
     }
 }

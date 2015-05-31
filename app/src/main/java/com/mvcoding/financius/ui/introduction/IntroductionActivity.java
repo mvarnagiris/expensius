@@ -92,11 +92,11 @@ public class IntroductionActivity extends BaseActivity<IntroductionPresenter.Vie
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
     }
 
-    @Override public Observable<OnClickEvent> onSkipLoginClick() {
+    @NonNull @Override public Observable<OnClickEvent> onSkipLoginClick() {
         return ViewObservable.clicks(skipLoginButton);
     }
 
-    @Override public Observable<OnClickEvent> onLoginClick() {
+    @NonNull @Override public Observable<OnClickEvent> onLoginClick() {
         return ViewObservable.clicks(loginButton);
     }
 
