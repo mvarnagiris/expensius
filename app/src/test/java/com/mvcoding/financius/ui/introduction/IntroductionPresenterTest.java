@@ -16,6 +16,7 @@ package com.mvcoding.financius.ui.introduction;
 
 import com.mvcoding.financius.api.Session;
 import com.mvcoding.financius.ui.BasePresenterTest;
+import com.mvcoding.financius.ui.UserSettings;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -32,9 +33,10 @@ public class IntroductionPresenterTest extends BasePresenterTest<IntroductionPre
     private final PublishSubject<OnClickEvent> loginClick = PublishSubject.create();
 
     @Mock private Session session;
+    @Mock private UserSettings userSettings;
 
     @Override protected IntroductionPresenter createPresenter() {
-        return new IntroductionPresenter();
+        return new IntroductionPresenter(userSettings);
     }
 
     @Override protected IntroductionPresenter.View createView() {
@@ -44,19 +46,21 @@ public class IntroductionPresenterTest extends BasePresenterTest<IntroductionPre
         return view;
     }
 
-    @Test public void onSkipLoginClick_startsOverviewAndCloses() {
+    @Test public void onSkipLoginClick_setsIntroductionAsSeenAndStartsOverviewAndCloses() {
         presenterJumpToOnViewAttached();
 
         performClick(skipLoginClick);
 
+        verify(userSettings).setIsIntroductionSeen(true);
         verify(view).startOverviewAndClose();
     }
 
-    @Test public void onLoginClick_startsLoginAndCloses() {
+    @Test public void onLoginClick_setsIntroductionAsSeenAndStartsLoginAndCloses() {
         presenterJumpToOnViewAttached();
 
         performClick(loginClick);
 
+        verify(userSettings).setIsIntroductionSeen(true);
         verify(view).startLoginAndClose();
     }
 }

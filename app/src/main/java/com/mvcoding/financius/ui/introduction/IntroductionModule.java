@@ -15,15 +15,16 @@
 package com.mvcoding.financius.ui.introduction;
 
 import com.mvcoding.financius.ui.ActivityModule;
+import com.mvcoding.financius.ui.UserSettings;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(addsTo = ActivityModule.class, injects = IntroductionActivity.class)
+@Module(addsTo = ActivityModule.class, complete = false, injects = IntroductionActivity.class)
 class IntroductionModule {
-    @Provides @Singleton public IntroductionPresenter provideTutorialPresenter() {
-        return new IntroductionPresenter();
+    @Provides @Singleton public IntroductionPresenter provideIntroductionPresenter(UserSettings userSettings) {
+        return new IntroductionPresenter(userSettings);
     }
 }

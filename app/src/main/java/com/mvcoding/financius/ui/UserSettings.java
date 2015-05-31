@@ -15,21 +15,25 @@
 package com.mvcoding.financius.ui;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.ApplicationContext;
 import com.mvcoding.financius.util.PreferencesUtils;
 
-import dagger.Module;
-import dagger.Provides;
+public class UserSettings {
+    transient Context context;
 
-@Module(includes = ActivityModule.class, complete = false, library = true)
-public class UIModule {
-    @Provides public UserSettings provideUserSettings(@ApplicationContext Context context) {
-        UserSettings userSettings = PreferencesUtils.get(context, UserSettings.class.getName(), UserSettings.class);
-        if (userSettings == null) {
-            userSettings = new UserSettings();
-        }
-        userSettings.context = context;
-        return userSettings;
+    private boolean isIntroductionSeen;
+
+    private static void persist(@NonNull Context context, @NonNull UserSettings userSettings) {
+        PreferencesUtils.put(context.getApplicationContext(), UserSettings.class.getName(), userSettings);
+    }
+
+    public boolean isIntroductionSeen() {
+        return isIntroductionSeen;
+    }
+
+    public void setIsIntroductionSeen(boolean isIntroductionSeen) {
+        this.isIntroductionSeen = isIntroductionSeen;
+        persist(context, this);
     }
 }

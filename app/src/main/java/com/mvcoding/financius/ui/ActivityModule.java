@@ -16,6 +16,6 @@ package com.mvcoding.financius.ui;
 
 import dagger.Module;
 
-@Module(addsTo = UIModule.class, complete = false, library = true)
+@Module(complete = false, library = true)
 public class ActivityModule {
 }

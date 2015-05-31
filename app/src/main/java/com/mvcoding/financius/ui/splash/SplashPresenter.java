@@ -19,27 +19,30 @@ import android.support.annotation.NonNull;
 import com.mvcoding.financius.api.Session;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
+import com.mvcoding.financius.ui.UserSettings;
 
 class SplashPresenter extends Presenter<SplashPresenter.View> {
     private final Session session;
+    private final UserSettings userSettings;
 
-    SplashPresenter(@NonNull Session session) {
+    SplashPresenter(@NonNull Session session, @NonNull UserSettings userSettings) {
         this.session = session;
+        this.userSettings = userSettings;
     }
 
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
 
-        if (session.isLoggedIn()) {
+        if (session.isLoggedIn() || userSettings.isIntroductionSeen()) {
             view.startOverviewAndClose();
         } else {
-            view.startTutorialAndClose();
+            view.startIntroductionAndClose();
         }
     }
 
     public interface View extends PresenterView {
         void startOverviewAndClose();
 
-        void startTutorialAndClose();
+        void startIntroductionAndClose();
     }
 }

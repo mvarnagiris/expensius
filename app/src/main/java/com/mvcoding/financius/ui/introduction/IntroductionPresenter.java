@@ -18,15 +18,32 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
+import com.mvcoding.financius.ui.UserSettings;
 
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 
 class IntroductionPresenter extends Presenter<IntroductionPresenter.View> {
+    private final UserSettings userSettings;
+
+    IntroductionPresenter(@NonNull UserSettings userSettings) {
+        this.userSettings = userSettings;
+    }
+
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
-        unsubscribeOnDetach(view.onSkipLoginClick().subscribe(onClickEvent -> view.startOverviewAndClose()));
-        unsubscribeOnDetach(view.onLoginClick().subscribe(onClickEvent -> view.startLoginAndClose()));
+
+        unsubscribeOnDetach(view.onSkipLoginClick()
+                                    .doOnNext(onClickEvent -> setIntroductionSeen())
+                                    .subscribe(onClickEvent -> view.startOverviewAndClose()));
+
+        unsubscribeOnDetach(view.onLoginClick()
+                                    .doOnNext(onClickEvent -> setIntroductionSeen())
+                                    .subscribe(onClickEvent -> view.startLoginAndClose()));
+    }
+
+    private void setIntroductionSeen() {
+        userSettings.setIsIntroductionSeen(true);
     }
 
     public interface View extends PresenterView {

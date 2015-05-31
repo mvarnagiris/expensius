@@ -49,7 +49,7 @@ public class SplashActivity extends BaseActivity<SplashPresenter.View> implement
         close();
     }
 
-    @Override public void startTutorialAndClose() {
+    @Override public void startIntroductionAndClose() {
         IntroductionActivity.start(this);
         close();
     }
