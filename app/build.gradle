@@ -17,7 +17,7 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'crashlytics'
 
 Properties props = new Properties()
-File propsFile = new File('app/financius.properties')
+File propsFile = new File('financius.properties')
 props.load(propsFile.newDataInputStream())
 
 android {

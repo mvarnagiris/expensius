@@ -1,6 +1,6 @@
 # Financius
 # Project setup
-- Create a file `app/financius.properties`.
+- Create a file `financius.properties` in root directory.
 
 ```
 endpoint_web_client_id=your_id_goes_here
