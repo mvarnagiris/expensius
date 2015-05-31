@@ -14,10 +14,49 @@
 
 package com.mvcoding.financius.ui.transaction.calculator;
 
+import android.database.Observable;
+import android.support.annotation.NonNull;
+
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 
+import rx.android.view.OnClickEvent;
+
 class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
+
     public interface View extends PresenterView {
+        @NonNull Observable<OnClickEvent> on0Click();
+
+        @NonNull Observable<OnClickEvent> on1Click();
+
+        @NonNull Observable<OnClickEvent> on2Click();
+
+        @NonNull Observable<OnClickEvent> on3Click();
+
+        @NonNull Observable<OnClickEvent> on4Click();
+
+        @NonNull Observable<OnClickEvent> on5Click();
+
+        @NonNull Observable<OnClickEvent> on6Click();
+
+        @NonNull Observable<OnClickEvent> on7Click();
+
+        @NonNull Observable<OnClickEvent> on8Click();
+
+        @NonNull Observable<OnClickEvent> on9Click();
+
+        @NonNull Observable<OnClickEvent> onDecimalClick();
+
+        @NonNull Observable<OnClickEvent> onEqualsClick();
+
+        @NonNull Observable<OnClickEvent> onDivideClick();
+
+        @NonNull Observable<OnClickEvent> onMultiplyClick();
+
+        @NonNull Observable<OnClickEvent> onSubtractClick();
+
+        @NonNull Observable<OnClickEvent> onAddClick();
+
+        @NonNull Observable<OnClickEvent> onDeleteClick();
     }
 }
