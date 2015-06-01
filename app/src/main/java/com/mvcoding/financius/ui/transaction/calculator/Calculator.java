@@ -20,63 +20,78 @@ import bsh.Interpreter;
 
 public class Calculator {
     private final Interpreter interpreter;
-    private String expression;
+    private final StringBuilder expression;
 
     @Inject public Calculator() {
         interpreter = new Interpreter();
-        expression = "";
+        expression = new StringBuilder();
     }
 
     public void number0() {
+        expression.append("0");
     }
 
     public void number1() {
+        expression.append("1");
     }
 
     public void number2() {
+        expression.append("2");
     }
 
     public void number3() {
+        expression.append("3");
     }
 
     public void number4() {
+        expression.append("4");
     }
 
     public void number5() {
+        expression.append("5");
     }
 
     public void number6() {
+        expression.append("6");
     }
 
     public void number7() {
+        expression.append("7");
     }
 
     public void number8() {
+        expression.append("8");
     }
 
     public void number9() {
+        expression.append("9");
     }
 
     public void decimal() {
+        expression.append(".");
     }
 
     public void divide() {
+        expression.append("/");
     }
 
     public void multiply() {
+        expression.append("*");
     }
 
     public void subtract() {
+        expression.append("-");
     }
 
     public void add() {
+        expression.append("+");
     }
 
     public String getExpression() {
-        return expression;
+        return expression.toString();
     }
 
     public void clear() {
-        expression = "";
+        expression.delete(0, expression.length());
     }
 }
