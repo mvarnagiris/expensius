@@ -76,11 +76,23 @@ public class Calculator {
     }
 
     public void multiply() {
-        expression.append("*");
+        if (isEmpty()) {
+            return;
+        }
+
+        if (isLastOperator() && !isLengthOne()) {
+            replaceLast("*");
+        } else {
+            expression.append("*");
+        }
     }
 
     public void subtract() {
-        expression.append("-");
+        if (isLastOperator()) {
+            replaceLast("-");
+        } else {
+            expression.append("-");
+        }
     }
 
     public void add() {
@@ -93,5 +105,25 @@ public class Calculator {
 
     public void clear() {
         expression.delete(0, expression.length());
+    }
+
+    private void replaceLast(String replaceWith) {
+        expression.replace(expression.length() - 1, expression.length(), replaceWith);
+    }
+
+    private boolean isEmpty() {
+        return expression.length() == 0;
+    }
+
+    private boolean isLengthOne() {
+        return expression.length() == 0;
+    }
+
+    private boolean isLastOperator() {
+        return !isEmpty() && expression.substring(expression.length() - 1).matches("[+\\-*/]");
+    }
+
+    private boolean isLastDecimal() {
+        return !isEmpty() && expression.substring(expression.length() - 1).matches("\\.");
     }
 }
