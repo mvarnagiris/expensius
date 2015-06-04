@@ -18,6 +18,8 @@ import com.mvcoding.financius.BaseTest;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CalculatorTest extends BaseTest {
@@ -28,251 +30,251 @@ public class CalculatorTest extends BaseTest {
         calculator = new Calculator();
     }
 
-    @Test public void number0To9_addsNumber_whenCurrentExpressionIsEmpty() {
+    @Test public void digit0To9_addsDigit_whenExpressionIsEmpty() {
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number1();
+        calculator.digit1();
         assertThat(calculator.getExpression()).isEqualTo("1");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number2();
+        calculator.digit2();
         assertThat(calculator.getExpression()).isEqualTo("2");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number3();
+        calculator.digit3();
         assertThat(calculator.getExpression()).isEqualTo("3");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number4();
+        calculator.digit4();
         assertThat(calculator.getExpression()).isEqualTo("4");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number5();
+        calculator.digit5();
         assertThat(calculator.getExpression()).isEqualTo("5");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number6();
+        calculator.digit6();
         assertThat(calculator.getExpression()).isEqualTo("6");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number7();
+        calculator.digit7();
         assertThat(calculator.getExpression()).isEqualTo("7");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number8();
+        calculator.digit8();
         assertThat(calculator.getExpression()).isEqualTo("8");
 
         calculator.clear();
         assertThat(calculator.getExpression()).isEmpty();
-        calculator.number9();
+        calculator.digit9();
         assertThat(calculator.getExpression()).isEqualTo("9");
     }
 
-    @Test public void number0To9_addsNumber_whenCurrentExpressionEndsWithNumber() {
+    @Test public void digit0To9_addsDigit_whenExpressionEndsWithNumber() {
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("00");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number1();
+        calculator.digit1();
         assertThat(calculator.getExpression()).isEqualTo("01");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number2();
+        calculator.digit2();
         assertThat(calculator.getExpression()).isEqualTo("02");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number3();
+        calculator.digit3();
         assertThat(calculator.getExpression()).isEqualTo("03");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number4();
+        calculator.digit4();
         assertThat(calculator.getExpression()).isEqualTo("04");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number5();
+        calculator.digit5();
         assertThat(calculator.getExpression()).isEqualTo("05");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number6();
+        calculator.digit6();
         assertThat(calculator.getExpression()).isEqualTo("06");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number7();
+        calculator.digit7();
         assertThat(calculator.getExpression()).isEqualTo("07");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number8();
+        calculator.digit8();
         assertThat(calculator.getExpression()).isEqualTo("08");
 
         calculator.clear();
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("0");
-        calculator.number9();
+        calculator.digit9();
         assertThat(calculator.getExpression()).isEqualTo("09");
     }
 
-    @Test public void number0To9_addsNumber_whenCurrentExpressionEndsWithDecimal() {
+    @Test public void digit0To9_addsDigit_whenExpressionEndsWithDecimal() {
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo(".0");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number1();
+        calculator.digit1();
         assertThat(calculator.getExpression()).isEqualTo(".1");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number2();
+        calculator.digit2();
         assertThat(calculator.getExpression()).isEqualTo(".2");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number3();
+        calculator.digit3();
         assertThat(calculator.getExpression()).isEqualTo(".3");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number4();
+        calculator.digit4();
         assertThat(calculator.getExpression()).isEqualTo(".4");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number5();
+        calculator.digit5();
         assertThat(calculator.getExpression()).isEqualTo(".5");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number6();
+        calculator.digit6();
         assertThat(calculator.getExpression()).isEqualTo(".6");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number7();
+        calculator.digit7();
         assertThat(calculator.getExpression()).isEqualTo(".7");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number8();
+        calculator.digit8();
         assertThat(calculator.getExpression()).isEqualTo(".8");
 
         calculator.clear();
         calculator.decimal();
         assertThat(calculator.getExpression()).isEqualTo(".");
-        calculator.number9();
+        calculator.digit9();
         assertThat(calculator.getExpression()).isEqualTo(".9");
     }
 
-    @Test public void number0To9_addsNumber_whenCurrentExpressionEndsWithOperator() {
+    @Test public void digit0To9_addsDigit_whenExpressionEndsWithOperator() {
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number0();
+        calculator.digit0();
         assertThat(calculator.getExpression()).isEqualTo("-0");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number1();
+        calculator.digit1();
         assertThat(calculator.getExpression()).isEqualTo("-1");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number2();
+        calculator.digit2();
         assertThat(calculator.getExpression()).isEqualTo("-2");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number3();
+        calculator.digit3();
         assertThat(calculator.getExpression()).isEqualTo("-3");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number4();
+        calculator.digit4();
         assertThat(calculator.getExpression()).isEqualTo("-4");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number5();
+        calculator.digit5();
         assertThat(calculator.getExpression()).isEqualTo("-5");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number6();
+        calculator.digit6();
         assertThat(calculator.getExpression()).isEqualTo("-6");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number7();
+        calculator.digit7();
         assertThat(calculator.getExpression()).isEqualTo("-7");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number8();
+        calculator.digit8();
         assertThat(calculator.getExpression()).isEqualTo("-8");
 
         calculator.clear();
         calculator.subtract();
         assertThat(calculator.getExpression()).isEqualTo("-");
-        calculator.number9();
+        calculator.digit9();
         assertThat(calculator.getExpression()).isEqualTo("-9");
     }
 
-    @Test public void divide_isIgnored_whenCurrentExpressionIsEmpty() {
+    @Test public void divide_isIgnored_whenExpressionIsEmpty() {
         calculator.divide();
 
         assertThat(calculator.getExpression()).isEmpty();
     }
 
-    @Test public void divide_isIgnored_whenCurrentExpressionEndsWithOperatorWhichIsTheOnlySymbolInExpression() {
+    @Test public void divide_isIgnored_whenExpressionEndsWithOperatorWhichIsTheOnlySymbolInExpression() {
         calculator.subtract();
 
         calculator.divide();
@@ -280,8 +282,8 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("-");
     }
 
-    @Test public void divide_replacesPreviousOperator_whenCurrentExpressionEndsWithOperatorWhichIsNotTheOnlySymbolInExpression() {
-        calculator.number0();
+    @Test public void divide_replacesPreviousOperator_whenExpressionEndsWithOperatorWhichIsNotTheOnlySymbolInExpression() {
+        calculator.digit0();
         calculator.subtract();
 
         calculator.divide();
@@ -289,15 +291,15 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("0/");
     }
 
-    @Test public void divide_addsDivideOperator_whenCurrentExpressionEndsWithNumber() {
-        calculator.number0();
+    @Test public void divide_addsDivideOperator_whenExpressionEndsWithDigit() {
+        calculator.digit0();
 
         calculator.divide();
 
         assertThat(calculator.getExpression()).isEqualTo("0/");
     }
 
-    @Test public void divide_addsDivideOperator_whenCurrentExpressionEndsWithDecimal() {
+    @Test public void divide_addsDivideOperator_whenExpressionEndsWithDecimal() {
         calculator.decimal();
 
         calculator.divide();
@@ -305,13 +307,13 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("./");
     }
 
-    @Test public void multiply_isIgnored_whenCurrentExpressionIsEmpty() {
+    @Test public void multiply_isIgnored_whenExpressionIsEmpty() {
         calculator.multiply();
 
         assertThat(calculator.getExpression()).isEmpty();
     }
 
-    @Test public void multiply_isIgnored_whenCurrentExpressionEndsWithOperatorWhichIsTheOnlySymbolInExpression() {
+    @Test public void multiply_isIgnored_whenExpressionEndsWithOperatorWhichIsTheOnlySymbolInExpression() {
         calculator.subtract();
 
         calculator.multiply();
@@ -319,8 +321,8 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("-");
     }
 
-    @Test public void multiply_replacesPreviousOperator_whenCurrentExpressionEndsWithOperatorWhichIsNotTheOnlySymbolInExpression() {
-        calculator.number0();
+    @Test public void multiply_replacesPreviousOperator_whenExpressionEndsWithOperatorWhichIsNotTheOnlySymbolInExpression() {
+        calculator.digit0();
         calculator.subtract();
 
         calculator.multiply();
@@ -328,15 +330,15 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("0*");
     }
 
-    @Test public void multiply_addsMultiplyOperator_whenCurrentExpressionEndsWithNumber() {
-        calculator.number0();
+    @Test public void multiply_addsMultiplyOperator_whenExpressionEndsWithDigit() {
+        calculator.digit0();
 
         calculator.multiply();
 
         assertThat(calculator.getExpression()).isEqualTo("0*");
     }
 
-    @Test public void multiply_addsMultiplyOperator_whenCurrentExpressionEndsWithDecimal() {
+    @Test public void multiply_addsMultiplyOperator_whenExpressionEndsWithDecimal() {
         calculator.decimal();
 
         calculator.multiply();
@@ -344,14 +346,14 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo(".*");
     }
 
-    @Test public void subtract_addsSubtractOperator_whenCurrentExpressionIsEmpty() {
+    @Test public void subtract_addsSubtractOperator_whenExpressionIsEmpty() {
         calculator.subtract();
 
         assertThat(calculator.getExpression()).isEqualTo("-");
     }
 
-    @Test public void subtract_replacesPreviousOperator_whenCurrentExpressionEndsWithOperator() {
-        calculator.number0();
+    @Test public void subtract_replacesPreviousOperator_whenExpressionEndsWithOperator() {
+        calculator.digit0();
         calculator.add();
 
         calculator.subtract();
@@ -359,15 +361,15 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("0-");
     }
 
-    @Test public void subtract_addsSubtractOperator_whenCurrentExpressionEndsWithNumber() {
-        calculator.number0();
+    @Test public void subtract_addsSubtractOperator_whenExpressionEndsWithDigit() {
+        calculator.digit0();
 
         calculator.subtract();
 
         assertThat(calculator.getExpression()).isEqualTo("0-");
     }
 
-    @Test public void subtract_addsSubtractOperator_whenCurrentExpressionEndsWithDecimal() {
+    @Test public void subtract_addsSubtractOperator_whenExpressionEndsWithDecimal() {
         calculator.decimal();
 
         calculator.subtract();
@@ -375,13 +377,13 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo(".-");
     }
 
-    @Test public void add_isIgnored_whenCurrentExpressionIsEmpty() {
+    @Test public void add_isIgnored_whenExpressionIsEmpty() {
         calculator.add();
 
         assertThat(calculator.getExpression()).isEmpty();
     }
 
-    @Test public void add_isIgnored_whenCurrentExpressionEndsWithOperatorWhichIsTheOnlySymbolInExpression() {
+    @Test public void add_isIgnored_whenExpressionEndsWithOperatorWhichIsTheOnlySymbolInExpression() {
         calculator.subtract();
 
         calculator.add();
@@ -389,8 +391,8 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("-");
     }
 
-    @Test public void add_replacesPreviousOperator_whenCurrentExpressionEndsWithOperatorWhichIsNotTheOnlySymbolInExpression() {
-        calculator.number0();
+    @Test public void add_replacesPreviousOperator_whenExpressionEndsWithOperatorWhichIsNotTheOnlySymbolInExpression() {
+        calculator.digit0();
         calculator.subtract();
 
         calculator.add();
@@ -398,15 +400,15 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo("0+");
     }
 
-    @Test public void add_addsAddOperator_whenCurrentExpressionEndsWithNumber() {
-        calculator.number0();
+    @Test public void add_addsAddOperator_whenExpressionEndsWithDigit() {
+        calculator.digit0();
 
         calculator.add();
 
         assertThat(calculator.getExpression()).isEqualTo("0+");
     }
 
-    @Test public void add_addsAddOperator_whenCurrentExpressionEndsWithDecimal() {
+    @Test public void add_addsAddOperator_whenExpressionEndsWithDecimal() {
         calculator.decimal();
 
         calculator.add();
@@ -414,32 +416,57 @@ public class CalculatorTest extends BaseTest {
         assertThat(calculator.getExpression()).isEqualTo(".+");
     }
 
-    @Test public void decimal_isIgnored_whenCurrentExpressionAlreadyHasDecimal() {
-        calculator.number0();
+    @Test public void decimal_isIgnored_whenExpressionHasOneNumberAndAlreadyHasDecimal() {
+        calculator.digit0();
         calculator.decimal();
-        calculator.number0();
+        calculator.digit0();
 
         calculator.decimal();
 
         assertThat(calculator.getExpression()).isEqualTo("0.0");
     }
 
-    @Test public void decimal_addsDecimal_whenCurrentExpressionIsEmpty() {
+    @Test public void decimal_isIgnored_whenExpressionHasMoreThanOneNumberAndLastNumberAlreadyHasDecimal() {
+        calculator.digit0();
+        calculator.decimal();
+        calculator.digit0();
+        calculator.add();
+        calculator.digit0();
+        calculator.decimal();
+
+        calculator.decimal();
+
+        assertThat(calculator.getExpression()).isEqualTo("0.0+0.");
+    }
+
+    @Test public void decimal_addsDecimal_whenExpressionAlreadyHasAtLeastOneDecimalButNumberAtTheEndDoesNot() {
+        calculator.digit0();
+        calculator.decimal();
+        calculator.digit0();
+        calculator.add();
+        calculator.digit0();
+
+        calculator.decimal();
+
+        assertThat(calculator.getExpression()).isEqualTo("0.0+0.");
+    }
+
+    @Test public void decimal_addsDecimal_whenExpressionIsEmpty() {
         calculator.decimal();
 
         assertThat(calculator.getExpression()).isEqualTo(".");
     }
 
-    @Test public void decimal_addsDecimal_whenCurrentExpressionEndsWithNumberAndThereAreNoDecimalsAlready() {
-        calculator.number0();
+    @Test public void decimal_addsDecimal_whenExpressionEndsWithDigitAndThereAreNoDecimalsAlready() {
+        calculator.digit0();
 
         calculator.decimal();
 
         assertThat(calculator.getExpression()).isEqualTo("0.");
     }
 
-    @Test public void decimal_addsDecimal_whenCurrentExpressionEndsWithAnOperatorAndThereAreNoDecimalsAlready() {
-        calculator.number0();
+    @Test public void decimal_addsDecimal_whenExpressionEndsWithAnOperator() {
+        calculator.digit0();
         calculator.subtract();
 
         calculator.decimal();
@@ -448,10 +475,66 @@ public class CalculatorTest extends BaseTest {
     }
 
     @Test public void clear_clearsTheExpression_whenExpressionIsNotEmpty() {
-        calculator.number0();
+        calculator.digit0();
 
         calculator.clear();
 
         assertThat(calculator.getExpression()).isEmpty();
+    }
+
+    @Test public void calculate_addsTwoNumbers_whenExpressionHasOnlyTwoNumbersAndAddOperator() {
+        calculator.digit1();
+        calculator.decimal();
+        calculator.digit2();
+        calculator.add();
+        calculator.digit2();
+        calculator.decimal();
+        calculator.digit3();
+
+        final BigDecimal result = calculator.calculate();
+
+        assertThat(result).isEqualTo(BigDecimal.valueOf(3.5));
+    }
+
+    @Test public void calculate_subtractsTwoNumbers_whenExpressionHasOnlyTwoNumbersAndSubtractOperator() {
+        calculator.digit1();
+        calculator.decimal();
+        calculator.digit2();
+        calculator.subtract();
+        calculator.digit2();
+        calculator.decimal();
+        calculator.digit3();
+
+        final BigDecimal result = calculator.calculate();
+
+        assertThat(result).isEqualTo(BigDecimal.valueOf(-1.1));
+    }
+
+    @Test public void calculate_multipliesTwoNumbers_whenExpressionHasOnlyTwoNumbersAndMultiplyOperator() {
+        calculator.digit1();
+        calculator.decimal();
+        calculator.digit2();
+        calculator.multiply();
+        calculator.digit2();
+        calculator.decimal();
+        calculator.digit3();
+
+        final BigDecimal result = calculator.calculate();
+
+        assertThat(result).isEqualTo(BigDecimal.valueOf(2.76));
+    }
+
+    @Test public void calculate_dividesTwoNumbers_whenExpressionHasOnlyTwoNumbersAndDivideOperator() {
+        calculator.digit1();
+        calculator.decimal();
+        calculator.digit2();
+        calculator.divide();
+        calculator.digit2();
+        calculator.decimal();
+        calculator.digit3();
+
+        final BigDecimal result = calculator.calculate();
+
+        assertThat(result).isEqualTo(BigDecimal.valueOf(0.52173913043));
     }
 }

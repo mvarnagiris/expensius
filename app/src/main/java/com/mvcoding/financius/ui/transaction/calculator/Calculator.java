@@ -14,11 +14,14 @@
 
 package com.mvcoding.financius.ui.transaction.calculator;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 
+import bsh.EvalError;
 import bsh.Interpreter;
 
-public class Calculator {
+class Calculator {
     private final Interpreter interpreter;
     private final StringBuilder expression;
 
@@ -27,64 +30,70 @@ public class Calculator {
         expression = new StringBuilder();
     }
 
-    public void number0() {
+    public BigDecimal calculate() {
+        try {
+            return new BigDecimal(interpreter.eval(expression.toString()).toString());
+        } catch (EvalError evalError) {
+            evalError.printStackTrace();
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+    public void digit0() {
         expression.append("0");
     }
 
-    public void number1() {
+    public void digit1() {
         expression.append("1");
     }
 
-    public void number2() {
+    public void digit2() {
         expression.append("2");
     }
 
-    public void number3() {
+    public void digit3() {
         expression.append("3");
     }
 
-    public void number4() {
+    public void digit4() {
         expression.append("4");
     }
 
-    public void number5() {
+    public void digit5() {
         expression.append("5");
     }
 
-    public void number6() {
+    public void digit6() {
         expression.append("6");
     }
 
-    public void number7() {
+    public void digit7() {
         expression.append("7");
     }
 
-    public void number8() {
+    public void digit8() {
         expression.append("8");
     }
 
-    public void number9() {
+    public void digit9() {
         expression.append("9");
     }
 
     public void decimal() {
+        if (lastNumberHasDecimal()) {
+            return;
+        }
+
         expression.append(".");
     }
 
     public void divide() {
-        expression.append("/");
+        operator("/");
     }
 
     public void multiply() {
-        if (isEmpty()) {
-            return;
-        }
-
-        if (isLastOperator() && !isLengthOne()) {
-            replaceLast("*");
-        } else {
-            expression.append("*");
-        }
+        operator("*");
     }
 
     public void subtract() {
@@ -96,7 +105,7 @@ public class Calculator {
     }
 
     public void add() {
-        expression.append("+");
+        operator("+");
     }
 
     public String getExpression() {
@@ -105,6 +114,18 @@ public class Calculator {
 
     public void clear() {
         expression.delete(0, expression.length());
+    }
+
+    private void operator(String operator) {
+        if (isEmpty() || (isLengthOne() && isLastOperator())) {
+            return;
+        }
+
+        if (isLastOperator()) {
+            replaceLast(operator);
+        } else {
+            expression.append(operator);
+        }
     }
 
     private void replaceLast(String replaceWith) {
@@ -116,14 +137,21 @@ public class Calculator {
     }
 
     private boolean isLengthOne() {
-        return expression.length() == 0;
+        return expression.length() == 1;
     }
 
     private boolean isLastOperator() {
         return !isEmpty() && expression.substring(expression.length() - 1).matches("[+\\-*/]");
     }
 
-    private boolean isLastDecimal() {
-        return !isEmpty() && expression.substring(expression.length() - 1).matches("\\.");
+    private boolean lastNumberHasDecimal() {
+        if (isEmpty()) {
+            return false;
+        }
+
+        final String[] split = expression.toString().split("[+\\-*/]");
+        final String lastNumber = split[split.length - 1];
+
+        return lastNumber.contains(".");
     }
 }
