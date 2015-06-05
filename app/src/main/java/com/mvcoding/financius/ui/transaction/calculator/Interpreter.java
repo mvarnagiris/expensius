@@ -67,10 +67,27 @@ class Interpreter {
                 continue;
             }
 
-            tokens.add(new NumberToken(expression.substring(oldLastOperatorPosition + 1, lastOperatorPosition)));
+            tokens.add(new NumberToken(normalizeNumber(expression, oldLastOperatorPosition + 1, lastOperatorPosition)));
+        }
+
+        if (tokens.size() == 0) {
+            tokens.add(new NumberToken(normalizeNumber(expression, 0, expression.length())));
         }
 
         return tokens;
+    }
+
+    private String normalizeNumber(@NonNull String expression, int start, int end) {
+        String number = expression.substring(start, end);
+        if (number.startsWith(".")) {
+            number = "0" + number;
+        }
+
+        if (number.endsWith(".")) {
+            number = number.substring(0, number.length() - 1);
+        }
+
+        return number;
     }
 
     private Stack<Token> toPostfix(@NonNull List<Token> tokens) {
@@ -114,8 +131,8 @@ class Interpreter {
     }
 
     private BigDecimal calculatePostfix(@NonNull Stack<Token> tokens) {
-        final Token firstToken = tokens.remove(0);
-        final Token secondToken = tokens.remove(0);
+        final Token firstToken = tokens.pop();
+        final Token secondToken = tokens.pop();
         if (!(firstToken instanceof NumberToken) || !(secondToken instanceof NumberToken)) {
             throw new IllegalArgumentException("First two tokens must always be numbers.");
         }

@@ -18,32 +18,38 @@ import com.mvcoding.financius.BaseTest;
 
 import org.junit.Test;
 
-public class InterpreterTest extends BaseTest {
-    @Test public void evaluate_returns0_whenExpressionIsNull() {
+import java.math.BigDecimal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class InterpreterTest extends BaseTest {
+    private final Interpreter interpreter = new Interpreter();
+
+    @Test public void evaluate_returns0_whenExpressionIsNull() {
+        assertThat(interpreter.evaluate(null)).isEqualTo(BigDecimal.ZERO);
     }
 
     @Test public void evaluate_returns0_whenExpressionIsEmpty() {
-
+        assertThat(interpreter.evaluate("")).isEqualTo(BigDecimal.ZERO);
     }
 
     @Test public void evaluate_returnsSameDigit_whenExpressionContainsOnlyOneDigit() {
-
+        assertThat(interpreter.evaluate("1")).isEqualTo(BigDecimal.ONE);
     }
 
     @Test public void evaluate_returnsSameNumber_whenExpressionContainsOnlyThatNumber() {
-
+        assertThat(interpreter.evaluate("10")).isEqualTo(BigDecimal.TEN);
     }
 
     @Test public void evaluate_returns0_whenExpressionContainsOnlySubtractOperator() {
-
+        assertThat(interpreter.evaluate("-")).isEqualTo(BigDecimal.ZERO);
     }
 
     @Test public void evaluate_returns0_whenExpressionContainsOnlyDecimal() {
-
+        assertThat(interpreter.evaluate(".")).isEqualTo(BigDecimal.ZERO);
     }
 
-    @Test public void evaluate_returns3d5_whenExpressionIs1d2Plus2d3() {
-
+    @Test public void evaluate_returns3p5_whenExpressionIs1p2Plus2p3() {
+        assertThat(interpreter.evaluate("1.2+1.3")).isEqualTo(new BigDecimal("3.5"));
     }
 }
