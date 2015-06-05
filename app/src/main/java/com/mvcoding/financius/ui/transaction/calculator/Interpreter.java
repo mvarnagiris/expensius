@@ -15,6 +15,7 @@
 package com.mvcoding.financius.ui.transaction.calculator;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
@@ -24,25 +25,49 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class Interpreter {
-    public BigDecimal evaluate(String expression) {
+    private static final Pattern operatorPattern = Pattern.compile("[+\\-*/]");
+
+    public BigDecimal evaluate(@Nullable String expression) {
         if (Strings.isNullOrEmpty(expression) || expression.equals("-")) {
             return BigDecimal.ZERO;
         }
 
-        return BigDecimal.ZERO;
+        final List<Token> tokens = split(expression);
+
+        // If expression ends with an operator, just remove it.
+        if (tokens.get(tokens.size() - 1) instanceof OperatorToken) {
+            tokens.remove(tokens.size() - 1);
+        }
+
+        // If we only have one
+        if (tokens.size() == 1) {
+            if (tokens.get(0) instanceof NumberToken) {
+                return ((NumberToken) tokens.get(0)).number;
+            }
+            return BigDecimal.ZERO;
+        }
+
+        return calculatePostfix(toPostfix(tokens));
     }
 
     private List<Token> split(String expression) {
-        final String operators = "-=*/";
-        final boolean isFirstNumberNegative = expression.startsWith("-");
-        final String[] split = (isFirstNumberNegative ? expression.substring(1) : expression).split("[+\\-*/]");
         final List<Token> tokens = new ArrayList<>();
+        final Matcher matcher = operatorPattern.matcher(expression);
+        int lastOperatorPosition = -1;
+        while (matcher.find(lastOperatorPosition + 1)) {
+            final int oldLastOperatorPosition = lastOperatorPosition;
+            lastOperatorPosition = matcher.start();
 
-        final StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < expression.length(); i++) {
+            // Ignore if first symbol is an operator.
+            if (lastOperatorPosition == 0) {
+                continue;
+            }
 
+            tokens.add(new NumberToken(expression.substring(oldLastOperatorPosition + 1, lastOperatorPosition)));
         }
 
         return tokens;
@@ -86,6 +111,40 @@ class Interpreter {
         }
 
         return output;
+    }
+
+    private BigDecimal calculatePostfix(@NonNull Stack<Token> tokens) {
+        final Token firstToken = tokens.remove(0);
+        final Token secondToken = tokens.remove(0);
+        if (!(firstToken instanceof NumberToken) || !(secondToken instanceof NumberToken)) {
+            throw new IllegalArgumentException("First two tokens must always be numbers.");
+        }
+
+        return calculatePostfixStep(((NumberToken) firstToken).number, ((NumberToken) secondToken).number, tokens);
+    }
+
+    private BigDecimal calculatePostfixStep(@NonNull BigDecimal numberOne, @NonNull BigDecimal numberTwo, @NonNull Stack<Token> tokens) {
+        final Token nextToken = tokens.pop();
+        if (nextToken instanceof NumberToken) {
+            calculatePostfixStep(numberTwo, ((NumberToken) nextToken).number, tokens);
+        }
+
+        if (nextToken instanceof OperatorToken) {
+            switch (((OperatorToken) nextToken).operator) {
+                case ADD:
+                    return numberOne.add(numberTwo);
+                case SUBTRACT:
+                    return numberOne.subtract(numberTwo);
+                case MULTIPLY:
+                    return numberOne.multiply(numberTwo);
+                case DIVIDE:
+                    return numberOne.divide(numberTwo);
+                default:
+                    throw new IllegalStateException("Operator is not supported.");
+            }
+        } else {
+            throw new IllegalArgumentException("Token needs to be an operator.");
+        }
     }
 
     private boolean isHigherPrecedence(OperatorToken token, Token stackHeadToken) {
