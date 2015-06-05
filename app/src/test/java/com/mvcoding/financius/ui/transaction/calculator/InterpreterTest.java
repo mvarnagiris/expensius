@@ -49,7 +49,27 @@ public class InterpreterTest extends BaseTest {
         assertThat(interpreter.evaluate(".")).isEqualTo(BigDecimal.ZERO);
     }
 
-    @Test public void evaluate_returns3p5_whenExpressionIs1p2Plus2p3() {
-        assertThat(interpreter.evaluate("1.2+1.3")).isEqualTo(new BigDecimal("3.5"));
+    @Test public void evaluate_returnsCorrectResult_whenAddingTwoNumbers() {
+        assertThat(interpreter.evaluate("1.2+2.3")).isEqualTo(new BigDecimal("3.5"));
+    }
+
+    @Test public void evaluate_returnsCorrectResult_whenSubtractingTwoNumbers() {
+        assertThat(interpreter.evaluate("1.2-2.3")).isEqualTo(new BigDecimal("-1.1"));
+    }
+
+    @Test public void evaluate_returnsCorrectResult_whenMultiplyingTwoNumbers() {
+        assertThat(interpreter.evaluate("1.2*2.3")).isEqualTo(new BigDecimal("2.76"));
+    }
+
+    @Test public void evaluate_returnsCorrectResult_whenDividingTwoNumbers() {
+        assertThat(interpreter.evaluate("1.2/2.3")).isEqualTo(new BigDecimal("0.5217391304"));
+    }
+
+    @Test public void evaluate_returnsCorrectResult_whenDoingMoreComplexOperations() {
+        assertThat(interpreter.evaluate("1+3*2")).isEqualTo(new BigDecimal("7"));
+        assertThat(interpreter.evaluate("1+3*2-3")).isEqualTo(new BigDecimal("4"));
+        assertThat(interpreter.evaluate("1+3*2/2")).isEqualTo(new BigDecimal("4"));
+        assertThat(interpreter.evaluate("1+4/2")).isEqualTo(new BigDecimal("3"));
+        assertThat(interpreter.evaluate("1+4/2+2*4-6/3")).isEqualTo(new BigDecimal("9"));
     }
 }

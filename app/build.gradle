@@ -17,12 +17,15 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'crashlytics'
 
 Properties props = new Properties()
-File propsFile = new File('financius.properties')
-props.load(propsFile.newDataInputStream())
+try {
+    File propsFile = new File('financius.properties')
+    props.load(propsFile.newDataInputStream())
+} catch (Exception ignore) {
+}
 
 android {
     compileSdkVersion 'android-MNC'
-    buildToolsVersion '23.0.0 rc1'
+    buildToolsVersion '23.0.0 rc2'
 
     defaultConfig {
         applicationId "com.mvcoding.financius"

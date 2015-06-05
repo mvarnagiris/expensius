@@ -51,7 +51,7 @@ class Interpreter {
             return BigDecimal.ZERO;
         }
 
-        return calculatePostfix(toPostfix(tokens));
+        return calculatePostfix(toPostfix(tokens)).stripTrailingZeros();
     }
 
     private List<Token> split(String expression) {
@@ -68,11 +68,10 @@ class Interpreter {
             }
 
             tokens.add(new NumberToken(normalizeNumber(expression, oldLastOperatorPosition + 1, lastOperatorPosition)));
+            tokens.add(new OperatorToken(Operator.from(expression.substring(lastOperatorPosition, lastOperatorPosition + 1))));
         }
 
-        if (tokens.size() == 0) {
-            tokens.add(new NumberToken(normalizeNumber(expression, 0, expression.length())));
-        }
+        tokens.add(new NumberToken(normalizeNumber(expression, lastOperatorPosition + 1, expression.length())));
 
         return tokens;
     }
@@ -131,8 +130,8 @@ class Interpreter {
     }
 
     private BigDecimal calculatePostfix(@NonNull Stack<Token> tokens) {
-        final Token firstToken = tokens.pop();
-        final Token secondToken = tokens.pop();
+        final Token firstToken = tokens.remove(0);
+        final Token secondToken = tokens.remove(0);
         if (!(firstToken instanceof NumberToken) || !(secondToken instanceof NumberToken)) {
             throw new IllegalArgumentException("First two tokens must always be numbers.");
         }
@@ -141,21 +140,27 @@ class Interpreter {
     }
 
     private BigDecimal calculatePostfixStep(@NonNull BigDecimal numberOne, @NonNull BigDecimal numberTwo, @NonNull Stack<Token> tokens) {
-        final Token nextToken = tokens.pop();
-        if (nextToken instanceof NumberToken) {
-            calculatePostfixStep(numberTwo, ((NumberToken) nextToken).number, tokens);
+        Token nextToken = tokens.remove(0);
+        BigDecimal result = numberTwo;
+        while (nextToken instanceof NumberToken) {
+            result = calculatePostfixStep(result, ((NumberToken) nextToken).number, tokens);
+            if (!tokens.isEmpty()) {
+                nextToken = tokens.remove(0);
+            } else {
+                break;
+            }
         }
 
         if (nextToken instanceof OperatorToken) {
             switch (((OperatorToken) nextToken).operator) {
                 case ADD:
-                    return numberOne.add(numberTwo);
+                    return numberOne.add(result);
                 case SUBTRACT:
-                    return numberOne.subtract(numberTwo);
+                    return numberOne.subtract(result);
                 case MULTIPLY:
-                    return numberOne.multiply(numberTwo);
+                    return numberOne.multiply(result);
                 case DIVIDE:
-                    return numberOne.divide(numberTwo);
+                    return numberOne.divide(result, 10, BigDecimal.ROUND_HALF_UP);
                 default:
                     throw new IllegalStateException("Operator is not supported.");
             }
@@ -175,6 +180,21 @@ class Interpreter {
 
         Operator(int precedence) {
             this.precedence = precedence;
+        }
+
+        public static Operator from(String operator) {
+            switch (operator) {
+                case "+":
+                    return ADD;
+                case "-":
+                    return SUBTRACT;
+                case "*":
+                    return MULTIPLY;
+                case "/":
+                    return DIVIDE;
+                default:
+                    throw new IllegalArgumentException("Operator " + operator + " is not supported.");
+            }
         }
     }
 
