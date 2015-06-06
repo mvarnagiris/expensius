@@ -18,9 +18,6 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import bsh.EvalError;
-import bsh.Interpreter;
-
 class Calculator {
     private final Interpreter interpreter;
     private final StringBuilder expression;
@@ -31,13 +28,7 @@ class Calculator {
     }
 
     public BigDecimal calculate() {
-        try {
-            return new BigDecimal(interpreter.eval(expression.toString()).toString());
-        } catch (EvalError evalError) {
-            evalError.printStackTrace();
-        }
-
-        return BigDecimal.ZERO;
+        return interpreter.evaluate(expression.toString());
     }
 
     public void digit0() {

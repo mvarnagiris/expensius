@@ -28,6 +28,8 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 class Interpreter {
     private static final Pattern operatorPattern = Pattern.compile("[+\\-*/]");
 
@@ -51,7 +53,8 @@ class Interpreter {
             return BigDecimal.ZERO;
         }
 
-        return calculatePostfix(toPostfix(tokens)).stripTrailingZeros();
+        final Stack<Token> postfix = toPostfix(tokens);
+        return calculatePostfix(postfix).stripTrailingZeros();
     }
 
     private List<Token> split(String expression) {
@@ -130,43 +133,36 @@ class Interpreter {
     }
 
     private BigDecimal calculatePostfix(@NonNull Stack<Token> tokens) {
-        final Token firstToken = tokens.remove(0);
-        final Token secondToken = tokens.remove(0);
-        if (!(firstToken instanceof NumberToken) || !(secondToken instanceof NumberToken)) {
-            throw new IllegalArgumentException("First two tokens must always be numbers.");
-        }
+        final Stack<BigDecimal> resultStack = new Stack<>();
 
-        return calculatePostfixStep(((NumberToken) firstToken).number, ((NumberToken) secondToken).number, tokens);
-    }
-
-    private BigDecimal calculatePostfixStep(@NonNull BigDecimal numberOne, @NonNull BigDecimal numberTwo, @NonNull Stack<Token> tokens) {
-        Token nextToken = tokens.remove(0);
-        BigDecimal result = numberTwo;
-        while (nextToken instanceof NumberToken) {
-            result = calculatePostfixStep(result, ((NumberToken) nextToken).number, tokens);
-            if (!tokens.isEmpty()) {
-                nextToken = tokens.remove(0);
-            } else {
-                break;
+        for (Token token : tokens) {
+            if (token instanceof NumberToken) {
+                resultStack.push(((NumberToken) token).number);
+                continue;
             }
-        }
 
-        if (nextToken instanceof OperatorToken) {
-            switch (((OperatorToken) nextToken).operator) {
+            checkArgument(token instanceof OperatorToken, "Token must be an operator token.");
+            final BigDecimal secondNumber = resultStack.pop();
+            final BigDecimal firstNumber = resultStack.pop();
+            switch (((OperatorToken) token).operator) {
                 case ADD:
-                    return numberOne.add(result);
+                    resultStack.push(firstNumber.add(secondNumber));
+                    break;
                 case SUBTRACT:
-                    return numberOne.subtract(result);
+                    resultStack.push(firstNumber.subtract(secondNumber));
+                    break;
                 case MULTIPLY:
-                    return numberOne.multiply(result);
+                    resultStack.push(firstNumber.multiply(secondNumber));
+                    break;
                 case DIVIDE:
-                    return numberOne.divide(result, 10, BigDecimal.ROUND_HALF_UP);
+                    resultStack.push(firstNumber.divide(secondNumber, 10, BigDecimal.ROUND_HALF_UP));
+                    break;
                 default:
                     throw new IllegalStateException("Operator is not supported.");
             }
-        } else {
-            throw new IllegalArgumentException("Token needs to be an operator.");
         }
+
+        return resultStack.pop();
     }
 
     private boolean isHigherPrecedence(OperatorToken token, Token stackHeadToken) {

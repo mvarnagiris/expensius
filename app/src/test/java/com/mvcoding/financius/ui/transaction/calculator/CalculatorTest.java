@@ -535,6 +535,6 @@ public class CalculatorTest extends BaseTest {
 
         final BigDecimal result = calculator.calculate();
 
-        assertThat(result).isEqualTo(BigDecimal.valueOf(0.52173913043));
+        assertThat(result).isEqualTo(BigDecimal.valueOf(0.5217391304));
     }
 }
