@@ -15,19 +15,47 @@
 package com.mvcoding.financius.ui.transaction.calculator;
 
 import android.content.Context;
-import android.database.Observable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.Button;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 
+import butterknife.InjectView;
+import butterknife.OnLongClick;
+import rx.Observable;
 import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
+import rx.subjects.PublishSubject;
 
 public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> implements CalculatorPresenter.View {
+    private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
+
+    @InjectView(R.id.number0Button) Button number0Button;
+    @InjectView(R.id.number1Button) Button number1Button;
+    @InjectView(R.id.number2Button) Button number2Button;
+    @InjectView(R.id.number3Button) Button number3Button;
+    @InjectView(R.id.number4Button) Button number4Button;
+    @InjectView(R.id.number5Button) Button number5Button;
+    @InjectView(R.id.number6Button) Button number6Button;
+    @InjectView(R.id.number7Button) Button number7Button;
+    @InjectView(R.id.number8Button) Button number8Button;
+    @InjectView(R.id.number9Button) Button number9Button;
+    @InjectView(R.id.decimalButton) Button decimalButton;
+    @InjectView(R.id.addButton) Button addButton;
+    @InjectView(R.id.subtractButton) Button subtractButton;
+    @InjectView(R.id.multiplyButton) Button multiplyButton;
+    @InjectView(R.id.divideButton) Button divideButton;
+    @InjectView(R.id.deleteButton) Button deleteButton;
+    @InjectView(R.id.equalsButton) Button equalsButton;
+
     @Inject CalculatorPresenter presenter;
 
     public static void start(@NonNull Context context) {
@@ -51,70 +79,91 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> i
     }
 
     @NonNull @Override public Observable<OnClickEvent> on0Click() {
-        return null;
+        return ViewObservable.clicks(number0Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on1Click() {
-        return null;
+        return ViewObservable.clicks(number1Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on2Click() {
-        return null;
+        return ViewObservable.clicks(number2Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on3Click() {
-        return null;
+        return ViewObservable.clicks(number3Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on4Click() {
-        return null;
+        return ViewObservable.clicks(number4Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on5Click() {
-        return null;
+        return ViewObservable.clicks(number5Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on6Click() {
-        return null;
+        return ViewObservable.clicks(number6Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on7Click() {
-        return null;
+        return ViewObservable.clicks(number7Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on8Click() {
-        return null;
+        return ViewObservable.clicks(number8Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> on9Click() {
-        return null;
+        return ViewObservable.clicks(number9Button);
     }
 
     @NonNull @Override public Observable<OnClickEvent> onDecimalClick() {
-        return null;
+        return ViewObservable.clicks(decimalButton);
     }
 
     @NonNull @Override public Observable<OnClickEvent> onEqualsClick() {
-        return null;
+        return ViewObservable.clicks(equalsButton);
     }
 
     @NonNull @Override public Observable<OnClickEvent> onDivideClick() {
-        return null;
+        return ViewObservable.clicks(divideButton);
     }
 
     @NonNull @Override public Observable<OnClickEvent> onMultiplyClick() {
-        return null;
+        return ViewObservable.clicks(multiplyButton);
     }
 
     @NonNull @Override public Observable<OnClickEvent> onSubtractClick() {
-        return null;
+        return ViewObservable.clicks(subtractButton);
     }
 
     @NonNull @Override public Observable<OnClickEvent> onAddClick() {
-        return null;
+        return ViewObservable.clicks(addButton);
     }
 
     @NonNull @Override public Observable<OnClickEvent> onDeleteClick() {
-        return null;
+        return ViewObservable.clicks(deleteButton);
+    }
+
+    @NonNull @Override public Observable<OnClickEvent> onClearClick() {
+        return clearSubject;
+    }
+
+    @Override public void showExpression(@NonNull String expression) {
+
+    }
+
+    @Override public void clearExpression() {
+
+    }
+
+    @Override public void startResult(@NonNull BigDecimal result) {
+
+    }
+
+    @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {
+        clearSubject.onNext(OnClickEvent.create(view));
+        return true;
     }
 }

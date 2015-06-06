@@ -14,6 +14,8 @@
 
 package com.mvcoding.financius.ui.transaction.calculator;
 
+import android.support.annotation.NonNull;
+
 import java.math.BigDecimal;
 
 import javax.inject.Inject;
@@ -22,8 +24,8 @@ class Calculator {
     private final Interpreter interpreter;
     private final StringBuilder expression;
 
-    @Inject public Calculator() {
-        interpreter = new Interpreter();
+    @Inject public Calculator(@NonNull Interpreter interpreter) {
+        this.interpreter = interpreter;
         expression = new StringBuilder();
     }
 
@@ -101,6 +103,14 @@ class Calculator {
 
     public String getExpression() {
         return expression.toString();
+    }
+
+    public void delete() {
+        if (expression.length() == 0) {
+            return;
+        }
+
+        expression.delete(expression.length() - 1, expression.length());
     }
 
     public void clear() {

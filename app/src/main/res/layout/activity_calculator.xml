@@ -109,7 +109,7 @@
                 android:text="@string/calculator_6" />
 
             <Button
-                android:id="@+id/multiplyButton.Action"
+                android:id="@+id/multiplyButton"
                 style="@style/Button.Flat.Borderless.Calc.Action"
                 android:text="@string/calculator_multiply" />
 
@@ -136,7 +136,7 @@
                 android:text="@string/calculator_3" />
 
             <Button
-                android:id="@+id/minusButton"
+                android:id="@+id/subtractButton"
                 style="@style/Button.Flat.Borderless.Calc.Action"
                 android:text="@string/calculator_minus" />
 
@@ -174,7 +174,7 @@
             </FrameLayout>
 
             <Button
-                android:id="@+id/plusButton"
+                android:id="@+id/addButton"
                 style="@style/Button.Flat.Borderless.Calc.Action"
                 android:text="@string/calculator_plus" />
 

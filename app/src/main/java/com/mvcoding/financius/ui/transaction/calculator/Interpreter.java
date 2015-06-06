@@ -28,10 +28,15 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 import static com.google.common.base.Preconditions.checkArgument;
 
 class Interpreter {
     private static final Pattern operatorPattern = Pattern.compile("[+\\-*/]");
+
+    @Inject public Interpreter() {
+    }
 
     public BigDecimal evaluate(@Nullable String expression) {
         if (Strings.isNullOrEmpty(expression) || expression.equals("-")) {

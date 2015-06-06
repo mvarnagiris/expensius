@@ -27,7 +27,7 @@ public class CalculatorTest extends BaseTest {
 
     @Override public void setUp() {
         super.setUp();
-        calculator = new Calculator();
+        calculator = new Calculator(new Interpreter());
     }
 
     @Test public void digit0To9_addsDigit_whenExpressionIsEmpty() {
@@ -480,6 +480,15 @@ public class CalculatorTest extends BaseTest {
         calculator.clear();
 
         assertThat(calculator.getExpression()).isEmpty();
+    }
+
+    @Test public void delete_deletesOneSymbolInTheEnd_whenExpressionIsNotEmpty() {
+        calculator.digit0();
+        calculator.digit1();
+
+        calculator.delete();
+
+        assertThat(calculator.getExpression()).isEqualTo("0");
     }
 
     @Test public void calculate_addsTwoNumbers_whenExpressionHasOnlyTwoNumbersAndAddOperator() {

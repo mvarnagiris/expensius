@@ -23,7 +23,7 @@ import dagger.Provides;
 
 @Module(addsTo = ActivityModule.class, complete = false, injects = CalculatorActivity.class)
 class CalculatorModule {
-    @Provides @Singleton public CalculatorPresenter provideCalculatorPresenter() {
-        return new CalculatorPresenter();
+    @Provides @Singleton public CalculatorPresenter provideCalculatorPresenter(Calculator calculator) {
+        return new CalculatorPresenter(calculator);
     }
 }
