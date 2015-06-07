@@ -72,4 +72,32 @@ public class InterpreterTest extends BaseTest {
         assertThat(interpreter.evaluate("1+4/2")).isEqualTo(new BigDecimal("3"));
         assertThat(interpreter.evaluate("1+4/2+2*4-6/3")).isEqualTo(new BigDecimal("9"));
     }
+
+    @Test public void isSingleNumber_returnsTrue_whenExpressionIsEmpty() {
+        assertThat(interpreter.isEmptyOrSingleNumber("")).isTrue();
+    }
+
+    @Test public void isSingleNumber_returnsTrue_whenExpressionContainsOnlyOneNumber() {
+        assertThat(interpreter.isEmptyOrSingleNumber("1")).isTrue();
+    }
+
+    @Test public void isSingleNumber_returnsTrue_whenExpressionContainsOnlyADecimal() {
+        assertThat(interpreter.isEmptyOrSingleNumber(".")).isTrue();
+    }
+
+    @Test public void isSingleNumber_returnsTrue_whenContainsOnlySubtractSymbol() {
+        assertThat(interpreter.isEmptyOrSingleNumber("-")).isTrue();
+    }
+
+    @Test public void isSingleNumber_returnsTrue_whenExpressionContainsOnlyANegativeNumber() {
+        assertThat(interpreter.isEmptyOrSingleNumber("-1")).isTrue();
+    }
+
+    @Test public void isSingleNumber_returnsTrue_whenExpressionContainsSingleNumberAndSingleOperatorAfterTheNumber() {
+        assertThat(interpreter.isEmptyOrSingleNumber("1+")).isTrue();
+    }
+
+    @Test public void isSingleNumber_returnsFalse_whenExpressionContainsTwoNumbers() {
+        assertThat(interpreter.isEmptyOrSingleNumber("1+1")).isFalse();
+    }
 }

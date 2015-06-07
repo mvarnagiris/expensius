@@ -20,6 +20,8 @@ import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.android.view.OnClickEvent;
@@ -34,23 +36,36 @@ class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
 
-        unsubscribeOnDetach(view.on0Click().subscribe(onClickEvent -> calculator.digit0()));
-        unsubscribeOnDetach(view.on1Click().subscribe(onClickEvent -> calculator.digit1()));
-        unsubscribeOnDetach(view.on2Click().subscribe(onClickEvent -> calculator.digit2()));
-        unsubscribeOnDetach(view.on3Click().subscribe(onClickEvent -> calculator.digit3()));
-        unsubscribeOnDetach(view.on4Click().subscribe(onClickEvent -> calculator.digit4()));
-        unsubscribeOnDetach(view.on5Click().subscribe(onClickEvent -> calculator.digit5()));
-        unsubscribeOnDetach(view.on6Click().subscribe(onClickEvent -> calculator.digit6()));
-        unsubscribeOnDetach(view.on7Click().subscribe(onClickEvent -> calculator.digit7()));
-        unsubscribeOnDetach(view.on8Click().subscribe(onClickEvent -> calculator.digit8()));
-        unsubscribeOnDetach(view.on9Click().subscribe(onClickEvent -> calculator.digit9()));
-        unsubscribeOnDetach(view.onDecimalClick().subscribe(onClickEvent -> calculator.decimal()));
-        unsubscribeOnDetach(view.onAddClick().subscribe(onClickEvent -> calculator.add()));
-        unsubscribeOnDetach(view.onSubtractClick().subscribe(onClickEvent -> calculator.subtract()));
-        unsubscribeOnDetach(view.onMultiplyClick().subscribe(onClickEvent -> calculator.multiply()));
-        unsubscribeOnDetach(view.onDivideClick().subscribe(onClickEvent -> calculator.divide()));
-        unsubscribeOnDetach(view.onDeleteClick().subscribe(onClickEvent -> calculator.delete()));
-        unsubscribeOnDetach(view.onClearClick().subscribe(onClickEvent -> calculator.clear()));
+        final List<Observable<String>> expressionUpdates = new ArrayList<>();
+        expressionUpdates.add(view.on0Click().doOnNext(c -> calculator.digit0()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on1Click().doOnNext(c -> calculator.digit1()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on2Click().doOnNext(c -> calculator.digit2()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on3Click().doOnNext(c -> calculator.digit3()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on4Click().doOnNext(c -> calculator.digit4()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on5Click().doOnNext(c -> calculator.digit5()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on6Click().doOnNext(c -> calculator.digit6()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on7Click().doOnNext(c -> calculator.digit7()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on8Click().doOnNext(c -> calculator.digit8()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on9Click().doOnNext(c -> calculator.digit9()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onDecimalClick().doOnNext(c -> calculator.decimal()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onAddClick().doOnNext(c -> calculator.add()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onSubtractClick().doOnNext(c -> calculator.subtract()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onMultiplyClick().doOnNext(c -> calculator.multiply()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onDivideClick().doOnNext(c -> calculator.divide()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onDeleteClick().doOnNext(c -> calculator.delete()).map(c -> calculator.getExpression()));
+        unsubscribeOnDetach(Observable.merge(expressionUpdates).subscribe(view::showExpression));
+
+        unsubscribeOnDetach(view.onClearClick().doOnNext(c -> calculator.clear()).subscribe(c -> view.clearExpression()));
+
+        final Observable<OnClickEvent> equalsClickObservable = view.onEqualsClick();
+        unsubscribeOnDetach(equalsClickObservable.filter(c -> !calculator.isEmptyOrSingleNumber())
+                                    .map(c -> calculator.calculate())
+                                    .doOnNext(calculator::setNumber)
+                                    .map(result -> calculator.getExpression())
+                                    .subscribe(view::showExpression));
+        unsubscribeOnDetach(equalsClickObservable.filter(c -> calculator.isEmptyOrSingleNumber())
+                                    .map(c -> calculator.calculate())
+                                    .subscribe(view::startResult));
     }
 
     public interface View extends PresenterView {

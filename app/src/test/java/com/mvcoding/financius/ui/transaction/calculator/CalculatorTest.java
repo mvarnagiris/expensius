@@ -21,13 +21,30 @@ import org.junit.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class CalculatorTest extends BaseTest {
     private Calculator calculator;
+    private Interpreter interpreter;
 
     @Override public void setUp() {
         super.setUp();
-        calculator = new Calculator(new Interpreter());
+        interpreter = spy(new Interpreter());
+        calculator = new Calculator(interpreter);
+    }
+
+    @Test public void setNumber_clearsExpression_whenNumberIsNull() {
+        calculator.setNumber(null);
+
+        assertThat(calculator.getExpression()).isEmpty();
+    }
+
+    @Test public void setNumber_setsExpressionToBeThatNumber_whenNumberIsNotNull() {
+        calculator.setNumber(BigDecimal.TEN);
+
+        assertThat(calculator.getExpression()).isEqualTo("10");
     }
 
     @Test public void digit0To9_addsDigit_whenExpressionIsEmpty() {
@@ -489,6 +506,12 @@ public class CalculatorTest extends BaseTest {
         calculator.delete();
 
         assertThat(calculator.getExpression()).isEqualTo("0");
+    }
+
+    @Test public void isEmptyOrSingleNumber_callsInterpreter() {
+        calculator.isEmptyOrSingleNumber();
+
+        verify(interpreter).isEmptyOrSingleNumber(any(String.class));
     }
 
     @Test public void calculate_addsTwoNumbers_whenExpressionHasOnlyTwoNumbersAndAddOperator() {

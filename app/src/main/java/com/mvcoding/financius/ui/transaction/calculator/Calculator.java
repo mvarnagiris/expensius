@@ -15,6 +15,7 @@
 package com.mvcoding.financius.ui.transaction.calculator;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
 
@@ -31,6 +32,13 @@ class Calculator {
 
     public BigDecimal calculate() {
         return interpreter.evaluate(expression.toString());
+    }
+
+    public void setNumber(@Nullable BigDecimal number) {
+        clear();
+        if (number != null) {
+            expression.append(number.toString());
+        }
     }
 
     public void digit0() {
@@ -115,6 +123,10 @@ class Calculator {
 
     public void clear() {
         expression.delete(0, expression.length());
+    }
+
+    public boolean isEmptyOrSingleNumber() {
+        return interpreter.isEmptyOrSingleNumber(expression.toString());
     }
 
     private void operator(String operator) {

@@ -62,6 +62,10 @@ class Interpreter {
         return calculatePostfix(postfix).stripTrailingZeros();
     }
 
+    public boolean isEmptyOrSingleNumber(@Nullable String expression) {
+        return Strings.isNullOrEmpty(expression) || expression.equals("-") || split(expression).size() == 1;
+    }
+
     private List<Token> split(String expression) {
         final List<Token> tokens = new ArrayList<>();
         final Matcher matcher = operatorPattern.matcher(expression);
@@ -79,7 +83,14 @@ class Interpreter {
             tokens.add(new OperatorToken(Operator.from(expression.substring(lastOperatorPosition, lastOperatorPosition + 1))));
         }
 
-        tokens.add(new NumberToken(normalizeNumber(expression, lastOperatorPosition + 1, expression.length())));
+        final String normalizedNumber = normalizeNumber(expression, lastOperatorPosition + 1, expression.length());
+        if (!normalizedNumber.isEmpty()) {
+            tokens.add(new NumberToken(normalizedNumber));
+        }
+
+        if (!tokens.isEmpty() && tokens.get(tokens.size() - 1) instanceof OperatorToken) {
+            tokens.remove(tokens.size() - 1);
+        }
 
         return tokens;
     }
