@@ -37,7 +37,7 @@ class Calculator {
     public void setNumber(@Nullable BigDecimal number) {
         clear();
         if (number != null) {
-            expression.append(number.toString());
+            expression.append(number.toPlainString());
         }
     }
 
@@ -82,7 +82,7 @@ class Calculator {
     }
 
     public void decimal() {
-        if (lastNumberHasDecimal()) {
+        if (lastNumberHasDecimal() && !isLastOperator()) {
             return;
         }
 

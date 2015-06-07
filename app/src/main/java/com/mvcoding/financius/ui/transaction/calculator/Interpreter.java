@@ -171,7 +171,11 @@ class Interpreter {
                     resultStack.push(firstNumber.multiply(secondNumber));
                     break;
                 case DIVIDE:
-                    resultStack.push(firstNumber.divide(secondNumber, 10, BigDecimal.ROUND_HALF_UP));
+                    try {
+                        resultStack.push(firstNumber.divide(secondNumber, 10, BigDecimal.ROUND_HALF_UP));
+                    } catch (ArithmeticException e) {
+                        return BigDecimal.ZERO;
+                    }
                     break;
                 default:
                     throw new IllegalStateException("Operator is not supported.");

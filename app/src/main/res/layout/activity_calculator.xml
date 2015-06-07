@@ -28,6 +28,7 @@
         app:contentPadding="@dimen/keyline">
 
         <me.grantland.widget.AutofitTextView
+            android:id="@+id/resultTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="end|center_vertical"

@@ -48,6 +48,7 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
     private final PublishSubject<OnClickEvent> clickClear = PublishSubject.create();
     private final PublishSubject<OnClickEvent> clickDelete = PublishSubject.create();
     private final PublishSubject<OnClickEvent> clickEquals = PublishSubject.create();
+    private final PublishSubject<BigDecimal> numberChange = PublishSubject.create();
 
     @Mock private Calculator calculator;
 
@@ -75,6 +76,7 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
         when(view.onDeleteClick()).thenReturn(clickDelete);
         when(view.onClearClick()).thenReturn(clickClear);
         when(view.onEqualsClick()).thenReturn(clickEquals);
+        when(view.onNumberChange()).thenReturn(numberChange);
         return view;
     }
 
@@ -229,6 +231,7 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
         performClick(clickEquals);
 
         verify(calculator).calculate();
+        verify(calculator).setNumber(any(BigDecimal.class));
         verify(view).showExpression(any(String.class));
     }
 
@@ -240,5 +243,14 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
 
         verify(calculator).calculate();
         verify(view).startResult(any(BigDecimal.class));
+    }
+
+    @Test public void onNumberChange_updatesCalculatorAndShowsExpression() {
+        presenterJumpToOnViewAttached();
+
+        numberChange.onNext(BigDecimal.ONE);
+
+        verify(calculator).setNumber(BigDecimal.ONE);
+        verify(view).showExpression(any(String.class));
     }
 }

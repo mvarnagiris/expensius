@@ -65,6 +65,11 @@ public class InterpreterTest extends BaseTest {
         assertThat(interpreter.evaluate("1.2/2.3")).isEqualTo(new BigDecimal("0.5217391304"));
     }
 
+    @Test public void evaluate_returns0_whenDividingByZero() {
+        assertThat(interpreter.evaluate("1/0")).isEqualTo(new BigDecimal("0"));
+        assertThat(interpreter.evaluate("1+1+1/0")).isEqualTo(new BigDecimal("0"));
+    }
+
     @Test public void evaluate_returnsCorrectResult_whenDoingMoreComplexOperations() {
         assertThat(interpreter.evaluate("1+3*2")).isEqualTo(new BigDecimal("7"));
         assertThat(interpreter.evaluate("1+3*2-3")).isEqualTo(new BigDecimal("4"));

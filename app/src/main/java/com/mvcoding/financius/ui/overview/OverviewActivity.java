@@ -61,6 +61,6 @@ public class OverviewActivity extends BaseActivity<OverviewPresenter.View> imple
     }
 
     @Override public void startNewTransaction() {
-        CalculatorActivity.start(this);
+        CalculatorActivity.start(this, null);
     }
 }

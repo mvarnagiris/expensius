@@ -484,11 +484,13 @@ public class CalculatorTest extends BaseTest {
 
     @Test public void decimal_addsDecimal_whenExpressionEndsWithAnOperator() {
         calculator.digit0();
+        calculator.decimal();
+        calculator.digit0();
         calculator.subtract();
 
         calculator.decimal();
 
-        assertThat(calculator.getExpression()).isEqualTo("0-.");
+        assertThat(calculator.getExpression()).isEqualTo("0.0-.");
     }
 
     @Test public void clear_clearsTheExpression_whenExpressionIsNotEmpty() {

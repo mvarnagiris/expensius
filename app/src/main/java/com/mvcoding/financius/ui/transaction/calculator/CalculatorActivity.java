@@ -15,10 +15,14 @@
 package com.mvcoding.financius.ui.transaction.calculator;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityStarter;
@@ -33,11 +37,18 @@ import butterknife.OnLongClick;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> implements CalculatorPresenter.View {
-    private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
+    private static final String EXTRA_NUMBER = "EXTRA_NUMBER";
 
+    private static final String RESULT_EXTRA_NUMBER = "RESULT_EXTRA_NUMBER";
+
+    private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
+    private static final BehaviorSubject<BigDecimal> numberChangeSubject = BehaviorSubject.create();
+
+    @InjectView(R.id.resultTextView) TextView resultTextView;
     @InjectView(R.id.number0Button) Button number0Button;
     @InjectView(R.id.number1Button) Button number1Button;
     @InjectView(R.id.number2Button) Button number2Button;
@@ -54,16 +65,27 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> i
     @InjectView(R.id.multiplyButton) Button multiplyButton;
     @InjectView(R.id.divideButton) Button divideButton;
     @InjectView(R.id.deleteButton) Button deleteButton;
-    @InjectView(R.id.equalsButton) Button equalsButton;
+    @InjectView(R.id.equalsButton) FloatingActionButton equalsButton;
 
     @Inject CalculatorPresenter presenter;
 
-    public static void start(@NonNull Context context) {
-        ActivityStarter.with(context, CalculatorActivity.class).start();
+    public static void start(@NonNull Context context, @Nullable BigDecimal number) {
+        ActivityStarter.with(context, CalculatorActivity.class).extra(EXTRA_NUMBER, number).start();
+    }
+
+    public static BigDecimal getResultNumber(@NonNull Intent data) {
+        return (BigDecimal) data.getSerializableExtra(RESULT_EXTRA_NUMBER);
     }
 
     @Override protected int getLayoutId() {
         return R.layout.activity_calculator;
+    }
+
+    @Override protected void onViewCreated(@Nullable Bundle savedInstanceState) {
+        super.onViewCreated(savedInstanceState);
+
+        final BigDecimal number = (BigDecimal) getIntent().getSerializableExtra(EXTRA_NUMBER);
+        numberChangeSubject.onNext(number);
     }
 
     @NonNull @Override public CalculatorPresenter getPresenter() {
@@ -150,16 +172,23 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> i
         return clearSubject;
     }
 
-    @Override public void showExpression(@NonNull String expression) {
+    @NonNull @Override public Observable<BigDecimal> onNumberChange() {
+        return numberChangeSubject;
+    }
 
+    @Override public void showExpression(@NonNull String expression) {
+        resultTextView.setText(expression);
     }
 
     @Override public void clearExpression() {
-
+        resultTextView.setText(null);
     }
 
     @Override public void startResult(@NonNull BigDecimal result) {
-
+        final Intent data = new Intent();
+        data.putExtra(RESULT_EXTRA_NUMBER, result);
+        setResult(RESULT_OK, data);
+        finish();
     }
 
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {

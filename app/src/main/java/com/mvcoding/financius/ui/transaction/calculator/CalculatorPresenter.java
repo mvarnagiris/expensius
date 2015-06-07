@@ -58,14 +58,19 @@ class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
         unsubscribeOnDetach(view.onClearClick().doOnNext(c -> calculator.clear()).subscribe(c -> view.clearExpression()));
 
         final Observable<OnClickEvent> equalsClickObservable = view.onEqualsClick();
+        unsubscribeOnDetach(equalsClickObservable.filter(c -> calculator.isEmptyOrSingleNumber())
+                                    .map(c -> calculator.calculate())
+                                    .subscribe(view::startResult));
         unsubscribeOnDetach(equalsClickObservable.filter(c -> !calculator.isEmptyOrSingleNumber())
                                     .map(c -> calculator.calculate())
                                     .doOnNext(calculator::setNumber)
                                     .map(result -> calculator.getExpression())
                                     .subscribe(view::showExpression));
-        unsubscribeOnDetach(equalsClickObservable.filter(c -> calculator.isEmptyOrSingleNumber())
-                                    .map(c -> calculator.calculate())
-                                    .subscribe(view::startResult));
+
+        unsubscribeOnDetach(view.onNumberChange()
+                                    .doOnNext(calculator::setNumber)
+                                    .map(number -> calculator.getExpression())
+                                    .subscribe(view::showExpression));
     }
 
     public interface View extends PresenterView {
@@ -104,6 +109,8 @@ class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
         @NonNull Observable<OnClickEvent> onDeleteClick();
 
         @NonNull Observable<OnClickEvent> onClearClick();
+
+        @NonNull Observable<BigDecimal> onNumberChange();
 
         void showExpression(@NonNull String expression);
 
