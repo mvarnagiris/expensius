@@ -20,6 +20,8 @@ import android.support.annotation.Nullable;
 import com.google.common.base.Strings;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -34,6 +36,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 class Interpreter {
     private static final Pattern operatorPattern = Pattern.compile("[+\\-*/]");
+
+    private final MathContext mathContext = new MathContext(10, RoundingMode.HALF_UP);
 
     @Inject public Interpreter() {
     }
@@ -71,7 +75,7 @@ class Interpreter {
         final Matcher matcher = operatorPattern.matcher(expression);
         int lastOperatorPosition = -1;
         while (matcher.find(lastOperatorPosition + 1)) {
-            final int oldLastOperatorPosition = lastOperatorPosition;
+            final int oldLastOperatorPosition = lastOperatorPosition == 0 ? -1 : lastOperatorPosition;
             lastOperatorPosition = matcher.start();
 
             // Ignore if first symbol is an operator.
@@ -162,17 +166,17 @@ class Interpreter {
             final BigDecimal firstNumber = resultStack.pop();
             switch (((OperatorToken) token).operator) {
                 case ADD:
-                    resultStack.push(firstNumber.add(secondNumber));
+                    resultStack.push(firstNumber.add(secondNumber, mathContext));
                     break;
                 case SUBTRACT:
-                    resultStack.push(firstNumber.subtract(secondNumber));
+                    resultStack.push(firstNumber.subtract(secondNumber, mathContext));
                     break;
                 case MULTIPLY:
-                    resultStack.push(firstNumber.multiply(secondNumber));
+                    resultStack.push(firstNumber.multiply(secondNumber, mathContext));
                     break;
                 case DIVIDE:
                     try {
-                        resultStack.push(firstNumber.divide(secondNumber, 10, BigDecimal.ROUND_HALF_UP));
+                        resultStack.push(firstNumber.divide(secondNumber, mathContext));
                     } catch (ArithmeticException e) {
                         return BigDecimal.ZERO;
                     }

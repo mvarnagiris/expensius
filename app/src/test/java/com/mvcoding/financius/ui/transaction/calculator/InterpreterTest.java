@@ -71,6 +71,7 @@ public class InterpreterTest extends BaseTest {
     }
 
     @Test public void evaluate_returnsCorrectResult_whenDoingMoreComplexOperations() {
+        assertThat(interpreter.evaluate("-5*2").toPlainString()).isEqualTo("-10");
         assertThat(interpreter.evaluate("1+3*2")).isEqualTo(new BigDecimal("7"));
         assertThat(interpreter.evaluate("1+3*2-3")).isEqualTo(new BigDecimal("4"));
         assertThat(interpreter.evaluate("1+3*2/2")).isEqualTo(new BigDecimal("4"));
