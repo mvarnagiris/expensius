@@ -18,9 +18,17 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
+import android.support.annotation.NonNull;
 
 public class ThemeUtils {
-    public static Drawable getDrawable(Context context, @AttrRes int resId) {
+    public static int getColor(@NonNull Context context, @AttrRes int resId) {
+        final TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{resId});
+        final int color = a.getColor(0, 0);
+        a.recycle();
+        return color;
+    }
+
+    public static Drawable getDrawable(@NonNull Context context, @AttrRes int resId) {
         final TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{resId});
         final Drawable drawable = a.getDrawable(0);
         a.recycle();

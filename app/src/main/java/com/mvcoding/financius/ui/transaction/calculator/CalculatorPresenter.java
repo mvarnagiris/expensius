@@ -116,6 +116,10 @@ class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
 
         void clearExpression();
 
+        void showCalculate();
+
+        void showStartResult();
+
         void startResult(@NonNull BigDecimal result);
     }
 }

@@ -253,4 +253,22 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
         verify(calculator).setNumber(BigDecimal.ONE);
         verify(view).showExpression(any(String.class));
     }
+
+    @Test public void showExpression_showsCalculate_whenExpressionIsNotEmptyOrSingleNumber() {
+        presenterJumpToOnViewAttached();
+        when(calculator.isEmptyOrSingleNumber()).thenReturn(false);
+
+        performClick(clickDelete);
+
+        verify(view).showCalculate();
+    }
+
+    @Test public void showExpression_showsStartResult_whenExpressionIsNotEmptyOrSingleNumber() {
+        presenterJumpToOnViewAttached();
+        when(calculator.isEmptyOrSingleNumber()).thenReturn(false);
+
+        performClick(clickDelete);
+
+        verify(view).showCalculate();
+    }
 }

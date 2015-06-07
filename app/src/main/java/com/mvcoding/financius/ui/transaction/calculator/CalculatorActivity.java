@@ -16,6 +16,7 @@ package com.mvcoding.financius.ui.transaction.calculator;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
+import com.mvcoding.financius.util.ThemeUtils;
 
 import java.math.BigDecimal;
 
@@ -182,6 +184,14 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> i
 
     @Override public void clearExpression() {
         resultTextView.setText(null);
+    }
+
+    @Override public void showCalculate() {
+        equalsButton.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.getColor(this, R.attr.colorPrimary)));
+    }
+
+    @Override public void showStartResult() {
+        equalsButton.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.getColor(this, R.attr.colorAccent)));
     }
 
     @Override public void startResult(@NonNull BigDecimal result) {
