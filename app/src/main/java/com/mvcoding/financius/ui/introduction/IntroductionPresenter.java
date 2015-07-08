@@ -16,15 +16,15 @@ package com.mvcoding.financius.ui.introduction;
 
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
-import com.mvcoding.financius.ui.UserSettings;
+import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.view.OnClickEvent;
 
 @ActivityScope class IntroductionPresenter extends Presenter<IntroductionPresenter.View> {
     private final UserSettings userSettings;
@@ -36,11 +36,11 @@ import rx.android.view.OnClickEvent;
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
 
-        unsubscribeOnDetach(view.onSkipLoginClick()
+        unsubscribeOnDetach(view.onSkipLogin()
                                     .doOnNext(onClickEvent -> setIntroductionSeen())
                                     .subscribe(onClickEvent -> view.startOverviewAndClose()));
 
-        unsubscribeOnDetach(view.onLoginClick()
+        unsubscribeOnDetach(view.onLogin()
                                     .doOnNext(onClickEvent -> setIntroductionSeen())
                                     .subscribe(onClickEvent -> view.startLoginAndClose()));
     }
@@ -50,12 +50,9 @@ import rx.android.view.OnClickEvent;
     }
 
     public interface View extends PresenterView {
-        @NonNull Observable<OnClickEvent> onSkipLoginClick();
-
-        @NonNull Observable<OnClickEvent> onLoginClick();
-
+        @NonNull Observable<Event> onSkipLogin();
+        @NonNull Observable<Event> onLogin();
         void startOverviewAndClose();
-
         void startLoginAndClose();
     }
 }

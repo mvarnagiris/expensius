@@ -12,14 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui;
+package com.mvcoding.financius.util.rx;
 
-import com.mvcoding.financius.BaseComponent;
-
-import javax.inject.Singleton;
-
-import dagger.Subcomponent;
-
-@Singleton @Subcomponent(modules = UIModule.class) public interface UiComponent extends BaseComponent {
-    ActivityComponent plus(ActivityModule module);
+public class Event {
 }

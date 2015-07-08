@@ -29,6 +29,7 @@ import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.overview.OverviewActivity;
 import com.mvcoding.financius.ui.user.LoginActivity;
+import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Inject;
 
@@ -36,7 +37,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
 import rx.Observable;
-import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 
 public class IntroductionActivity extends BaseActivity<IntroductionPresenter.View, IntroductionComponent> implements IntroductionPresenter.View, ViewPager.OnPageChangeListener {
@@ -96,12 +96,12 @@ public class IntroductionActivity extends BaseActivity<IntroductionPresenter.Vie
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onSkipLoginClick() {
-        return ViewObservable.clicks(skipLoginButton);
+    @NonNull @Override public Observable<Event> onSkipLogin() {
+        return ViewObservable.clicks(skipLoginButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onLoginClick() {
-        return ViewObservable.clicks(loginButton);
+    @NonNull @Override public Observable<Event> onLogin() {
+        return ViewObservable.clicks(loginButton).compose(clickTransformer);
     }
 
     @Override public void startOverviewAndClose() {

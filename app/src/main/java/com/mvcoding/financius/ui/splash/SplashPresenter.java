@@ -16,11 +16,11 @@ package com.mvcoding.financius.ui.splash;
 
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.api.Session;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
-import com.mvcoding.financius.ui.UserSettings;
 
 import javax.inject.Inject;
 
@@ -45,7 +45,6 @@ import javax.inject.Inject;
 
     public interface View extends PresenterView {
         void startOverviewAndClose();
-
         void startIntroductionAndClose();
     }
 }

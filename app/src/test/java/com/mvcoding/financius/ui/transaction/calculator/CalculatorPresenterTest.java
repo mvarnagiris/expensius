@@ -15,13 +15,13 @@
 package com.mvcoding.financius.ui.transaction.calculator;
 
 import com.mvcoding.financius.ui.BasePresenterTest;
+import com.mvcoding.financius.util.rx.Event;
 
 import org.junit.Test;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
 
-import rx.android.view.OnClickEvent;
 import rx.subjects.PublishSubject;
 
 import static org.mockito.Matchers.any;
@@ -30,24 +30,24 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresenter, CalculatorPresenter.View> {
-    private final PublishSubject<OnClickEvent> click0 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click1 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click2 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click3 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click4 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click5 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click6 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click7 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click8 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> click9 = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickAdd = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickSub = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickMul = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickDiv = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickDecimal = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickClear = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickDelete = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> clickEquals = PublishSubject.create();
+    private final PublishSubject<Event> click0 = PublishSubject.create();
+    private final PublishSubject<Event> click1 = PublishSubject.create();
+    private final PublishSubject<Event> click2 = PublishSubject.create();
+    private final PublishSubject<Event> click3 = PublishSubject.create();
+    private final PublishSubject<Event> click4 = PublishSubject.create();
+    private final PublishSubject<Event> click5 = PublishSubject.create();
+    private final PublishSubject<Event> click6 = PublishSubject.create();
+    private final PublishSubject<Event> click7 = PublishSubject.create();
+    private final PublishSubject<Event> click8 = PublishSubject.create();
+    private final PublishSubject<Event> click9 = PublishSubject.create();
+    private final PublishSubject<Event> clickAdd = PublishSubject.create();
+    private final PublishSubject<Event> clickSub = PublishSubject.create();
+    private final PublishSubject<Event> clickMul = PublishSubject.create();
+    private final PublishSubject<Event> clickDiv = PublishSubject.create();
+    private final PublishSubject<Event> clickDecimal = PublishSubject.create();
+    private final PublishSubject<Event> clickClear = PublishSubject.create();
+    private final PublishSubject<Event> clickDelete = PublishSubject.create();
+    private final PublishSubject<Event> clickEquals = PublishSubject.create();
     private final PublishSubject<BigDecimal> numberChange = PublishSubject.create();
 
     @Mock private Calculator calculator;
@@ -58,195 +58,195 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
 
     @Override protected CalculatorPresenter.View createView() {
         final CalculatorPresenter.View view = mock(CalculatorPresenter.View.class);
-        when(view.on0Click()).thenReturn(click0);
-        when(view.on1Click()).thenReturn(click1);
-        when(view.on2Click()).thenReturn(click2);
-        when(view.on3Click()).thenReturn(click3);
-        when(view.on4Click()).thenReturn(click4);
-        when(view.on5Click()).thenReturn(click5);
-        when(view.on6Click()).thenReturn(click6);
-        when(view.on7Click()).thenReturn(click7);
-        when(view.on8Click()).thenReturn(click8);
-        when(view.on9Click()).thenReturn(click9);
-        when(view.onAddClick()).thenReturn(clickAdd);
-        when(view.onSubtractClick()).thenReturn(clickSub);
-        when(view.onMultiplyClick()).thenReturn(clickMul);
-        when(view.onDivideClick()).thenReturn(clickDiv);
-        when(view.onDecimalClick()).thenReturn(clickDecimal);
-        when(view.onDeleteClick()).thenReturn(clickDelete);
-        when(view.onClearClick()).thenReturn(clickClear);
-        when(view.onEqualsClick()).thenReturn(clickEquals);
+        when(view.on0Number()).thenReturn(click0);
+        when(view.on1Number()).thenReturn(click1);
+        when(view.on2Number()).thenReturn(click2);
+        when(view.on3Number()).thenReturn(click3);
+        when(view.on4Number()).thenReturn(click4);
+        when(view.on5Number()).thenReturn(click5);
+        when(view.on6Number()).thenReturn(click6);
+        when(view.on7Number()).thenReturn(click7);
+        when(view.on8Number()).thenReturn(click8);
+        when(view.on9Number()).thenReturn(click9);
+        when(view.onAdd()).thenReturn(clickAdd);
+        when(view.onSubtract()).thenReturn(clickSub);
+        when(view.onMultiply()).thenReturn(clickMul);
+        when(view.onDivide()).thenReturn(clickDiv);
+        when(view.onDecimal()).thenReturn(clickDecimal);
+        when(view.onDelete()).thenReturn(clickDelete);
+        when(view.onClear()).thenReturn(clickClear);
+        when(view.onEquals()).thenReturn(clickEquals);
         when(view.onNumberChange()).thenReturn(numberChange);
         return view;
     }
 
-    @Test public void on0Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on0Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click0);
+        performEvent(click0);
 
         verify(calculator).digit0();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on1Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on1Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click1);
+        performEvent(click1);
 
         verify(calculator).digit1();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on2Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on2Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click2);
+        performEvent(click2);
 
         verify(calculator).digit2();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on3Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on3Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click3);
+        performEvent(click3);
 
         verify(calculator).digit3();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on4Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on4Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click4);
+        performEvent(click4);
 
         verify(calculator).digit4();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on5Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on5Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click5);
+        performEvent(click5);
 
         verify(calculator).digit5();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on7Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on7Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click7);
+        performEvent(click7);
 
         verify(calculator).digit7();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on8Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on8Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click8);
+        performEvent(click8);
 
         verify(calculator).digit8();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void on9Click_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void on9Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(click9);
+        performEvent(click9);
 
         verify(calculator).digit9();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onDecimalClick_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onDecimal_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(clickDecimal);
+        performEvent(clickDecimal);
 
         verify(calculator).decimal();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onAddClick_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onAdd_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(clickAdd);
+        performEvent(clickAdd);
 
         verify(calculator).add();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onSubtractClick_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onSubtract_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(clickSub);
+        performEvent(clickSub);
 
         verify(calculator).subtract();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onMultiplyClick_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onMultiply_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(clickMul);
+        performEvent(clickMul);
 
         verify(calculator).multiply();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onDivideClick_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onDivide_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(clickDiv);
+        performEvent(clickDiv);
 
         verify(calculator).divide();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onDeleteClick_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onDelete_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(clickDelete);
+        performEvent(clickDelete);
 
         verify(calculator).delete();
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onClearClick_callsCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onClear_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
 
-        performClick(clickClear);
+        performEvent(clickClear);
 
         verify(calculator).clear();
         verify(view).clearExpression();
     }
 
-    @Test public void onEqualsClick_callsCalculatorAndShowsExpression_whenThereIsAtLeastTwoNumbers() {
-        presenterJumpToOnViewAttached();
+    @Test public void onEquals_callsCalculatorAndShowsExpression_whenThereIsAtLeastTwoNumbers() {
+        presenterOnViewAttached();
         when(calculator.isEmptyOrSingleNumber()).thenReturn(false);
 
-        performClick(clickEquals);
+        performEvent(clickEquals);
 
         verify(calculator).calculate();
         verify(calculator).setNumber(any(BigDecimal.class));
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void onEqualsClick_startsResult_whenThereIsOnlyOneNumberInTheExpression() {
-        presenterJumpToOnViewAttached();
+    @Test public void onEquals_startsResult_whenThereIsOnlyOneNumberInTheExpression() {
+        presenterOnViewAttached();
         when(calculator.isEmptyOrSingleNumber()).thenReturn(true);
 
-        performClick(clickEquals);
+        performEvent(clickEquals);
 
         verify(calculator).calculate();
         verify(view).startResult(any(BigDecimal.class));
     }
 
     @Test public void onNumberChange_updatesCalculatorAndShowsExpression() {
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
 
         numberChange.onNext(BigDecimal.ONE);
 
@@ -255,19 +255,19 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
     }
 
     @Test public void showExpression_showsCalculate_whenExpressionIsNotEmptyOrSingleNumber() {
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
         when(calculator.isEmptyOrSingleNumber()).thenReturn(false);
 
-        performClick(clickDelete);
+        performEvent(clickDelete);
 
         verify(view).showCalculate();
     }
 
     @Test public void showExpression_showsStartResult_whenExpressionIsNotEmptyOrSingleNumber() {
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
         when(calculator.isEmptyOrSingleNumber()).thenReturn(false);
 
-        performClick(clickDelete);
+        performEvent(clickDelete);
 
         verify(view).showCalculate();
     }

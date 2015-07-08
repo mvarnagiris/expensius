@@ -30,6 +30,7 @@ import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.util.ThemeUtils;
+import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
 
@@ -107,76 +108,76 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         return this;
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on0Click() {
-        return ViewObservable.clicks(number0Button);
+    @NonNull @Override public Observable<Event> on0Number() {
+        return ViewObservable.clicks(number0Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on1Click() {
-        return ViewObservable.clicks(number1Button);
+    @NonNull @Override public Observable<Event> on1Number() {
+        return ViewObservable.clicks(number1Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on2Click() {
-        return ViewObservable.clicks(number2Button);
+    @NonNull @Override public Observable<Event> on2Number() {
+        return ViewObservable.clicks(number2Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on3Click() {
-        return ViewObservable.clicks(number3Button);
+    @NonNull @Override public Observable<Event> on3Number() {
+        return ViewObservable.clicks(number3Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on4Click() {
-        return ViewObservable.clicks(number4Button);
+    @NonNull @Override public Observable<Event> on4Number() {
+        return ViewObservable.clicks(number4Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on5Click() {
-        return ViewObservable.clicks(number5Button);
+    @NonNull @Override public Observable<Event> on5Number() {
+        return ViewObservable.clicks(number5Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on6Click() {
-        return ViewObservable.clicks(number6Button);
+    @NonNull @Override public Observable<Event> on6Number() {
+        return ViewObservable.clicks(number6Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on7Click() {
-        return ViewObservable.clicks(number7Button);
+    @NonNull @Override public Observable<Event> on7Number() {
+        return ViewObservable.clicks(number7Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on8Click() {
-        return ViewObservable.clicks(number8Button);
+    @NonNull @Override public Observable<Event> on8Number() {
+        return ViewObservable.clicks(number8Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> on9Click() {
-        return ViewObservable.clicks(number9Button);
+    @NonNull @Override public Observable<Event> on9Number() {
+        return ViewObservable.clicks(number9Button).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onDecimalClick() {
-        return ViewObservable.clicks(decimalButton);
+    @NonNull @Override public Observable<Event> onDecimal() {
+        return ViewObservable.clicks(decimalButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onEqualsClick() {
-        return ViewObservable.clicks(equalsButton);
+    @NonNull @Override public Observable<Event> onEquals() {
+        return ViewObservable.clicks(equalsButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onDivideClick() {
-        return ViewObservable.clicks(divideButton);
+    @NonNull @Override public Observable<Event> onDivide() {
+        return ViewObservable.clicks(divideButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onMultiplyClick() {
-        return ViewObservable.clicks(multiplyButton);
+    @NonNull @Override public Observable<Event> onMultiply() {
+        return ViewObservable.clicks(multiplyButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onSubtractClick() {
-        return ViewObservable.clicks(subtractButton);
+    @NonNull @Override public Observable<Event> onSubtract() {
+        return ViewObservable.clicks(subtractButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onAddClick() {
-        return ViewObservable.clicks(addButton);
+    @NonNull @Override public Observable<Event> onAdd() {
+        return ViewObservable.clicks(addButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onDeleteClick() {
-        return ViewObservable.clicks(deleteButton);
+    @NonNull @Override public Observable<Event> onDelete() {
+        return ViewObservable.clicks(deleteButton).compose(clickTransformer);
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onClearClick() {
-        return clearSubject;
+    @NonNull @Override public Observable<Event> onClear() {
+        return clearSubject.compose(clickTransformer);
     }
 
     @NonNull @Override public Observable<BigDecimal> onNumberChange() {

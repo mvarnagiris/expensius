@@ -24,14 +24,19 @@ import android.support.v7.widget.Toolbar;
 import com.mvcoding.financius.App;
 import com.mvcoding.financius.BaseComponent;
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.util.rx.Event;
 
 import java.util.UUID;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.Icicle;
+import rx.Observable;
+import rx.android.view.OnClickEvent;
 
 public abstract class BaseActivity<V extends PresenterView, C extends BaseComponent> extends AppCompatActivity implements CloseablePresenterView {
+    protected static final Observable.Transformer<OnClickEvent, Event> clickTransformer = onClickEventObservable -> onClickEventObservable.map(onClickEvent -> new Event());
+
     @Icicle String componentKey;
 
     @LayoutRes protected abstract int getLayoutId();
@@ -88,7 +93,7 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
         final C component;
         if (componentKey == null) {
             componentKey = UUID.randomUUID().toString();
-            component = createComponent(app.getComponent().plus(new UIModule()).plus(new ActivityModule()));
+            component = createComponent(app.getComponent().plus(new ActivityModule()));
             app.putComponent(componentKey, component);
         } else {
             component = app.getComponent(componentKey);

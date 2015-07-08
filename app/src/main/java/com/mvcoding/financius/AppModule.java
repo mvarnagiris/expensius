@@ -17,6 +17,8 @@ package com.mvcoding.financius;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.util.PreferencesUtils;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -31,5 +33,14 @@ import dagger.Provides;
 
     @Provides @Singleton @AppContext Context provideAppContext() {
         return context;
+    }
+
+    @Provides @Singleton public UserSettings provideUserSettings(@AppContext Context context) {
+        UserSettings userSettings = PreferencesUtils.get(context, UserSettings.class.getName(), UserSettings.class);
+        if (userSettings == null) {
+            userSettings = new UserSettings();
+        }
+        userSettings.context = context;
+        return userSettings;
     }
 }

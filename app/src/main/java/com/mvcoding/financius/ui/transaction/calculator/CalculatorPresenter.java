@@ -19,6 +19,7 @@ import android.support.annotation.NonNull;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
+import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.view.OnClickEvent;
 
 @ActivityScope class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
     private final Calculator calculator;
@@ -40,31 +40,31 @@ import rx.android.view.OnClickEvent;
         super.onViewAttached(view);
 
         final List<Observable<String>> expressionUpdates = new ArrayList<>();
-        expressionUpdates.add(view.on0Click().doOnNext(c -> calculator.digit0()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on1Click().doOnNext(c -> calculator.digit1()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on2Click().doOnNext(c -> calculator.digit2()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on3Click().doOnNext(c -> calculator.digit3()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on4Click().doOnNext(c -> calculator.digit4()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on5Click().doOnNext(c -> calculator.digit5()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on6Click().doOnNext(c -> calculator.digit6()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on7Click().doOnNext(c -> calculator.digit7()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on8Click().doOnNext(c -> calculator.digit8()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on9Click().doOnNext(c -> calculator.digit9()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onDecimalClick().doOnNext(c -> calculator.decimal()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onAddClick().doOnNext(c -> calculator.add()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onSubtractClick().doOnNext(c -> calculator.subtract()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onMultiplyClick().doOnNext(c -> calculator.multiply()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onDivideClick().doOnNext(c -> calculator.divide()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onDeleteClick().doOnNext(c -> calculator.delete()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on0Number().doOnNext(c -> calculator.digit0()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on1Number().doOnNext(c -> calculator.digit1()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on2Number().doOnNext(c -> calculator.digit2()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on3Number().doOnNext(c -> calculator.digit3()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on4Number().doOnNext(c -> calculator.digit4()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on5Number().doOnNext(c -> calculator.digit5()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on6Number().doOnNext(c -> calculator.digit6()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on7Number().doOnNext(c -> calculator.digit7()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on8Number().doOnNext(c -> calculator.digit8()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.on9Number().doOnNext(c -> calculator.digit9()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onDecimal().doOnNext(c -> calculator.decimal()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onAdd().doOnNext(c -> calculator.add()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onSubtract().doOnNext(c -> calculator.subtract()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onMultiply().doOnNext(c -> calculator.multiply()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onDivide().doOnNext(c -> calculator.divide()).map(c -> calculator.getExpression()));
+        expressionUpdates.add(view.onDelete().doOnNext(c -> calculator.delete()).map(c -> calculator.getExpression()));
         unsubscribeOnDetach(Observable.merge(expressionUpdates).subscribe(view::showExpression));
 
-        unsubscribeOnDetach(view.onClearClick().doOnNext(c -> calculator.clear()).subscribe(c -> view.clearExpression()));
+        unsubscribeOnDetach(view.onClear().doOnNext(c -> calculator.clear()).subscribe(c -> view.clearExpression()));
 
-        final Observable<OnClickEvent> equalsClickObservable = view.onEqualsClick();
-        unsubscribeOnDetach(equalsClickObservable.filter(c -> calculator.isEmptyOrSingleNumber())
+        final Observable<Event> equalsObservable = view.onEquals();
+        unsubscribeOnDetach(equalsObservable.filter(c -> calculator.isEmptyOrSingleNumber())
                                     .map(c -> calculator.calculate())
                                     .subscribe(view::startResult));
-        unsubscribeOnDetach(equalsClickObservable.filter(c -> !calculator.isEmptyOrSingleNumber())
+        unsubscribeOnDetach(equalsObservable.filter(c -> !calculator.isEmptyOrSingleNumber())
                                     .map(c -> calculator.calculate())
                                     .doOnNext(calculator::setNumber)
                                     .map(result -> calculator.getExpression())
@@ -77,52 +77,29 @@ import rx.android.view.OnClickEvent;
     }
 
     public interface View extends PresenterView {
-        @NonNull Observable<OnClickEvent> on0Click();
-
-        @NonNull Observable<OnClickEvent> on1Click();
-
-        @NonNull Observable<OnClickEvent> on2Click();
-
-        @NonNull Observable<OnClickEvent> on3Click();
-
-        @NonNull Observable<OnClickEvent> on4Click();
-
-        @NonNull Observable<OnClickEvent> on5Click();
-
-        @NonNull Observable<OnClickEvent> on6Click();
-
-        @NonNull Observable<OnClickEvent> on7Click();
-
-        @NonNull Observable<OnClickEvent> on8Click();
-
-        @NonNull Observable<OnClickEvent> on9Click();
-
-        @NonNull Observable<OnClickEvent> onDecimalClick();
-
-        @NonNull Observable<OnClickEvent> onEqualsClick();
-
-        @NonNull Observable<OnClickEvent> onDivideClick();
-
-        @NonNull Observable<OnClickEvent> onMultiplyClick();
-
-        @NonNull Observable<OnClickEvent> onSubtractClick();
-
-        @NonNull Observable<OnClickEvent> onAddClick();
-
-        @NonNull Observable<OnClickEvent> onDeleteClick();
-
-        @NonNull Observable<OnClickEvent> onClearClick();
-
+        @NonNull Observable<Event> on0Number();
+        @NonNull Observable<Event> on1Number();
+        @NonNull Observable<Event> on2Number();
+        @NonNull Observable<Event> on3Number();
+        @NonNull Observable<Event> on4Number();
+        @NonNull Observable<Event> on5Number();
+        @NonNull Observable<Event> on6Number();
+        @NonNull Observable<Event> on7Number();
+        @NonNull Observable<Event> on8Number();
+        @NonNull Observable<Event> on9Number();
+        @NonNull Observable<Event> onDecimal();
+        @NonNull Observable<Event> onEquals();
+        @NonNull Observable<Event> onDivide();
+        @NonNull Observable<Event> onMultiply();
+        @NonNull Observable<Event> onSubtract();
+        @NonNull Observable<Event> onAdd();
+        @NonNull Observable<Event> onDelete();
+        @NonNull Observable<Event> onClear();
         @NonNull Observable<BigDecimal> onNumberChange();
-
         void showExpression(@NonNull String expression);
-
         void clearExpression();
-
         void showCalculate();
-
         void showStartResult();
-
         void startResult(@NonNull BigDecimal result);
     }
 }

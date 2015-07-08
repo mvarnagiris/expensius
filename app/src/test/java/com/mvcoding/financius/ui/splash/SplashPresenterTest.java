@@ -14,9 +14,9 @@
 
 package com.mvcoding.financius.ui.splash;
 
+import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.api.Session;
 import com.mvcoding.financius.ui.BasePresenterTest;
-import com.mvcoding.financius.ui.UserSettings;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -40,7 +40,7 @@ public class SplashPresenterTest extends BasePresenterTest<SplashPresenter, Spla
     @Test public void onViewAttached_startsTutorial_whenSessionIsNotLoggedIn() {
         when(session.isLoggedIn()).thenReturn(false);
 
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
 
         verify(view).startIntroductionAndClose();
     }
@@ -48,7 +48,7 @@ public class SplashPresenterTest extends BasePresenterTest<SplashPresenter, Spla
     @Test public void onViewAttached_startsOverview_whenSessionIsLoggedIn() {
         when(session.isLoggedIn()).thenReturn(true);
 
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
 
         verify(view).startOverviewAndClose();
     }
@@ -57,7 +57,7 @@ public class SplashPresenterTest extends BasePresenterTest<SplashPresenter, Spla
         when(session.isLoggedIn()).thenReturn(false);
         when(userSettings.isIntroductionSeen()).thenReturn(true);
 
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
 
         verify(view).startOverviewAndClose();
     }

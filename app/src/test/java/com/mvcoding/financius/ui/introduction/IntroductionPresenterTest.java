@@ -14,14 +14,14 @@
 
 package com.mvcoding.financius.ui.introduction;
 
+import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.api.Session;
 import com.mvcoding.financius.ui.BasePresenterTest;
-import com.mvcoding.financius.ui.UserSettings;
+import com.mvcoding.financius.util.rx.Event;
 
 import org.junit.Test;
 import org.mockito.Mock;
 
-import rx.android.view.OnClickEvent;
 import rx.subjects.PublishSubject;
 
 import static org.mockito.Mockito.mock;
@@ -29,8 +29,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class IntroductionPresenterTest extends BasePresenterTest<IntroductionPresenter, IntroductionPresenter.View> {
-    private final PublishSubject<OnClickEvent> skipLoginClick = PublishSubject.create();
-    private final PublishSubject<OnClickEvent> loginClick = PublishSubject.create();
+    private final PublishSubject<Event> skipLoginClick = PublishSubject.create();
+    private final PublishSubject<Event> loginClick = PublishSubject.create();
 
     @Mock private Session session;
     @Mock private UserSettings userSettings;
@@ -41,24 +41,24 @@ public class IntroductionPresenterTest extends BasePresenterTest<IntroductionPre
 
     @Override protected IntroductionPresenter.View createView() {
         final IntroductionPresenter.View view = mock(IntroductionPresenter.View.class);
-        when(view.onSkipLoginClick()).thenReturn(skipLoginClick);
-        when(view.onLoginClick()).thenReturn(loginClick);
+        when(view.onSkipLogin()).thenReturn(skipLoginClick);
+        when(view.onLogin()).thenReturn(loginClick);
         return view;
     }
 
     @Test public void onSkipLoginClick_setsIntroductionAsSeenAndStartsOverviewAndCloses() {
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
 
-        performClick(skipLoginClick);
+        performEvent(skipLoginClick);
 
         verify(userSettings).setIsIntroductionSeen(true);
         verify(view).startOverviewAndClose();
     }
 
     @Test public void onLoginClick_setsIntroductionAsSeenAndStartsLoginAndCloses() {
-        presenterJumpToOnViewAttached();
+        presenterOnViewAttached();
 
-        performClick(loginClick);
+        performEvent(loginClick);
 
         verify(userSettings).setIsIntroductionSeen(true);
         verify(view).startLoginAndClose();

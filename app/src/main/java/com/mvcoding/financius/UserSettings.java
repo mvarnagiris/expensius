@@ -12,25 +12,28 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui;
+package com.mvcoding.financius;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.AppContext;
 import com.mvcoding.financius.util.PreferencesUtils;
 
-import javax.inject.Singleton;
+public class UserSettings {
+    transient Context context;
 
-import dagger.Module;
-import dagger.Provides;
+    private boolean isIntroductionSeen;
 
-@Module public class UIModule {
-    @Provides @Singleton public UserSettings provideUserSettings(@AppContext Context context) {
-        UserSettings userSettings = PreferencesUtils.get(context, UserSettings.class.getName(), UserSettings.class);
-        if (userSettings == null) {
-            userSettings = new UserSettings();
-        }
-        userSettings.context = context;
-        return userSettings;
+    private static void persist(@NonNull Context context, @NonNull UserSettings userSettings) {
+        PreferencesUtils.put(context.getApplicationContext(), UserSettings.class.getName(), userSettings);
+    }
+
+    public boolean isIntroductionSeen() {
+        return isIntroductionSeen;
+    }
+
+    public void setIsIntroductionSeen(boolean isIntroductionSeen) {
+        this.isIntroductionSeen = isIntroductionSeen;
+        persist(context, this);
     }
 }

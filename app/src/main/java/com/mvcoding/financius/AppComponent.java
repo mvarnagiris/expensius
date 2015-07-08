@@ -15,13 +15,13 @@
 package com.mvcoding.financius;
 
 import com.mvcoding.financius.api.ApiModule;
-import com.mvcoding.financius.ui.UIModule;
-import com.mvcoding.financius.ui.UiComponent;
+import com.mvcoding.financius.ui.ActivityComponent;
+import com.mvcoding.financius.ui.ActivityModule;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 
 @Singleton @Component(modules = {AppModule.class, ApiModule.class}) public interface AppComponent extends BaseComponent {
-    UiComponent plus(UIModule module);
+    ActivityComponent plus(ActivityModule module);
 }

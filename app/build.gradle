@@ -86,7 +86,9 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.0.8-beta'
-    testCompile 'org.assertj:assertj-core:2.0.0'
+    testCompile('com.squareup.assertj:assertj-android:1.0.0') {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 
     provided 'com.github.frankiesardo:icepick-processor:2.3.6'
     provided 'javax.annotation:jsr250-api:1.0'
