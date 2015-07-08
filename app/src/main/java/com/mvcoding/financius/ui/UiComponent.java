@@ -12,22 +12,14 @@
  * GNU General Public License for more details.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0-beta3'
-        classpath 'me.tatarka:gradle-retrolambda:3.1.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.16.0'
-    }
-}
+package com.mvcoding.financius.ui;
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
+import com.mvcoding.financius.BaseComponent;
+
+import javax.inject.Singleton;
+
+import dagger.Subcomponent;
+
+@Singleton @Subcomponent(modules = UIModule.class) public interface UiComponent extends BaseComponent {
+    ActivityComponent plus(ActivityModule module);
 }

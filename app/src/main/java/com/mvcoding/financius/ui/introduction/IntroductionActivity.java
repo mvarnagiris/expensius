@@ -17,13 +17,13 @@ package com.mvcoding.financius.ui.introduction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
@@ -32,19 +32,19 @@ import com.mvcoding.financius.ui.user.LoginActivity;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 
-public class IntroductionActivity extends BaseActivity<IntroductionPresenter.View> implements IntroductionPresenter.View, ViewPager.OnPageChangeListener {
-    @InjectView(R.id.viewPager) ViewPager viewPager;
-    @InjectView(R.id.circleIndicator) CircleIndicator circleIndicator;
-    @InjectView(R.id.nextImageButton) ImageButton nextImageButton;
-    @InjectView(R.id.loginButton) Button loginButton;
-    @InjectView(R.id.skipLoginButton) Button skipLoginButton;
+public class IntroductionActivity extends BaseActivity<IntroductionPresenter.View, IntroductionComponent> implements IntroductionPresenter.View, ViewPager.OnPageChangeListener {
+    @Bind(R.id.viewPager) ViewPager viewPager;
+    @Bind(R.id.circleIndicator) CircleIndicator circleIndicator;
+    @Bind(R.id.nextImageButton) ImageButton nextImageButton;
+    @Bind(R.id.loginButton) Button loginButton;
+    @Bind(R.id.skipLoginButton) Button skipLoginButton;
 
     @Inject IntroductionPresenter presenter;
 
@@ -56,24 +56,28 @@ public class IntroductionActivity extends BaseActivity<IntroductionPresenter.Vie
         return R.layout.activity_introduction;
     }
 
-    @Override protected void onViewCreated(@Nullable Bundle savedInstanceState) {
-        super.onViewCreated(savedInstanceState);
+    @Override protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         viewPager.setAdapter(new IntroductionAdapter());
         circleIndicator.setViewPager(viewPager);
         circleIndicator.setOnPageChangeListener(this);
     }
 
+    @NonNull @Override protected IntroductionComponent createComponent(@NonNull ActivityComponent component) {
+        return component.plus(new IntroductionModule());
+    }
+
+    @Override protected void inject(@NonNull IntroductionComponent component) {
+        component.inject(this);
+    }
+
     @NonNull @Override protected Presenter<IntroductionPresenter.View> getPresenter() {
         return presenter;
     }
 
-    @Nullable @Override protected IntroductionPresenter.View getPresenterView() {
+    @NonNull @Override protected IntroductionPresenter.View getPresenterView() {
         return this;
-    }
-
-    @Nullable @Override protected Object[] getModules() {
-        return new Object[]{new IntroductionModule()};
     }
 
     @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -16,6 +16,7 @@ package com.mvcoding.financius.ui.transaction.calculator;
 
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 
@@ -23,13 +24,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 
-class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
+@ActivityScope class CalculatorPresenter extends Presenter<CalculatorPresenter.View> {
     private final Calculator calculator;
 
-    CalculatorPresenter(@NonNull Calculator calculator) {
+    @Inject CalculatorPresenter(@NonNull Calculator calculator) {
         this.calculator = calculator;
     }
 

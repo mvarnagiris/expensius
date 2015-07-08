@@ -14,77 +14,36 @@
 
 package com.mvcoding.financius.ui;
 
-import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.mvcoding.financius.App;
+import com.mvcoding.financius.BaseComponent;
 import com.mvcoding.financius.R;
 
-import butterknife.ButterKnife;
-import dagger.ObjectGraph;
-import icepick.Icepick;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+import java.util.UUID;
 
-public abstract class BaseActivity<V extends PresenterView> extends AppCompatActivity implements CloseablePresenterView {
+import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.Icicle;
+
+public abstract class BaseActivity<V extends PresenterView, C extends BaseComponent> extends AppCompatActivity implements CloseablePresenterView {
+    @Icicle String componentKey;
+
     @LayoutRes protected abstract int getLayoutId();
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+        inject(getComponent());
         setContentView(getLayoutId());
         setupToolbar();
-        ButterKnife.inject(this);
-
-        Icepick.restoreInstanceState(this, savedInstanceState);
-
-        // Init object graph
-        final App app = App.with(this);
-        final String scopedGraphKey = getScopedGraphKey();
-        ObjectGraph objectGraph = app.getScopedGraph(scopedGraphKey);
-        if (objectGraph == null) {
-            objectGraph = app.createScopedGraphAndCache(scopedGraphKey, getModules());
-        }
-        objectGraph.inject(this);
-
-        // Init presenter
-        if (savedInstanceState == null) {
-            getPresenter().onCreate();
-        }
-
-        onViewCreated(savedInstanceState);
-
-        // Presenter view created
-        final V view = getPresenterView();
-        if (view != null) {
-            getPresenter().onViewAttached(view);
-        }
-    }
-
-    protected void onViewCreated(@Nullable Bundle savedInstanceState) {
-    }
-
-    @Override protected void onResume() {
-        super.onResume();
-
-        // Presenter view visible
-        final V view = getPresenterView();
-        if (view != null) {
-            getPresenter().onViewResumed(view);
-        }
-    }
-
-    @Override protected void onPause() {
-        super.onPause();
-
-        // Presenter view invisible
-        V view = getPresenterView();
-        if (view != null) {
-            getPresenter().onViewPaused(view);
-        }
+        ButterKnife.bind(this);
+        getPresenter().onViewAttached(getPresenterView());
     }
 
     @Override protected void onSaveInstanceState(Bundle outState) {
@@ -94,58 +53,60 @@ public abstract class BaseActivity<V extends PresenterView> extends AppCompatAct
 
     @Override protected void onDestroy() {
         super.onDestroy();
-
-        // Presenter view destroyed
-        V presenterView = getPresenterView();
-        if (presenterView != null) {
-            getPresenter().onViewDetached(presenterView);
-        }
-
-        if (isFinishing()) {
-            getPresenter().onDestroy();
-        }
-
-        // Destroy object graph.
-        if (isFinishing()) {
-            App.with(this).removeScopedGraph(getScopedGraphKey());
-        }
-    }
-
-    @Override protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        getPresenter().onViewDetached();
+        ButterKnife.unbind(this);
+        App.with(this).removeComponent(componentKey);
     }
 
     @Override public void close() {
         finish();
     }
 
-    @NonNull protected Presenter<V> getPresenter() {
-        return Presenter.empty();
+    @NonNull protected abstract C createComponent(@NonNull ActivityComponent component);
+    protected abstract void inject(@NonNull C component);
+    @NonNull protected abstract Presenter<V> getPresenter();
+    @NonNull protected abstract V getPresenterView();
+
+    @NonNull protected Toolbar getToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar == null) {
+            throw new IllegalStateException("Toolbar is null.");
+        }
+        return toolbar;
     }
 
-    @Nullable protected V getPresenterView() {
-        return null;
+    @NonNull protected ActivityTransitions transitions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return new ActivityTransitionsLollipop(this);
+        } else {
+            return new ActivityTransitionsNoOp();
+        }
     }
 
-    @Nullable protected Object[] getModules() {
-        return null;
+    private C getComponent() {
+        final App app = App.with(this);
+        final C component;
+        if (componentKey == null) {
+            componentKey = UUID.randomUUID().toString();
+            component = createComponent(app.getComponent().plus(new UIModule()).plus(new ActivityModule()));
+            app.putComponent(componentKey, component);
+        } else {
+            component = app.getComponent(componentKey);
+            if (component == null) {
+                throw new IllegalStateException("Component was not properly stored.");
+            }
+        }
+
+        return component;
     }
 
-    protected void setupToolbar() {
-        final Toolbar toolbar = getToolbar();
+    private void setupToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             //noinspection ConstantConditions
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-    }
-
-    @Nullable protected Toolbar getToolbar() {
-        return (Toolbar) findViewById(R.id.toolbar);
-    }
-
-    private String getScopedGraphKey() {
-        return getClass().getName();
     }
 }

@@ -17,20 +17,18 @@ package com.mvcoding.financius;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import dagger.ObjectGraph;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class App extends Application {
-    private final Map<String, ObjectGraph> scopedObjectGraphs = new HashMap<>();
+    private final Map<String, ? super BaseComponent> components = new HashMap<>();
 
-    private ObjectGraph objectGraph;
+    private AppComponent appComponent;
 
-    public static App with(Context context) {
+    public static App with(@NonNull Context context) {
         return (App) context.getApplicationContext();
     }
 
@@ -41,37 +39,23 @@ public class App extends Application {
                                               .setFontAttrId(R.attr.fontPath)
                                               .build());
 
-        //        LeakCanary.install(this);
-        objectGraph = ObjectGraph.create(getModules());
+        //        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     }
 
-    public void inject(@NonNull Object o) {
-        objectGraph.inject(o);
+    public AppComponent getComponent() {
+        return appComponent;
     }
 
-    public ObjectGraph getScopedGraph(@NonNull String key) {
-        return scopedObjectGraphs.get(key);
+    public <C extends BaseComponent> C getComponent(@NonNull String key) {
+        //noinspection unchecked
+        return (C) components.get(key);
     }
 
-    public ObjectGraph createScopedGraphAndCache(@NonNull String key, @Nullable Object... modules) {
-        if (modules == null) {
-            return objectGraph;
-        }
-
-        ObjectGraph scopedObjectGraph = scopedObjectGraphs.get(key);
-        if (scopedObjectGraph == null) {
-            scopedObjectGraph = objectGraph.plus(modules);
-            scopedObjectGraphs.put(key, scopedObjectGraph);
-        }
-
-        return scopedObjectGraph;
+    public <C extends BaseComponent> void putComponent(@NonNull String key, @NonNull C component) {
+        components.put(key, component);
     }
 
-    public void removeScopedGraph(String key) {
-        scopedObjectGraphs.remove(key);
-    }
-
-    @NonNull protected Object[] getModules() {
-        return new Object[]{new AppModule(this)};
+    public void removeComponent(@NonNull String key) {
+        components.remove(key);
     }
 }

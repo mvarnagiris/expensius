@@ -16,15 +16,16 @@ package com.mvcoding.financius.ui;
 
 import android.content.Context;
 
-import com.mvcoding.financius.ApplicationContext;
+import com.mvcoding.financius.AppContext;
 import com.mvcoding.financius.util.PreferencesUtils;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = ActivityModule.class, complete = false, library = true)
-public class UIModule {
-    @Provides public UserSettings provideUserSettings(@ApplicationContext Context context) {
+@Module public class UIModule {
+    @Provides @Singleton public UserSettings provideUserSettings(@AppContext Context context) {
         UserSettings userSettings = PreferencesUtils.get(context, UserSettings.class.getName(), UserSettings.class);
         if (userSettings == null) {
             userSettings = new UserSettings();

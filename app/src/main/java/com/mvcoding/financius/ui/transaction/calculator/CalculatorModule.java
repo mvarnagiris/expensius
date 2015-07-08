@@ -14,16 +14,7 @@
 
 package com.mvcoding.financius.ui.transaction.calculator;
 
-import com.mvcoding.financius.ui.ActivityModule;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
-import dagger.Provides;
 
-@Module(addsTo = ActivityModule.class, complete = false, injects = CalculatorActivity.class)
-class CalculatorModule {
-    @Provides @Singleton public CalculatorPresenter provideCalculatorPresenter(Calculator calculator) {
-        return new CalculatorPresenter(calculator);
-    }
+@Module public class CalculatorModule {
 }

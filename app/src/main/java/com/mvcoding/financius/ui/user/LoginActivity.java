@@ -17,9 +17,13 @@ package com.mvcoding.financius.ui.user;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.BaseComponent;
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
+import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.ui.PresenterView;
 
 public class LoginActivity extends BaseActivity {
     public static void start(@NonNull Context context) {
@@ -28,5 +32,21 @@ public class LoginActivity extends BaseActivity {
 
     @Override protected int getLayoutId() {
         return R.layout.activity_login;
+    }
+
+    @NonNull @Override protected BaseComponent createComponent(@NonNull ActivityComponent component) {
+        return null;
+    }
+
+    @Override protected void inject(@NonNull BaseComponent component) {
+
+    }
+
+    @NonNull @Override protected Presenter getPresenter() {
+        return null;
+    }
+
+    @NonNull @Override protected PresenterView getPresenterView() {
+        return null;
     }
 }

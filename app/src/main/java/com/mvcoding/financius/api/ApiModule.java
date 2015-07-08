@@ -16,7 +16,7 @@ package com.mvcoding.financius.api;
 
 import android.content.Context;
 
-import com.mvcoding.financius.ApplicationContext;
+import com.mvcoding.financius.AppContext;
 import com.mvcoding.financius.BuildConfig;
 import com.mvcoding.financius.api.service.UsersService;
 import com.mvcoding.financius.util.PreferencesUtils;
@@ -31,8 +31,7 @@ import dagger.Provides;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 
-@Module(library = true, complete = false)
-public class ApiModule {
+@Module public class ApiModule {
     private static final String ENDPOINT = "http://" + BuildConfig.LOCAL_SERVER_IP + ":8080/_ah/api/locl";
 
     @Provides @Singleton
@@ -50,7 +49,7 @@ public class ApiModule {
                 .build();
     }
 
-    @Provides @Singleton public Session provideSession(@ApplicationContext Context context) {
+    @Provides @Singleton public Session provideSession(@AppContext Context context) {
         Session session = PreferencesUtils.get(context, Session.class.getName(), Session.class);
         if (session == null) {
             session = new Session();

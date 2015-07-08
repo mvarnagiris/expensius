@@ -16,23 +16,23 @@ package com.mvcoding.financius.ui.overview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.transaction.calculator.CalculatorActivity;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 
-public class OverviewActivity extends BaseActivity<OverviewPresenter.View> implements OverviewPresenter.View {
-    @InjectView(R.id.newTransactionFloatingActionButton) FloatingActionButton newTransactionFloatingActionButton;
+public class OverviewActivity extends BaseActivity<OverviewPresenter.View, OverviewComponent> implements OverviewPresenter.View {
+    @Bind(R.id.newTransactionFloatingActionButton) FloatingActionButton newTransactionFloatingActionButton;
 
     @Inject OverviewPresenter presenter;
 
@@ -44,16 +44,20 @@ public class OverviewActivity extends BaseActivity<OverviewPresenter.View> imple
         return R.layout.activity_overview;
     }
 
+    @NonNull @Override protected OverviewComponent createComponent(@NonNull ActivityComponent component) {
+        return component.plus(new OverviewModule());
+    }
+
+    @Override protected void inject(@NonNull OverviewComponent component) {
+        component.inject(this);
+    }
+
     @NonNull @Override protected OverviewPresenter getPresenter() {
         return presenter;
     }
 
-    @Nullable @Override protected OverviewPresenter.View getPresenterView() {
+    @NonNull @Override protected OverviewPresenter.View getPresenterView() {
         return this;
-    }
-
-    @Nullable @Override protected Object[] getModules() {
-        return new Object[]{new OverviewModule()};
     }
 
     @NonNull @Override public Observable<OnClickEvent> onNewTransactionClick() {

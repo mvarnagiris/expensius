@@ -15,9 +15,9 @@
 package com.mvcoding.financius.ui.splash;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.introduction.IntroductionActivity;
@@ -25,23 +25,27 @@ import com.mvcoding.financius.ui.overview.OverviewActivity;
 
 import javax.inject.Inject;
 
-public class SplashActivity extends BaseActivity<SplashPresenter.View> implements SplashPresenter.View {
+public class SplashActivity extends BaseActivity<SplashPresenter.View, SplashComponent> implements SplashPresenter.View {
     @Inject SplashPresenter presenter;
 
     @Override protected int getLayoutId() {
         return R.layout.activity_splash;
     }
 
+    @NonNull @Override protected SplashComponent createComponent(@NonNull ActivityComponent component) {
+        return component.plus(new SplashModule());
+    }
+
+    @Override protected void inject(@NonNull SplashComponent component) {
+        component.inject(this);
+    }
+
     @NonNull @Override protected Presenter<SplashPresenter.View> getPresenter() {
         return presenter;
     }
 
-    @Nullable @Override protected SplashPresenter.View getPresenterView() {
+    @NonNull @Override protected SplashPresenter.View getPresenterView() {
         return this;
-    }
-
-    @Nullable @Override protected Object[] getModules() {
-        return new Object[]{new SplashModule()};
     }
 
     @Override public void startOverviewAndClose() {

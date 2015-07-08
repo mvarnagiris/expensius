@@ -16,17 +16,20 @@ package com.mvcoding.financius.ui.introduction;
 
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 import com.mvcoding.financius.ui.UserSettings;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 
-class IntroductionPresenter extends Presenter<IntroductionPresenter.View> {
+@ActivityScope class IntroductionPresenter extends Presenter<IntroductionPresenter.View> {
     private final UserSettings userSettings;
 
-    IntroductionPresenter(@NonNull UserSettings userSettings) {
+    @Inject IntroductionPresenter(@NonNull UserSettings userSettings) {
         this.userSettings = userSettings;
     }
 

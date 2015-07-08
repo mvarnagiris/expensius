@@ -20,7 +20,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.common.base.Strings;
-import com.mvcoding.financius.ApplicationContext;
+import com.mvcoding.financius.AppContext;
 import com.mvcoding.financius.BuildConfig;
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Request;
@@ -35,7 +35,7 @@ public class EndpointAuthenticator implements Authenticator {
     private final Context context;
     private final Session session;
 
-    @Inject public EndpointAuthenticator(@ApplicationContext @NonNull Context context, @NonNull Session session) {
+    @Inject public EndpointAuthenticator(@AppContext @NonNull Context context, @NonNull Session session) {
         this.context = context;
         this.session = session;
     }

@@ -14,14 +14,14 @@
 
 package com.mvcoding.financius;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import com.mvcoding.financius.api.ApiModule;
+import com.mvcoding.financius.ui.UIModule;
+import com.mvcoding.financius.ui.UiComponent;
 
-import javax.inject.Qualifier;
+import javax.inject.Singleton;
 
-@Qualifier
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ApplicationContext {
+import dagger.Component;
+
+@Singleton @Component(modules = {AppModule.class, ApiModule.class}) public interface AppComponent extends BaseComponent {
+    UiComponent plus(UIModule module);
 }

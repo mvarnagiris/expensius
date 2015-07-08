@@ -23,8 +23,7 @@ import com.mvcoding.financius.util.PreferencesUtils;
 
 import javax.inject.Singleton;
 
-@Singleton
-public class Session {
+@Singleton public class Session {
     transient Context context;
 
     private String email;

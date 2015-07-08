@@ -16,13 +16,19 @@ package com.mvcoding.financius.ui.overview;
 
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 
-class OverviewPresenter extends Presenter<OverviewPresenter.View> {
+@ActivityScope class OverviewPresenter extends Presenter<OverviewPresenter.View> {
+    @Inject OverviewPresenter() {
+    }
+
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
         unsubscribeOnDetach(view.onNewTransactionClick().subscribe(onClickEvent -> view.startNewTransaction()));

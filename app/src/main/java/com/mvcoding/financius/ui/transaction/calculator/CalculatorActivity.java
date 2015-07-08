@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.util.ThemeUtils;
@@ -34,7 +35,7 @@ import java.math.BigDecimal;
 
 import javax.inject.Inject;
 
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnLongClick;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
@@ -42,7 +43,7 @@ import rx.android.view.ViewObservable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> implements CalculatorPresenter.View {
+public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, CalculatorComponent> implements CalculatorPresenter.View {
     private static final String EXTRA_NUMBER = "EXTRA_NUMBER";
 
     private static final String RESULT_EXTRA_NUMBER = "RESULT_EXTRA_NUMBER";
@@ -50,24 +51,24 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> i
     private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
     private static final BehaviorSubject<BigDecimal> numberChangeSubject = BehaviorSubject.create();
 
-    @InjectView(R.id.resultTextView) TextView resultTextView;
-    @InjectView(R.id.number0Button) Button number0Button;
-    @InjectView(R.id.number1Button) Button number1Button;
-    @InjectView(R.id.number2Button) Button number2Button;
-    @InjectView(R.id.number3Button) Button number3Button;
-    @InjectView(R.id.number4Button) Button number4Button;
-    @InjectView(R.id.number5Button) Button number5Button;
-    @InjectView(R.id.number6Button) Button number6Button;
-    @InjectView(R.id.number7Button) Button number7Button;
-    @InjectView(R.id.number8Button) Button number8Button;
-    @InjectView(R.id.number9Button) Button number9Button;
-    @InjectView(R.id.decimalButton) Button decimalButton;
-    @InjectView(R.id.addButton) Button addButton;
-    @InjectView(R.id.subtractButton) Button subtractButton;
-    @InjectView(R.id.multiplyButton) Button multiplyButton;
-    @InjectView(R.id.divideButton) Button divideButton;
-    @InjectView(R.id.deleteButton) Button deleteButton;
-    @InjectView(R.id.equalsButton) FloatingActionButton equalsButton;
+    @Bind(R.id.resultTextView) TextView resultTextView;
+    @Bind(R.id.number0Button) Button number0Button;
+    @Bind(R.id.number1Button) Button number1Button;
+    @Bind(R.id.number2Button) Button number2Button;
+    @Bind(R.id.number3Button) Button number3Button;
+    @Bind(R.id.number4Button) Button number4Button;
+    @Bind(R.id.number5Button) Button number5Button;
+    @Bind(R.id.number6Button) Button number6Button;
+    @Bind(R.id.number7Button) Button number7Button;
+    @Bind(R.id.number8Button) Button number8Button;
+    @Bind(R.id.number9Button) Button number9Button;
+    @Bind(R.id.decimalButton) Button decimalButton;
+    @Bind(R.id.addButton) Button addButton;
+    @Bind(R.id.subtractButton) Button subtractButton;
+    @Bind(R.id.multiplyButton) Button multiplyButton;
+    @Bind(R.id.divideButton) Button divideButton;
+    @Bind(R.id.deleteButton) Button deleteButton;
+    @Bind(R.id.equalsButton) FloatingActionButton equalsButton;
 
     @Inject CalculatorPresenter presenter;
 
@@ -83,23 +84,27 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View> i
         return R.layout.activity_calculator;
     }
 
-    @Override protected void onViewCreated(@Nullable Bundle savedInstanceState) {
-        super.onViewCreated(savedInstanceState);
+    @Override protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         final BigDecimal number = (BigDecimal) getIntent().getSerializableExtra(EXTRA_NUMBER);
         numberChangeSubject.onNext(number);
+    }
+
+    @NonNull @Override protected CalculatorComponent createComponent(@NonNull ActivityComponent component) {
+        return component.plus(new CalculatorModule());
+    }
+
+    @Override protected void inject(@NonNull CalculatorComponent component) {
+        component.inject(this);
     }
 
     @NonNull @Override public CalculatorPresenter getPresenter() {
         return presenter;
     }
 
-    @Nullable @Override protected CalculatorPresenter.View getPresenterView() {
+    @NonNull @Override protected CalculatorPresenter.View getPresenterView() {
         return this;
-    }
-
-    @Nullable @Override protected Object[] getModules() {
-        return new Object[]{new CalculatorModule()};
     }
 
     @NonNull @Override public Observable<OnClickEvent> on0Click() {

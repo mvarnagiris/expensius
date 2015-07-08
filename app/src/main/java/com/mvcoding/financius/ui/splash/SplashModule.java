@@ -14,18 +14,7 @@
 
 package com.mvcoding.financius.ui.splash;
 
-import com.mvcoding.financius.api.Session;
-import com.mvcoding.financius.ui.ActivityModule;
-import com.mvcoding.financius.ui.UserSettings;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
-import dagger.Provides;
 
-@Module(addsTo = ActivityModule.class, complete = false, injects = SplashActivity.class)
-class SplashModule {
-    @Provides @Singleton public SplashPresenter provideSplashPresenter(Session session, UserSettings userSettings) {
-        return new SplashPresenter(session, userSettings);
-    }
+@Module public class SplashModule {
 }

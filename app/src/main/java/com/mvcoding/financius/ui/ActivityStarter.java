@@ -17,100 +17,133 @@ package com.mvcoding.financius.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
+import android.view.View;
 
 import java.io.Serializable;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-public class ActivityStarter {
-    private final Fragment fragment;
-    private final Context context;
-    private final Class activityClass;
-    private final Intent intent;
-    private boolean isEnterAnimationEnabled = true;
+public final class ActivityStarter {
+    private final Fragment mFragment;
+    private final Context mContext;
+    private final Intent mIntent;
+    private ActivityOptionsCompat mOptions;
 
     private ActivityStarter(@NonNull Context context, @NonNull Class activityClass) {
-        this.fragment = null;
-        this.context = checkNotNull(context, "Context cannot be null.");
-        this.activityClass = checkNotNull(activityClass, "Activity class cannot be null.");
-        this.intent = createIntent(context, activityClass);
+        mFragment = null;
+        mContext = context;
+        mIntent = createIntent(context, activityClass);
     }
 
     private ActivityStarter(@NonNull Fragment fragment, @NonNull Class activityClass) {
-        this.fragment = checkNotNull(fragment, "Fragment cannot be null.");
-        this.context = checkNotNull(fragment.getActivity(), "Fragment must be attached to Activity.");
-        this.activityClass = checkNotNull(activityClass, "Activity class cannot be null.");
-        this.intent = createIntent(context, activityClass);
+        mFragment = fragment;
+        mContext = fragment.getActivity();
+        mIntent = createIntent(mContext, activityClass);
     }
 
-    public static ActivityStarter with(@NonNull Context context, @NonNull Class activityClass) {
+    @NonNull public static ActivityStarter with(@NonNull Context context, @NonNull Class activityClass) {
         return new ActivityStarter(context, activityClass);
     }
 
-    public static ActivityStarter with(@NonNull Fragment fragment, @NonNull Class activityClass) {
+    @NonNull public static ActivityStarter with(@NonNull Fragment fragment, @NonNull Class activityClass) {
         return new ActivityStarter(fragment, activityClass);
     }
 
-    public ActivityStarter extra(String name, Parcelable value) {
-        intent.putExtra(name, value);
+    @NonNull public ActivityStarter extra(@NonNull String name, @Nullable Parcelable value) {
+        mIntent.putExtra(name, value);
         return this;
     }
 
-    public ActivityStarter extra(String name, Serializable value) {
-        intent.putExtra(name, value);
+    @NonNull public ActivityStarter extra(@NonNull String name, @Nullable Serializable value) {
+        mIntent.putExtra(name, value);
         return this;
     }
 
-    public ActivityStarter extra(String name, String value) {
-        intent.putExtra(name, value);
+    @NonNull public ActivityStarter extra(@NonNull String name, @Nullable String value) {
+        mIntent.putExtra(name, value);
         return this;
     }
 
-    public ActivityStarter extra(String name, boolean value) {
-        intent.putExtra(name, value);
+    @NonNull public ActivityStarter extra(@NonNull String name, boolean value) {
+        mIntent.putExtra(name, value);
         return this;
     }
 
-    public ActivityStarter extra(String name, long value) {
-        intent.putExtra(name, value);
+    @NonNull public ActivityStarter extra(@NonNull String name, int value) {
+        mIntent.putExtra(name, value);
         return this;
     }
 
-    public ActivityStarter extra(String name, double value) {
-        intent.putExtra(name, value);
+    @NonNull public ActivityStarter extra(@NonNull String name, long value) {
+        mIntent.putExtra(name, value);
         return this;
     }
 
-    public ActivityStarter addFlags(int flags) {
-        intent.addFlags(flags);
+    @NonNull public ActivityStarter extra(@NonNull String name, double value) {
+        mIntent.putExtra(name, value);
         return this;
     }
 
-    public ActivityStarter setIsEnterAnimationEnabled(boolean isEnterAnimationEnabled) {
-        this.isEnterAnimationEnabled = isEnterAnimationEnabled;
+    @NonNull public ActivityStarter addFlags(int flags) {
+        mIntent.addFlags(flags);
+        return this;
+    }
+
+    @NonNull public ActivityStarter enableTransition(@Nullable View... sharedViews) {
+        if (mContext instanceof Activity) {
+            Pair<View, String>[] elements = null;
+            if (sharedViews != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                //noinspection unchecked
+                elements = new Pair[sharedViews.length];
+                for (int i = 0; i < sharedViews.length; i++) {
+                    elements[i] = Pair.create(sharedViews[i], sharedViews[i].getTransitionName());
+                }
+            }
+
+            //noinspection unchecked
+            final ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, elements);
+            if (mOptions == null) {
+                mOptions = options;
+            } else {
+                mOptions.update(options);
+            }
+        }
+        return this;
+    }
+
+    @NonNull public ActivityStarter expandFrom(@NonNull View view) {
+        final int startX = (int) (view.getX() + view.getWidth() / 2);
+        final int startY = (int) (view.getY() + view.getHeight() / 2);
+        final ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(view, startX, startY, 0, 0);
+        if (mOptions == null) {
+            mOptions = options;
+        } else {
+            mOptions.update(options);
+        }
         return this;
     }
 
     public void start() {
-        if (fragment != null) {
-            fragment.startActivity(intent);
+        if (mFragment != null) {
+            mFragment.startActivity(mIntent);
+        } else if (mContext instanceof Activity) {
+            ActivityCompat.startActivity((Activity) mContext, mIntent, mOptions != null ? mOptions.toBundle() : null);
         } else {
-            context.startActivity(intent);
-        }
-
-        if (!isEnterAnimationEnabled && context instanceof Activity) {
-            ((Activity) context).overridePendingTransition(0, 0);
+            mContext.startActivity(mIntent);
         }
     }
 
     public void startForResult(int requestCode) {
-        if (fragment != null) {
-            fragment.startActivityForResult(intent, requestCode);
-        } else if (context instanceof Activity) {
-            ((Activity) context).startActivityForResult(intent, requestCode);
+        if (mFragment != null) {
+            mFragment.startActivityForResult(mIntent, requestCode);
+        } else if (mContext instanceof Activity) {
+            ActivityCompat.startActivityForResult((Activity) mContext, mIntent, requestCode, mOptions != null ? mOptions.toBundle() : null);
         } else {
             throw new IllegalArgumentException("Context must be an Activity, when starting for result.");
         }

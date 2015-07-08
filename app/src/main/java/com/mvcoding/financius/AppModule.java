@@ -15,24 +15,21 @@
 package com.mvcoding.financius;
 
 import android.content.Context;
-
-import com.mvcoding.financius.api.ApiModule;
-import com.mvcoding.financius.ui.UIModule;
+import android.support.annotation.NonNull;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, includes = {ApiModule.class, UIModule.class})
-public class AppModule {
-    private final App app;
+@Module public class AppModule {
+    private final Context context;
 
-    public AppModule(App app) {
-        this.app = app;
+    public AppModule(@NonNull Context context) {
+        this.context = context;
     }
 
-    @Provides @Singleton @ApplicationContext public Context provideApplicationContext() {
-        return app;
+    @Provides @Singleton @AppContext Context provideAppContext() {
+        return context;
     }
 }

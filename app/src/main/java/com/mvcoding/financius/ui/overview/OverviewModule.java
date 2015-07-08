@@ -14,16 +14,7 @@
 
 package com.mvcoding.financius.ui.overview;
 
-import com.mvcoding.financius.ui.ActivityModule;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
-import dagger.Provides;
 
-@Module(addsTo = ActivityModule.class, injects = OverviewActivity.class)
-class OverviewModule {
-    @Provides @Singleton public OverviewPresenter provideOverviewPresenter() {
-        return new OverviewPresenter();
-    }
+@Module public class OverviewModule {
 }
