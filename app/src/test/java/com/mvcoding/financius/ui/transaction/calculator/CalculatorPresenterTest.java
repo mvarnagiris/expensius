@@ -254,21 +254,21 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
         verify(view).showExpression(any(String.class));
     }
 
-    @Test public void showExpression_showsCalculate_whenExpressionIsNotEmptyOrSingleNumber() {
-        presenterOnViewAttached();
+    @Test public void showExpression_showsCalculate_whenExpressionIsNotEmptyAndNotSingleNumber() {
         when(calculator.isEmptyOrSingleNumber()).thenReturn(false);
+        presenterOnViewAttached();
 
-        performEvent(clickDelete);
+        numberChange.onNext(BigDecimal.ONE);
 
         verify(view).showCalculate();
     }
 
-    @Test public void showExpression_showsStartResult_whenExpressionIsNotEmptyOrSingleNumber() {
+    @Test public void showExpression_showsStartResult_whenExpressionIsEmptyOrSingleNumber() {
+        when(calculator.isEmptyOrSingleNumber()).thenReturn(true);
         presenterOnViewAttached();
-        when(calculator.isEmptyOrSingleNumber()).thenReturn(false);
 
-        performEvent(clickDelete);
+        numberChange.onNext(BigDecimal.ONE);
 
-        verify(view).showCalculate();
+        verify(view).showStartResult();
     }
 }

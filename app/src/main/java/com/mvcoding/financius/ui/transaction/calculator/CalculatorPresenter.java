@@ -39,41 +39,45 @@ import rx.Observable;
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
 
-        final List<Observable<String>> expressionUpdates = new ArrayList<>();
-        expressionUpdates.add(view.on0Number().doOnNext(c -> calculator.digit0()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on1Number().doOnNext(c -> calculator.digit1()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on2Number().doOnNext(c -> calculator.digit2()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on3Number().doOnNext(c -> calculator.digit3()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on4Number().doOnNext(c -> calculator.digit4()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on5Number().doOnNext(c -> calculator.digit5()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on6Number().doOnNext(c -> calculator.digit6()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on7Number().doOnNext(c -> calculator.digit7()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on8Number().doOnNext(c -> calculator.digit8()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.on9Number().doOnNext(c -> calculator.digit9()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onDecimal().doOnNext(c -> calculator.decimal()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onAdd().doOnNext(c -> calculator.add()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onSubtract().doOnNext(c -> calculator.subtract()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onMultiply().doOnNext(c -> calculator.multiply()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onDivide().doOnNext(c -> calculator.divide()).map(c -> calculator.getExpression()));
-        expressionUpdates.add(view.onDelete().doOnNext(c -> calculator.delete()).map(c -> calculator.getExpression()));
-        unsubscribeOnDetach(Observable.merge(expressionUpdates).subscribe(view::showExpression));
+        final List<Observable<Event>> expressionUpdates = new ArrayList<>();
+        expressionUpdates.add(view.on0Number().doOnNext(e -> calculator.digit0()));
+        expressionUpdates.add(view.on1Number().doOnNext(e -> calculator.digit1()));
+        expressionUpdates.add(view.on2Number().doOnNext(e -> calculator.digit2()));
+        expressionUpdates.add(view.on3Number().doOnNext(e -> calculator.digit3()));
+        expressionUpdates.add(view.on4Number().doOnNext(e -> calculator.digit4()));
+        expressionUpdates.add(view.on5Number().doOnNext(e -> calculator.digit5()));
+        expressionUpdates.add(view.on6Number().doOnNext(e -> calculator.digit6()));
+        expressionUpdates.add(view.on7Number().doOnNext(e -> calculator.digit7()));
+        expressionUpdates.add(view.on8Number().doOnNext(e -> calculator.digit8()));
+        expressionUpdates.add(view.on9Number().doOnNext(e -> calculator.digit9()));
+        expressionUpdates.add(view.onDecimal().doOnNext(e -> calculator.decimal()));
+        expressionUpdates.add(view.onAdd().doOnNext(e -> calculator.add()));
+        expressionUpdates.add(view.onSubtract().doOnNext(e -> calculator.subtract()));
+        expressionUpdates.add(view.onMultiply().doOnNext(e -> calculator.multiply()));
+        expressionUpdates.add(view.onDivide().doOnNext(e -> calculator.divide()));
+        expressionUpdates.add(view.onDelete().doOnNext(e -> calculator.delete()));
+        expressionUpdates.add(view.onClear().doOnNext(e -> calculator.clear()).doOnNext(e -> view.clearExpression()));
+        expressionUpdates.add(view.onNumberChange().doOnNext(calculator::setNumber).map(number -> new Event()));
+        expressionUpdates.add(view.onEquals()
+                                      .filter(e -> !calculator.isEmptyOrSingleNumber())
+                                      .map(e -> calculator.calculate())
+                                      .doOnNext(calculator::setNumber)
+                                      .map(number -> new Event()));
 
-        unsubscribeOnDetach(view.onClear().doOnNext(c -> calculator.clear()).subscribe(c -> view.clearExpression()));
+        unsubscribeOnDetach(Observable.merge(expressionUpdates)
+                                    .map(e -> calculator.getExpression())
+                                    .doOnNext(view::showExpression)
+                                    .subscribe(expression -> {
+                                        if (calculator.isEmptyOrSingleNumber()) {
+                                            view.showStartResult();
+                                        } else {
+                                            view.showCalculate();
+                                        }
+                                    }));
 
-        final Observable<Event> equalsObservable = view.onEquals();
-        unsubscribeOnDetach(equalsObservable.filter(c -> calculator.isEmptyOrSingleNumber())
+        unsubscribeOnDetach(view.onEquals().filter(c -> calculator.isEmptyOrSingleNumber())
                                     .map(c -> calculator.calculate())
                                     .subscribe(view::startResult));
-        unsubscribeOnDetach(equalsObservable.filter(c -> !calculator.isEmptyOrSingleNumber())
-                                    .map(c -> calculator.calculate())
-                                    .doOnNext(calculator::setNumber)
-                                    .map(result -> calculator.getExpression())
-                                    .subscribe(view::showExpression));
-
-        unsubscribeOnDetach(view.onNumberChange()
-                                    .doOnNext(calculator::setNumber)
-                                    .map(number -> calculator.getExpression())
-                                    .subscribe(view::showExpression));
     }
 
     public interface View extends PresenterView {
