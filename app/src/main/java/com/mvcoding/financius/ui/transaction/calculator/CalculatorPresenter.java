@@ -70,6 +70,7 @@ import rx.Observable;
                                     .subscribe(view::startResult));
 
         unsubscribeOnDetach(Observable.merge(expressionUpdates)
+                                    .mergeWith(calculator.getExpression().isEmpty() ? Observable.empty() : Observable.just(new Event()))
                                     .map(e -> calculator.getExpression())
                                     .doOnNext(view::showExpression)
                                     .subscribe(expression -> {

@@ -109,7 +109,7 @@ class Calculator {
         operator("+");
     }
 
-    public String getExpression() {
+    @NonNull public String getExpression() {
         return expression.toString();
     }
 

@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import rx.subjects.PublishSubject;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -54,6 +55,7 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
     @Mock private Calculator calculator;
 
     @Override protected CalculatorPresenter createPresenter() {
+        when(calculator.getExpression()).thenReturn("");
         return new CalculatorPresenter(calculator);
     }
 
@@ -272,5 +274,15 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
         numberChange.onNext(BigDecimal.ONE);
 
         verify(view).showStartResult();
+    }
+
+    @Test public void onViewAttached_showPreviousExpression_whenAttachingNotTheFirstTime() throws Exception {
+        presenterOnViewAttached();
+        verify(view, never()).showExpression(anyString());
+
+        presenterOnViewDetached();
+        when(calculator.getExpression()).thenReturn("8");
+        presenterOnViewAttached();
+        verify(view).showExpression("8");
     }
 }

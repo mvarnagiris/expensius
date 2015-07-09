@@ -61,7 +61,10 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
         super.onDestroy();
         getPresenter().onViewDetached();
         ButterKnife.unbind(this);
-        App.with(this).removeComponent(componentKey);
+
+        if (isFinishing()) {
+            App.with(this).removeComponent(componentKey);
+        }
     }
 
     @Override public void close() {

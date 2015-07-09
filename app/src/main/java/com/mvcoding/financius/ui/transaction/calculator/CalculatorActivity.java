@@ -41,11 +41,9 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnLongClick;
-import icepick.Icicle;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, CalculatorComponent> implements CalculatorPresenter.View {
@@ -54,7 +52,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     private static final String RESULT_EXTRA_NUMBER = "RESULT_EXTRA_NUMBER";
 
     private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
-    private static final BehaviorSubject<BigDecimal> numberChangeSubject = BehaviorSubject.create();
+    private static final PublishSubject<BigDecimal> numberChangeSubject = PublishSubject.create();
 
     @Bind(R.id.resultContainerView) View resultContainerView;
     @Bind(R.id.resultTextView) TextView resultTextView;
@@ -78,7 +76,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
 
     @Inject CalculatorPresenter presenter;
 
-    @Icicle boolean isInShowCalculateMode;
+    private boolean isInShowCalculateMode;
 
     public static void start(@NonNull Context context, @Nullable BigDecimal number, @Nullable View... sharedViews) {
         ActivityStarter.with(context, CalculatorActivity.class).extra(EXTRA_NUMBER, number).enableTransition(sharedViews).start();
@@ -100,8 +98,10 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
                 .slide(Gravity.START, number0Button, number1Button, number2Button, number3Button, number4Button, number5Button, number6Button, number7Button, number8Button, number9Button, decimalButton)
                 .asEnterTransition();
 
-        final BigDecimal number = (BigDecimal) getIntent().getSerializableExtra(EXTRA_NUMBER);
-        numberChangeSubject.onNext(number);
+        if (savedInstanceState == null) {
+            final BigDecimal number = (BigDecimal) getIntent().getSerializableExtra(EXTRA_NUMBER);
+            numberChangeSubject.onNext(number);
+        }
     }
 
     @NonNull @Override protected CalculatorComponent createComponent(@NonNull ActivityComponent component) {
@@ -210,19 +210,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         }
 
         isInShowCalculateMode = true;
-
-        ValueAnimator anim = new ValueAnimator();
-        anim.setIntValues(equalsFloatingActionButton.getBackgroundTintList()
-                                  .getDefaultColor(), ThemeUtils.getColor(this, R.attr.colorPrimary));
-        anim.setEvaluator(new ArgbEvaluator());
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf((Integer) valueAnimator.getAnimatedValue()));
-            }
-        });
-
-        anim.setDuration(300);
-        anim.start();
+        animateEquals(ThemeUtils.getColor(this, R.attr.colorAccent), ThemeUtils.getColor(this, R.attr.colorPrimary));
     }
 
     @Override public void showStartResult() {
@@ -231,17 +219,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         }
 
         isInShowCalculateMode = false;
-        ValueAnimator anim = new ValueAnimator();
-        anim.setIntValues(ThemeUtils.getColor(this, R.attr.colorPrimary), ThemeUtils.getColor(this, R.attr.colorAccent));
-        anim.setEvaluator(new ArgbEvaluator());
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf((Integer) valueAnimator.getAnimatedValue()));
-            }
-        });
-
-        anim.setDuration(300);
-        anim.start();
+        animateEquals(ThemeUtils.getColor(this, R.attr.colorPrimary), ThemeUtils.getColor(this, R.attr.colorAccent));
     }
 
     @Override public void startResult(@NonNull BigDecimal result) {
@@ -254,5 +232,20 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {
         clearSubject.onNext(OnClickEvent.create(view));
         return true;
+    }
+
+    private void animateEquals(int fromColor, int toColor) {
+        if (equalsFloatingActionButton.getWidth() <= 0) {
+            equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(toColor));
+            return;
+        }
+
+        final ValueAnimator anim = new ValueAnimator();
+        anim.setIntValues(fromColor, toColor);
+        anim.setEvaluator(new ArgbEvaluator());
+        anim.addUpdateListener(valueAnimator -> equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf((Integer) valueAnimator
+                .getAnimatedValue())));
+        anim.setDuration(300);
+        anim.start();
     }
 }
