@@ -14,6 +14,8 @@
 
 package com.mvcoding.financius.ui.transaction.calculator;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -39,6 +41,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnLongClick;
+import icepick.Icicle;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
@@ -71,9 +74,11 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     @Bind(R.id.multiplyButton) Button multiplyButton;
     @Bind(R.id.divideButton) Button divideButton;
     @Bind(R.id.deleteButton) Button deleteButton;
-    @Bind(R.id.equalsButton) FloatingActionButton equalsButton;
+    @Bind(R.id.equalsFloatingActionButton) FloatingActionButton equalsFloatingActionButton;
 
     @Inject CalculatorPresenter presenter;
+
+    @Icicle boolean isInShowCalculateMode;
 
     public static void start(@NonNull Context context, @Nullable BigDecimal number, @Nullable View... sharedViews) {
         ActivityStarter.with(context, CalculatorActivity.class).extra(EXTRA_NUMBER, number).enableTransition(sharedViews).start();
@@ -160,7 +165,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     }
 
     @NonNull @Override public Observable<Event> onEquals() {
-        return ViewObservable.clicks(equalsButton).compose(clickTransformer);
+        return ViewObservable.clicks(equalsFloatingActionButton).compose(clickTransformer);
     }
 
     @NonNull @Override public Observable<Event> onDivide() {
@@ -200,11 +205,43 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     }
 
     @Override public void showCalculate() {
-        equalsButton.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.getColor(this, R.attr.colorPrimary)));
+        if (isInShowCalculateMode) {
+            return;
+        }
+
+        isInShowCalculateMode = true;
+
+        ValueAnimator anim = new ValueAnimator();
+        anim.setIntValues(equalsFloatingActionButton.getBackgroundTintList()
+                                  .getDefaultColor(), ThemeUtils.getColor(this, R.attr.colorPrimary));
+        anim.setEvaluator(new ArgbEvaluator());
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf((Integer) valueAnimator.getAnimatedValue()));
+            }
+        });
+
+        anim.setDuration(300);
+        anim.start();
     }
 
     @Override public void showStartResult() {
-        equalsButton.setBackgroundTintList(ColorStateList.valueOf(ThemeUtils.getColor(this, R.attr.colorAccent)));
+        if (!isInShowCalculateMode) {
+            return;
+        }
+
+        isInShowCalculateMode = false;
+        ValueAnimator anim = new ValueAnimator();
+        anim.setIntValues(ThemeUtils.getColor(this, R.attr.colorPrimary), ThemeUtils.getColor(this, R.attr.colorAccent));
+        anim.setEvaluator(new ArgbEvaluator());
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf((Integer) valueAnimator.getAnimatedValue()));
+            }
+        });
+
+        anim.setDuration(300);
+        anim.start();
     }
 
     @Override public void startResult(@NonNull BigDecimal result) {

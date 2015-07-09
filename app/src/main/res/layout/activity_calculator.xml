@@ -167,7 +167,7 @@
                 android:clipToPadding="false">
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/equalsButton"
+                    android:id="@+id/equalsFloatingActionButton"
                     style="@style/Button.Fab"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_action_done"
