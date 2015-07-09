@@ -39,7 +39,7 @@ public class App extends Application {
                                               .setFontAttrId(R.attr.fontPath)
                                               .build());
 
-        //        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     }
 
     public AppComponent getComponent() {

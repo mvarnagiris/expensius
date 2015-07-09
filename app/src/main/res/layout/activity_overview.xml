@@ -13,6 +13,7 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -22,6 +23,8 @@
         style="@style/Button.Fab"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/keyline"
-        android:src="@drawable/ic_action_add" />
+        android:src="@drawable/ic_action_add"
+        android:transitionName="@string/transition_name_fab"
+        tools:ignore="UnusedAttribute" />
 
 </FrameLayout>

@@ -26,6 +26,7 @@ import rx.subjects.PublishSubject;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -233,6 +234,7 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
         verify(calculator).calculate();
         verify(calculator).setNumber(any(BigDecimal.class));
         verify(view).showExpression(any(String.class));
+        verify(view, never()).startResult(any(BigDecimal.class));
     }
 
     @Test public void onEquals_startsResult_whenThereIsOnlyOneNumberInTheExpression() {

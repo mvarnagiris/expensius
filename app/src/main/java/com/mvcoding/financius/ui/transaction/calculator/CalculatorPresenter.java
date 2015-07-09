@@ -64,6 +64,11 @@ import rx.Observable;
                                       .doOnNext(calculator::setNumber)
                                       .map(number -> new Event()));
 
+        unsubscribeOnDetach(view.onEquals()
+                                    .filter(c -> calculator.isEmptyOrSingleNumber())
+                                    .map(c -> calculator.calculate())
+                                    .subscribe(view::startResult));
+
         unsubscribeOnDetach(Observable.merge(expressionUpdates)
                                     .map(e -> calculator.getExpression())
                                     .doOnNext(view::showExpression)
@@ -74,10 +79,6 @@ import rx.Observable;
                                             view.showCalculate();
                                         }
                                     }));
-
-        unsubscribeOnDetach(view.onEquals().filter(c -> calculator.isEmptyOrSingleNumber())
-                                    .map(c -> calculator.calculate())
-                                    .subscribe(view::startResult));
     }
 
     public interface View extends PresenterView {

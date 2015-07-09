@@ -21,6 +21,7 @@
     tools:ignore="NestedWeights">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/resultContainerView"
         style="@style/Card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -170,7 +171,9 @@
                     style="@style/Button.Fab"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_action_done"
-                    android:text="@string/calculator_equals" />
+                    android:text="@string/calculator_equals"
+                    android:transitionName="@string/transition_name_fab"
+                    tools:ignore="UnusedAttribute" />
 
             </FrameLayout>
 

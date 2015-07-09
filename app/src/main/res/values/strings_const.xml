@@ -30,4 +30,6 @@
     <string name="calculator_divide">÷</string>
     <string name="calculator_multiply">×</string>
     <string name="calculator_delete">DEL</string>
+
+    <string name="transition_name_fab">transition:fab</string>
 </resources>

@@ -65,6 +65,6 @@ public class OverviewActivity extends BaseActivity<OverviewPresenter.View, Overv
     }
 
     @Override public void startNewTransaction() {
-        CalculatorActivity.start(this, null);
+        CalculatorActivity.start(this, null, newTransactionFloatingActionButton);
     }
 }

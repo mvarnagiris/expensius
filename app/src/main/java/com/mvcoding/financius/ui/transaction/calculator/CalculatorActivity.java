@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -52,6 +53,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
     private static final BehaviorSubject<BigDecimal> numberChangeSubject = BehaviorSubject.create();
 
+    @Bind(R.id.resultContainerView) View resultContainerView;
     @Bind(R.id.resultTextView) TextView resultTextView;
     @Bind(R.id.number0Button) Button number0Button;
     @Bind(R.id.number1Button) Button number1Button;
@@ -73,8 +75,8 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
 
     @Inject CalculatorPresenter presenter;
 
-    public static void start(@NonNull Context context, @Nullable BigDecimal number) {
-        ActivityStarter.with(context, CalculatorActivity.class).extra(EXTRA_NUMBER, number).start();
+    public static void start(@NonNull Context context, @Nullable BigDecimal number, @Nullable View... sharedViews) {
+        ActivityStarter.with(context, CalculatorActivity.class).extra(EXTRA_NUMBER, number).enableTransition(sharedViews).start();
     }
 
     public static BigDecimal getResultNumber(@NonNull Intent data) {
@@ -87,6 +89,11 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        transitions().slide(Gravity.TOP, resultContainerView)
+                .slide(Gravity.END, deleteButton, divideButton, multiplyButton, subtractButton, addButton)
+                .slide(Gravity.START, number0Button, number1Button, number2Button, number3Button, number4Button, number5Button, number6Button, number7Button, number8Button, number9Button, decimalButton)
+                .asEnterTransition();
 
         final BigDecimal number = (BigDecimal) getIntent().getSerializableExtra(EXTRA_NUMBER);
         numberChangeSubject.onNext(number);
