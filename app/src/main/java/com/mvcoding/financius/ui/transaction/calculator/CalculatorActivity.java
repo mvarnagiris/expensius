@@ -211,7 +211,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         final Intent data = new Intent();
         data.putExtra(RESULT_EXTRA_NUMBER, result);
         setResult(RESULT_OK, data);
-        finish();
+        close();
     }
 
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {
