@@ -210,6 +210,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         }
 
         isInShowCalculateMode = true;
+        equalsFloatingActionButton.setSelected(true);
         animateEquals(ThemeUtils.getColor(this, R.attr.colorAccent), ThemeUtils.getColor(this, R.attr.colorPrimary));
     }
 
@@ -219,6 +220,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         }
 
         isInShowCalculateMode = false;
+        equalsFloatingActionButton.setSelected(false);
         animateEquals(ThemeUtils.getColor(this, R.attr.colorPrimary), ThemeUtils.getColor(this, R.attr.colorAccent));
     }
 

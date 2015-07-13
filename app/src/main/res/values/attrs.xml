@@ -19,6 +19,7 @@
         <attr name="colorActionIcon" format="color" />
         <attr name="colorDivider" format="color" />
         <attr name="backgroundPrimary" format="color" />
+        <attr name="themeInverse" format="reference" />
         <attr name="floatingActionButtonStyle" format="reference" />
     </declare-styleable>
 
