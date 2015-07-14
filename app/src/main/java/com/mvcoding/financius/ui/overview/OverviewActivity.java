@@ -22,7 +22,7 @@ import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
-import com.mvcoding.financius.ui.transaction.calculator.CalculatorActivity;
+import com.mvcoding.financius.ui.calculator.CalculatorActivity;
 
 import javax.inject.Inject;
 

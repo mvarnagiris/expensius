@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.transaction.calculator;
+package com.mvcoding.financius.ui.calculator;
 
 import com.mvcoding.financius.ui.BasePresenterTest;
 import com.mvcoding.financius.util.rx.Event;

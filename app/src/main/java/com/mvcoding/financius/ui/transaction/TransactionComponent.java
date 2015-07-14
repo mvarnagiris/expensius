@@ -12,13 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.transaction.calculator;
+package com.mvcoding.financius.ui.transaction;
 
 import com.mvcoding.financius.BaseComponent;
 import com.mvcoding.financius.ui.ActivityScope;
 
 import dagger.Subcomponent;
 
-@ActivityScope @Subcomponent(modules = CalculatorModule.class) public interface CalculatorComponent extends BaseComponent {
-    void inject(CalculatorActivity activity);
+@ActivityScope @Subcomponent(modules = TransactionModule.class) public interface TransactionComponent extends BaseComponent {
+    void inject(TransactionActivity activity);
 }

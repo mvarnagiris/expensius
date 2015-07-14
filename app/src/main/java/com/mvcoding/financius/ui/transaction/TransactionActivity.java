@@ -16,30 +16,32 @@ package com.mvcoding.financius.ui.transaction;
 
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.BaseComponent;
+import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.BaseActivity;
-import com.mvcoding.financius.ui.Presenter;
-import com.mvcoding.financius.ui.PresenterView;
 
-public class TransactionEditActivity extends BaseActivity {
+import javax.inject.Inject;
+
+public class TransactionActivity extends BaseActivity<TransactionPresenter.View, TransactionComponent> implements TransactionPresenter.View {
+    @Inject TransactionPresenter presenter;
+
     @Override protected int getLayoutId() {
-        return 0;
+        return R.layout.activity_transaction;
     }
 
-    @NonNull @Override protected BaseComponent createComponent(@NonNull ActivityComponent component) {
-        return null;
+    @NonNull @Override protected TransactionComponent createComponent(@NonNull ActivityComponent component) {
+        return component.plus(new TransactionModule());
     }
 
-    @Override protected void inject(@NonNull BaseComponent component) {
-
+    @Override protected void inject(@NonNull TransactionComponent component) {
+        component.inject(this);
     }
 
-    @NonNull @Override protected Presenter getPresenter() {
-        return null;
+    @NonNull @Override protected TransactionPresenter getPresenter() {
+        return presenter;
     }
 
-    @NonNull @Override protected PresenterView getPresenterView() {
-        return null;
+    @NonNull @Override protected TransactionPresenter.View getPresenterView() {
+        return this;
     }
 }

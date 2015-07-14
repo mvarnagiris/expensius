@@ -15,14 +15,16 @@
 package com.mvcoding.financius.ui;
 
 import com.mvcoding.financius.BaseComponent;
+import com.mvcoding.financius.ui.calculator.CalculatorComponent;
+import com.mvcoding.financius.ui.calculator.CalculatorModule;
 import com.mvcoding.financius.ui.introduction.IntroductionComponent;
 import com.mvcoding.financius.ui.introduction.IntroductionModule;
 import com.mvcoding.financius.ui.overview.OverviewComponent;
 import com.mvcoding.financius.ui.overview.OverviewModule;
 import com.mvcoding.financius.ui.splash.SplashComponent;
 import com.mvcoding.financius.ui.splash.SplashModule;
-import com.mvcoding.financius.ui.transaction.calculator.CalculatorComponent;
-import com.mvcoding.financius.ui.transaction.calculator.CalculatorModule;
+import com.mvcoding.financius.ui.transaction.TransactionComponent;
+import com.mvcoding.financius.ui.transaction.TransactionModule;
 
 import dagger.Subcomponent;
 
@@ -31,4 +33,5 @@ import dagger.Subcomponent;
     IntroductionComponent plus(IntroductionModule module);
     OverviewComponent plus(OverviewModule module);
     CalculatorComponent plus(CalculatorModule module);
+    TransactionComponent plus(TransactionModule module);
 }

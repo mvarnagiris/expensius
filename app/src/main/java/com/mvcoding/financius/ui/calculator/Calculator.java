@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.ui.transaction.calculator;
+package com.mvcoding.financius.ui.calculator;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
