@@ -15,6 +15,7 @@
 package com.mvcoding.financius.api.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
 import java.io.Serializable;
@@ -23,6 +24,8 @@ import java.util.Set;
 
 public class Transaction implements Serializable {
     @SerializedName("transactionType") private TransactionType transactionType;
+    @SerializedName("transactionState") private TransactionState transactionState;
+    @SerializedName("date") private long date;
     @SerializedName("amount") private BigDecimal amount;
     @SerializedName("currency") private String currency;
     @SerializedName("tags") private Set<Tag> tags;
@@ -34,6 +37,22 @@ public class Transaction implements Serializable {
 
     public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public TransactionState getTransactionState() {
+        return transactionState;
+    }
+
+    public void setTransactionState(TransactionState transactionState) {
+        this.transactionState = transactionState;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public BigDecimal getAmount() {

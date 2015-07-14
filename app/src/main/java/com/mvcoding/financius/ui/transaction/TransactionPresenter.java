@@ -14,16 +14,40 @@
 
 package com.mvcoding.financius.ui.transaction;
 
+import android.support.annotation.NonNull;
+
+import com.mvcoding.financius.api.model.Tag;
+import com.mvcoding.financius.api.model.Transaction;
+import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
+import com.mvcoding.financius.util.rx.Event;
+
+import java.math.BigDecimal;
+import java.util.Set;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 @ActivityScope class TransactionPresenter extends Presenter<TransactionPresenter.View> {
     @Inject TransactionPresenter() {
     }
 
+    @Override protected void onViewAttached(@NonNull View view) {
+        super.onViewAttached(view);
+
+        final Observable<Transaction> transactionObservable = Observable.never();
+    }
+
     public interface View extends PresenterView {
+        @NonNull Observable<TransactionType> onTransactionTypeChanged();
+        @NonNull Observable<BigDecimal> onAmountChanged();
+        @NonNull Observable<String> onCurrencyChanged();
+        @NonNull Observable<Set<Tag>> onTagsChanged();
+        @NonNull Observable<String> onNoteChanged();
+        @NonNull Observable<Event> onSave();
+        void showTransaction(@NonNull Transaction transaction);
     }
 }
