@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -98,6 +99,13 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
             final BigDecimal number = (BigDecimal) getIntent().getSerializableExtra(EXTRA_NUMBER);
             numberChangeSubject.onNext(number);
         }
+
+        resultTextView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override public void onGlobalLayout() {
+                resultTextView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                resultTextView.getLayoutParams().height = resultTextView.getHeight();
+            }
+        });
     }
 
     @NonNull @Override protected CalculatorComponent createComponent(@NonNull ActivityComponent component) {
