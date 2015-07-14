@@ -192,7 +192,7 @@
                     android:id="@+id/equalsFloatingActionButton"
                     style="@style/Button.Fab"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_action_done"
+                    android:src="@drawable/done_equals"
                     android:text="@string/calculator_equals"
                     android:transitionName="@string/transition_name_fab"
                     tools:ignore="UnusedAttribute" />

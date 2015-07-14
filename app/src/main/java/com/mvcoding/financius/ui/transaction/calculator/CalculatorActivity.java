@@ -14,11 +14,8 @@
 
 package com.mvcoding.financius.ui.transaction.calculator;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,7 +29,6 @@ import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
-import com.mvcoding.financius.util.ThemeUtils;
 import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
@@ -211,7 +207,6 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
 
         isInShowCalculateMode = true;
         equalsFloatingActionButton.setSelected(true);
-        animateEquals(ThemeUtils.getColor(this, R.attr.colorAccent), ThemeUtils.getColor(this, R.attr.colorPrimary));
     }
 
     @Override public void showStartResult() {
@@ -221,7 +216,6 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
 
         isInShowCalculateMode = false;
         equalsFloatingActionButton.setSelected(false);
-        animateEquals(ThemeUtils.getColor(this, R.attr.colorPrimary), ThemeUtils.getColor(this, R.attr.colorAccent));
     }
 
     @Override public void startResult(@NonNull BigDecimal result) {
@@ -234,20 +228,5 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {
         clearSubject.onNext(OnClickEvent.create(view));
         return true;
-    }
-
-    private void animateEquals(int fromColor, int toColor) {
-        if (equalsFloatingActionButton.getWidth() <= 0) {
-            equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(toColor));
-            return;
-        }
-
-        final ValueAnimator anim = new ValueAnimator();
-        anim.setIntValues(fromColor, toColor);
-        anim.setEvaluator(new ArgbEvaluator());
-        anim.addUpdateListener(valueAnimator -> equalsFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf((Integer) valueAnimator
-                .getAnimatedValue())));
-        anim.setDuration(300);
-        anim.start();
     }
 }
