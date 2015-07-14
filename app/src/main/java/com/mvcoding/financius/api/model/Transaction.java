@@ -24,6 +24,7 @@ import java.util.Set;
 public class Transaction implements Serializable {
     @SerializedName("transactionType") private TransactionType transactionType;
     @SerializedName("amount") private BigDecimal amount;
+    @SerializedName("currency") private String currency;
     @SerializedName("tags") private Set<Tag> tags;
     @SerializedName("note") private String note;
 
@@ -41,6 +42,14 @@ public class Transaction implements Serializable {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public Set<Tag> getTags() {

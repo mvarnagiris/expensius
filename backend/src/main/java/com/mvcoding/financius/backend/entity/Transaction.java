@@ -31,13 +31,13 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-public class Transaction extends BaseEntity {
+@Entity public class Transaction extends BaseEntity {
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE) @Ignore private UserAccount userAccount;
     @ApiResourceProperty(name = "transactionType") private TransactionType transactionType;
     @ApiResourceProperty(name = "transactionState") private TransactionState transactionState;
     @ApiResourceProperty(name = "date") private long date;
     @ApiResourceProperty(name = "amount") private BigDecimal amount;
+    @ApiResourceProperty(name = "currency") private String currency;
     @ApiResourceProperty(name = "place") @Ignore private Place place;
     @ApiResourceProperty(name = "tags") @Ignore private Set<Tag> tags;
     @ApiResourceProperty(name = "note") private String note;
@@ -55,6 +55,7 @@ public class Transaction extends BaseEntity {
         transaction.setTransactionState(body.getTransactionState());
         transaction.setDate(body.getDate());
         transaction.setAmount(body.getAmount());
+        transaction.setCurrency(body.getCurrency());
         transaction.setPlaceId(body.getPlaceId());
         transaction.setTagIds(body.getTagIds());
         transaction.setNote(body.getNote());
@@ -100,6 +101,14 @@ public class Transaction extends BaseEntity {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public Place getPlace() {

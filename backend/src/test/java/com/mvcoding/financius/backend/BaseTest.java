@@ -108,6 +108,7 @@ public class BaseTest {
         transaction.setTransactionState(TransactionState.Confirmed);
         transaction.setDate(System.currentTimeMillis());
         transaction.setAmount(BigDecimal.ONE);
+        transaction.setCurrency("GBP");
         transaction.setPlaceId(null);
         transaction.setTagIds(null);
         transaction.setNote(null);
@@ -122,6 +123,7 @@ public class BaseTest {
         body.setTransactionState(TransactionState.Confirmed);
         body.setDate(System.currentTimeMillis());
         body.setAmount(BigDecimal.ONE);
+        body.setCurrency("GBP");
         body.setPlaceId(null);
         body.setTagIds(null);
         body.setNote(null);

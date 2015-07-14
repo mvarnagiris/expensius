@@ -32,6 +32,7 @@ public class TransactionBody implements Body {
     private TransactionState transactionState;
     private long date;
     private BigDecimal amount;
+    private String currency;
     private String placeId;
     private Set<String> tagIds;
     private String note;
@@ -42,7 +43,8 @@ public class TransactionBody implements Body {
         checkNotNull(transactionType, "Transaction type cannot be null.");
         checkNotNull(transactionState, "Transaction state cannot be null.");
         checkNotNull(amount, "Amount cannot be null.");
-        checkState(amount.compareTo(BigDecimal.ZERO) >= 0);
+        checkState(currency != null && currency.length() == 3, "Currency length needs to be 3.");
+        checkState(amount.compareTo(BigDecimal.ZERO) >= 0, "Amount needs to be >=0.");
     }
 
     public String getId() {
@@ -91,6 +93,14 @@ public class TransactionBody implements Body {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getPlaceId() {
