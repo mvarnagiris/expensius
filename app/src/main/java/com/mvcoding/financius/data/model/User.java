@@ -12,29 +12,21 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.api.model;
+package com.mvcoding.financius.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Tag implements Serializable {
-    @SerializedName("title") private String title;
-    @SerializedName("color") private int color;
+public class User implements Serializable {
+    @SerializedName("email") private String email;
+    @SerializedName("googleId") private String googleId;
 
-    public String getTitle() {
-        return title;
+    public String getEmail() {
+        return email;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
+    public String getGoogleId() {
+        return googleId;
     }
 }

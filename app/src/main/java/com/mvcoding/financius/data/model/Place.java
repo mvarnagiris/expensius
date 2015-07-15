@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.api.model;
+package com.mvcoding.financius.data.model;
 
 import com.google.gson.annotations.SerializedName;
 

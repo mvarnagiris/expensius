@@ -14,8 +14,8 @@
 
 package com.mvcoding.financius.api.service;
 
-import com.mvcoding.financius.api.model.User;
 import com.mvcoding.financius.core.endpoints.body.RegisterUserBody;
+import com.mvcoding.financius.data.model.User;
 
 import retrofit.http.Body;
 import retrofit.http.POST;

@@ -16,9 +16,9 @@ package com.mvcoding.financius.ui.transaction;
 
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.api.model.Tag;
-import com.mvcoding.financius.api.model.Transaction;
 import com.mvcoding.financius.core.model.TransactionType;
+import com.mvcoding.financius.data.model.Tag;
+import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
