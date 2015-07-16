@@ -47,7 +47,7 @@ import javax.inject.Singleton;
     }
 
     @NonNull @Override protected Column[] getModelColumns() {
-        return new Column[]{transactionType, transactionState, date, amount, currency, note};
+        return new Column[]{transactionType, transactionState, date, amount, currency, placeId, note};
     }
 
     @NonNull public Column transactionType() {
@@ -68,6 +68,10 @@ import javax.inject.Singleton;
 
     @NonNull public Column currency() {
         return currency;
+    }
+
+    @NonNull public Column placeId() {
+        return placeId;
     }
 
     @NonNull public Column note() {

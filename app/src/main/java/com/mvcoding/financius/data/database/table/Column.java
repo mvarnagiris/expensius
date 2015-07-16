@@ -38,6 +38,10 @@ public final class Column {
         return name + " " + type + (defaultValue == null || defaultValue.isEmpty() ? "" : " default " + defaultValue);
     }
 
+    @NonNull public String name() {
+        return name;
+    }
+
     enum Type {
         IntegerPrimaryKey("integer primary key autoincrement"),
         Text("text"),
