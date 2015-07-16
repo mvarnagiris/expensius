@@ -17,7 +17,7 @@ package com.mvcoding.financius.data.database.table;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-abstract class BaseTable {
+public abstract class BaseTable {
     private final String tableName;
 
     protected BaseTable(@NonNull String tableName) {
@@ -45,6 +45,9 @@ abstract class BaseTable {
         sb.append(");");
 
         database.execSQL(sb.toString());
+    }
+
+    public void upgrade(@NonNull SQLiteDatabase database, int oldVersion, int newVersion) {
     }
 
     @NonNull protected abstract Column[] getColumns();

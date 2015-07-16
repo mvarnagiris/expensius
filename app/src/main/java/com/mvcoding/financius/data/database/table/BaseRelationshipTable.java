@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BaseRelationshipTable extends BaseTable {
+abstract class BaseRelationshipTable extends BaseTable {
     protected BaseRelationshipTable(@NonNull String tableName) {
         super(tableName);
     }

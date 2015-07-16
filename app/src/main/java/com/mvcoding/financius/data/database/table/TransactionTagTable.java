@@ -17,8 +17,9 @@ package com.mvcoding.financius.data.database.table;
 import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-public final class TransactionTagTable extends BaseRelationshipTable {
+@Singleton public final class TransactionTagTable extends BaseRelationshipTable {
     private final Column transactionId;
     private final Column tagId;
 
