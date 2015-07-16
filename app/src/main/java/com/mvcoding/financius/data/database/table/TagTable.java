@@ -24,7 +24,7 @@ import javax.inject.Singleton;
     private final Column color;
 
     @Inject TagTable() {
-        this("tags");
+        this("tag");
     }
 
     private TagTable(@NonNull String tableName) {
@@ -35,5 +35,13 @@ import javax.inject.Singleton;
 
     @NonNull @Override protected Column[] getModelColumns() {
         return new Column[]{title, color};
+    }
+
+    @NonNull public Column title() {
+        return title;
+    }
+
+    @NonNull public Column color() {
+        return color;
     }
 }

@@ -28,6 +28,7 @@ public class Transaction implements Serializable {
     @SerializedName("date") private long date;
     @SerializedName("amount") private BigDecimal amount;
     @SerializedName("currency") private String currency;
+    @SerializedName("place") private Place place;
     @SerializedName("tags") private Set<Tag> tags;
     @SerializedName("note") private String note;
 
@@ -69,6 +70,14 @@ public class Transaction implements Serializable {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     public Set<Tag> getTags() {
