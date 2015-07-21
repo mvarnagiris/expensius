@@ -12,36 +12,36 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.data.model;
+package com.mvcoding.financius.core.endpoints.body;
 
-import android.support.annotation.NonNull;
-
-import com.mvcoding.financius.core.endpoints.body.Body;
+import com.google.common.base.Strings;
+import com.mvcoding.financius.core.endpoints.body.validation.CompositeException;
 import com.mvcoding.financius.core.model.ModelState;
 
-import java.util.UUID;
+import static com.google.common.base.Preconditions.checkState;
 
-public abstract class Model<B extends Body> {
-    private long _id;
+public class ModelBody implements Body {
     private String id;
     private ModelState modelState;
 
-    @NonNull public String getId() {
-        if (id == null) {
-            id = UUID.randomUUID().toString();
-        }
+    @Override public void validate() throws CompositeException {
+
+        checkState(!Strings.isNullOrEmpty(id), "Id cannot be empty.");
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    @NonNull public ModelState getModelState() {
+    public ModelState getModelState() {
         return modelState;
     }
 
-    public void setModelState(@NonNull ModelState modelState) {
+    public void setModelState(ModelState modelState) {
         this.modelState = modelState;
     }
 }

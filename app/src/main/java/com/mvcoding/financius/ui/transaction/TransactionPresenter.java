@@ -16,7 +16,9 @@ package com.mvcoding.financius.ui.transaction;
 
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
+import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.ActivityScope;
@@ -38,13 +40,23 @@ import rx.Observable;
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
 
-        final Observable<Transaction> transactionObservable = Observable.never();
+        unsubscribeOnDetach(view.onSave()
+                                    .withLatestFrom(transactionObservable(), (event, transaction) -> transaction)
+                                    .doOnNext(view::showTransaction)
+                                    .subscribe());
+    }
+
+    @NonNull private Observable<Transaction> transactionObservable() {
+        return Observable.never();
     }
 
     public interface View extends PresenterView {
         @NonNull Observable<TransactionType> onTransactionTypeChanged();
+        @NonNull Observable<TransactionState> onTransactionStateChanged();
+        @NonNull Observable<Long> onDateChanged();
         @NonNull Observable<BigDecimal> onAmountChanged();
         @NonNull Observable<String> onCurrencyChanged();
+        @NonNull Observable<Place> onPlaceChanged();
         @NonNull Observable<Set<Tag>> onTagsChanged();
         @NonNull Observable<String> onNoteChanged();
         @NonNull Observable<Event> onSave();

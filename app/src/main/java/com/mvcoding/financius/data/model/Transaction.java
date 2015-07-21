@@ -18,11 +18,10 @@ import com.google.gson.annotations.SerializedName;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
 
-public class Transaction implements Serializable {
+public class Transaction extends Model {
     @SerializedName("transactionType") private TransactionType transactionType;
     @SerializedName("transactionState") private TransactionState transactionState;
     @SerializedName("date") private long date;
