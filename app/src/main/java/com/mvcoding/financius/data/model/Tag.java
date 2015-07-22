@@ -14,13 +14,21 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
+import com.mvcoding.financius.core.endpoints.body.TagBody;
 
-import java.io.Serializable;
-
-public class Tag implements Serializable {
+public class Tag extends Model<TagBody> {
     @SerializedName("title") private String title;
     @SerializedName("color") private int color;
+
+    @NonNull @Override public TagBody toBody() {
+        final TagBody body = super.toBody();
+        body.setTitle(title);
+        body.setColor(color);
+        return body;
+    }
 
     public String getTitle() {
         return title;
@@ -36,5 +44,9 @@ public class Tag implements Serializable {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    @NonNull @Override protected TagBody createBody() {
+        return new TagBody();
     }
 }

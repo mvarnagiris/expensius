@@ -14,14 +14,27 @@
 
 package com.mvcoding.financius.data.model;
 
-import com.google.gson.annotations.SerializedName;
+import android.support.annotation.NonNull;
 
-public class Place {
+import com.google.gson.annotations.SerializedName;
+import com.mvcoding.financius.core.endpoints.body.PlaceBody;
+
+public class Place extends Model<PlaceBody> {
     @SerializedName("placeId") private String placeId;
     @SerializedName("name") private String name;
     @SerializedName("address") private String address;
     @SerializedName("latitude") private double latitude;
     @SerializedName("longitude") private double longitude;
+
+    @NonNull @Override public PlaceBody toBody() {
+        final PlaceBody body = super.toBody();
+        body.setPlaceId(placeId);
+        body.setName(name);
+        body.setAddress(address);
+        body.setLatitude(latitude);
+        body.setLongitude(longitude);
+        return body;
+    }
 
     public String getPlaceId() {
         return placeId;
@@ -61,5 +74,9 @@ public class Place {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    @NonNull @Override protected PlaceBody createBody() {
+        return new PlaceBody();
     }
 }

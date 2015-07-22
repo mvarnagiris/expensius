@@ -17,8 +17,9 @@ package com.mvcoding.financius.data.database.table;
 import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-public final class PlaceTable extends BaseModelTable {
+@Singleton public final class PlaceTable extends BaseModelTable {
     private final Column placeId;
     private final Column name;
     private final Column address;

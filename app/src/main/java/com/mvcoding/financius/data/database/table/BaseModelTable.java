@@ -19,15 +19,15 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.model.ModelState;
 
-abstract class BaseModelTable extends BaseTable {
+public abstract class BaseModelTable extends BaseTable {
     private final Column _id;
     private final Column id;
     private final Column modelState;
 
     protected BaseModelTable(@NonNull String tableName) {
         super(tableName);
-        _id = new Column(tableName, BaseColumns._ID, Column.Type.IntegerPrimaryKey);
-        id = new Column(tableName, "id", Column.Type.Text);
+        _id = new Column(tableName, BaseColumns._ID, Column.Type.IntegerAutoIncrement);
+        id = new Column(tableName, "id", Column.Type.TextPrimaryKey);
         modelState = new Column(tableName, "modelState", Column.Type.Text, ModelState.Normal.name());
     }
 

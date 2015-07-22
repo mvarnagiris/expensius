@@ -14,14 +14,18 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
+import com.mvcoding.financius.core.endpoints.body.TransactionBody;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
-public class Transaction extends Model {
+public class Transaction extends Model<TransactionBody> {
     @SerializedName("transactionType") private TransactionType transactionType;
     @SerializedName("transactionState") private TransactionState transactionState;
     @SerializedName("date") private long date;
@@ -30,6 +34,30 @@ public class Transaction extends Model {
     @SerializedName("place") private Place place;
     @SerializedName("tags") private Set<Tag> tags;
     @SerializedName("note") private String note;
+
+    @NonNull @Override public TransactionBody toBody() {
+        final TransactionBody body = super.toBody();
+        body.setTransactionType(transactionType);
+        body.setTransactionState(transactionState);
+        body.setDate(date);
+        body.setAmount(amount);
+        body.setCurrency(currency);
+        body.setNote(note);
+
+        if (place != null) {
+            body.setPlaceId(place.getId());
+        }
+
+        if (tags != null) {
+            final Set<String> tagIds = new HashSet<>();
+            for (Tag tag : tags) {
+                tagIds.add(tag.getId());
+            }
+            body.setTagIds(tagIds);
+        }
+
+        return body;
+    }
 
     public TransactionType getTransactionType() {
         return transactionType;
@@ -93,5 +121,9 @@ public class Transaction extends Model {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @NonNull @Override protected TransactionBody createBody() {
+        return new TransactionBody();
     }
 }

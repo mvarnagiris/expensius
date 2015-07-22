@@ -16,15 +16,26 @@ package com.mvcoding.financius.data.model;
 
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.core.endpoints.body.Body;
+import com.mvcoding.financius.core.endpoints.body.ModelBody;
 import com.mvcoding.financius.core.model.ModelState;
 
 import java.util.UUID;
 
-public abstract class Model<B extends Body> {
+public abstract class Model<B extends ModelBody> {
     private long _id;
     private String id;
     private ModelState modelState;
+
+    @NonNull public B toBody() {
+        final B body = createBody();
+        body.setId(id);
+        body.setModelState(modelState);
+        return body;
+    }
+
+    public void validate() throws RuntimeException {
+        toBody().validate();
+    }
 
     @NonNull public String getId() {
         if (id == null) {
@@ -44,4 +55,6 @@ public abstract class Model<B extends Body> {
     public void setModelState(@NonNull ModelState modelState) {
         this.modelState = modelState;
     }
+
+    @NonNull protected abstract B createBody();
 }
