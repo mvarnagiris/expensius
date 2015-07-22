@@ -15,18 +15,18 @@
 package com.mvcoding.financius.core.endpoints.body;
 
 import com.google.common.base.Strings;
-import com.mvcoding.financius.core.endpoints.body.validation.CompositeException;
 import com.mvcoding.financius.core.model.ModelState;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-public class ModelBody implements Body {
+public abstract class ModelBody implements Body {
     private String id;
     private ModelState modelState;
 
-    @Override public void validate() throws CompositeException {
-
+    @Override public void validate() throws RuntimeException {
         checkState(!Strings.isNullOrEmpty(id), "Id cannot be empty.");
+        checkNotNull(modelState, "ModelState cannot be null.");
     }
 
     public String getId() {

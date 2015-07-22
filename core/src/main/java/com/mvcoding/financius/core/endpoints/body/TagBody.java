@@ -18,11 +18,12 @@ import com.google.common.base.Strings;
 
 import static com.google.common.base.Preconditions.checkState;
 
-public class TagBody implements Body {
+public class TagBody extends ModelBody {
     private String title;
     private int color;
 
     @Override public void validate() throws RuntimeException {
+        super.validate();
         checkState(!Strings.isNullOrEmpty(title), "Title cannot be empty.");
     }
 

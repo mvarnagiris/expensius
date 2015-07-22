@@ -12,10 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.core.endpoints.body.validation;
+package com.mvcoding.financius.core.endpoints.body;
 
-public class RequiredException extends RuntimeException {
-    public RequiredException(String message) {
-        super(message);
+import com.mvcoding.financius.core.model.ModelState;
+
+public abstract class BaseModelBodyTest<B extends ModelBody> extends BaseBodyTest<B> {
+    protected void makeAllFieldsValid(B body) {
+        body.setId("id");
+        body.setModelState(ModelState.Normal);
     }
 }

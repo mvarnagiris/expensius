@@ -14,44 +14,31 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-
-public class TagBodyTest {
-    private TagBody body;
-
-    @Before public void setUp() {
-        body = new TagBody();
+public class TagBodyTest extends BaseModelBodyTest<TagBody> {
+    @Override protected TagBody createBody() {
+        return new TagBody();
     }
 
     @Test public void validate_doesNotThrowException_whenAllFieldsAreValid() {
         makeAllFieldsValid(body);
-
         body.validate();
     }
 
-    @Test public void validate_throwsRuntimeException_whenTitleIsNullOrEmpty() {
-        try {
-            makeAllFieldsValid(body);
-            body.setTitle(null);
-            body.validate();
-            failBecauseExceptionWasNotThrown(RuntimeException.class);
-        } catch (RuntimeException ignore) {
-        }
-
-        try {
-            makeAllFieldsValid(body);
-            body.setTitle("");
-            body.validate();
-            failBecauseExceptionWasNotThrown(RuntimeException.class);
-        } catch (RuntimeException ignore) {
-        }
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenTitleIsNull() {
+        body.setTitle(null);
+        body.validate();
     }
 
-    private void makeAllFieldsValid(TagBody body) {
-        body.setTitle("any");
-        body.setColor(0);
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenTitleIsEmpty() {
+        body.setTitle("");
+        body.validate();
+    }
+
+    @Override protected void makeAllFieldsValid(TagBody body) {
+        super.makeAllFieldsValid(body);
+        body.setTitle("title");
+        body.setColor(1);
     }
 }

@@ -18,7 +18,7 @@ import com.google.common.base.Strings;
 
 import static com.google.common.base.Preconditions.checkState;
 
-public class PlaceBody implements Body {
+public class PlaceBody extends ModelBody {
     private String placeId;
     private String name;
     private String address;
@@ -26,6 +26,7 @@ public class PlaceBody implements Body {
     private double longitude;
 
     @Override public void validate() throws RuntimeException {
+        super.validate();
         checkState(!Strings.isNullOrEmpty(placeId), "Place Id cannot be empty.");
         checkState(!Strings.isNullOrEmpty(name), "Name cannot be empty.");
     }

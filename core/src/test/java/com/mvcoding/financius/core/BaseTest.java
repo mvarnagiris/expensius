@@ -12,23 +12,15 @@
  * GNU General Public License for more details.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0-beta4'
-        classpath 'me.tatarka:gradle-retrolambda:3.1.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.16.0'
-    }
-}
+package com.mvcoding.financius.core;
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url 'http://download.crashlytics.com/maven' }
-        maven { url 'https://clojars.org/repo' }
+import org.junit.After;
+import org.junit.Before;
+
+public abstract class BaseTest {
+    @Before public void setUp() throws Exception {
+    }
+
+    @After public void tearDown() throws Exception {
     }
 }

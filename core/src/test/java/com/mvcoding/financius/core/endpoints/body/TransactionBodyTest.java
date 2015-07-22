@@ -14,82 +14,68 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import com.mvcoding.financius.core.model.ModelState;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
-public class TransactionBodyTest {
-    private TransactionBody body;
-
-    @Before public void setUp() {
-        body = new TransactionBody();
+public class TransactionBodyTest extends BaseModelBodyTest<TransactionBody> {
+    @Override protected TransactionBody createBody() {
+        return new TransactionBody();
     }
 
     @Test public void validate_doesNotThrowException_whenAllFieldsAreValid() {
         makeAllFieldsValid(body);
-
-        body.validate();
-    }
-
-    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenIdIsNull() {
-        makeAllFieldsValid(body);
-        body.setId(null);
-
-        body.validate();
-    }
-
-    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenIdIsEmpty() {
-        makeAllFieldsValid(body);
-        body.setId("");
-
-        body.validate();
-    }
-
-    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenModelStateIsNull() {
-        makeAllFieldsValid(body);
-        body.setModelState(null);
-
         body.validate();
     }
 
     @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenTransactionTypeIsNull() {
-        makeAllFieldsValid(body);
         body.setTransactionType(null);
-
         body.validate();
     }
 
     @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenTransactionStateIsNull() {
-        makeAllFieldsValid(body);
         body.setTransactionState(null);
-
         body.validate();
     }
 
     @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenAmountIsNull() {
-        makeAllFieldsValid(body);
         body.setAmount(null);
-
         body.validate();
     }
 
     @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenAmountIsLessThan0() {
-        makeAllFieldsValid(body);
         body.setAmount(BigDecimal.ONE.negate());
-
         body.validate();
     }
 
-    private void makeAllFieldsValid(TransactionBody body) {
-        body.setId("any");
-        body.setModelState(ModelState.Normal);
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenCurrencyIsNull() {
+        body.setCurrency(null);
+        body.validate();
+    }
+
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenCurrencyLengthIsLessThan3() {
+        body.setCurrency("GB");
+        body.validate();
+    }
+
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenCurrencyLengthIsMoreThan3() {
+        body.setCurrency("GBPP");
+        body.validate();
+    }
+
+    @Override protected void makeAllFieldsValid(TransactionBody body) {
+        super.makeAllFieldsValid(body);
         body.setTransactionType(TransactionType.Expense);
         body.setTransactionState(TransactionState.Confirmed);
-        body.setAmount(BigDecimal.ZERO);
+        body.setDate(System.currentTimeMillis());
+        body.setAmount(BigDecimal.ONE);
+        body.setCurrency("GBP");
+        body.setPlaceId("placeId");
+        body.setTagIds(Collections.<String>emptySet());
+        body.setNote("note");
     }
 }

@@ -14,65 +14,43 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-
-public class PlaceBodyTest {
-    private PlaceBody body;
-
-    @Before public void setUp() {
-        body = new PlaceBody();
+public class PlaceBodyTest extends BaseModelBodyTest<PlaceBody> {
+    @Override protected PlaceBody createBody() {
+        return new PlaceBody();
     }
 
     @Test public void validate_doesNotThrowException_whenAllFieldsAreValid() {
-        makeAllFieldsValid(body);
-
         body.validate();
     }
 
-    @Test public void validate_throwsRuntimeException_whenPlaceIdIsNullOrEmpty() {
-        try {
-            makeAllFieldsValid(body);
-            body.setPlaceId(null);
-            body.validate();
-            failBecauseExceptionWasNotThrown(RuntimeException.class);
-        } catch (RuntimeException ignore) {
-        }
-
-        try {
-            makeAllFieldsValid(body);
-            body.setPlaceId("");
-            body.validate();
-            failBecauseExceptionWasNotThrown(RuntimeException.class);
-        } catch (RuntimeException ignore) {
-        }
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenPlaceIdIsNull() {
+        body.setPlaceId(null);
+        body.validate();
     }
 
-    @Test public void validate_throwsRuntimeException_whenNameNullOrEmpty() {
-        try {
-            makeAllFieldsValid(body);
-            body.setName(null);
-            body.validate();
-            failBecauseExceptionWasNotThrown(RuntimeException.class);
-        } catch (RuntimeException ignore) {
-        }
-
-        try {
-            makeAllFieldsValid(body);
-            body.setName("");
-            body.validate();
-            failBecauseExceptionWasNotThrown(RuntimeException.class);
-        } catch (RuntimeException ignore) {
-        }
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenPlaceIdIsEmpty() {
+        body.setPlaceId("");
+        body.validate();
     }
 
-    private void makeAllFieldsValid(PlaceBody body) {
-        body.setPlaceId("any");
-        body.setName("any");
-        body.setAddress("any");
-        body.setLatitude(0);
-        body.setLongitude(0);
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenNameIsNull() {
+        body.setName(null);
+        body.validate();
+    }
+
+    @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenNameIsEmpty() {
+        body.setName("");
+        body.validate();
+    }
+
+    @Override protected void makeAllFieldsValid(PlaceBody body) {
+        super.makeAllFieldsValid(body);
+        body.setPlaceId("placeId");
+        body.setName("name");
+        body.setAddress("address");
+        body.setLatitude(1);
+        body.setLongitude(1);
     }
 }

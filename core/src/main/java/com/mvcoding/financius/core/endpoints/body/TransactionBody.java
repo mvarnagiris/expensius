@@ -14,8 +14,6 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import com.google.common.base.Strings;
-import com.mvcoding.financius.core.model.ModelState;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
@@ -25,9 +23,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-public class TransactionBody implements Body {
-    private String id;
-    private ModelState modelState;
+public class TransactionBody extends ModelBody {
     private TransactionType transactionType;
     private TransactionState transactionState;
     private long date;
@@ -38,29 +34,12 @@ public class TransactionBody implements Body {
     private String note;
 
     @Override public void validate() throws RuntimeException {
-        checkState(!Strings.isNullOrEmpty(id), "Id cannot be empty.");
-        checkNotNull(modelState, "Model state cannot be null.");
+        super.validate();
         checkNotNull(transactionType, "Transaction type cannot be null.");
         checkNotNull(transactionState, "Transaction state cannot be null.");
         checkNotNull(amount, "Amount cannot be null.");
-        checkState(currency != null && currency.length() == 3, "Currency length needs to be 3.");
         checkState(amount.compareTo(BigDecimal.ZERO) >= 0, "Amount needs to be >=0.");
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public ModelState getModelState() {
-        return modelState;
-    }
-
-    public void setModelState(ModelState modelState) {
-        this.modelState = modelState;
+        checkState(currency != null && currency.length() == 3, "Currency length needs to be 3.");
     }
 
     public TransactionType getTransactionType() {

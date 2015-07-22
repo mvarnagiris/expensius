@@ -12,10 +12,22 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.core.endpoints.body.validation;
+package com.mvcoding.financius.core.endpoints.body;
 
-public class IdRequiredException extends RequiredException {
-    public IdRequiredException() {
-        super("Id cannot be empty.");
+import com.mvcoding.financius.core.BaseTest;
+
+import org.junit.Before;
+
+public abstract class BaseBodyTest<B extends Body> extends BaseTest {
+    protected B body;
+
+    @Before public void setUp() throws Exception {
+        super.setUp();
+        body = createBody();
+        makeAllFieldsValid(body);
     }
+
+    protected abstract B createBody();
+
+    protected abstract void makeAllFieldsValid(B body);
 }

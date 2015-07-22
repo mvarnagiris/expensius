@@ -14,37 +14,29 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import org.junit.Before;
 import org.junit.Test;
 
-public class RegisterUserBodyTest {
-    private RegisterUserBody body;
-
-    @Before public void setUp() {
-        body = new RegisterUserBody();
+public class RegisterUserBodyTest extends BaseBodyTest<RegisterUserBody> {
+    @Override protected RegisterUserBody createBody() {
+        return new RegisterUserBody();
     }
 
     @Test public void validate_doesNotThrowException_whenAllFieldsAreValid() {
         makeAllFieldsValid(body);
-
         body.validate();
     }
 
     @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenGoogleIdIsNull() {
-        makeAllFieldsValid(body);
         body.setGoogleId(null);
-
         body.validate();
     }
 
     @Test(expected = RuntimeException.class) public void validate_throwsRuntimeException_whenGoogleIdIsEmpty() {
-        makeAllFieldsValid(body);
         body.setGoogleId("");
-
         body.validate();
     }
 
-    private void makeAllFieldsValid(RegisterUserBody body) {
+    @Override protected void makeAllFieldsValid(RegisterUserBody body) {
         body.setGoogleId("any");
     }
 }
