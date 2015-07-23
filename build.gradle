@@ -30,5 +30,6 @@ allprojects {
         jcenter()
         maven { url 'http://download.crashlytics.com/maven' }
         maven { url 'https://clojars.org/repo' }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 }

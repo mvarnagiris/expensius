@@ -18,6 +18,8 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +36,8 @@ public class App extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
+
+        LeakCanary.install(this);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/Roboto-Regular.ttf")
                                               .setFontAttrId(R.attr.fontPath)

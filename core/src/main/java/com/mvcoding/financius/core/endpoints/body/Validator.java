@@ -14,20 +14,6 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-public class RegisterUserBody implements Body {
-    private String googleId;
-
-    @Override public void validate() throws ValidationException {
-        if (!NotEmptyValidator.get().isValid(googleId)) {
-            throw new ValidationException("Google Id cannot be empty.");
-        }
-    }
-
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
-    }
+interface Validator<T> {
+    boolean isValid(T value);
 }

@@ -14,19 +14,27 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import com.google.common.base.Strings;
 import com.mvcoding.financius.core.model.ModelState;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 public abstract class ModelBody implements Body {
     private String id;
     private ModelState modelState;
 
-    @Override public void validate() throws RuntimeException {
-        checkState(!Strings.isNullOrEmpty(id), "Id cannot be empty.");
-        checkNotNull(modelState, "ModelState cannot be null.");
+    @Override public void validate() throws ValidationException {
+        validateId();
+        validateModelState();
+    }
+
+    public void validateId() throws ValidationException {
+        if (!NotEmptyValidator.get().isValid(id)) {
+            throw new ValidationException("Id cannot be empty.");
+        }
+    }
+
+    public void validateModelState() throws ValidationException {
+        if (!NotNullValidator.get().isValid(modelState)) {
+            throw new ValidationException("ModelState cannot be null.");
+        }
     }
 
     public String getId() {

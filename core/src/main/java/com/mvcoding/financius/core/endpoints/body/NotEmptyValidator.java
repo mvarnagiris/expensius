@@ -14,20 +14,18 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-public class RegisterUserBody implements Body {
-    private String googleId;
+import com.google.common.base.Strings;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 
-    @Override public void validate() throws ValidationException {
-        if (!NotEmptyValidator.get().isValid(googleId)) {
-            throw new ValidationException("Google Id cannot be empty.");
-        }
+class NotEmptyValidator implements Validator<String> {
+    private static final NotEmptyValidator INSTANCE = new NotEmptyValidator();
+
+    @NotNull public static NotEmptyValidator get() {
+        return INSTANCE;
     }
 
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
+    @Override public boolean isValid(@Nullable String value) {
+        return Strings.isNullOrEmpty(value);
     }
 }

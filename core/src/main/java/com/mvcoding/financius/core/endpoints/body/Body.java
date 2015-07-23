@@ -15,5 +15,5 @@
 package com.mvcoding.financius.core.endpoints.body;
 
 public interface Body {
-    void validate() throws RuntimeException;
+    void validate() throws ValidationException;
 }

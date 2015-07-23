@@ -17,10 +17,21 @@ package com.mvcoding.financius.ui.transaction;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.core.model.TransactionState;
+import com.mvcoding.financius.core.model.TransactionType;
+import com.mvcoding.financius.data.model.Place;
+import com.mvcoding.financius.data.model.Tag;
+import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.BaseActivity;
+import com.mvcoding.financius.util.rx.Event;
+
+import java.math.BigDecimal;
+import java.util.Set;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 public class TransactionActivity extends BaseActivity<TransactionPresenter.View, TransactionComponent> implements TransactionPresenter.View {
     @Inject TransactionPresenter presenter;
@@ -43,5 +54,45 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
     @NonNull @Override protected TransactionPresenter.View getPresenterView() {
         return this;
+    }
+
+    @NonNull @Override public Observable<TransactionType> onTransactionTypeChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<TransactionState> onTransactionStateChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<Long> onDateChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<BigDecimal> onAmountChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<String> onCurrencyChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<Place> onPlaceChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<Set<Tag>> onTagsChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<String> onNoteChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<Event> onSave() {
+        return null;
+    }
+
+    @Override public void showTransaction(@NonNull Transaction transaction) {
+
     }
 }

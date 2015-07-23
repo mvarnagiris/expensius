@@ -20,9 +20,6 @@ import com.mvcoding.financius.core.model.TransactionType;
 import java.math.BigDecimal;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
 public class TransactionBody extends ModelBody {
     private TransactionType transactionType;
     private TransactionState transactionState;
@@ -35,11 +32,34 @@ public class TransactionBody extends ModelBody {
 
     @Override public void validate() throws RuntimeException {
         super.validate();
-        checkNotNull(transactionType, "Transaction type cannot be null.");
-        checkNotNull(transactionState, "Transaction state cannot be null.");
-        checkNotNull(amount, "Amount cannot be null.");
-        checkState(amount.compareTo(BigDecimal.ZERO) >= 0, "Amount needs to be >=0.");
-        checkState(currency != null && currency.length() == 3, "Currency length needs to be 3.");
+        validateTransactionType();
+        validateTransactionState();
+        validateAmount();
+        validateCurrency();
+    }
+
+    public void validateTransactionType() throws ValidationException {
+        if (!NotNullValidator.get().isValid(transactionType)) {
+            throw new ValidationException("Transaction type cannot be null.");
+        }
+    }
+
+    public void validateTransactionState() throws ValidationException {
+        if (!NotNullValidator.get().isValid(transactionState)) {
+            throw new ValidationException("Transaction state cannot be null.");
+        }
+    }
+
+    public void validateAmount() throws ValidationException {
+        if (!NotNullValidator.get().isValid(amount) || amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ValidationException("Amount cannot be null and must be >= 0.");
+        }
+    }
+
+    public void validateCurrency() throws ValidationException {
+        if (!NotEmptyValidator.get().isValid(currency) || currency.length() != 3) {
+            throw new ValidationException("Currency length needs to be 3.");
+        }
     }
 
     public TransactionType getTransactionType() {

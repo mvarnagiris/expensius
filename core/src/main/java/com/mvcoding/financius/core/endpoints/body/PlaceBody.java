@@ -14,10 +14,6 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import com.google.common.base.Strings;
-
-import static com.google.common.base.Preconditions.checkState;
-
 public class PlaceBody extends ModelBody {
     private String placeId;
     private String name;
@@ -25,10 +21,22 @@ public class PlaceBody extends ModelBody {
     private double latitude;
     private double longitude;
 
-    @Override public void validate() throws RuntimeException {
+    @Override public void validate() throws ValidationException {
         super.validate();
-        checkState(!Strings.isNullOrEmpty(placeId), "Place Id cannot be empty.");
-        checkState(!Strings.isNullOrEmpty(name), "Name cannot be empty.");
+        validatePlaceId();
+        validateName();
+    }
+
+    public void validatePlaceId() throws ValidationException {
+        if (!NotEmptyValidator.get().isValid(placeId)) {
+            throw new ValidationException("Place Id cannot be empty.");
+        }
+    }
+
+    public void validateName() throws ValidationException {
+        if (!NotEmptyValidator.get().isValid(name)) {
+            throw new ValidationException("Name cannot be empty.");
+        }
     }
 
     public String getPlaceId() {

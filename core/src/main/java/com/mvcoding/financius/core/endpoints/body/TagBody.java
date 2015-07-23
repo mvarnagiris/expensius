@@ -14,17 +14,19 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import com.google.common.base.Strings;
-
-import static com.google.common.base.Preconditions.checkState;
-
 public class TagBody extends ModelBody {
     private String title;
     private int color;
 
-    @Override public void validate() throws RuntimeException {
+    @Override public void validate() throws ValidationException {
         super.validate();
-        checkState(!Strings.isNullOrEmpty(title), "Title cannot be empty.");
+        validateTitle();
+    }
+
+    public void validateTitle() throws ValidationException {
+        if (!NotEmptyValidator.get().isValid(title)) {
+            throw new ValidationException("Title cannot be empty.");
+        }
     }
 
     public String getTitle() {
