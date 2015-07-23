@@ -14,15 +14,20 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-class NotNullValidator<T> implements Validator<T> {
-    private static final NotNullValidator INSTANCE = new NotNullValidator();
+import com.mvcoding.financius.core.BaseTest;
 
-    public static <T> NotNullValidator<T> get() {
-        //noinspection unchecked
-        return INSTANCE;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class NotNullValidatorTest extends BaseTest {
+    private final NotNullValidator<Object> validator = new NotNullValidator<Object>();
+
+    @Test public void isValid_returnsTrue_whenValueIsNotNull() throws Exception {
+        assertThat(validator.isValid(new Object())).isTrue();
     }
 
-    @Override public boolean isValid(T value) {
-        return value != null;
+    @Test public void isValid_returnsTrue_whenValueIsNull() throws Exception {
+        assertThat(validator.isValid(null)).isFalse();
     }
 }

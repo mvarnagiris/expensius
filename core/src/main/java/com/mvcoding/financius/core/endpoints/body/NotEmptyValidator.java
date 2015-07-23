@@ -15,17 +15,15 @@
 package com.mvcoding.financius.core.endpoints.body;
 
 import com.google.common.base.Strings;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 
 class NotEmptyValidator implements Validator<String> {
     private static final NotEmptyValidator INSTANCE = new NotEmptyValidator();
 
-    @NotNull public static NotEmptyValidator get() {
+    public static NotEmptyValidator get() {
         return INSTANCE;
     }
 
-    @Override public boolean isValid(@Nullable String value) {
+    @Override public boolean isValid(String value) {
         return Strings.isNullOrEmpty(value);
     }
 }
