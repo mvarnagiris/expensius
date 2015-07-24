@@ -14,16 +14,22 @@
 
 package com.mvcoding.financius.ui.transaction;
 
+import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
+import com.mvcoding.financius.data.Api;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
+import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.BasePresenterTest;
 import com.mvcoding.financius.util.rx.Event;
+
+import org.mockito.Mock;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 import static org.mockito.Mockito.mock;
@@ -40,8 +46,12 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     private final PublishSubject<String> noteSubject = PublishSubject.create();
     private final PublishSubject<Event> saveSubject = PublishSubject.create();
 
+    @Mock private Transaction defaultTransaction;
+    @Mock private UserSettings userSettings;
+    @Mock private Api api;
+
     @Override protected TransactionPresenter createPresenter() {
-        return new TransactionPresenter();
+        return new TransactionPresenter(defaultTransaction, userSettings, api, Schedulers.immediate(), Schedulers.immediate());
     }
 
     @Override protected TransactionPresenter.View createView() {

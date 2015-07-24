@@ -30,6 +30,11 @@ public class Tag extends Model<TagBody> {
         return body;
     }
 
+    @NonNull @Override public Tag withDefaultValues() {
+        super.withDefaultValues();
+        return this;
+    }
+
     public String getTitle() {
         return title;
     }

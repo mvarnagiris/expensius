@@ -35,7 +35,7 @@ import icepick.Icicle;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 
-public abstract class BaseActivity<V extends PresenterView, C extends BaseComponent> extends AppCompatActivity implements CloseablePresenterView {
+public abstract class BaseActivity<V extends PresenterView, C extends BaseComponent> extends AppCompatActivity implements CloseablePresenterView, ErrorPresenterView {
     protected static final Observable.Transformer<OnClickEvent, Event> clickTransformer = onClickEventObservable -> onClickEventObservable.map(onClickEvent -> new Event());
 
     @Icicle String componentKey;
@@ -69,6 +69,11 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
 
     @Override public void close() {
         ActivityCompat.finishAfterTransition(this);
+    }
+
+    @NonNull @Override public Observable<ErrorAction> showError(@NonNull Throwable throwable) {
+        // TODO: Display error
+        return Observable.just(new ErrorAction());
     }
 
     @NonNull protected abstract C createComponent(@NonNull ActivityComponent component);

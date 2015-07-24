@@ -23,6 +23,7 @@ public class UserSettings {
     transient Context context;
 
     private boolean isIntroductionSeen;
+    private String currency;
 
     private static void persist(@NonNull Context context, @NonNull UserSettings userSettings) {
         PreferencesUtils.put(context.getApplicationContext(), UserSettings.class.getName(), userSettings);
@@ -34,6 +35,19 @@ public class UserSettings {
 
     public void setIsIntroductionSeen(boolean isIntroductionSeen) {
         this.isIntroductionSeen = isIntroductionSeen;
+        persist(context, this);
+    }
+
+    public String getCurrency() {
+        if (currency == null || currency.length() != 3) {
+            currency = "USD";
+            persist(context, this);
+        }
+        return currency;
+    }
+
+    public void setCurrency(@NonNull String currency) {
+        this.currency = currency;
         persist(context, this);
     }
 }

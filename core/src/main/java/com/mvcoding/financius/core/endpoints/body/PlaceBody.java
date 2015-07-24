@@ -23,20 +23,22 @@ public class PlaceBody extends ModelBody {
 
     @Override public void validate() throws ValidationException {
         super.validate();
-        validatePlaceId();
-        validateName();
-    }
 
-    public void validatePlaceId() throws ValidationException {
-        if (!NotEmptyValidator.get().isValid(placeId)) {
+        if (!isValidPlaceId()) {
             throw new ValidationException("Place Id cannot be empty.");
         }
-    }
 
-    public void validateName() throws ValidationException {
-        if (!NotEmptyValidator.get().isValid(name)) {
+        if (!isValidName()) {
             throw new ValidationException("Name cannot be empty.");
         }
+    }
+
+    public boolean isValidPlaceId() throws ValidationException {
+        return NotEmptyValidator.get().isValid(placeId);
+    }
+
+    public boolean isValidName() throws ValidationException {
+        return NotEmptyValidator.get().isValid(name);
     }
 
     public String getPlaceId() {

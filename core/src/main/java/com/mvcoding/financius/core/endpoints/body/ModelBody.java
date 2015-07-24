@@ -21,20 +21,21 @@ public abstract class ModelBody implements Body {
     private ModelState modelState;
 
     @Override public void validate() throws ValidationException {
-        validateId();
-        validateModelState();
-    }
-
-    public void validateId() throws ValidationException {
-        if (!NotEmptyValidator.get().isValid(id)) {
+        if (!isValidId()) {
             throw new ValidationException("Id cannot be empty.");
         }
-    }
 
-    public void validateModelState() throws ValidationException {
-        if (!NotNullValidator.get().isValid(modelState)) {
+        if (!isValidModelState()) {
             throw new ValidationException("ModelState cannot be null.");
         }
+    }
+
+    public boolean isValidId() throws ValidationException {
+        return NotEmptyValidator.get().isValid(id);
+    }
+
+    public boolean isValidModelState() throws ValidationException {
+        return NotNullValidator.get().isValid(modelState);
     }
 
     public String getId() {

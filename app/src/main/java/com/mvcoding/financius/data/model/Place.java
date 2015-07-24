@@ -36,6 +36,11 @@ public class Place extends Model<PlaceBody> {
         return body;
     }
 
+    @NonNull @Override public Place withDefaultValues() {
+        super.withDefaultValues();
+        return this;
+    }
+
     public String getPlaceId() {
         return placeId;
     }

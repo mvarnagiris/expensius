@@ -17,6 +17,7 @@ package com.mvcoding.financius.data.model;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
+import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.endpoints.body.TransactionBody;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
@@ -57,6 +58,21 @@ public class Transaction extends Model<TransactionBody> {
         }
 
         return body;
+    }
+
+    @NonNull @Override public Transaction withDefaultValues() {
+        super.withDefaultValues();
+        transactionType = TransactionType.Expense;
+        transactionState = TransactionState.Confirmed;
+        amount = BigDecimal.ZERO;
+        date = System.currentTimeMillis();
+        return this;
+    }
+
+    @NonNull public Transaction withDefaultValues(@NonNull UserSettings userSettings) {
+        withDefaultValues();
+        currency = userSettings.getCurrency();
+        return this;
     }
 
     public TransactionType getTransactionType() {

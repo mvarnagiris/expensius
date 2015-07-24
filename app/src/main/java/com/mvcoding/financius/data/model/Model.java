@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.endpoints.body.ModelBody;
@@ -22,7 +23,7 @@ import com.mvcoding.financius.core.model.ModelState;
 import java.util.UUID;
 
 public abstract class Model<B extends ModelBody> {
-    private long _id;
+    private Long _id;
     private String id;
     private ModelState modelState;
 
@@ -31,6 +32,12 @@ public abstract class Model<B extends ModelBody> {
         body.setId(id);
         body.setModelState(modelState);
         return body;
+    }
+
+    @NonNull @CallSuper public Model<B> withDefaultValues() {
+        id = UUID.randomUUID().toString();
+        modelState = ModelState.Normal;
+        return this;
     }
 
     public void validate() throws RuntimeException {

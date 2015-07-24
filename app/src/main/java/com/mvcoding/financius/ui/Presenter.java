@@ -17,6 +17,7 @@ package com.mvcoding.financius.ui;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
+import rx.Scheduler;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -48,5 +49,9 @@ public class Presenter<V extends PresenterView> {
             subscriptions = new CompositeSubscription();
         }
         subscriptions.add(subscription);
+    }
+
+    protected void showFatalError(@NonNull Throwable throwable, @NonNull ErrorPresenterView errorView, @NonNull CloseablePresenterView closeableView, @NonNull Scheduler uiScheduler) {
+        unsubscribeOnDetach(errorView.showError(throwable).subscribeOn(uiScheduler).subscribe(errorAction -> closeableView.close()));
     }
 }

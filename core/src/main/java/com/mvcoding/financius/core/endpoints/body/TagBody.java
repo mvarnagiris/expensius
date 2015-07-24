@@ -20,13 +20,14 @@ public class TagBody extends ModelBody {
 
     @Override public void validate() throws ValidationException {
         super.validate();
-        validateTitle();
-    }
 
-    public void validateTitle() throws ValidationException {
-        if (!NotEmptyValidator.get().isValid(title)) {
+        if (isValidTitle()) {
             throw new ValidationException("Title cannot be empty.");
         }
+    }
+
+    public boolean isValidTitle() throws ValidationException {
+        return NotEmptyValidator.get().isValid(title);
     }
 
     public String getTitle() {

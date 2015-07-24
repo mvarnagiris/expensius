@@ -32,34 +32,37 @@ public class TransactionBody extends ModelBody {
 
     @Override public void validate() throws RuntimeException {
         super.validate();
-        validateTransactionType();
-        validateTransactionState();
-        validateAmount();
-        validateCurrency();
-    }
-
-    public void validateTransactionType() throws ValidationException {
-        if (!NotNullValidator.get().isValid(transactionType)) {
+        if (!isValidTransactionType()) {
             throw new ValidationException("Transaction type cannot be null.");
         }
-    }
 
-    public void validateTransactionState() throws ValidationException {
-        if (!NotNullValidator.get().isValid(transactionState)) {
+        if (!isValidTransactionState()) {
             throw new ValidationException("Transaction state cannot be null.");
         }
-    }
 
-    public void validateAmount() throws ValidationException {
-        if (!NotNullValidator.get().isValid(amount) || amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (!isValidAmount()) {
             throw new ValidationException("Amount cannot be null and must be >= 0.");
         }
-    }
 
-    public void validateCurrency() throws ValidationException {
-        if (!NotEmptyValidator.get().isValid(currency) || currency.length() != 3) {
+        if (!isValidCurrency()) {
             throw new ValidationException("Currency length needs to be 3.");
         }
+    }
+
+    public boolean isValidTransactionType() throws ValidationException {
+        return NotNullValidator.get().isValid(transactionType);
+    }
+
+    public boolean isValidTransactionState() throws ValidationException {
+        return NotNullValidator.get().isValid(transactionState);
+    }
+
+    public boolean isValidAmount() throws ValidationException {
+        return NotNullValidator.get().isValid(amount) && amount.compareTo(BigDecimal.ZERO) >= 0;
+    }
+
+    public boolean isValidCurrency() throws ValidationException {
+        return NotEmptyValidator.get().isValid(currency) && currency.length() == 3;
     }
 
     public TransactionType getTransactionType() {
