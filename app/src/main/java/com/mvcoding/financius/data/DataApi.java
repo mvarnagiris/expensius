@@ -24,8 +24,8 @@ import javax.inject.Singleton;
 
 import rx.Observable;
 
-@Singleton public class Api {
-    @Inject public Api() {
+@Singleton public class DataApi {
+    @Inject public DataApi() {
     }
 
     public Observable<Transaction> saveTransaction(@NonNull Transaction transaction) throws ValidationException {

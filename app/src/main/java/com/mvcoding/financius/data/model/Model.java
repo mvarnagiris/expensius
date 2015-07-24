@@ -22,7 +22,9 @@ import com.mvcoding.financius.core.model.ModelState;
 
 import java.util.UUID;
 
-public abstract class Model<B extends ModelBody> {
+import lombok.Data;
+
+@Data public abstract class Model<B extends ModelBody> {
     private Long _id;
     private String id;
     private ModelState modelState;
@@ -42,25 +44,6 @@ public abstract class Model<B extends ModelBody> {
 
     public void validate() throws RuntimeException {
         toBody().validate();
-    }
-
-    @NonNull public String getId() {
-        if (id == null) {
-            id = UUID.randomUUID().toString();
-        }
-        return id;
-    }
-
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
-
-    @NonNull public ModelState getModelState() {
-        return modelState;
-    }
-
-    public void setModelState(@NonNull ModelState modelState) {
-        this.modelState = modelState;
     }
 
     @NonNull protected abstract B createBody();

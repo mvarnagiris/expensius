@@ -41,7 +41,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @NonNull @Override protected TransactionComponent createComponent(@NonNull ActivityComponent component) {
-        return component.plus(new TransactionModule());
+        // TODO: Pass in the transaction
+        return component.plus(new TransactionModule(null));
     }
 
     @Override protected void inject(@NonNull TransactionComponent component) {
@@ -93,6 +94,10 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @Override public void showTransaction(@NonNull Transaction transaction) {
+
+    }
+
+    @Override public void startResult(@NonNull Transaction transaction) {
 
     }
 }

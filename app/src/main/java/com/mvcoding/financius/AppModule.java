@@ -19,10 +19,14 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.util.PreferencesUtils;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 @Module public class AppModule {
     private final Context context;
@@ -42,5 +46,13 @@ import dagger.Provides;
         }
         userSettings.context = context;
         return userSettings;
+    }
+
+    @Provides @Singleton @Named("ui") public Scheduler provideUiScheduler() {
+        return AndroidSchedulers.mainThread();
+    }
+
+    @Provides @Singleton @Named("io") public Scheduler provideIoScheduler() {
+        return Schedulers.io();
     }
 }

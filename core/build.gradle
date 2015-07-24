@@ -18,9 +18,22 @@ apply plugin: 'me.tatarka.retrolambda'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+configurations {
+    provided
+}
+
+//noinspection GroovyAssignabilityCheck
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.guava:guava:18.0'
+
+    provided "org.projectlombok:lombok:1.16.4"
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:2.0.0'

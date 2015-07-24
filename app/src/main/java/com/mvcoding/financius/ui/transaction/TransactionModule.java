@@ -14,7 +14,27 @@
 
 package com.mvcoding.financius.ui.transaction;
 
+import android.support.annotation.Nullable;
+
+import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.model.Transaction;
+
+import javax.inject.Named;
+
 import dagger.Module;
+import dagger.Provides;
+import rx.Scheduler;
 
 @Module public class TransactionModule {
+    private final Transaction transaction;
+
+    public TransactionModule(@Nullable Transaction transaction) {
+        this.transaction = transaction;
+    }
+
+    @Provides
+    TransactionPresenter provideTransactionPresenter(UserSettings userSettings, DataApi dataApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
+        return new TransactionPresenter(transaction, userSettings, dataApi, uiScheduler, ioScheduler);
+    }
 }

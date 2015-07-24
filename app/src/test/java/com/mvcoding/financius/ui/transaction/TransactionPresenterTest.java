@@ -17,7 +17,7 @@ package com.mvcoding.financius.ui.transaction;
 import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
-import com.mvcoding.financius.data.Api;
+import com.mvcoding.financius.data.DataApi;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
@@ -48,10 +48,10 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
 
     @Mock private Transaction defaultTransaction;
     @Mock private UserSettings userSettings;
-    @Mock private Api api;
+    @Mock private DataApi dataApi;
 
     @Override protected TransactionPresenter createPresenter() {
-        return new TransactionPresenter(defaultTransaction, userSettings, api, Schedulers.immediate(), Schedulers.immediate());
+        return new TransactionPresenter(defaultTransaction, userSettings, dataApi, Schedulers.immediate(), Schedulers.immediate());
     }
 
     @Override protected TransactionPresenter.View createView() {
