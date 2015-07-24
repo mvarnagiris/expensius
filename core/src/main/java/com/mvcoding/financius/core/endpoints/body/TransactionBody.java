@@ -20,7 +20,10 @@ import com.mvcoding.financius.core.model.TransactionType;
 import java.math.BigDecimal;
 import java.util.Set;
 
-public class TransactionBody extends ModelBody {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data @EqualsAndHashCode(callSuper = true) public class TransactionBody extends ModelBody {
     private TransactionType transactionType;
     private TransactionState transactionState;
     private long date;
@@ -63,69 +66,5 @@ public class TransactionBody extends ModelBody {
 
     public boolean isValidCurrency() throws ValidationException {
         return NotEmptyValidator.get().isValid(currency) && currency.length() == 3;
-    }
-
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public TransactionState getTransactionState() {
-        return transactionState;
-    }
-
-    public void setTransactionState(TransactionState transactionState) {
-        this.transactionState = transactionState;
-    }
-
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
-    public Set<String> getTagIds() {
-        return tagIds;
-    }
-
-    public void setTagIds(Set<String> tagIds) {
-        this.tagIds = tagIds;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 }

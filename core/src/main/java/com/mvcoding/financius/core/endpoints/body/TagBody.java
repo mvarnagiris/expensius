@@ -14,7 +14,10 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-public class TagBody extends ModelBody {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data @EqualsAndHashCode(callSuper = true) public class TagBody extends ModelBody {
     private String title;
     private int color;
 
@@ -28,21 +31,5 @@ public class TagBody extends ModelBody {
 
     public boolean isValidTitle() throws ValidationException {
         return NotEmptyValidator.get().isValid(title);
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 }

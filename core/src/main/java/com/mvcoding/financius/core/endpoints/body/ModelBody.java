@@ -16,7 +16,9 @@ package com.mvcoding.financius.core.endpoints.body;
 
 import com.mvcoding.financius.core.model.ModelState;
 
-public abstract class ModelBody implements Body {
+import lombok.Data;
+
+@Data public abstract class ModelBody implements Body {
     private String id;
     private ModelState modelState;
 
@@ -36,21 +38,5 @@ public abstract class ModelBody implements Body {
 
     public boolean isValidModelState() throws ValidationException {
         return NotNullValidator.get().isValid(modelState);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public ModelState getModelState() {
-        return modelState;
-    }
-
-    public void setModelState(ModelState modelState) {
-        this.modelState = modelState;
     }
 }

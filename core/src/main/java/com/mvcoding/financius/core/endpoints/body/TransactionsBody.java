@@ -16,20 +16,14 @@ package com.mvcoding.financius.core.endpoints.body;
 
 import java.util.List;
 
+import lombok.Data;
+
 import static com.google.common.base.Preconditions.checkState;
 
-public class TransactionsBody implements Body {
+@Data public class TransactionsBody implements Body {
     private List<TransactionBody> transactions;
 
     @Override public void validate() throws RuntimeException {
         checkState(transactions != null && !transactions.isEmpty(), "Transactions cannot be empty.");
-    }
-
-    public List<TransactionBody> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<TransactionBody> transactions) {
-        this.transactions = transactions;
     }
 }

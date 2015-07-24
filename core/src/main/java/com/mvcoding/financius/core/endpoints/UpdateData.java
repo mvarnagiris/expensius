@@ -14,14 +14,8 @@
 
 package com.mvcoding.financius.core.endpoints;
 
-public class UpdateData {
+import lombok.Data;
+
+@Data public class UpdateData {
     private final long timestamp;
-
-    public UpdateData(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
 }

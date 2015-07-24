@@ -20,12 +20,15 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 configurations {
     provided
+    compile.extendsFrom provided
 }
 
-//noinspection GroovyAssignabilityCheck
-sourceSets {
-    main {
-        compileClasspath += configurations.provided
+jar {
+    dependsOn configurations.runtime
+    from {
+        (configurations.runtime - configurations.provided).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
     }
 }
 

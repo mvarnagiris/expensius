@@ -14,7 +14,10 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-public class PlaceBody extends ModelBody {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data @EqualsAndHashCode(callSuper = true) public class PlaceBody extends ModelBody {
     private String placeId;
     private String name;
     private String address;
@@ -39,45 +42,5 @@ public class PlaceBody extends ModelBody {
 
     public boolean isValidName() throws ValidationException {
         return NotEmptyValidator.get().isValid(name);
-    }
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 }
