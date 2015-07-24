@@ -57,13 +57,12 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     @Mock private DataApi dataApi;
     @Mock private Place place;
 
-    private Set<Tag> tags;
     private Transaction initialTransaction;
 
     @Override protected TransactionPresenter createPresenter() {
         when(userSettings.getCurrency()).thenReturn("USD");
 
-        tags = new HashSet<>();
+        final Set<Tag> tags = new HashSet<>();
         initialTransaction = new Transaction().withDefaultValues(userSettings);
         initialTransaction.setTransactionType(TransactionType.Income);
         initialTransaction.setTransactionState(TransactionState.Pending);
