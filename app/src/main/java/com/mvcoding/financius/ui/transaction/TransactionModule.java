@@ -35,6 +35,6 @@ import rx.Scheduler;
 
     @Provides
     TransactionPresenter provideTransactionPresenter(UserSettings userSettings, DataApi dataApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
-        return new TransactionPresenter(transaction, userSettings, dataApi, uiScheduler, ioScheduler);
+        return new TransactionPresenter(transaction == null ? new Transaction().withDefaultValues(userSettings) : transaction, dataApi, uiScheduler, ioScheduler);
     }
 }

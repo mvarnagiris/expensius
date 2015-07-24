@@ -17,8 +17,6 @@ package com.mvcoding.financius.data.database.table;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.MoreObjects;
-
 public final class Column {
     private final String tableName;
     private final String name;
@@ -48,15 +46,6 @@ public final class Column {
 
     @NonNull public String selectName() {
         return selectName;
-    }
-
-    @Override public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("tableName", tableName)
-                .add("name", name)
-                .add("type", type)
-                .add("defaultValue", defaultValue)
-                .toString();
     }
 
     enum Type {

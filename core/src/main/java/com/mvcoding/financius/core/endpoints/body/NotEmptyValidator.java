@@ -14,8 +14,6 @@
 
 package com.mvcoding.financius.core.endpoints.body;
 
-import com.google.common.base.Strings;
-
 class NotEmptyValidator implements Validator<String> {
     private static final NotEmptyValidator INSTANCE = new NotEmptyValidator();
 
@@ -24,6 +22,6 @@ class NotEmptyValidator implements Validator<String> {
     }
 
     @Override public boolean isValid(String value) {
-        return Strings.isNullOrEmpty(value);
+        return value != null && !value.isEmpty();
     }
 }

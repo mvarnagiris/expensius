@@ -17,8 +17,6 @@ package com.mvcoding.financius.ui.calculator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.Strings;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -32,8 +30,6 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 class Interpreter {
     private static final Pattern operatorPattern = Pattern.compile("[+\\-*/]");
 
@@ -43,7 +39,7 @@ class Interpreter {
     }
 
     public BigDecimal evaluate(@Nullable String expression) {
-        if (Strings.isNullOrEmpty(expression) || expression.equals("-")) {
+        if (expression == null || expression.isEmpty() || expression.equals("-")) {
             return BigDecimal.ZERO;
         }
 
@@ -67,7 +63,7 @@ class Interpreter {
     }
 
     public boolean isEmptyOrSingleNumber(@Nullable String expression) {
-        return Strings.isNullOrEmpty(expression) || expression.equals("-") || split(expression).size() == 1;
+        return expression == null || expression.isEmpty() || expression.equals("-") || split(expression).size() == 1;
     }
 
     private List<Token> split(String expression) {
@@ -161,7 +157,9 @@ class Interpreter {
                 continue;
             }
 
-            checkArgument(token instanceof OperatorToken, "Token must be an operator token.");
+            if (!(token instanceof OperatorToken)) {
+                throw new IllegalArgumentException("Token must be an operator token.");
+            }
             final BigDecimal secondNumber = resultStack.pop();
             final BigDecimal firstNumber = resultStack.pop();
             switch (((OperatorToken) token).operator) {

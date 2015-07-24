@@ -18,7 +18,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.Strings;
 import com.mvcoding.financius.util.PreferencesUtils;
 
 import javax.inject.Singleton;
@@ -66,7 +65,7 @@ import javax.inject.Singleton;
     }
 
     public boolean isLoggedIn() {
-        return !Strings.isNullOrEmpty(token);
+        return token != null && !token.isEmpty();
     }
 
     public void clear() {

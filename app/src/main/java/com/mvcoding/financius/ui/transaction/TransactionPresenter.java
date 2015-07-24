@@ -15,9 +15,7 @@
 package com.mvcoding.financius.ui.transaction;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.data.DataApi;
@@ -41,14 +39,12 @@ import rx.Scheduler;
 
 @ActivityScope class TransactionPresenter extends Presenter<TransactionPresenter.View> {
     private final Transaction transaction;
-    private final UserSettings userSettings;
     private final DataApi dataApi;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    TransactionPresenter(@Nullable Transaction transaction, @NonNull UserSettings userSettings, @NonNull DataApi dataApi, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataApi dataApi, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.transaction = transaction;
-        this.userSettings = userSettings;
         this.dataApi = dataApi;
         this.uiScheduler = uiScheduler;
         this.ioScheduler = ioScheduler;
@@ -68,19 +64,18 @@ import rx.Scheduler;
     }
 
     @NonNull private Observable<Transaction> transactionObservable(@NonNull View view) {
-        final Transaction defaultTransaction = this.transaction == null ? new Transaction().withDefaultValues(userSettings) : this.transaction;
+        final Observable<Transaction> transactionObservable = Observable.just(transaction);
         final Observable<TransactionType> transactionTypeObservable = view.onTransactionTypeChanged()
-                .startWith(defaultTransaction.getTransactionType());
+                .startWith(transaction.getTransactionType());
         final Observable<TransactionState> transactionStateObservable = view.onTransactionStateChanged()
-                .startWith(defaultTransaction.getTransactionState());
-        final Observable<Long> dateObservable = view.onDateChanged().startWith(defaultTransaction.getDate());
-        final Observable<BigDecimal> amountObservable = view.onAmountChanged().startWith(defaultTransaction.getAmount());
-        final Observable<String> currencyObservable = view.onCurrencyChanged().startWith(defaultTransaction.getCurrency());
-        final Observable<Place> placeObservable = view.onPlaceChanged().startWith(defaultTransaction.getPlace());
-        final Observable<Set<Tag>> tagsObservable = view.onTagsChanged().startWith(defaultTransaction.getTags());
-        final Observable<String> noteObservable = view.onNoteChanged().startWith(defaultTransaction.getNote());
-        return Observable.combineLatest(transactionTypeObservable, transactionStateObservable, dateObservable, amountObservable, currencyObservable, placeObservable, tagsObservable, noteObservable, (transactionType, transactionState, date, amount, currency, place, tags, note) -> {
-            final Transaction transaction = new Transaction();
+                .startWith(transaction.getTransactionState());
+        final Observable<Long> dateObservable = view.onDateChanged().startWith(transaction.getDate());
+        final Observable<BigDecimal> amountObservable = view.onAmountChanged().startWith(transaction.getAmount());
+        final Observable<String> currencyObservable = view.onCurrencyChanged().startWith(transaction.getCurrency());
+        final Observable<Place> placeObservable = view.onPlaceChanged().startWith(transaction.getPlace());
+        final Observable<Set<Tag>> tagsObservable = view.onTagsChanged().startWith(transaction.getTags());
+        final Observable<String> noteObservable = view.onNoteChanged().startWith(transaction.getNote());
+        return Observable.combineLatest(transactionObservable, transactionTypeObservable, transactionStateObservable, dateObservable, amountObservable, currencyObservable, placeObservable, tagsObservable, noteObservable, (transaction, transactionType, transactionState, date, amount, currency, place, tags, note) -> {
             transaction.setTransactionType(transactionType);
             transaction.setTransactionState(transactionState);
             transaction.setDate(date);

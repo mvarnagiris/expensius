@@ -34,7 +34,6 @@ jar {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.guava:guava:18.0'
 
     provided "org.projectlombok:lombok:1.16.4"
 

@@ -18,12 +18,12 @@ import java.util.List;
 
 import lombok.Data;
 
-import static com.google.common.base.Preconditions.checkState;
-
 @Data public class TransactionsBody implements Body {
     private List<TransactionBody> transactions;
 
-    @Override public void validate() throws RuntimeException {
-        checkState(transactions != null && !transactions.isEmpty(), "Transactions cannot be empty.");
+    @Override public void validate() throws ValidationException {
+        if (transactions == null || transactions.isEmpty()) {
+            throw new ValidationException("Transactions cannot be empty.");
+        }
     }
 }

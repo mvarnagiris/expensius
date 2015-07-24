@@ -25,6 +25,10 @@ try {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
     compileSdkVersion 22
     buildToolsVersion '23.0.0 rc3'
 

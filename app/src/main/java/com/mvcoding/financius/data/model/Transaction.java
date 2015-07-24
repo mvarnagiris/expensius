@@ -26,6 +26,12 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Data @EqualsAndHashCode(callSuper = true) @ToString(callSuper = true) @NoArgsConstructor
 public class Transaction extends Model<TransactionBody> {
     @SerializedName("transactionType") private TransactionType transactionType;
     @SerializedName("transactionState") private TransactionState transactionState;
@@ -35,6 +41,20 @@ public class Transaction extends Model<TransactionBody> {
     @SerializedName("place") private Place place;
     @SerializedName("tags") private Set<Tag> tags;
     @SerializedName("note") private String note;
+
+    public Transaction(@NonNull Transaction transaction) {
+        set_id(transaction.get_id());
+        setId(transaction.getId());
+        setModelState(transaction.getModelState());
+        transactionType = transaction.getTransactionType();
+        transactionState = transaction.getTransactionState();
+        date = transaction.getDate();
+        amount = transaction.getAmount();
+        currency = transaction.getCurrency();
+        place = transaction.getPlace();
+        tags = transaction.getTags();
+        note = transaction.getNote();
+    }
 
     @NonNull @Override public TransactionBody toBody() {
         final TransactionBody body = super.toBody();
@@ -73,70 +93,6 @@ public class Transaction extends Model<TransactionBody> {
         withDefaultValues();
         currency = userSettings.getCurrency();
         return this;
-    }
-
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public TransactionState getTransactionState() {
-        return transactionState;
-    }
-
-    public void setTransactionState(TransactionState transactionState) {
-        this.transactionState = transactionState;
-    }
-
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
-
-    public void setPlace(Place place) {
-        this.place = place;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     @NonNull @Override protected TransactionBody createBody() {

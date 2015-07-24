@@ -24,15 +24,22 @@ import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.BasePresenterTest;
 import com.mvcoding.financius.util.rx.Event;
 
+import org.junit.Test;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
+import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TransactionPresenterTest extends BasePresenterTest<TransactionPresenter, TransactionPresenter.View> {
@@ -46,12 +53,30 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     private final PublishSubject<String> noteSubject = PublishSubject.create();
     private final PublishSubject<Event> saveSubject = PublishSubject.create();
 
-    @Mock private Transaction defaultTransaction;
     @Mock private UserSettings userSettings;
     @Mock private DataApi dataApi;
+    @Mock private Place place;
+
+    private Set<Tag> tags;
+    private Transaction initialTransaction;
 
     @Override protected TransactionPresenter createPresenter() {
-        return new TransactionPresenter(defaultTransaction, userSettings, dataApi, Schedulers.immediate(), Schedulers.immediate());
+        when(userSettings.getCurrency()).thenReturn("USD");
+
+        tags = new HashSet<>();
+        initialTransaction = new Transaction().withDefaultValues(userSettings);
+        initialTransaction.setTransactionType(TransactionType.Income);
+        initialTransaction.setTransactionState(TransactionState.Pending);
+        initialTransaction.setDate(3);
+        initialTransaction.setAmount(BigDecimal.TEN);
+        initialTransaction.setCurrency("GBP");
+        initialTransaction.setPlace(place);
+        initialTransaction.setTags(tags);
+        initialTransaction.setNote("note");
+
+        when(dataApi.saveTransaction(initialTransaction)).thenReturn(Observable.just(initialTransaction));
+
+        return new TransactionPresenter(initialTransaction, dataApi, Schedulers.immediate(), Schedulers.immediate());
     }
 
     @Override protected TransactionPresenter.View createView() {
@@ -66,5 +91,72 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         when(view.onNoteChanged()).thenReturn(noteSubject);
         when(view.onSave()).thenReturn(saveSubject);
         return view;
+    }
+
+    @Test public void onViewAttached_showInitialTransaction_whenInitialTransactionIsNotNull() throws Exception {
+        presenterOnViewAttached();
+
+        verify(view).showTransaction(initialTransaction);
+    }
+
+    @Test public void showUpdatedTransaction_whenTransactionFieldsAreUpdated() throws Exception {
+        presenterOnViewAttached();
+
+        verify(view).showTransaction(initialTransaction);
+
+        transactionTypeSubject.onNext(TransactionType.Expense);
+        verify(view, times(2)).showTransaction(initialTransaction);
+
+        transactionStateSubject.onNext(TransactionState.Confirmed);
+        verify(view, times(3)).showTransaction(initialTransaction);
+
+        dateSubject.onNext(123L);
+        verify(view, times(4)).showTransaction(initialTransaction);
+
+        amountSubject.onNext(BigDecimal.ONE);
+        verify(view, times(5)).showTransaction(initialTransaction);
+
+        currencySubject.onNext("EUR");
+        verify(view, times(6)).showTransaction(initialTransaction);
+
+        placeSubject.onNext(null);
+        verify(view, times(7)).showTransaction(initialTransaction);
+
+        tagsSubject.onNext(null);
+        verify(view, times(8)).showTransaction(initialTransaction);
+
+        noteSubject.onNext("someOtherNote");
+        verify(view, times(9)).showTransaction(initialTransaction);
+    }
+
+    @Test public void onSave_startResult_whenTransactionIsSavedSuccessfully() throws Exception {
+        presenterOnViewAttached();
+
+        saveSubject.onNext(new Event());
+
+        verify(dataApi).saveTransaction(initialTransaction);
+        verify(view).startResult(initialTransaction);
+    }
+
+    @Test public void onSave_doNotSave_whenValidationFails() throws Exception {
+        initialTransaction.setId(null);
+        presenterOnViewAttached();
+
+        saveSubject.onNext(new Event());
+
+        verify(dataApi, never()).saveTransaction(initialTransaction);
+        verify(view, never()).startResult(initialTransaction);
+    }
+
+    @Test public void onSave_showError_whenSavingFails() throws Exception {
+        final Throwable throwable = mock(RuntimeException.class);
+        doThrow(throwable).when(dataApi).saveTransaction(initialTransaction);
+        presenterOnViewAttached();
+
+        saveSubject.onNext(new Event());
+
+        verify(dataApi).saveTransaction(initialTransaction);
+        verify(view, never()).startResult(initialTransaction);
+        verify(view).showError(throwable);
     }
 }

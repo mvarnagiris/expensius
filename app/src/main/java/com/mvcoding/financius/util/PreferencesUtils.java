@@ -22,8 +22,6 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class PreferencesUtils {
     /**
      * Add or remove object from {@link SharedPreferences}.
@@ -33,9 +31,6 @@ public class PreferencesUtils {
      * @param value   Object that needs to be stored, or if null, cleared from {@link SharedPreferences}.
      */
     public static void put(@NonNull Context context, @NonNull String key, @Nullable Object value) {
-        checkNotNull(context, "Context cannot be null.");
-        checkNotNull(key, "Key cannot be null.");
-
         final SharedPreferences.Editor editor = getSharedPreferences(context).edit();
         if (value != null) {
             editor.putString(key, new Gson().toJson(value)).apply();
@@ -54,10 +49,6 @@ public class PreferencesUtils {
      * @return Object from {@link SharedPreferences} or {@code null} if object was now found.
      */
     public static <T> T get(@NonNull Context context, @NonNull String key, @NonNull Class<T> cls) {
-        checkNotNull(context, "Context cannot be null.");
-        checkNotNull(key, "Key cannot be null.");
-        checkNotNull(cls, "Class cannot be null.");
-
         final SharedPreferences preferences = getSharedPreferences(context);
         if (!preferences.contains(key)) {
             return null;
@@ -72,7 +63,6 @@ public class PreferencesUtils {
     }
 
     public static SharedPreferences getSharedPreferences(@NonNull Context context) {
-        checkNotNull(context, "Context cannot be null.");
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 }

@@ -19,7 +19,6 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.common.base.Strings;
 import com.mvcoding.financius.AppContext;
 import com.mvcoding.financius.BuildConfig;
 import com.squareup.okhttp.Authenticator;
@@ -42,12 +41,13 @@ public class EndpointAuthenticator implements Authenticator {
 
     @Override public Request authenticate(Proxy proxy, Response response) throws IOException {
         String token = session.isLoggedIn() ? session.getToken() : null;
-        boolean alreadyHadToken = !Strings.isNullOrEmpty(token);
+        boolean alreadyHadToken = token != null && !token.isEmpty();
         if (!alreadyHadToken) {
             token = getNewToken();
         }
 
-        boolean isNoTokenOrAlreadyRetried = Strings.isNullOrEmpty(token) || !Strings.isNullOrEmpty(response.request().header("Retry"));
+        final String retryHeader = response.request().header("Retry");
+        boolean isNoTokenOrAlreadyRetried = token == null || token.isEmpty() || !(retryHeader == null || retryHeader.isEmpty());
         if (isNoTokenOrAlreadyRetried) {
             return null;
         }
