@@ -19,40 +19,18 @@ import com.google.appengine.api.users.User;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import static com.mvcoding.financius.backend.OfyService.ofy;
 
-@Entity
-public class UserAccount extends BaseEntity {
+@Entity @Data @EqualsAndHashCode(callSuper = true) public class UserAccount extends BaseEntity {
     @Index @ApiResourceProperty(name = "email") private String email;
     @ApiResourceProperty(name = "googleId") private String googleId;
     @ApiResourceProperty(name = "isPremium") private boolean isPremium;
 
     public static UserAccount find(User user) {
         return ofy().load().type(UserAccount.class).filter("email", user.getEmail()).first().now();
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
-    }
-
-    public boolean isPremium() {
-        return isPremium;
-    }
-
-    public void setIsPremium(boolean isPremium) {
-        this.isPremium = isPremium;
     }
 }
 

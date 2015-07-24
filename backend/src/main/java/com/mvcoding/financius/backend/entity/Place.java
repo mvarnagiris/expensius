@@ -17,51 +17,13 @@ package com.mvcoding.financius.backend.entity;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.googlecode.objectify.annotation.Entity;
 
-@Entity
-public class Place extends BaseEntity {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Entity @Data @EqualsAndHashCode(callSuper = true) public class Place extends BaseEntity {
     @ApiResourceProperty(name = "placeId") private String placeId;
     @ApiResourceProperty(name = "name") private String name;
     @ApiResourceProperty(name = "address") private String address;
     @ApiResourceProperty(name = "latitude") private double latitude;
     @ApiResourceProperty(name = "longitude") private double longitude;
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
 }

@@ -31,7 +31,10 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity public class Transaction extends BaseEntity {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Entity @Data @EqualsAndHashCode(callSuper = true) public class Transaction extends BaseEntity {
     @ApiResourceProperty(ignored = AnnotationBoolean.TRUE) @Ignore private UserAccount userAccount;
     @ApiResourceProperty(name = "transactionType") private TransactionType transactionType;
     @ApiResourceProperty(name = "transactionState") private TransactionState transactionState;
@@ -62,57 +65,9 @@ import java.util.Set;
         return transaction;
     }
 
-    public UserAccount getUserAccount() {
-        return userAccount;
-    }
-
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
         userAccountRef = Ref.create(userAccount);
-    }
-
-    public TransactionType getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
-    }
-
-    public TransactionState getTransactionState() {
-        return transactionState;
-    }
-
-    public void setTransactionState(TransactionState transactionState) {
-        this.transactionState = transactionState;
-    }
-
-    public long getDate() {
-        return date;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    public Place getPlace() {
-        return place;
     }
 
     public void setPlace(Place place) {
@@ -122,10 +77,6 @@ import java.util.Set;
 
     public void setPlaceId(String placeId) {
         placeRef = placeId == null ? null : Ref.create(Key.create(Place.class, placeId));
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
     }
 
     public void setTags(Set<Tag> tags) {
@@ -156,14 +107,6 @@ import java.util.Set;
                 tagsRef = null;
             }
         }
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     @OnLoad void deref() {

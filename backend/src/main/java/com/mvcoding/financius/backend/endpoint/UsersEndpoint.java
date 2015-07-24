@@ -27,8 +27,7 @@ import java.io.IOException;
 
 import static com.mvcoding.financius.backend.OfyService.ofy;
 
-@ApiReference(Endpoint.class)
-public class UsersEndpoint {
+@ApiReference(Endpoint.class) public class UsersEndpoint {
     private static final String PATH = "users";
 
     @ApiMethod(name = "registerUser", httpMethod = "POST", path = PATH)
@@ -44,7 +43,7 @@ public class UsersEndpoint {
 
         userAccount.updateDefaults();
         userAccount.setGoogleId(body.getGoogleId());
-        userAccount.setIsPremium(true);
+        userAccount.setPremium(true);
 
         ofy().save().entity(userAccount).now();
 

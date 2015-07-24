@@ -22,7 +22,9 @@ import com.mvcoding.financius.core.model.ModelState;
 
 import java.util.UUID;
 
-public class BaseEntity {
+import lombok.Data;
+
+@Data public abstract class BaseEntity {
     @Id @ApiResourceProperty(name = "id") private String id;
     @Index @ApiResourceProperty(name = "timestamp") private long timestamp;
     @ApiResourceProperty(name = "modelState") private ModelState modelState;
@@ -36,30 +38,6 @@ public class BaseEntity {
             modelState = ModelState.Normal;
         }
 
-        setTimestamp(System.currentTimeMillis());
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public ModelState getModelState() {
-        return modelState;
-    }
-
-    public void setModelState(ModelState modelState) {
-        this.modelState = modelState;
+        timestamp = System.currentTimeMillis();
     }
 }
