@@ -19,6 +19,9 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.util.PreferencesUtils;
 
+import java.util.Currency;
+import java.util.Locale;
+
 public class UserSettings {
     transient Context context;
 
@@ -40,7 +43,12 @@ public class UserSettings {
 
     public String getCurrency() {
         if (currency == null || currency.length() != 3) {
-            currency = "USD";
+            try {
+                currency = Currency.getInstance(Locale.getDefault()).getCurrencyCode();
+            } catch (Exception e) {
+                currency = "USD";
+                e.printStackTrace();
+            }
             persist(context, this);
         }
         return currency;

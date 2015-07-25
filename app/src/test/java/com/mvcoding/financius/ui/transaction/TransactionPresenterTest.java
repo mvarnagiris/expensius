@@ -17,6 +17,7 @@ package com.mvcoding.financius.ui.transaction;
 import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
+import com.mvcoding.financius.data.Currencies;
 import com.mvcoding.financius.data.DataApi;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
@@ -28,13 +29,16 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -51,15 +55,24 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     private final PublishSubject<Place> placeSubject = PublishSubject.create();
     private final PublishSubject<Set<Tag>> tagsSubject = PublishSubject.create();
     private final PublishSubject<String> noteSubject = PublishSubject.create();
+    private final PublishSubject<Event> requestCurrencySubject = PublishSubject.create();
     private final PublishSubject<Event> saveSubject = PublishSubject.create();
 
     @Mock private UserSettings userSettings;
     @Mock private DataApi dataApi;
+    @Mock private Currencies currencies;
     @Mock private Place place;
 
     private Transaction initialTransaction;
+    private List<String> availableCurrencies;
 
     @Override protected TransactionPresenter createPresenter() {
+        availableCurrencies = new ArrayList<>();
+        availableCurrencies.add("USD");
+        availableCurrencies.add("GBP");
+        availableCurrencies.add("EUR");
+        when(currencies.getCurrencies()).thenReturn(availableCurrencies);
+
         when(userSettings.getCurrency()).thenReturn("USD");
 
         final Set<Tag> tags = new HashSet<>();
@@ -75,7 +88,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
 
         when(dataApi.saveTransaction(initialTransaction)).thenReturn(Observable.just(initialTransaction));
 
-        return new TransactionPresenter(initialTransaction, dataApi, Schedulers.immediate(), Schedulers.immediate());
+        return new TransactionPresenter(initialTransaction, dataApi, currencies, userSettings, Schedulers.immediate(), Schedulers.immediate());
     }
 
     @Override protected TransactionPresenter.View createView() {
@@ -84,10 +97,11 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         when(view.onTransactionStateChanged()).thenReturn(transactionStateSubject);
         when(view.onDateChanged()).thenReturn(dateSubject);
         when(view.onAmountChanged()).thenReturn(amountSubject);
-        when(view.onCurrencyChanged()).thenReturn(currencySubject);
+        when(view.showCurrencies(any())).thenReturn(currencySubject);
         when(view.onPlaceChanged()).thenReturn(placeSubject);
         when(view.onTagsChanged()).thenReturn(tagsSubject);
         when(view.onNoteChanged()).thenReturn(noteSubject);
+        when(view.onRequestCurrency()).thenReturn(requestCurrencySubject);
         when(view.onSave()).thenReturn(saveSubject);
         return view;
     }
@@ -115,6 +129,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         amountSubject.onNext(BigDecimal.ONE);
         verify(view, times(5)).showTransaction(initialTransaction);
 
+        requestCurrencySubject.onNext(new Event());
         currencySubject.onNext("EUR");
         verify(view, times(6)).showTransaction(initialTransaction);
 
@@ -157,5 +172,22 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         verify(dataApi).saveTransaction(initialTransaction);
         verify(view, never()).startResult(initialTransaction);
         verify(view).showError(throwable);
+    }
+
+    @Test public void onRequestCurrency_showCurrencies() throws Exception {
+        presenterOnViewAttached();
+
+        requestCurrencySubject.onNext(new Event());
+
+        verify(view).showCurrencies(availableCurrencies);
+    }
+
+    @Test public void updateUserSettings_whenCurrencyChanges() throws Exception {
+        presenterOnViewAttached();
+
+        requestCurrencySubject.onNext(new Event());
+        currencySubject.onNext("EUR");
+
+        verify(userSettings).setCurrency("EUR");
     }
 }

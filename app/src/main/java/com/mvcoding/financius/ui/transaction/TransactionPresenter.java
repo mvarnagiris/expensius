@@ -16,8 +16,10 @@ package com.mvcoding.financius.ui.transaction;
 
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
+import com.mvcoding.financius.data.Currencies;
 import com.mvcoding.financius.data.DataApi;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
@@ -30,6 +32,7 @@ import com.mvcoding.financius.ui.PresenterView;
 import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Named;
@@ -40,12 +43,16 @@ import rx.Scheduler;
 @ActivityScope class TransactionPresenter extends Presenter<TransactionPresenter.View> {
     private final Transaction transaction;
     private final DataApi dataApi;
+    private final Currencies currencies;
+    private final UserSettings userSettings;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataApi dataApi, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataApi dataApi, @NonNull Currencies currencies, @NonNull UserSettings userSettings, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.transaction = transaction;
         this.dataApi = dataApi;
+        this.currencies = currencies;
+        this.userSettings = userSettings;
         this.uiScheduler = uiScheduler;
         this.ioScheduler = ioScheduler;
     }
@@ -71,7 +78,10 @@ import rx.Scheduler;
                 .startWith(transaction.getTransactionState());
         final Observable<Long> dateObservable = view.onDateChanged().startWith(transaction.getDate());
         final Observable<BigDecimal> amountObservable = view.onAmountChanged().startWith(transaction.getAmount());
-        final Observable<String> currencyObservable = view.onCurrencyChanged().startWith(transaction.getCurrency());
+        final Observable<String> currencyObservable = view.onRequestCurrency()
+                .flatMap(event -> view.showCurrencies(currencies.getCurrencies()))
+                .doOnNext(userSettings::setCurrency)
+                .startWith(transaction.getCurrency());
         final Observable<Place> placeObservable = view.onPlaceChanged().startWith(transaction.getPlace());
         final Observable<Set<Tag>> tagsObservable = view.onTagsChanged().startWith(transaction.getTags());
         final Observable<String> noteObservable = view.onNoteChanged().startWith(transaction.getNote());
@@ -104,10 +114,11 @@ import rx.Scheduler;
         @NonNull Observable<TransactionState> onTransactionStateChanged();
         @NonNull Observable<Long> onDateChanged();
         @NonNull Observable<BigDecimal> onAmountChanged();
-        @NonNull Observable<String> onCurrencyChanged();
+        @NonNull Observable<String> showCurrencies(@NonNull List<String> currencies);
         @NonNull Observable<Place> onPlaceChanged();
         @NonNull Observable<Set<Tag>> onTagsChanged();
         @NonNull Observable<String> onNoteChanged();
+        @NonNull Observable<Event> onRequestCurrency();
         @NonNull Observable<Event> onSave();
         void showTransaction(@NonNull Transaction transaction);
         void startResult(@NonNull Transaction transaction);

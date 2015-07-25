@@ -17,6 +17,7 @@ package com.mvcoding.financius.ui.transaction;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.data.Currencies;
 import com.mvcoding.financius.data.DataApi;
 import com.mvcoding.financius.data.model.Transaction;
 
@@ -34,7 +35,7 @@ import rx.Scheduler;
     }
 
     @Provides
-    TransactionPresenter provideTransactionPresenter(UserSettings userSettings, DataApi dataApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
-        return new TransactionPresenter(transaction, dataApi, uiScheduler, ioScheduler);
+    TransactionPresenter provideTransactionPresenter(UserSettings userSettings, DataApi dataApi, Currencies currencies, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
+        return new TransactionPresenter(transaction, dataApi, currencies, userSettings, uiScheduler, ioScheduler);
     }
 }

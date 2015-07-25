@@ -18,6 +18,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.ListPopupWindow;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -41,6 +43,7 @@ import com.mvcoding.financius.util.rx.RxBus;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -62,7 +65,6 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
     private static final PublishSubject<TransactionType> transactionTypeSubject = PublishSubject.create();
     private static final PublishSubject<TransactionState> transactionStateSubject = PublishSubject.create();
-    private static final PublishSubject<Long> dateSubject = PublishSubject.create();
     private static final PublishSubject<BigDecimal> amountSubject = PublishSubject.create();
     private static final PublishSubject<String> currencySubject = PublishSubject.create();
     private static final PublishSubject<Place> placeSubject = PublishSubject.create();
@@ -165,7 +167,16 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
         return amountSubject;
     }
 
-    @NonNull @Override public Observable<String> onCurrencyChanged() {
+    @NonNull @Override public Observable<String> showCurrencies(@NonNull List<String> currencies) {
+        final ListPopupWindow listPopupWindow = new ListPopupWindow(this);
+        listPopupWindow.setAnchorView(currencyButton);
+        listPopupWindow.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, android.R.id.text1, currencies));
+        listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            currencySubject.onNext(currencies.get(position));
+            listPopupWindow.dismiss();
+        });
+        listPopupWindow.show();
+
         return currencySubject;
     }
 
@@ -179,6 +190,10 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
     @NonNull @Override public Observable<String> onNoteChanged() {
         return WidgetObservable.text(noteEditText).map(onTextChangeEvent -> onTextChangeEvent.text().toString());
+    }
+
+    @NonNull @Override public Observable<Event> onRequestCurrency() {
+        return ViewObservable.clicks(currencyButton).map(onClickEvent -> new Event());
     }
 
     @NonNull @Override public Observable<Event> onSave() {
