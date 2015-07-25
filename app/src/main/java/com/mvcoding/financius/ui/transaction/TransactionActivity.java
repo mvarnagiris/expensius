@@ -31,9 +31,14 @@ import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
+import com.mvcoding.financius.ui.DateDialogFragment;
+import com.mvcoding.financius.ui.TimeDialogFragment;
 import com.mvcoding.financius.ui.calculator.CalculatorActivity;
 import com.mvcoding.financius.util.date.DateFormatter;
 import com.mvcoding.financius.util.rx.Event;
+import com.mvcoding.financius.util.rx.RxBus;
+
+import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -51,7 +56,9 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
     private static final String RESULT_EXTRA_TRANSACTION = "RESULT_EXTRA_TRANSACTION";
 
-    private static final int REQUEST_AMOUNT = 1;
+    private static final int REQUEST_DATE = 1;
+    private static final int REQUEST_TIME = 2;
+    private static final int REQUEST_AMOUNT = 3;
 
     private static final PublishSubject<TransactionType> transactionTypeSubject = PublishSubject.create();
     private static final PublishSubject<TransactionState> transactionStateSubject = PublishSubject.create();
@@ -73,6 +80,7 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     @Bind(R.id.saveButton) Button saveButton;
 
     @Inject TransactionPresenter presenter;
+    @Inject RxBus rxBus;
 
     private boolean ignoreChanges = false;
     private Transaction transaction;
@@ -130,7 +138,23 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @NonNull @Override public Observable<Long> onDateChanged() {
-        return dateSubject;
+        final Observable<Long> dateObservable = ViewObservable.clicks(dateButton)
+                .flatMap(onClickEvent -> DateDialogFragment.show(getSupportFragmentManager(), REQUEST_DATE, rxBus, transaction.getDate()))
+                .map(dateDialogResult -> {
+                    final DateTime dateTime = new DateTime(transaction.getDate());
+                    return new DateTime(dateDialogResult.getYear(), dateDialogResult.getMonthOfYear(), dateDialogResult.getDayOfMonth(), dateTime
+                            .getHourOfDay(), dateTime.getMinuteOfHour()).getMillis();
+                });
+
+        final Observable<Long> timeObservable = ViewObservable.clicks(timeButton)
+                .flatMap(onClickEvent -> TimeDialogFragment.show(getSupportFragmentManager(), REQUEST_TIME, rxBus, transaction.getDate()))
+                .map(timeDialogResult -> {
+                    final DateTime dateTime = new DateTime(transaction.getDate());
+                    return new DateTime(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth(), timeDialogResult.getHourOfDay(), timeDialogResult
+                            .getMinuteOfHour()).getMillis();
+                });
+
+        return Observable.merge(dateObservable, timeObservable);
     }
 
     @NonNull @Override public Observable<BigDecimal> onAmountChanged() {

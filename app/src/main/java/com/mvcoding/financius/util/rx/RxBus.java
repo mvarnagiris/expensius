@@ -12,21 +12,28 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius;
+package com.mvcoding.financius.util.rx;
 
-import com.mvcoding.financius.api.ApiModule;
-import com.mvcoding.financius.ui.ActivityComponent;
-import com.mvcoding.financius.ui.ActivityModule;
-import com.mvcoding.financius.ui.DateDialogFragment;
-import com.mvcoding.financius.ui.TimeDialogFragment;
-
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import dagger.Component;
+import rx.Observable;
+import rx.subjects.PublishSubject;
+import rx.subjects.SerializedSubject;
+import rx.subjects.Subject;
 
-@Singleton @Component(modules = {AppModule.class, ApiModule.class}) public interface AppComponent extends BaseComponent {
-    ActivityComponent plus(ActivityModule module);
+@Singleton public class RxBus {
+    private final Subject<Object, Object> bus = new SerializedSubject<>(PublishSubject.create());
 
-    void inject(DateDialogFragment fragment);
-    void inject(TimeDialogFragment fragment);
+    @Inject public RxBus() {
+    }
+
+    public void send(Object o) {
+        bus.onNext(o);
+    }
+
+    public <T> Observable<T> observe(Class<T> cls) {
+        //noinspection unchecked
+        return (Observable<T>) bus.filter(cls::isInstance);
+    }
 }
