@@ -15,6 +15,7 @@
 package com.mvcoding.financius.ui.transaction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.ActivityComponent;
+import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.util.rx.Event;
 
@@ -69,8 +71,10 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
     @Inject TransactionPresenter presenter;
 
+    private boolean ignoreChanges = false;
+
     public static void startForResult(@NonNull Context context, int requestCode, @Nullable Transaction transaction) {
-//        ActivityStarter.with(context, TransactionActivity.class).extra(EXTRA_TRANSACTION, transaction).startForResult(requestCode);
+        ActivityStarter.with(context, TransactionActivity.class).extra(EXTRA_TRANSACTION, transaction).startForResult(requestCode);
     }
 
     @Override protected int getLayoutId() {
@@ -85,8 +89,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @NonNull @Override protected TransactionComponent createComponent(@NonNull ActivityComponent component) {
-        // TODO: Pass in the transaction
-        return component.plus(new TransactionModule(null));
+        final Transaction transaction = getIntent().getParcelableExtra(EXTRA_TRANSACTION);
+        return component.plus(new TransactionModule(transaction));
     }
 
     @Override protected void inject(@NonNull TransactionComponent component) {
@@ -102,11 +106,11 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @NonNull @Override public Observable<TransactionType> onTransactionTypeChanged() {
-        return transactionTypeSubject;
+        return transactionTypeSubject.filter(transactionType -> !ignoreChanges);
     }
 
     @NonNull @Override public Observable<TransactionState> onTransactionStateChanged() {
-        return transactionStateSubject;
+        return transactionStateSubject.filter(transactionState -> !ignoreChanges);
     }
 
     @NonNull @Override public Observable<Long> onDateChanged() {
@@ -138,10 +142,17 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @Override public void showTransaction(@NonNull Transaction transaction) {
+        ignoreChanges = true;
 
+        transactionTypeRadioGroup.check(transaction.getTransactionType() == TransactionType.Expense ? R.id.transactionTypeExpenseRadioButton : R.id.transactionTypeIncomeRadioButton);
+        transactionStateRadioGroup.check(transaction.getTransactionState() == TransactionState.Confirmed ? R.id.transactionStateConfirmedRadioButton : R.id.transactionStatePendingRadioButton);
+
+        ignoreChanges = false;
     }
 
     @Override public void startResult(@NonNull Transaction transaction) {
-
+        final Intent data = new Intent();
+        data.putExtra(RESULT_EXTRA_TRANSACTION, transaction);
+        setResult(RESULT_OK, data);
     }
 }

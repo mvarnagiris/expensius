@@ -14,6 +14,8 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
@@ -23,6 +25,7 @@ import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +36,16 @@ import lombok.ToString;
 
 @Data @EqualsAndHashCode(callSuper = true) @ToString(callSuper = true) @NoArgsConstructor
 public class Transaction extends Model<TransactionBody> {
+    public static final Parcelable.Creator<Transaction> CREATOR = new Parcelable.Creator<Transaction>() {
+        public Transaction createFromParcel(Parcel in) {
+            return new Transaction(in);
+        }
+
+        public Transaction[] newArray(int size) {
+            return new Transaction[size];
+        }
+    };
+
     @SerializedName("transactionType") private TransactionType transactionType;
     @SerializedName("transactionState") private TransactionState transactionState;
     @SerializedName("date") private long date;
@@ -54,6 +67,31 @@ public class Transaction extends Model<TransactionBody> {
         place = transaction.getPlace();
         tags = transaction.getTags();
         note = transaction.getNote();
+    }
+
+    private Transaction(@NonNull Parcel in) {
+        super(in);
+        transactionType = (TransactionType) in.readSerializable();
+        transactionState = (TransactionState) in.readSerializable();
+        date = in.readLong();
+        amount = (BigDecimal) in.readSerializable();
+        currency = in.readString();
+        place = in.readParcelable(Place.class.getClassLoader());
+        final Tag[] tagArray = (Tag[]) in.readParcelableArray(Tag.class.getClassLoader());
+        tags = tagArray == null ? null : new HashSet<>(Arrays.asList(tagArray));
+        note = in.readString();
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeSerializable(transactionType);
+        dest.writeSerializable(transactionState);
+        dest.writeLong(date);
+        dest.writeSerializable(amount);
+        dest.writeString(currency);
+        dest.writeParcelable(place, flags);
+        dest.writeParcelableArray(tags == null ? null : tags.toArray(new Tag[tags.size()]), flags);
+        dest.writeString(note);
     }
 
     @NonNull @Override public TransactionBody toBody() {

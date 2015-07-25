@@ -14,14 +14,43 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.mvcoding.financius.core.endpoints.body.TagBody;
 
-public class Tag extends Model<TagBody> {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Data @EqualsAndHashCode(callSuper = true) @ToString(callSuper = true) @NoArgsConstructor public class Tag extends Model<TagBody> {
+    public static final Parcelable.Creator<Tag> CREATOR = new Parcelable.Creator<Tag>() {
+        public Tag createFromParcel(Parcel in) {
+            return new Tag(in);
+        }
+
+        public Tag[] newArray(int size) {
+            return new Tag[size];
+        }
+    };
+
     @SerializedName("title") private String title;
     @SerializedName("color") private int color;
+
+    private Tag(@NonNull Parcel in) {
+        super(in);
+        title = in.readString();
+        color = in.readInt();
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(title);
+        dest.writeInt(color);
+    }
 
     @NonNull @Override public TagBody toBody() {
         final TagBody body = super.toBody();

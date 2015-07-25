@@ -14,17 +14,52 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.mvcoding.financius.core.endpoints.body.PlaceBody;
 
-public class Place extends Model<PlaceBody> {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Data @EqualsAndHashCode(callSuper = true) @ToString(callSuper = true) @NoArgsConstructor public class Place extends Model<PlaceBody> {
+    public static final Parcelable.Creator<Place> CREATOR = new Parcelable.Creator<Place>() {
+        public Place createFromParcel(Parcel in) {
+            return new Place(in);
+        }
+
+        public Place[] newArray(int size) {
+            return new Place[size];
+        }
+    };
+
     @SerializedName("placeId") private String placeId;
     @SerializedName("name") private String name;
     @SerializedName("address") private String address;
     @SerializedName("latitude") private double latitude;
     @SerializedName("longitude") private double longitude;
+
+    private Place(@NonNull Parcel in) {
+        super(in);
+        placeId = in.readString();
+        name = in.readString();
+        address = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(placeId);
+        dest.writeString(name);
+        dest.writeString(address);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+    }
 
     @NonNull @Override public PlaceBody toBody() {
         final PlaceBody body = super.toBody();
@@ -39,46 +74,6 @@ public class Place extends Model<PlaceBody> {
     @NonNull @Override public Place withDefaultValues() {
         super.withDefaultValues();
         return this;
-    }
-
-    public String getPlaceId() {
-        return placeId;
-    }
-
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     @NonNull @Override protected PlaceBody createBody() {

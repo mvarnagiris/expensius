@@ -14,6 +14,8 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
@@ -23,13 +25,26 @@ import com.mvcoding.financius.core.model.ModelState;
 import java.util.UUID;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data public abstract class Model<B extends ModelBody> {
+@Data @NoArgsConstructor public abstract class Model<B extends ModelBody> implements Parcelable {
     private Long _id;
     private String id;
     private ModelState modelState;
 
-    @NonNull public B toBody() {
+    protected Model(@NonNull Parcel in) {
+        _id = (Long) in.readValue(Long.class.getClassLoader());
+        id = in.readString();
+        modelState = (ModelState) in.readSerializable();
+    }
+
+    @Override @CallSuper public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(_id);
+        dest.writeString(id);
+        dest.writeSerializable(modelState);
+    }
+
+    @NonNull @CallSuper public B toBody() {
         final B body = createBody();
         body.setId(id);
         body.setModelState(modelState);
@@ -47,4 +62,8 @@ import lombok.Data;
     }
 
     @NonNull protected abstract B createBody();
+
+    @Override public int describeContents() {
+        return 0;
+    }
 }
