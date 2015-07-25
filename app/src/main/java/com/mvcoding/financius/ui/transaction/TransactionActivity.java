@@ -240,6 +240,7 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
         final Intent data = new Intent();
         data.putExtra(RESULT_EXTRA_TRANSACTION, transaction);
         setResult(RESULT_OK, data);
+        close();
     }
 
     private void onPlaceRequested() {

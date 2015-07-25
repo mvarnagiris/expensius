@@ -15,7 +15,10 @@
 package com.mvcoding.financius.ui.tag;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.data.model.Tag;
@@ -27,10 +30,22 @@ import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import rx.Observable;
+import rx.android.view.ViewObservable;
+import rx.android.widget.WidgetObservable;
+import rx.subjects.PublishSubject;
 
 public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> implements TagPresenter.View {
     private static final String EXTRA_TAG = "EXTRA_TAG";
+
+    private static final String RESULT_EXTRA_TAG = "RESULT_EXTRA_TAG";
+
+    private final PublishSubject<Integer> colorSubject = PublishSubject.create();
+
+    @Bind(R.id.titleEditText) EditText titleEditText;
+    @Bind(R.id.colorButton) Button colorButton;
+    @Bind(R.id.saveButton) Button saveButton;
 
     @Inject TagPresenter presenter;
 
@@ -60,22 +75,26 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
     }
 
     @NonNull @Override public Observable<String> onTitleChanged() {
-        return null;
+        return WidgetObservable.text(titleEditText).compose(textTransformer);
     }
 
     @NonNull @Override public Observable<Integer> onColorChanged() {
-        return null;
+        return colorSubject;
     }
 
     @NonNull @Override public Observable<Event> onSave() {
-        return null;
+        return ViewObservable.clicks(saveButton).compose(clickTransformer);
     }
 
     @Override public void showTag(@NonNull Tag tag) {
-
+        titleEditText.setText(tag.getTitle());
+        colorButton.setText(String.valueOf(tag.getColor()));
     }
 
     @Override public void startResult(@NonNull Tag tag) {
-
+        final Intent data = new Intent();
+        data.putExtra(RESULT_EXTRA_TAG, tag);
+        setResult(RESULT_OK, data);
+        close();
     }
 }
