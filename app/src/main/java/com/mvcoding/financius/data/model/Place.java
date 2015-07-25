@@ -52,6 +52,14 @@ import lombok.ToString;
         longitude = in.readDouble();
     }
 
+    public Place(@NonNull com.google.android.gms.location.places.Place place) {
+        placeId = place.getId();
+        name = place.getName().toString();
+        address = place.getAddress().toString();
+        latitude = place.getLatLng().latitude;
+        longitude = place.getLatLng().longitude;
+    }
+
     @Override public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(placeId);

@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.ui.transaction;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +25,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
@@ -62,6 +68,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     private static final int REQUEST_DATE = 1;
     private static final int REQUEST_TIME = 2;
     private static final int REQUEST_AMOUNT = 3;
+    private static final int REQUEST_PLACE = 4;
+    private static final int REQUEST_RESOLVE_ERRPR = 5;
 
     private static final PublishSubject<TransactionType> transactionTypeSubject = PublishSubject.create();
     private static final PublishSubject<TransactionState> transactionStateSubject = PublishSubject.create();
@@ -101,6 +109,7 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
         transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> transactionTypeSubject.onNext(checkedId == R.id.transactionTypeExpenseRadioButton ? TransactionType.Expense : TransactionType.Income));
         transactionStateRadioGroup.setOnCheckedChangeListener((group, checkedId) -> transactionStateSubject.onNext(checkedId == R.id.transactionStateConfirmedRadioButton ? TransactionState.Confirmed : TransactionState.Pending));
         amountButton.setOnClickListener(v -> CalculatorActivity.startForResult(this, REQUEST_AMOUNT, transaction.getAmount()));
+        placeButton.setOnClickListener(v -> onPlaceRequested());
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -109,6 +118,17 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
             case REQUEST_AMOUNT:
                 if (resultCode == RESULT_OK) {
                     amountSubject.onNext(CalculatorActivity.getResultNumber(data));
+                }
+                break;
+            case REQUEST_PLACE:
+                if (resultCode == RESULT_OK) {
+                    final com.google.android.gms.location.places.Place place = PlacePicker.getPlace(data, this);
+                    placeSubject.onNext(new Place(place));
+                }
+                break;
+            case REQUEST_RESOLVE_ERRPR:
+                if (resultCode == RESULT_OK) {
+                    placeButton.performClick();
                 }
                 break;
         }
@@ -210,6 +230,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
         timeButton.setText(DateFormatter.time(this, transaction.getDate()));
         amountButton.setText(transaction.getAmount().toString());
         currencyButton.setText(transaction.getCurrency());
+        final Place place = transaction.getPlace();
+        placeButton.setText(place == null ? null : place.getName());
 
         ignoreChanges = false;
     }
@@ -218,5 +240,28 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
         final Intent data = new Intent();
         data.putExtra(RESULT_EXTRA_TRANSACTION, transaction);
         setResult(RESULT_OK, data);
+    }
+
+    private void onPlaceRequested() {
+        try {
+            final PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            final Place place = transaction.getPlace();
+            if (place != null) {
+                intentBuilder.setLatLngBounds(LatLngBounds.builder()
+                                                      .include(new LatLng(place.getLatitude(), place.getLongitude()))
+                                                      .build());
+            }
+            startActivityForResult(intentBuilder.build(this), REQUEST_PLACE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resolvePlayServicesError(e);
+        }
+    }
+
+    private void resolvePlayServicesError(@NonNull Throwable throwable) {
+        if (throwable instanceof GooglePlayServicesRepairableException) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(((GooglePlayServicesRepairableException) throwable).getConnectionStatusCode(), this, REQUEST_RESOLVE_ERRPR);
+            dialog.show();
+        }
     }
 }
