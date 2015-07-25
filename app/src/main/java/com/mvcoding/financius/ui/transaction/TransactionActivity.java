@@ -32,6 +32,7 @@ import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.calculator.CalculatorActivity;
+import com.mvcoding.financius.util.date.DateFormatter;
 import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
@@ -162,6 +163,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
         transactionTypeRadioGroup.check(transaction.getTransactionType() == TransactionType.Expense ? R.id.transactionTypeExpenseRadioButton : R.id.transactionTypeIncomeRadioButton);
         transactionStateRadioGroup.check(transaction.getTransactionState() == TransactionState.Confirmed ? R.id.transactionStateConfirmedRadioButton : R.id.transactionStatePendingRadioButton);
+        dateButton.setText(DateFormatter.date(this, transaction.getDate()));
+        timeButton.setText(DateFormatter.time(this, transaction.getDate()));
         amountButton.setText(transaction.getAmount().toString());
 
         ignoreChanges = false;

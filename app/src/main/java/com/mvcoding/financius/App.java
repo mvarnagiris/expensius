@@ -20,6 +20,8 @@ import android.support.annotation.NonNull;
 
 import com.squareup.leakcanary.LeakCanary;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +38,8 @@ public class App extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
+
+        JodaTimeAndroid.init(this);
 
         LeakCanary.install(this);
 
