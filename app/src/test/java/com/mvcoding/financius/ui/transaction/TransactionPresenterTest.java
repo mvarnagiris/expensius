@@ -106,7 +106,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         return view;
     }
 
-    @Test public void onViewAttached_showInitialTransaction_whenInitialTransactionIsNotNull() throws Exception {
+    @Test public void onViewAttached_showInitialTransaction() throws Exception {
         presenterOnViewAttached();
 
         verify(view).showTransaction(initialTransaction);

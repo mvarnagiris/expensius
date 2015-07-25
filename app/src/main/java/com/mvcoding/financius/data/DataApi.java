@@ -17,6 +17,7 @@ package com.mvcoding.financius.data;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.endpoints.body.ValidationException;
+import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 
 import javax.inject.Inject;
@@ -32,5 +33,11 @@ import rx.Observable;
         transaction.validate();
         // TODO: Save transaction
         return Observable.just(transaction);
+    }
+
+    public Observable<Tag> saveTag(@NonNull Tag tag) throws ValidationException {
+        tag.validate();
+        // TODO: Save tag
+        return Observable.just(tag);
     }
 }

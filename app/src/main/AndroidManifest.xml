@@ -62,6 +62,9 @@
         <activity
             android:name=".ui.transaction.TransactionActivity"
             android:label="@string/transaction" />
+        <activity
+            android:name=".ui.tag.TagActivity"
+            android:label="@string/tag" />
 
         <!-- Meta data -->
         <!-- =========================================================================================================================== -->

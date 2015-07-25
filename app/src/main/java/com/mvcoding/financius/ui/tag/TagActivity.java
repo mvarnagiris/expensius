@@ -14,24 +14,37 @@
 
 package com.mvcoding.financius.ui.tag;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityComponent;
+import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+
 public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> implements TagPresenter.View {
+    private static final String EXTRA_TAG = "EXTRA_TAG";
+
     @Inject TagPresenter presenter;
+
+    public static void startForResult(@NonNull Context context, int requestCode, @NonNull Tag tag) {
+        ActivityStarter.with(context, TagActivity.class).extra(EXTRA_TAG, tag).startForResult(requestCode);
+    }
 
     @Override protected int getLayoutId() {
         return R.layout.activity_tag;
     }
 
     @NonNull @Override protected TagComponent createComponent(@NonNull ActivityComponent component) {
-        return component.plus(new TagModule());
+        final Tag tag = getIntent().getParcelableExtra(EXTRA_TAG);
+        return component.plus(new TagModule(tag));
     }
 
     @Override protected void inject(@NonNull TagComponent component) {
@@ -44,5 +57,25 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
 
     @NonNull @Override protected TagPresenter.View getPresenterView() {
         return this;
+    }
+
+    @NonNull @Override public Observable<String> onTitleChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<Integer> onColorChanged() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<Event> onSave() {
+        return null;
+    }
+
+    @Override public void showTag(@NonNull Tag tag) {
+
+    }
+
+    @Override public void startResult(@NonNull Tag tag) {
+
     }
 }

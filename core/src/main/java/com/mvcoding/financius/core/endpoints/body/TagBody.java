@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
     @Override public void validate() throws ValidationException {
         super.validate();
 
-        if (isValidTitle()) {
+        if (!isValidTitle()) {
             throw new ValidationException("Title cannot be empty.");
         }
     }

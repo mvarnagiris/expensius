@@ -14,7 +14,28 @@
 
 package com.mvcoding.financius.ui.tag;
 
+import android.support.annotation.NonNull;
+
+import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.data.Currencies;
+import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.model.Tag;
+
+import javax.inject.Named;
+
 import dagger.Module;
+import dagger.Provides;
+import rx.Scheduler;
 
 @Module public class TagModule {
+    private final Tag tag;
+
+    public TagModule(@NonNull Tag tag) {
+        this.tag = tag;
+    }
+
+    @Provides
+    TagPresenter provideTransactionPresenter(UserSettings userSettings, DataApi dataApi, Currencies currencies, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
+        return new TagPresenter(tag, dataApi, uiScheduler, ioScheduler);
+    }
 }
