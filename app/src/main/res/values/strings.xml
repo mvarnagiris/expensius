@@ -21,4 +21,9 @@
     <string name="log_in_with_google">Log in with Google</string>
     <string name="skip">Skip</string>
     <string name="calculator">Calculator</string>
+    <string name="expense">Expense</string>
+    <string name="income">Income</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="pending">Pending</string>
+    <string name="save">Save</string>
 </resources>
