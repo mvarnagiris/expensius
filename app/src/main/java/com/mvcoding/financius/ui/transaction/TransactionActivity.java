@@ -138,16 +138,20 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @NonNull @Override public Observable<Long> onDateChanged() {
-        final Observable<Long> dateObservable = ViewObservable.clicks(dateButton)
-                .flatMap(onClickEvent -> DateDialogFragment.show(getSupportFragmentManager(), REQUEST_DATE, rxBus, transaction.getDate()))
+        final Observable<Long> dateObservable = rxBus.observe(DateDialogFragment.DateDialogResult.class)
+                .mergeWith(ViewObservable.clicks(dateButton)
+                                   .flatMap(onClickEvent -> DateDialogFragment.show(getSupportFragmentManager(), REQUEST_DATE, rxBus, transaction
+                                           .getDate())))
                 .map(dateDialogResult -> {
                     final DateTime dateTime = new DateTime(transaction.getDate());
                     return new DateTime(dateDialogResult.getYear(), dateDialogResult.getMonthOfYear(), dateDialogResult.getDayOfMonth(), dateTime
                             .getHourOfDay(), dateTime.getMinuteOfHour()).getMillis();
                 });
 
-        final Observable<Long> timeObservable = ViewObservable.clicks(timeButton)
-                .flatMap(onClickEvent -> TimeDialogFragment.show(getSupportFragmentManager(), REQUEST_TIME, rxBus, transaction.getDate()))
+        final Observable<Long> timeObservable = rxBus.observe(TimeDialogFragment.TimeDialogResult.class)
+                .mergeWith(ViewObservable.clicks(timeButton)
+                                   .flatMap(onClickEvent -> TimeDialogFragment.show(getSupportFragmentManager(), REQUEST_TIME, rxBus, transaction
+                                           .getDate())))
                 .map(timeDialogResult -> {
                     final DateTime dateTime = new DateTime(transaction.getDate());
                     return new DateTime(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth(), timeDialogResult.getHourOfDay(), timeDialogResult
