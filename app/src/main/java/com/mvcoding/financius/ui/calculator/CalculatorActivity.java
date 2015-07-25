@@ -14,14 +14,19 @@
 
 package com.mvcoding.financius.ui.calculator;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
@@ -33,12 +38,14 @@ import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.OnLongClick;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.subjects.PublishSubject;
@@ -48,11 +55,14 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
 
     private static final String RESULT_EXTRA_NUMBER = "RESULT_EXTRA_NUMBER";
 
+    private static final long ANIMATION_DURATION_CLEAR_START = 400;
+
     private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
     private static final PublishSubject<BigDecimal> numberChangeSubject = PublishSubject.create();
 
     @Bind(R.id.resultContainerView) View resultContainerView;
     @Bind(R.id.resultTextView) TextView resultTextView;
+    @Bind(R.id.revealView) View revealView;
     @Bind(R.id.number0Button) Button number0Button;
     @Bind(R.id.number1Button) Button number1Button;
     @Bind(R.id.number2Button) Button number2Button;
@@ -193,7 +203,10 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     }
 
     @NonNull @Override public Observable<Event> onClear() {
-        return clearSubject.compose(clickTransformer);
+        return clearSubject.compose(clickTransformer)
+                .doOnNext(event -> clearAnimation())
+                .delay(ANIMATION_DURATION_CLEAR_START, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull @Override public Observable<BigDecimal> onNumberChange() {
@@ -201,7 +214,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     }
 
     @Override public void showExpression(@NonNull String expression) {
-        resultTextView.setText(expression);
+        resultTextView.setText(expression.replace("*", "\u00D7").replace("/", "\u00F7"));
     }
 
     @Override public void clearExpression() {
@@ -231,6 +244,44 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         data.putExtra(RESULT_EXTRA_NUMBER, result);
         setResult(RESULT_OK, data);
         close();
+    }
+
+    private void clearAnimation() {
+        final Animator startAnimator;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final int revealSize = resultContainerView.getWidth();
+            final int[] location = new int[2];
+            deleteButton.getLocationInWindow(location);
+            final int centerX = location[0] + deleteButton.getWidth() / 2;
+            startAnimator = ViewAnimationUtils.createCircularReveal(revealView, centerX, resultContainerView.getHeight(), 0, revealSize);
+        } else {
+            startAnimator = ObjectAnimator.ofFloat(revealView, View.TRANSLATION_Y, resultContainerView.getHeight(), 0);
+        }
+        startAnimator.setDuration(ANIMATION_DURATION_CLEAR_START);
+
+        final Animator endAnimator = ObjectAnimator.ofFloat(revealView, View.ALPHA, 1, 0);
+
+        final AnimatorSet animator = new AnimatorSet();
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override public void onAnimationStart(Animator animation) {
+                revealView.setVisibility(View.VISIBLE);
+            }
+
+            @Override public void onAnimationEnd(Animator animation) {
+                revealView.setVisibility(View.GONE);
+                revealView.setAlpha(1);
+            }
+
+            @Override public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.playSequentially(startAnimator, endAnimator);
+        animator.start();
     }
 
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {

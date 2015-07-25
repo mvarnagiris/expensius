@@ -26,16 +26,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
-        app:contentPadding="@dimen/keyline">
+        app:contentPadding="0dp">
 
         <me.grantland.widget.AutofitTextView
             android:id="@+id/resultTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/keyline"
             android:gravity="end|center_vertical"
             android:maxLines="1"
             android:textAppearance="@style/Text.Display2"
             tools:text="123.45" />
+
+        <FrameLayout
+            android:id="@+id/revealView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?colorPrimaryDark"
+            android:visibility="gone" />
 
     </android.support.v7.widget.CardView>
 
