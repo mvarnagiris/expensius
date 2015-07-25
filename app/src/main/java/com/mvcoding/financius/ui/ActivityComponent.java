@@ -25,6 +25,8 @@ import com.mvcoding.financius.ui.splash.SplashComponent;
 import com.mvcoding.financius.ui.splash.SplashModule;
 import com.mvcoding.financius.ui.tag.TagComponent;
 import com.mvcoding.financius.ui.tag.TagModule;
+import com.mvcoding.financius.ui.tag.TagsComponent;
+import com.mvcoding.financius.ui.tag.TagsModule;
 import com.mvcoding.financius.ui.transaction.TransactionComponent;
 import com.mvcoding.financius.ui.transaction.TransactionModule;
 
@@ -37,4 +39,5 @@ import dagger.Subcomponent;
     CalculatorComponent plus(CalculatorModule module);
     TransactionComponent plus(TransactionModule module);
     TagComponent plus(TagModule module);
+    TagsComponent plus(TagsModule module);
 }

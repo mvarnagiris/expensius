@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.data.DataApi;
 import com.mvcoding.financius.data.model.Tag;
+import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.CloseablePresenterView;
 import com.mvcoding.financius.ui.ErrorPresenterView;
 import com.mvcoding.financius.ui.Presenter;
@@ -29,13 +30,13 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.Scheduler;
 
-class TagPresenter extends Presenter<TagPresenter.View> {
+@ActivityScope class TagPresenter extends Presenter<TagPresenter.View> {
     private final Tag tag;
     private final DataApi dataApi;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    public TagPresenter(@NonNull Tag tag, @NonNull DataApi dataApi, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TagPresenter(@NonNull Tag tag, @NonNull DataApi dataApi, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.tag = tag;
         this.dataApi = dataApi;
         this.uiScheduler = uiScheduler;
