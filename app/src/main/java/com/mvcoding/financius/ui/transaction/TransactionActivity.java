@@ -194,6 +194,7 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
         dateButton.setText(DateFormatter.date(this, transaction.getDate()));
         timeButton.setText(DateFormatter.time(this, transaction.getDate()));
         amountButton.setText(transaction.getAmount().toString());
+        currencyButton.setText(transaction.getCurrency());
 
         ignoreChanges = false;
     }
