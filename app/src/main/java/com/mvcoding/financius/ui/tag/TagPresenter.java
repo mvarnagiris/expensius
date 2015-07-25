@@ -29,7 +29,7 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.Scheduler;
 
-public class TagPresenter extends Presenter<TagPresenter.View> {
+class TagPresenter extends Presenter<TagPresenter.View> {
     private final Tag tag;
     private final DataApi dataApi;
     private final Scheduler uiScheduler;
