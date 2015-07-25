@@ -26,4 +26,5 @@
     <string name="confirmed">Confirmed</string>
     <string name="pending">Pending</string>
     <string name="save">Save</string>
+    <string name="transaction">Transaction</string>
 </resources>

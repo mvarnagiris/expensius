@@ -32,9 +32,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
+import com.mvcoding.financius.ui.transaction.TransactionActivity;
 import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
@@ -52,6 +55,7 @@ import rx.subjects.PublishSubject;
 
 public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, CalculatorComponent> implements CalculatorPresenter.View {
     private static final String EXTRA_NUMBER = "EXTRA_NUMBER";
+    private static final String EXTRA_RESULT_DESTINATION = "EXTRA_RESULT_DESTINATION";
 
     private static final String RESULT_EXTRA_NUMBER = "RESULT_EXTRA_NUMBER";
 
@@ -82,11 +86,25 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     @Bind(R.id.equalsFloatingActionButton) FloatingActionButton equalsFloatingActionButton;
 
     @Inject CalculatorPresenter presenter;
+    @Inject UserSettings userSettings;
 
     private boolean isInShowCalculateMode;
 
     public static void start(@NonNull Context context, @Nullable BigDecimal number, @Nullable View... sharedViews) {
-        ActivityStarter.with(context, CalculatorActivity.class).extra(EXTRA_NUMBER, number).enableTransition(sharedViews).start();
+        ActivityStarter.with(context, CalculatorActivity.class)
+                .extra(EXTRA_NUMBER, number)
+                .extra(EXTRA_RESULT_DESTINATION, ResultDestination.Transaction)
+                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                .enableTransition(sharedViews)
+                .start();
+    }
+
+    public static void startForResult(@NonNull Context context, int requestCode, @Nullable BigDecimal number, @Nullable View... sharedViews) {
+        ActivityStarter.with(context, CalculatorActivity.class)
+                .extra(EXTRA_NUMBER, number)
+                .extra(EXTRA_RESULT_DESTINATION, ResultDestination.Return)
+                .enableTransition(sharedViews)
+                .startForResult(requestCode);
     }
 
     public static BigDecimal getResultNumber(@NonNull Intent data) {
@@ -240,10 +258,23 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     }
 
     @Override public void startResult(@NonNull BigDecimal result) {
-        final Intent data = new Intent();
-        data.putExtra(RESULT_EXTRA_NUMBER, result);
-        setResult(RESULT_OK, data);
-        close();
+        final ResultDestination resultDestination = (ResultDestination) getIntent().getSerializableExtra(EXTRA_RESULT_DESTINATION);
+        switch (resultDestination) {
+            case Return:
+                final Intent data = new Intent();
+                data.putExtra(RESULT_EXTRA_NUMBER, result);
+                setResult(RESULT_OK, data);
+                close();
+                break;
+            case Transaction:
+                final Transaction transaction = new Transaction().withDefaultValues(userSettings);
+                transaction.setAmount(result);
+                TransactionActivity.startForResult(this, 0, transaction);
+                close();
+                break;
+            default:
+                throw new IllegalArgumentException("ResultDestination " + resultDestination + " is not supported.");
+        }
     }
 
     private void clearAnimation() {
@@ -287,5 +318,9 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {
         clearSubject.onNext(OnClickEvent.create(view));
         return true;
+    }
+
+    public enum ResultDestination {
+        Return, Transaction
     }
 }

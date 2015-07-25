@@ -14,7 +14,7 @@
 
 package com.mvcoding.financius.ui.transaction;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.data.DataApi;
@@ -29,12 +29,12 @@ import rx.Scheduler;
 @Module public class TransactionModule {
     private final Transaction transaction;
 
-    public TransactionModule(@Nullable Transaction transaction) {
+    public TransactionModule(@NonNull Transaction transaction) {
         this.transaction = transaction;
     }
 
     @Provides
     TransactionPresenter provideTransactionPresenter(UserSettings userSettings, DataApi dataApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
-        return new TransactionPresenter(transaction == null ? new Transaction().withDefaultValues(userSettings) : transaction, dataApi, uiScheduler, ioScheduler);
+        return new TransactionPresenter(transaction, dataApi, uiScheduler, ioScheduler);
     }
 }

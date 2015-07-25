@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -32,6 +31,7 @@ import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
+import com.mvcoding.financius.ui.calculator.CalculatorActivity;
 import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
@@ -49,6 +49,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     private static final String EXTRA_TRANSACTION = "EXTRA_TRANSACTION";
 
     private static final String RESULT_EXTRA_TRANSACTION = "RESULT_EXTRA_TRANSACTION";
+
+    private static final int REQUEST_AMOUNT = 1;
 
     private static final PublishSubject<TransactionType> transactionTypeSubject = PublishSubject.create();
     private static final PublishSubject<TransactionState> transactionStateSubject = PublishSubject.create();
@@ -72,8 +74,9 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     @Inject TransactionPresenter presenter;
 
     private boolean ignoreChanges = false;
+    private Transaction transaction;
 
-    public static void startForResult(@NonNull Context context, int requestCode, @Nullable Transaction transaction) {
+    public static void startForResult(@NonNull Context context, int requestCode, @NonNull Transaction transaction) {
         ActivityStarter.with(context, TransactionActivity.class).extra(EXTRA_TRANSACTION, transaction).startForResult(requestCode);
     }
 
@@ -86,6 +89,18 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
         transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> transactionTypeSubject.onNext(checkedId == R.id.transactionTypeExpenseRadioButton ? TransactionType.Expense : TransactionType.Income));
         transactionStateRadioGroup.setOnCheckedChangeListener((group, checkedId) -> transactionStateSubject.onNext(checkedId == R.id.transactionStateConfirmedRadioButton ? TransactionState.Confirmed : TransactionState.Pending));
+        amountButton.setOnClickListener(v -> CalculatorActivity.startForResult(this, REQUEST_AMOUNT, transaction.getAmount()));
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_AMOUNT:
+                if (resultCode == RESULT_OK) {
+                    amountSubject.onNext(CalculatorActivity.getResultNumber(data));
+                }
+                break;
+        }
     }
 
     @NonNull @Override protected TransactionComponent createComponent(@NonNull ActivityComponent component) {
@@ -142,10 +157,12 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @Override public void showTransaction(@NonNull Transaction transaction) {
+        this.transaction = transaction;
         ignoreChanges = true;
 
         transactionTypeRadioGroup.check(transaction.getTransactionType() == TransactionType.Expense ? R.id.transactionTypeExpenseRadioButton : R.id.transactionTypeIncomeRadioButton);
         transactionStateRadioGroup.check(transaction.getTransactionState() == TransactionState.Confirmed ? R.id.transactionStateConfirmedRadioButton : R.id.transactionStatePendingRadioButton);
+        amountButton.setText(transaction.getAmount().toString());
 
         ignoreChanges = false;
     }
