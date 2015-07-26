@@ -17,7 +17,10 @@ package com.mvcoding.financius;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.data.database.DBHelper;
 import com.mvcoding.financius.util.PreferencesUtils;
+import com.squareup.sqlbrite.BriteDatabase;
+import com.squareup.sqlbrite.SqlBrite;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -46,6 +49,10 @@ import rx.schedulers.Schedulers;
         }
         userSettings.context = context;
         return userSettings;
+    }
+
+    @Provides @Singleton public BriteDatabase provideBriteDatabase(DBHelper dbHelper) {
+        return SqlBrite.create().wrapDatabaseHelper(dbHelper);
     }
 
     @Provides @Singleton @Named("ui") public Scheduler provideUiScheduler() {

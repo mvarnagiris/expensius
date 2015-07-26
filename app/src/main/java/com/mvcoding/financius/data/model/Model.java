@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.CallSuper;
@@ -21,6 +22,7 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.endpoints.body.ModelBody;
 import com.mvcoding.financius.core.model.ModelState;
+import com.mvcoding.financius.data.database.table.BaseModelTable;
 
 import java.util.UUID;
 
@@ -28,18 +30,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor public abstract class Model<B extends ModelBody> implements Parcelable {
-    private Long _id;
     private String id;
     private ModelState modelState;
 
     protected Model(@NonNull Parcel in) {
-        _id = (Long) in.readValue(Long.class.getClassLoader());
         id = in.readString();
         modelState = (ModelState) in.readSerializable();
     }
 
     @Override @CallSuper public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(_id);
         dest.writeString(id);
         dest.writeSerializable(modelState);
     }
@@ -57,11 +56,19 @@ import lombok.NoArgsConstructor;
         return this;
     }
 
+    @NonNull @CallSuper public Model<B> with(@NonNull Cursor cursor) {
+        id = cursor.getString(cursor.getColumnIndexOrThrow(getModelTable().id().selectName()));
+        modelState = ModelState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(getModelTable().modelState().selectName())));
+        return this;
+    }
+
     public void validate() throws RuntimeException {
         toBody().validate();
     }
 
     @NonNull protected abstract B createBody();
+
+    @NonNull protected abstract BaseModelTable getModelTable();
 
     @Override public int describeContents() {
         return 0;

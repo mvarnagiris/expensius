@@ -19,10 +19,11 @@ import android.support.annotation.NonNull;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton public final class TransactionTable extends BaseModelTable {
+    private static final TransactionTable INSTANCE = new TransactionTable();
+
     private final Column transactionType;
     private final Column transactionState;
     private final Column date;
@@ -31,7 +32,7 @@ import javax.inject.Singleton;
     private final Column placeId;
     private final Column note;
 
-    @Inject TransactionTable() {
+    private TransactionTable() {
         this("transaction");
     }
 
@@ -44,6 +45,10 @@ import javax.inject.Singleton;
         currency = new Column(tableName, "currency", Column.Type.Text);
         placeId = new Column(tableName, "placeId", Column.Type.Text);
         note = new Column(tableName, "note", Column.Type.Text);
+    }
+
+    public static TransactionTable get() {
+        return INSTANCE;
     }
 
     @NonNull @Override protected Column[] getModelColumns() {

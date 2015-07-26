@@ -48,6 +48,10 @@ public final class Column {
         return selectName;
     }
 
+    @Override public String toString() {
+        return selectName();
+    }
+
     enum Type {
         IntegerAutoIncrement("integer autoincrement"),
         Text("text"),

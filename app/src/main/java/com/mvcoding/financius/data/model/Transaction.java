@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -23,6 +24,8 @@ import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.endpoints.body.TransactionBody;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
+import com.mvcoding.financius.data.database.table.BaseModelTable;
+import com.mvcoding.financius.data.database.table.TransactionTable;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -56,7 +59,6 @@ public class Transaction extends Model<TransactionBody> {
     @SerializedName("note") private String note;
 
     public Transaction(@NonNull Transaction transaction) {
-        set_id(transaction.get_id());
         setId(transaction.getId());
         setModelState(transaction.getModelState());
         transactionType = transaction.getTransactionType();
@@ -133,7 +135,27 @@ public class Transaction extends Model<TransactionBody> {
         return this;
     }
 
+    @NonNull @Override public Transaction with(@NonNull Cursor cursor) {
+        super.with(cursor);
+
+        // TODO Implement.
+        //        final TransactionTable table = TransactionTable.get();
+        //        transactionType = TransactionType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionType().selectName())));
+        //        transactionState = TransactionState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionState().selectName())));
+        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
+        //        amount = BigDecimal.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(table.amount().selectName())));
+        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
+        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
+        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
+
+        return this;
+    }
+
     @NonNull @Override protected TransactionBody createBody() {
         return new TransactionBody();
+    }
+
+    @NonNull @Override protected BaseModelTable getModelTable() {
+        return TransactionTable.get();
     }
 }

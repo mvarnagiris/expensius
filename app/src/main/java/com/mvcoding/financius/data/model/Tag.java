@@ -14,12 +14,15 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.mvcoding.financius.core.endpoints.body.TagBody;
+import com.mvcoding.financius.data.database.table.BaseModelTable;
+import com.mvcoding.financius.data.database.table.TagTable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +42,10 @@ import lombok.ToString;
 
     @SerializedName("title") private String title;
     @SerializedName("color") private int color;
+
+    public Tag(@NonNull Cursor cursor) {
+        with(cursor);
+    }
 
     private Tag(@NonNull Parcel in) {
         super(in);
@@ -64,23 +71,21 @@ import lombok.ToString;
         return this;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    @NonNull @Override public Tag with(@NonNull Cursor cursor) {
+        super.with(cursor);
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+        final TagTable table = TagTable.get();
+        title = cursor.getString(cursor.getColumnIndexOrThrow(table.title().selectName()));
+        color = cursor.getInt(cursor.getColumnIndexOrThrow(table.color().selectName()));
 
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
+        return this;
     }
 
     @NonNull @Override protected TagBody createBody() {
         return new TagBody();
+    }
+
+    @NonNull @Override protected BaseModelTable getModelTable() {
+        return TagTable.get();
     }
 }

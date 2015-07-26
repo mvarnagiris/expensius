@@ -14,12 +14,15 @@
 
 package com.mvcoding.financius.data.model;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.mvcoding.financius.core.endpoints.body.PlaceBody;
+import com.mvcoding.financius.data.database.table.BaseModelTable;
+import com.mvcoding.financius.data.database.table.PlaceTable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -84,7 +87,24 @@ import lombok.ToString;
         return this;
     }
 
+    @NonNull @Override public Place with(@NonNull Cursor cursor) {
+        super.with(cursor);
+
+        final PlaceTable table = PlaceTable.get();
+        placeId = cursor.getString(cursor.getColumnIndexOrThrow(table.placeId().selectName()));
+        name = cursor.getString(cursor.getColumnIndexOrThrow(table.name().selectName()));
+        address = cursor.getString(cursor.getColumnIndexOrThrow(table.address().selectName()));
+        latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(table.latitude().selectName()));
+        longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(table.longitude().selectName()));
+
+        return this;
+    }
+
     @NonNull @Override protected PlaceBody createBody() {
         return new PlaceBody();
+    }
+
+    @NonNull @Override protected BaseModelTable getModelTable() {
+        return PlaceTable.get();
     }
 }

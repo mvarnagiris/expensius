@@ -16,17 +16,18 @@ package com.mvcoding.financius.data.database.table;
 
 import android.support.annotation.NonNull;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton public final class PlaceTable extends BaseModelTable {
+    private static final PlaceTable INSTANCE = new PlaceTable();
+
     private final Column placeId;
     private final Column name;
     private final Column address;
     private final Column latitude;
     private final Column longitude;
 
-    @Inject PlaceTable() {
+    private PlaceTable() {
         this("place");
     }
 
@@ -37,6 +38,10 @@ import javax.inject.Singleton;
         address = new Column(tableName, "address", Column.Type.Text);
         latitude = new Column(tableName, "latitude", Column.Type.Real, "0");
         longitude = new Column(tableName, "longitude", Column.Type.Real, "0");
+    }
+
+    public static PlaceTable get() {
+        return INSTANCE;
     }
 
     @NonNull @Override protected Column[] getModelColumns() {

@@ -31,6 +31,20 @@ public abstract class BaseModelTable extends BaseTable {
         modelState = new Column(tableName, "modelState", Column.Type.Text, ModelState.Normal.name());
     }
 
+    @NonNull public String[] getQueryColumns() {
+        final Column[] modelColumns = getModelColumns();
+        final String[] queryColumns = new String[modelColumns.length + 2];
+        queryColumns[0] = id.selectName();
+        queryColumns[1] = modelState.selectName();
+
+        int index = 2;
+        for (Column column : modelColumns) {
+            queryColumns[index++] = column.selectName();
+        }
+
+        return queryColumns;
+    }
+
     @NonNull @Override protected Column[] getColumns() {
         final Column[] modelColumns = getModelColumns();
         final Column[] allColumns = new Column[modelColumns.length + 3];
@@ -43,10 +57,6 @@ public abstract class BaseModelTable extends BaseTable {
     }
 
     @NonNull protected abstract Column[] getModelColumns();
-
-    @NonNull public final Column _id() {
-        return _id;
-    }
 
     @NonNull public final Column id() {
         return id;

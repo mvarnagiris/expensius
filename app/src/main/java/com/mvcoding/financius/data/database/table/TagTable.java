@@ -16,14 +16,13 @@ package com.mvcoding.financius.data.database.table;
 
 import android.support.annotation.NonNull;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+public final class TagTable extends BaseModelTable {
+    private static final TagTable INSTANCE = new TagTable();
 
-@Singleton public final class TagTable extends BaseModelTable {
     private final Column title;
     private final Column color;
 
-    @Inject TagTable() {
+    private TagTable() {
         this("tag");
     }
 
@@ -31,6 +30,10 @@ import javax.inject.Singleton;
         super(tableName);
         title = new Column(tableName, "title", Column.Type.Text);
         color = new Column(tableName, "color", Column.Type.Integer, "0");
+    }
+
+    public static TagTable get() {
+        return INSTANCE;
     }
 
     @NonNull @Override protected Column[] getModelColumns() {
