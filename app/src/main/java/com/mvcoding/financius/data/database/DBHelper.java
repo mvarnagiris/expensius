@@ -38,15 +38,14 @@ import javax.inject.Singleton;
 
     private final List<BaseTable> tables;
 
-    @Inject
-    DBHelper(@NonNull @AppContext Context context, @NonNull PlaceTable placeTable, @NonNull TagTable tagTable, @NonNull TransactionTable transactionTable, @NonNull TransactionTagTable transactionTagTable) {
+    @Inject DBHelper(@NonNull @AppContext Context context) {
         super(context, NAME, null, VERSION);
 
         tables = new ArrayList<>();
-        tables.add(placeTable);
-        tables.add(tagTable);
-        tables.add(transactionTable);
-        tables.add(transactionTagTable);
+        tables.add(PlaceTable.get());
+        tables.add(TagTable.get());
+        tables.add(TransactionTable.get());
+        tables.add(TransactionTagTable.get());
     }
 
     @Override public void onCreate(SQLiteDatabase db) {

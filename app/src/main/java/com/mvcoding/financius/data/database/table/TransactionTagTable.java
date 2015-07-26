@@ -16,14 +16,15 @@ package com.mvcoding.financius.data.database.table;
 
 import android.support.annotation.NonNull;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton public final class TransactionTagTable extends BaseRelationshipTable {
+    private static final TransactionTagTable INSTANCE = new TransactionTagTable();
+
     private final Column transactionId;
     private final Column tagId;
 
-    @Inject TransactionTagTable() {
+    private TransactionTagTable() {
         this("transactionTag");
     }
 
@@ -31,6 +32,10 @@ import javax.inject.Singleton;
         super(tableName);
         transactionId = new Column(tableName, "transactionId", Column.Type.Text);
         tagId = new Column(tableName, "tagId", Column.Type.Text);
+    }
+
+    public static TransactionTagTable get() {
+        return INSTANCE;
     }
 
     @NonNull @Override protected Column[] getColumns() {

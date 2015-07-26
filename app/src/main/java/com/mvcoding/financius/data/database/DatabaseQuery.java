@@ -73,7 +73,10 @@ public class DatabaseQuery {
         }
 
         query.append(" FROM ").append(table);
-        query.append(" WHERE ").append(selection);
+
+        if (selection.length() > 0) {
+            query.append(" WHERE ").append(selection);
+        }
 
         return query.toString();
     }

@@ -16,11 +16,15 @@ package com.mvcoding.financius.data.database;
 
 import com.mvcoding.financius.BaseTest;
 
+import org.assertj.core.data.Index;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.fail;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseQueryTest extends BaseTest {
+    private static final String SQL_REGEX = "(SELECT )|( FROM )|( WHERE )";
     private DatabaseQuery databaseQuery;
 
     @Override public void setUp() {
@@ -29,59 +33,109 @@ public class DatabaseQueryTest extends BaseTest {
     }
 
     @Test public void getSql_useAstrixForColumns_whenColumnsAreEmpty() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        final String[] parts = sql.split(SQL_REGEX);
+        assertThat(parts[1]).isEqualTo("*");
     }
 
     @Test public void getSql_useProvidedColumns_whenColumnsAreNotEmpty() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.select("column1", "column2").from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        final String[] parts = sql.split(SQL_REGEX);
+        assertThat(parts[1]).isEqualTo("column1,column2");
     }
 
     @Test public void getSql_useProvidedColumns_whenSelectIsCalledMoreThanOnce() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.select("column1", "column2").select("column3").from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        final String[] parts = sql.split(SQL_REGEX);
+        assertThat(parts[1]).isEqualTo("column1,column2,column3");
     }
 
     @Test public void getSql_useProvidedTable() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        final String[] parts = sql.split(SQL_REGEX);
+        assertThat(parts[2]).isEqualTo("table");
     }
 
     @Test public void getSql_doNotHaveWhereClause_whenWhereClauseIsNotProvided() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        assertThat(sql).doesNotContain("WHERE");
     }
 
     @Test public void getSql_useProvidedWhereClause_whenWhereClauseIsProvided() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table").where("column1=1");
+
+        final String sql = databaseQuery.getSql();
+
+        final String[] parts = sql.split(SQL_REGEX);
+        assertThat(parts[3]).isEqualTo("column1=1");
     }
 
     @Test public void from_doNotThrowIllegalStateException_whenTableIsNotAlreadySet() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table");
     }
 
     @Test(expected = IllegalStateException.class) public void from_throwIllegalStateException_whenTableIsAlreadySet() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table");
+        databaseQuery.from("table");
     }
 
     @Test public void where_doNotThrowIllegalStateException_whenTableIsNotAlreadySet() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table").where("column1=1");
     }
 
     @Test(expected = IllegalStateException.class) public void where_throwIllegalStateException_whenWhereIsAlreadySet() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table").where("column1=1");
+        databaseQuery.from("table").where("column1=1");
     }
 
     @Test public void getArgs_returnEmptyArray_whenNoArgsWereProvided() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table");
+
+        final String[] args = databaseQuery.getArgs();
+
+        assertThat(args).isNotNull();
+        assertThat(args).isEmpty();
     }
 
     @Test public void getArgs_returnProvidedArgs_whenArgsWereProvided() throws Exception {
-        fail("Not implemented.");
+        databaseQuery.from("table").where("column1=1", "1", "2", "3");
+
+        final String[] args = databaseQuery.getArgs();
+
+        assertThat(args).isNotNull();
+        assertThat(args).hasSize(3);
+        assertThat(args).contains("1", Index.atIndex(0));
+        assertThat(args).contains("2", Index.atIndex(1));
+        assertThat(args).contains("3", Index.atIndex(2));
     }
 
-    @Test public void getTables_returnProvidedTable_whenTableWasProvided() throws Exception {
-        fail("Not implemented.");
+    @Test public void getTables_returnProvidedTables_whenTablesWereProvided() throws Exception {
+        databaseQuery.from("table");
+
+        final List<String> tables = databaseQuery.getTables();
+
+        assertThat(tables).isNotNull();
+        assertThat(tables).hasSize(1);
+        assertThat(tables).contains("table");
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getTables_throwIllegalStateException_whenTableWasNotProvided() throws Exception {
-        fail("Not implemented.");
+    public void getTables_throwIllegalStateException_whenTablesWereNotProvided() throws Exception {
+        databaseQuery.getTables();
     }
 }
