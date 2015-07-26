@@ -58,7 +58,9 @@ import rx.Observable;
                 .from(table.getTableName())
                 .where(table.modelState() + "=?", ModelState.Normal.name());
 
-        return pageObservable.withLatestFrom(database.load(databaseQuery), (page, cursor) -> {
+        final List<Tag> allItems = new ArrayList<>();
+        return Observable.combineLatest(pageObservable, database.load(databaseQuery)
+                .doOnNext(cursor -> allItems.clear()), (page, cursor) -> {
             final List<Tag> tags = new ArrayList<>();
             for (int i = page.start; i < page.count; i++) {
                 cursor.moveToPosition(i);
@@ -71,5 +73,11 @@ import rx.Observable;
     @RequiredArgsConstructor public static class Page {
         private final int start;
         private final int count;
+    }
+
+    @RequiredArgsConstructor public static class PageResult<T> {
+        private final Page page;
+        private final List<T> allItems;
+        private final List<T> pageItems;
     }
 }
