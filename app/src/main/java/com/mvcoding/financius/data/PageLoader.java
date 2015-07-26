@@ -25,13 +25,15 @@ import com.mvcoding.financius.data.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import lombok.RequiredArgsConstructor;
 import rx.Observable;
 
-class PageLoader<M extends Model> {
+public class PageLoader<M extends Model> {
     private final Database database;
 
-    public PageLoader(@NonNull Database database) {
+    @Inject public PageLoader(@NonNull Database database) {
         this.database = database;
     }
 
@@ -52,7 +54,7 @@ class PageLoader<M extends Model> {
                 pageItems.add(item);
             }
 
-            return new PageResult<>(page, allItems, pageItems);
+            return new PageResult<>(page, allItems, pageItems, cursor);
         });
     }
 
@@ -65,5 +67,14 @@ class PageLoader<M extends Model> {
         private final Page page;
         private final SparseArrayCompat<T> allItems;
         private final List<T> pageItems;
+        private final Cursor cursor;
+
+        public boolean hasMoreBefore() {
+            return page.start > 0;
+        }
+
+        public boolean hasMoreAfter() {
+            return cursor.getCount() > page.start + page.count;
+        }
     }
 }

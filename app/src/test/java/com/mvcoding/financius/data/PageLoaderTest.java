@@ -20,24 +20,28 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.fail;
 
-public class DataApiTest extends BaseTest {
-    @Test public void loadTags_emitsEmptyList_whenCursorIsEmpty() throws Exception {
+public class PageLoaderTest extends BaseTest {
+    @Test public void load_emitsEmptyList_whenCursorIsEmpty() throws Exception {
         fail("Not implemented.");
     }
 
-    @Test public void loadTags_emitsLessTagsThanRequested_whenCursorContainsLessTagsThanRequested() throws Exception {
+    @Test public void load_emitsLessItemsThanRequested_whenCursorContainsLessItemsThanRequested() throws Exception {
         fail("Not implemented.");
     }
 
-    @Test public void loadTags_emitsRequestedAmountOfTags_whenCursorContainsMoreTagsThanRequested() throws Exception {
+    @Test public void load_emitsRequestedAmountOfItems_whenCursorContainsEnoughItems() throws Exception {
         fail("Not implemented.");
     }
 
-    @Test public void loadTags_emitsSecondPageOfTags_whenCursorContainsEnoughTagsAndSecondPageWasRequested() throws Exception {
+    @Test public void load_emitsSecondPageOfTags_whenCursorContainsEnoughItemsAndSecondPageWasRequested() throws Exception {
         fail("Not implemented.");
     }
 
-    @Test public void loadTags_emitsSameTags_whenSamePageWasRequested() throws Exception {
+    @Test public void load_emitsSameItems_whenSamePageWasRequested() throws Exception {
+        fail("Not implemented.");
+    }
+
+    @Test public void resetCache_whenCursorIsReloaded() throws Exception {
         fail("Not implemented.");
     }
 }
