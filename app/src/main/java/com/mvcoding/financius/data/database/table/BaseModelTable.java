@@ -58,11 +58,11 @@ public abstract class BaseModelTable extends BaseTable {
 
     @NonNull protected abstract Column[] getModelColumns();
 
-    @NonNull public final Column id() {
+    @NonNull public Column id() {
         return id;
     }
 
-    @NonNull public final Column modelState() {
+    @NonNull public Column modelState() {
         return modelState;
     }
 }
