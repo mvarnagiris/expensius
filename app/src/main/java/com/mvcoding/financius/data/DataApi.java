@@ -24,7 +24,6 @@ import com.mvcoding.financius.data.database.table.TagTable;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,13 +40,13 @@ import rx.Observable;
     }
 
     @NonNull public Observable<Transaction> saveTransaction(@NonNull Transaction transaction) throws ValidationException {
-        transaction.validate();
+        //        transaction.validate();
         // TODO: Save transaction
         return Observable.just(transaction);
     }
 
     @NonNull public Observable<Tag> saveTag(@NonNull Tag tag) throws ValidationException {
-        tag.validate();
+        //        tag.validate();
         // TODO: Save tag
         return Observable.just(tag);
     }
@@ -58,16 +57,17 @@ import rx.Observable;
                 .from(table.getTableName())
                 .where(table.modelState() + "=?", ModelState.Normal.name());
 
-        final List<Tag> allItems = new ArrayList<>();
-        return Observable.combineLatest(pageObservable, database.load(databaseQuery)
-                .doOnNext(cursor -> allItems.clear()), (page, cursor) -> {
-            final List<Tag> tags = new ArrayList<>();
-            for (int i = page.start; i < page.count; i++) {
-                cursor.moveToPosition(i);
-                tags.add(new Tag(cursor));
-            }
-            return tags;
-        });
+        //        final List<Tag> allItems = new ArrayList<>();
+        //        return Observable.combineLatest(pageObservable, database.load(databaseQuery)
+        //                .doOnNext(cursor -> allItems.clear()), (page, cursor) -> {
+        //            final List<Tag> tags = new ArrayList<>();
+        //            for (int i = page.start; i < page.count; i++) {
+        //                cursor.moveToPosition(i);
+        //                tags.add(new Tag(cursor));
+        //            }
+        //            return tags;
+        //        });
+        return Observable.empty();
     }
 
     @RequiredArgsConstructor public static class Page {

@@ -100,7 +100,8 @@ import rx.Scheduler;
 
     private boolean validate(@NonNull Transaction transaction) {
         try {
-            transaction.validate();
+            // TODO: Validate
+//            transaction.validate();
         } catch (RuntimeException e) {
             e.printStackTrace();
             return false;

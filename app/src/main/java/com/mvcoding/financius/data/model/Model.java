@@ -14,22 +14,19 @@
 
 package com.mvcoding.financius.data.model;
 
-import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.core.endpoints.body.ModelBody;
 import com.mvcoding.financius.core.model.ModelState;
-import com.mvcoding.financius.data.database.table.BaseModelTable;
 
 import java.util.UUID;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor public abstract class Model<B extends ModelBody> implements Parcelable {
+@Data @NoArgsConstructor public abstract class Model implements Parcelable {
     private String id;
     private ModelState modelState;
 
@@ -43,32 +40,11 @@ import lombok.NoArgsConstructor;
         dest.writeSerializable(modelState);
     }
 
-    @NonNull @CallSuper public B toBody() {
-        final B body = createBody();
-        body.setId(id);
-        body.setModelState(modelState);
-        return body;
-    }
-
-    @NonNull @CallSuper public Model<B> withDefaultValues() {
+    @NonNull @CallSuper public Model withDefaultValues() {
         id = UUID.randomUUID().toString();
         modelState = ModelState.Normal;
         return this;
     }
-
-    @NonNull @CallSuper public Model<B> with(@NonNull Cursor cursor) {
-        id = cursor.getString(cursor.getColumnIndexOrThrow(getModelTable().id().selectName()));
-        modelState = ModelState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(getModelTable().modelState().selectName())));
-        return this;
-    }
-
-    public void validate() throws RuntimeException {
-        toBody().validate();
-    }
-
-    @NonNull protected abstract B createBody();
-
-    @NonNull protected abstract BaseModelTable getModelTable();
 
     @Override public int describeContents() {
         return 0;

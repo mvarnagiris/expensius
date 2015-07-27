@@ -69,7 +69,8 @@ import rx.Scheduler;
 
     private boolean validate(@NonNull Tag tag) {
         try {
-            tag.validate();
+            // TODO: Validate
+//            tag.validate();
         } catch (RuntimeException e) {
             e.printStackTrace();
             return false;

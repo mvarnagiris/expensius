@@ -14,18 +14,14 @@
 
 package com.mvcoding.financius.data.model;
 
-import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
 import com.mvcoding.financius.UserSettings;
-import com.mvcoding.financius.core.endpoints.body.TransactionBody;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
-import com.mvcoding.financius.data.database.table.BaseModelTable;
-import com.mvcoding.financius.data.database.table.TransactionTable;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -37,8 +33,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Data @EqualsAndHashCode(callSuper = true) @ToString(callSuper = true) @NoArgsConstructor
-public class Transaction extends Model<TransactionBody> {
+@Data @EqualsAndHashCode(callSuper = true) @ToString(callSuper = true) @NoArgsConstructor public class Transaction extends Model {
     public static final Parcelable.Creator<Transaction> CREATOR = new Parcelable.Creator<Transaction>() {
         public Transaction createFromParcel(Parcel in) {
             return new Transaction(in);
@@ -96,30 +91,6 @@ public class Transaction extends Model<TransactionBody> {
         dest.writeString(note);
     }
 
-    @NonNull @Override public TransactionBody toBody() {
-        final TransactionBody body = super.toBody();
-        body.setTransactionType(transactionType);
-        body.setTransactionState(transactionState);
-        body.setDate(date);
-        body.setAmount(amount);
-        body.setCurrency(currency);
-        body.setNote(note);
-
-        if (place != null) {
-            body.setPlaceId(place.getId());
-        }
-
-        if (tags != null) {
-            final Set<String> tagIds = new HashSet<>();
-            for (Tag tag : tags) {
-                tagIds.add(tag.getId());
-            }
-            body.setTagIds(tagIds);
-        }
-
-        return body;
-    }
-
     @NonNull @Override public Transaction withDefaultValues() {
         super.withDefaultValues();
         transactionType = TransactionType.Expense;
@@ -133,29 +104,5 @@ public class Transaction extends Model<TransactionBody> {
         withDefaultValues();
         currency = userSettings.getCurrency();
         return this;
-    }
-
-    @NonNull @Override public Transaction with(@NonNull Cursor cursor) {
-        super.with(cursor);
-
-        // TODO Implement.
-        //        final TransactionTable table = TransactionTable.get();
-        //        transactionType = TransactionType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionType().selectName())));
-        //        transactionState = TransactionState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionState().selectName())));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
-        //        amount = BigDecimal.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(table.amount().selectName())));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
-
-        return this;
-    }
-
-    @NonNull @Override protected TransactionBody createBody() {
-        return new TransactionBody();
-    }
-
-    @NonNull @Override protected BaseModelTable getModelTable() {
-        return TransactionTable.get();
     }
 }
