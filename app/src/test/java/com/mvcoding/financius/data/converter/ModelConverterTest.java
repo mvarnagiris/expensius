@@ -14,31 +14,22 @@
 
 package com.mvcoding.financius.data.converter;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.BaseTest;
 import com.mvcoding.financius.core.endpoints.body.ModelBody;
-import com.mvcoding.financius.core.model.ModelState;
 import com.mvcoding.financius.data.database.table.BaseModelTable;
 import com.mvcoding.financius.data.database.table.Column;
 import com.mvcoding.financius.data.model.Model;
 
-import org.junit.Test;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ModelConverterTest extends BaseTest {
+public class ModelConverterTest extends BaseModelConverterTest<ModelConverter<ModelBody, Model>, Model, BaseModelTable, ModelBody> {
     @Mock private BaseModelTable table;
 
-    private ModelConverter<ModelBody, Model> modelConverter;
-
-    @Override public void setUp() {
-        super.setUp();
-
+    @Override protected ModelConverter<ModelBody, Model> createConverter() {
         final Column idColumn = mock(Column.class);
         final Column modelStateColumn = mock(Column.class);
         when(idColumn.selectName()).thenReturn("table.id");
@@ -48,7 +39,7 @@ public class ModelConverterTest extends BaseTest {
         final String[] columns = new String[]{idColumn.selectName(), modelStateColumn.selectName()};
         when(table.getQueryColumns()).thenReturn(columns);
 
-        modelConverter = new ModelConverter<ModelBody, Model>() {
+        return new ModelConverter<ModelBody, Model>() {
             @NonNull @Override protected Model createModel() {
                 return new Model() {
                 };
@@ -65,30 +56,12 @@ public class ModelConverterTest extends BaseTest {
         };
     }
 
-    @Test public void from_returnsModelWithAllValuesSetFromCursor() throws Exception {
-        final Cursor cursor = mock(Cursor.class);
-        when(cursor.getColumnIndexOrThrow(table.id().selectName())).thenReturn(0);
-        when(cursor.getColumnIndexOrThrow(table.modelState().selectName())).thenReturn(1);
-        when(cursor.getString(0)).thenReturn("id");
-        when(cursor.getString(1)).thenReturn("Normal");
-
-        final Model model = modelConverter.from(cursor);
-
-        assertThat(model).isNotNull();
-        assertThat(model.getId()).isEqualTo("id");
-        assertThat(model.getModelState()).isEqualTo(ModelState.Normal);
+    @Override protected Model createModel() {
+        return new Model() {
+        };
     }
 
-    @Test public void toBody_returnsModelBodyWithAllValuesSet() throws Exception {
-        final Model model = new Model() {
-        };
-        model.setId("id");
-        model.setModelState(ModelState.Normal);
-
-        final ModelBody body = modelConverter.toBody(model);
-
-        assertThat(body).isNotNull();
-        assertThat(body.getId()).isEqualTo("id");
-        assertThat(body.getModelState()).isEqualTo(ModelState.Normal);
+    @Override protected BaseModelTable getTable() {
+        return table;
     }
 }
