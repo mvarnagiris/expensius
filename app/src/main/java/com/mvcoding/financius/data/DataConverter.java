@@ -17,8 +17,6 @@ package com.mvcoding.financius.data;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.data.model.Model;
-
-public interface ModelConverter<M extends Model> {
-    M from(@NonNull Cursor cursor);
+public interface DataConverter<T> {
+    T from(@NonNull Cursor cursor);
 }

@@ -20,17 +20,17 @@ import android.support.v4.util.SparseArrayCompat;
 
 import com.mvcoding.financius.data.database.Database;
 import com.mvcoding.financius.data.database.DatabaseQuery;
-import com.mvcoding.financius.data.model.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import rx.Observable;
 
-public class PageLoader<M extends Model> {
+public class PageLoader<T> {
     private final Database database;
 
     @Inject public PageLoader(@NonNull Database database) {
@@ -38,17 +38,17 @@ public class PageLoader<M extends Model> {
     }
 
     @NonNull
-    public Observable<PageResult<M>> load(@NonNull ModelConverter<M> modelConverter, @NonNull DatabaseQuery databaseQuery, @NonNull Observable<Page> pageObservable) {
-        final SparseArrayCompat<M> allItems = new SparseArrayCompat<>();
+    public Observable<PageResult<T>> load(@NonNull DataConverter<T> dataConverter, @NonNull DatabaseQuery databaseQuery, @NonNull Observable<Page> pageObservable) {
+        final SparseArrayCompat<T> allItems = new SparseArrayCompat<>();
         final Observable<Cursor> cursorObservable = database.load(databaseQuery).doOnNext(cursor -> allItems.clear());
 
         return Observable.combineLatest(pageObservable, cursorObservable, (page, cursor) -> {
-            final List<M> pageItems = new ArrayList<>();
+            final List<T> pageItems = new ArrayList<>();
             for (int i = page.start, size = Math.min(cursor.getCount(), page.start + page.count); i < size; i++) {
-                M item = allItems.get(i);
+                T item = allItems.get(i);
                 if (item == null) {
                     cursor.moveToPosition(i);
-                    item = modelConverter.from(cursor);
+                    item = dataConverter.from(cursor);
                     allItems.put(i, item);
                 }
                 pageItems.add(item);
@@ -63,7 +63,7 @@ public class PageLoader<M extends Model> {
         private final int count;
     }
 
-    @RequiredArgsConstructor public static class PageResult<T> {
+    @RequiredArgsConstructor @Getter public static class PageResult<T> {
         private final Page page;
         private final SparseArrayCompat<T> allItems;
         private final List<T> pageItems;
