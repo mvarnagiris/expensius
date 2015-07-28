@@ -17,11 +17,17 @@ package com.mvcoding.financius.ui.tag;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.R;
+import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.util.rx.RefreshEvent;
+
+import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent> implements TagsPresenter.View {
     @Inject TagsPresenter presenter;
@@ -31,7 +37,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     @NonNull @Override protected TagsComponent createComponent(@NonNull ActivityComponent component) {
-        return component.plus(new TagsModule());
+        return component.plus(new TagsModule(TagsPresenter.DisplayType.View));
     }
 
     @Override protected void inject(@NonNull TagsComponent component) {
@@ -44,5 +50,33 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
 
     @NonNull @Override protected TagsPresenter.View getPresenterView() {
         return this;
+    }
+
+    @NonNull @Override public Observable<TagsPresenter.Edge> onEdgeReached() {
+        return null;
+    }
+
+    @NonNull @Override public Observable<RefreshEvent> onRefresh() {
+        return null;
+    }
+
+    @Override public void setDisplayType(@NonNull TagsPresenter.DisplayType displayType) {
+
+    }
+
+    @Override public void show(@NonNull List<Tag> tags) {
+
+    }
+
+    @Override public void update(List<Tag> tags) {
+
+    }
+
+    @Override public void add(int position, List<Tag> tags) {
+
+    }
+
+    @Override public void remove(List<Tag> tags) {
+
     }
 }

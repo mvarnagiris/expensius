@@ -73,8 +73,8 @@ public class PageLoaderTest extends BaseTest {
 
     @Test public void resetCache_whenCursorIsReloaded() throws Exception {
         final AtomicInteger count = new AtomicInteger(0);
-        pageLoader.load(dataConverter, databaseQuery, pageSubject).subscribe(new Action1<PageLoader.PageResult<Item>>() {
-            @Override public void call(PageLoader.PageResult<Item> itemPageResult) {
+        pageLoader.load(dataConverter, databaseQuery, pageSubject).subscribe(new Action1<PageResult<Item>>() {
+            @Override public void call(PageResult<Item> itemPageResult) {
                 if (count.get() == 0) {
                     assertPageResult(itemPageResult, 5, 5, false, true);
                 } else if (count.get() == 1) {
@@ -96,8 +96,8 @@ public class PageLoaderTest extends BaseTest {
 
     private void testLoad(int cursorCount, int pageSize, int pagesCount) {
         final AtomicInteger page = new AtomicInteger(0);
-        pageLoader.load(dataConverter, databaseQuery, pageSubject).subscribe(new Action1<PageLoader.PageResult<Item>>() {
-            @Override public void call(PageLoader.PageResult<Item> itemPageResult) {
+        pageLoader.load(dataConverter, databaseQuery, pageSubject).subscribe(new Action1<PageResult<Item>>() {
+            @Override public void call(PageResult<Item> itemPageResult) {
                 final int expectedPageCount = Math.min(pageSize, cursorCount - (page.get() * pageSize));
                 final int expectedTotalCount = Math.min((page.get() + 1) * pageSize, cursorCount);
                 final boolean hasMoreBefore = page.get() > 0;
@@ -114,7 +114,7 @@ public class PageLoaderTest extends BaseTest {
         }
     }
 
-    private void assertPageResult(PageLoader.PageResult pageResult, int pageCount, int totalCount, boolean hasItemsBefore, boolean hasItemsAfter) {
+    private void assertPageResult(PageResult pageResult, int pageCount, int totalCount, boolean hasItemsBefore, boolean hasItemsAfter) {
         assertThat(pageResult).isNotNull();
         assertThat(pageResult.getPageItems()).isNotNull();
         assertThat(pageResult.getPageItems()).hasSize(pageCount);

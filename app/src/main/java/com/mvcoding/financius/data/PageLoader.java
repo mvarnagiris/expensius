@@ -15,6 +15,7 @@
 package com.mvcoding.financius.data;
 
 import android.database.Cursor;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 
@@ -27,7 +28,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import rx.Observable;
 
 public class PageLoader<T> {
@@ -54,27 +54,17 @@ public class PageLoader<T> {
                 pageItems.add(item);
             }
 
-            return new PageResult<>(page, allItems, pageItems, cursor);
+            return new PageResult<>(cursor, allItems, pageItems, page);
         });
     }
 
-    @RequiredArgsConstructor public static class Page {
+    @Getter public static class Page {
         private final int start;
         private final int count;
-    }
 
-    @RequiredArgsConstructor @Getter public static class PageResult<T> {
-        private final Page page;
-        private final SparseArrayCompat<T> allItems;
-        private final List<T> pageItems;
-        private final Cursor cursor;
-
-        public boolean hasMoreBefore() {
-            return page.start > 0;
-        }
-
-        public boolean hasMoreAfter() {
-            return cursor.getCount() > page.start + page.count;
+        public Page(@IntRange(from = 0) int start, @IntRange(from = 1) int count) {
+            this.start = start;
+            this.count = count;
         }
     }
 }
