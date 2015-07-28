@@ -18,25 +18,27 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.endpoints.body.ValidationException;
 import com.mvcoding.financius.core.model.ModelState;
+import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.database.Database;
 import com.mvcoding.financius.data.database.DatabaseQuery;
 import com.mvcoding.financius.data.database.table.TagTable;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import lombok.RequiredArgsConstructor;
 import rx.Observable;
 
 @Singleton public class DataApi {
     private final Database database;
+    private final PageLoader<Tag> tagPageLoader;
+    private final TagConverter tagConverter;
 
-    @Inject public DataApi(@NonNull Database database) {
+    @Inject public DataApi(@NonNull Database database, @NonNull PageLoader<Tag> tagPageLoader, @NonNull TagConverter tagConverter) {
         this.database = database;
+        this.tagPageLoader = tagPageLoader;
+        this.tagConverter = tagConverter;
     }
 
     @NonNull public Observable<Transaction> saveTransaction(@NonNull Transaction transaction) throws ValidationException {
@@ -51,33 +53,12 @@ import rx.Observable;
         return Observable.just(tag);
     }
 
-    @NonNull public Observable<List<Tag>> loadTags(@NonNull Observable<Page> pageObservable) {
+    @NonNull public Observable<PageLoader.PageResult<Tag>> loadTags(@NonNull Observable<PageLoader.Page> pageObservable) {
         final TagTable table = TagTable.get();
         final DatabaseQuery databaseQuery = new DatabaseQuery().select(table.getQueryColumns())
                 .from(table.getTableName())
                 .where(table.modelState() + "=?", ModelState.Normal.name());
 
-        //        final List<Tag> allItems = new ArrayList<>();
-        //        return Observable.combineLatest(pageObservable, database.load(databaseQuery)
-        //                .doOnNext(cursor -> allItems.clear()), (page, cursor) -> {
-        //            final List<Tag> tags = new ArrayList<>();
-        //            for (int i = page.start; i < page.count; i++) {
-        //                cursor.moveToPosition(i);
-        //                tags.add(new Tag(cursor));
-        //            }
-        //            return tags;
-        //        });
-        return Observable.empty();
-    }
-
-    @RequiredArgsConstructor public static class Page {
-        private final int start;
-        private final int count;
-    }
-
-    @RequiredArgsConstructor public static class PageResult<T> {
-        private final Page page;
-        private final List<T> allItems;
-        private final List<T> pageItems;
+        return tagPageLoader.load(tagConverter, databaseQuery, pageObservable);
     }
 }
