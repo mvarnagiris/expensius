@@ -17,6 +17,7 @@ package com.mvcoding.financius.ui.tag;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.CloseablePresenterView;
@@ -33,12 +34,14 @@ import rx.Scheduler;
 @ActivityScope class TagPresenter extends Presenter<TagPresenter.View> {
     private final Tag tag;
     private final DataApi dataApi;
+    private final TagConverter tagConverter;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    TagPresenter(@NonNull Tag tag, @NonNull DataApi dataApi, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TagPresenter(@NonNull Tag tag, @NonNull DataApi dataApi, @NonNull TagConverter tagConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.tag = tag;
         this.dataApi = dataApi;
+        this.tagConverter = tagConverter;
         this.uiScheduler = uiScheduler;
         this.ioScheduler = ioScheduler;
     }
@@ -69,8 +72,7 @@ import rx.Scheduler;
 
     private boolean validate(@NonNull Tag tag) {
         try {
-            // TODO: Validate
-//            tag.validate();
+            tagConverter.toBody(tag).validate();
         } catch (RuntimeException e) {
             e.printStackTrace();
             return false;

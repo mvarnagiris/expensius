@@ -15,10 +15,12 @@
 package com.mvcoding.financius.ui.transaction;
 
 import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.core.endpoints.body.TransactionBody;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.data.Currencies;
 import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.converter.TransactionConverter;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
@@ -61,7 +63,9 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     @Mock private UserSettings userSettings;
     @Mock private DataApi dataApi;
     @Mock private Currencies currencies;
+    @Mock private TransactionConverter transactionConverter;
     @Mock private Place place;
+    @Mock private TransactionBody transactionBody;
 
     private Transaction initialTransaction;
     private List<String> availableCurrencies;
@@ -87,8 +91,10 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         initialTransaction.setNote("note");
 
         when(dataApi.saveTransaction(initialTransaction)).thenReturn(Observable.just(initialTransaction));
+        when(transactionConverter.toBody(initialTransaction)).thenReturn(transactionBody);
 
-        return new TransactionPresenter(initialTransaction, dataApi, currencies, userSettings, Schedulers.immediate(), Schedulers.immediate());
+        return new TransactionPresenter(initialTransaction, dataApi, currencies, userSettings, transactionConverter, Schedulers.immediate(), Schedulers
+                .immediate());
     }
 
     @Override protected TransactionPresenter.View createView() {
@@ -153,7 +159,8 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     }
 
     @Test public void onSave_doNotSave_whenValidationFails() throws Exception {
-        initialTransaction.setId(null);
+        final Throwable throwable = mock(RuntimeException.class);
+        doThrow(throwable).when(transactionBody).validate();
         presenterOnViewAttached();
 
         saveSubject.onNext(new Event());

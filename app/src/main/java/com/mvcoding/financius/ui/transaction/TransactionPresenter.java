@@ -21,6 +21,7 @@ import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.data.Currencies;
 import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.converter.TransactionConverter;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
@@ -45,14 +46,16 @@ import rx.Scheduler;
     private final DataApi dataApi;
     private final Currencies currencies;
     private final UserSettings userSettings;
+    private final TransactionConverter transactionConverter;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataApi dataApi, @NonNull Currencies currencies, @NonNull UserSettings userSettings, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataApi dataApi, @NonNull Currencies currencies, @NonNull UserSettings userSettings, @NonNull TransactionConverter transactionConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.transaction = transaction;
         this.dataApi = dataApi;
         this.currencies = currencies;
         this.userSettings = userSettings;
+        this.transactionConverter = transactionConverter;
         this.uiScheduler = uiScheduler;
         this.ioScheduler = ioScheduler;
     }
@@ -100,8 +103,7 @@ import rx.Scheduler;
 
     private boolean validate(@NonNull Transaction transaction) {
         try {
-            // TODO: Validate
-//            transaction.validate();
+            transactionConverter.toBody(transaction).validate();
         } catch (RuntimeException e) {
             e.printStackTrace();
             return false;

@@ -14,7 +14,9 @@
 
 package com.mvcoding.financius.ui.tag;
 
+import com.mvcoding.financius.core.endpoints.body.TagBody;
 import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.BasePresenterTest;
 import com.mvcoding.financius.util.rx.Event;
@@ -39,6 +41,8 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
     private PublishSubject<Event> saveSubject = PublishSubject.create();
 
     @Mock private DataApi dataApi;
+    @Mock private TagConverter tagConverter;
+    @Mock private TagBody tagBody;
 
     private Tag initialTag;
 
@@ -48,8 +52,9 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
         initialTag.setColor(1);
 
         when(dataApi.saveTag(initialTag)).thenReturn(Observable.just(initialTag));
+        when(tagConverter.toBody(initialTag)).thenReturn(tagBody);
 
-        return new TagPresenter(initialTag, dataApi, Schedulers.immediate(), Schedulers.immediate());
+        return new TagPresenter(initialTag, dataApi, tagConverter, Schedulers.immediate(), Schedulers.immediate());
     }
 
     @Override protected TagPresenter.View createView() {
@@ -88,7 +93,8 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
     }
 
     @Test public void onSave_doNotSave_whenValidationFails() throws Exception {
-        initialTag.setId(null);
+        final Throwable throwable = mock(RuntimeException.class);
+        doThrow(throwable).when(tagBody).validate();
         presenterOnViewAttached();
 
         saveSubject.onNext(new Event());
