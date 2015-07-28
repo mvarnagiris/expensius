@@ -15,35 +15,67 @@
 package com.mvcoding.financius.data.converter;
 
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mvcoding.financius.core.endpoints.body.TransactionBody;
+import com.mvcoding.financius.core.model.TransactionState;
+import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.data.database.table.BaseModelTable;
+import com.mvcoding.financius.data.database.table.PlaceTable;
+import com.mvcoding.financius.data.database.table.TagTable;
 import com.mvcoding.financius.data.database.table.TransactionTable;
+import com.mvcoding.financius.data.database.table.TransactionTagTable;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 public class TransactionConverter extends ModelConverter<TransactionBody, Transaction> {
+    private final PlaceConverter placeConverter;
+    private final TagConverter tagConverter;
+
+    @Inject public TransactionConverter(@NonNull PlaceConverter placeConverter, @NonNull TagConverter tagConverter) {
+        this.placeConverter = placeConverter;
+        this.tagConverter = tagConverter;
+    }
+
     @Override public Transaction from(@NonNull Cursor cursor) {
         final Transaction transaction = super.from(cursor);
-        // TODO: Implement
-        //        final TransactionTable table = TransactionTable.get();
-        //        transactionType = TransactionType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionType().selectName())));
-        //        transactionState = TransactionState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionState().selectName())));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
-        //        amount = BigDecimal.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(table.amount().selectName())));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
-        //        date = cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName()));
+        final TransactionTable table = TransactionTable.get();
+        transaction.setTransactionType(TransactionType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionType()
+                                                                                                                     .selectName()))));
+        transaction.setTransactionState(TransactionState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionState()
+                                                                                                                       .selectName()))));
+        transaction.setDate(cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName())));
+        transaction.setAmount(BigDecimal.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(table.amount().selectName()))));
+        transaction.setCurrency(cursor.getString(cursor.getColumnIndexOrThrow(table.currency().selectName())));
+        transaction.setNote(cursor.getString(cursor.getColumnIndexOrThrow(table.note().selectName())));
+
+        if (cursor.getString(cursor.getColumnIndexOrThrow(PlaceTable.get().id().selectName())) != null) {
+            transaction.setPlace(placeConverter.from(cursor));
+        }
+
+        final Cursor tagsCursor = getTagsCursor(cursor);
+        if (tagsCursor != null && tagsCursor.moveToFirst()) {
+            final Set<Tag> tags = new HashSet<>();
+            do {
+                tags.add(tagConverter.from(tagsCursor));
+            } while (tagsCursor.moveToNext());
+            transaction.setTags(tags);
+        }
+
         return transaction;
     }
 
     @NonNull @Override public TransactionBody toBody(Transaction model) {
-        TransactionBody body = super.toBody(model);
+        final TransactionBody body = super.toBody(model);
         body.setTransactionType(model.getTransactionType());
         body.setTransactionState(model.getTransactionState());
         body.setDate(model.getDate());
@@ -77,5 +109,31 @@ public class TransactionConverter extends ModelConverter<TransactionBody, Transa
 
     @NonNull @Override protected TransactionBody createBody() {
         return new TransactionBody();
+    }
+
+    MatrixCursor createEmptyTagsCursor() {
+        return new MatrixCursor(TagTable.get().getQueryColumns());
+    }
+
+    @Nullable private Cursor getTagsCursor(@NonNull Cursor cursor) {
+        final TransactionTagTable tagTable = TransactionTagTable.get();
+        final String tagIdsText = cursor.getString(cursor.getColumnIndexOrThrow(tagTable.tagIds().selectName()));
+        if (tagIdsText == null || tagIdsText.isEmpty()) {
+            return null;
+        }
+
+        final String[] tagIds = tagIdsText.split(TransactionTagTable.SEPARATOR);
+        final String[] tagModelStates = cursor.getString(cursor.getColumnIndexOrThrow(tagTable.tagModelStates().selectName()))
+                .split(TransactionTagTable.SEPARATOR);
+        final String[] tagTitles = cursor.getString(cursor.getColumnIndexOrThrow(tagTable.tagTitles().selectName()))
+                .split(TransactionTagTable.SEPARATOR);
+        final String[] tagColors = cursor.getString(cursor.getColumnIndexOrThrow(tagTable.tagColors().selectName()))
+                .split(TransactionTagTable.SEPARATOR);
+
+        final MatrixCursor tagsCursor = createEmptyTagsCursor();
+        for (int i = 0, size = tagIds.length; i < size; i++) {
+            tagsCursor.addRow(new Object[]{tagIds[i], tagModelStates[i], tagTitles[i], tagColors[i]});
+        }
+        return tagsCursor;
     }
 }

@@ -64,7 +64,7 @@ public abstract class BaseModelConverterTest<C extends ModelConverter<B, M>, M e
         when(cursor.getColumnIndexOrThrow(table.id().selectName())).thenReturn(0);
         when(cursor.getColumnIndexOrThrow(table.modelState().selectName())).thenReturn(1);
         when(cursor.getString(0)).thenReturn("id");
-        when(cursor.getString(1)).thenReturn("Normal");
+        when(cursor.getString(1)).thenReturn(ModelState.Normal.name());
         return 2;
     }
 
