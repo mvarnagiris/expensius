@@ -14,25 +14,19 @@
 
 package com.mvcoding.financius.data;
 
-import android.database.Cursor;
-import android.support.v4.util.SparseArrayCompat;
+import com.mvcoding.financius.BaseTest;
 
-import java.util.List;
+import org.junit.Test;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import static org.assertj.core.api.Assertions.fail;
 
-@RequiredArgsConstructor @Getter public class PageResult<T> {
-    private final Cursor cursor;
-    private final SparseArrayCompat<T> allItems;
-    private final List<T> pageItems;
-    private final Page page;
+public class PageTest extends BaseTest {
 
-    public boolean hasMoreBefore() {
-        return page.getStart() > 0;
+    @Test public void getPreviousPage() throws Exception {
+        fail("Not implemented.");
     }
 
-    public boolean hasMoreAfter() {
-        return cursor.getCount() > page.getStart() + page.getSize();
+    @Test public void getNextPage() throws Exception {
+        fail("Not implemented.");
     }
 }

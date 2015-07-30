@@ -25,31 +25,30 @@ import org.mockito.Mock;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 public class PageResultTest extends BaseTest {
     @Mock private Cursor cursor;
     @Mock private SparseArrayCompat<Object> allItems;
     @Mock private List<Object> pageItems;
-    @Mock private PageLoader.Page page;
+    @Mock private Page page;
 
     @Test public void hasMoreBefore_returnsFalse_whenPageStartIs0() throws Exception {
-        final PageLoader.Page page = new PageLoader.Page(0, 1);
+        final Page page = new Page(0, 1);
         final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
 
         assertThat(pageResult.hasMoreBefore()).isFalse();
     }
 
     @Test public void hasMoreBefore_returnsTrue_whenPageStartMoreThan0() throws Exception {
-        final PageLoader.Page page = new PageLoader.Page(1, 1);
+        final Page page = new Page(1, 1);
         final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
 
         assertThat(pageResult.hasMoreBefore()).isTrue();
     }
 
     @Test public void hasMoreAfter_returnsFalse_whenRequestedPageWantsMoreOrSameAmountOfItemsThanThereAreInCursor() throws Exception {
-        final PageLoader.Page page = new PageLoader.Page(0, 2);
+        final Page page = new Page(0, 2);
         final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
 
         when(cursor.getCount()).thenReturn(1);
@@ -60,18 +59,10 @@ public class PageResultTest extends BaseTest {
     }
 
     @Test public void hasMoreAfter_returnsTrue_whenRequestedPageWantsLessItemsThanThereAreInCursor() throws Exception {
-        final PageLoader.Page page = new PageLoader.Page(0, 2);
+        final Page page = new Page(0, 2);
         final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
 
         when(cursor.getCount()).thenReturn(3);
         assertThat(pageResult.hasMoreAfter()).isTrue();
-    }
-
-    @Test public void getPreviousPage() throws Exception {
-        fail("Not implemented.");
-    }
-
-    @Test public void getNextPage() throws Exception {
-        fail("Not implemented.");
     }
 }

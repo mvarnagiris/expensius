@@ -15,7 +15,6 @@
 package com.mvcoding.financius.data;
 
 import android.database.Cursor;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 
@@ -27,7 +26,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import lombok.Getter;
 import rx.Observable;
 
 public class PageLoader<T> {
@@ -44,7 +42,7 @@ public class PageLoader<T> {
 
         return Observable.combineLatest(pageObservable, cursorObservable, (page, cursor) -> {
             final List<T> pageItems = new ArrayList<>();
-            for (int i = page.start, size = Math.min(cursor.getCount(), page.start + page.count); i < size; i++) {
+            for (int i = page.start, size = Math.min(cursor.getCount(), page.start + page.size); i < size; i++) {
                 T item = allItems.get(i);
                 if (item == null) {
                     cursor.moveToPosition(i);
@@ -56,15 +54,5 @@ public class PageLoader<T> {
 
             return new PageResult<>(cursor, allItems, pageItems, page);
         });
-    }
-
-    @Getter public static class Page {
-        private final int start;
-        private final int count;
-
-        public Page(@IntRange(from = 0) int start, @IntRange(from = 1) int count) {
-            this.start = start;
-            this.count = count;
-        }
     }
 }

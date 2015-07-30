@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 
 public class PageLoaderTest extends BaseTest {
     private final ItemDataConverter dataConverter = new ItemDataConverter();
-    private final PublishSubject<PageLoader.Page> pageSubject = PublishSubject.create();
+    private final PublishSubject<Page> pageSubject = PublishSubject.create();
     private final PublishSubject<Cursor> cursorSubject = PublishSubject.create();
 
     @Mock private Database database;
@@ -87,9 +87,9 @@ public class PageLoaderTest extends BaseTest {
 
         prepareCursor(10);
 
-        pageSubject.onNext(new PageLoader.Page(0, 5));
+        pageSubject.onNext(new Page(0, 5));
         count.getAndIncrement();
-        pageSubject.onNext(new PageLoader.Page(5, 10));
+        pageSubject.onNext(new Page(5, 10));
         count.getAndIncrement();
         prepareCursor(10);
     }
@@ -109,7 +109,7 @@ public class PageLoaderTest extends BaseTest {
         prepareCursor(cursorCount);
 
         for (int i = 0; i < pagesCount; i++) {
-            pageSubject.onNext(new PageLoader.Page(i * pageSize, pageSize));
+            pageSubject.onNext(new Page(i * pageSize, pageSize));
             page.getAndIncrement();
         }
     }

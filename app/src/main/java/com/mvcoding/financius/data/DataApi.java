@@ -53,7 +53,7 @@ import rx.Observable;
         return Observable.just(tag);
     }
 
-    @NonNull public Observable<PageResult<Tag>> loadTags(@NonNull Observable<PageLoader.Page> pageObservable) {
+    @NonNull public Observable<PageResult<Tag>> loadTags(@NonNull Observable<Page> pageObservable) {
         final TagTable table = TagTable.get();
         final DatabaseQuery databaseQuery = new DatabaseQuery().select(table.getQueryColumns())
                 .from(table.getTableName())

@@ -18,7 +18,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.data.DataApi;
-import com.mvcoding.financius.data.PageLoader;
+import com.mvcoding.financius.data.Page;
 import com.mvcoding.financius.data.PageResult;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityScope;
@@ -47,12 +47,12 @@ import rx.Observable;
         super.onViewAttached(view);
         view.setDisplayType(displayType);
 
-        unsubscribeOnDetach(view.onEdgeReached().map(this::getPage).startWith(new PageLoader.Page(0, pageSize)).subscribe());
+        unsubscribeOnDetach(view.onEdgeReached().map(this::getPage).startWith(new Page(0, pageSize)).subscribe());
     }
 
-    @NonNull private PageLoader.Page getPage(@NonNull Edge edge) {
+    @NonNull private Page getPage(@NonNull Edge edge) {
         if (pageResult == null) {
-            return new PageLoader.Page(0, pageSize);
+            return new Page(0, pageSize);
         }
 
         switch (edge) {
