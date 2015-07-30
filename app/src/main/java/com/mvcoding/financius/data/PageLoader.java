@@ -42,7 +42,7 @@ public class PageLoader<T> {
 
         return Observable.combineLatest(pageObservable, cursorObservable, (page, cursor) -> {
             final List<T> pageItems = new ArrayList<>();
-            for (int i = page.start, size = Math.min(cursor.getCount(), page.start + page.size); i < size; i++) {
+            for (int i = page.getStart(), size = Math.min(cursor.getCount(), page.getStart() + page.getSize()); i < size; i++) {
                 T item = allItems.get(i);
                 if (item == null) {
                     cursor.moveToPosition(i);
