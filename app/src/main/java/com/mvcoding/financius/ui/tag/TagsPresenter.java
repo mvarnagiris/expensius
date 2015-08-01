@@ -16,7 +16,6 @@ package com.mvcoding.financius.ui.tag;
 
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
 
 import com.mvcoding.financius.data.DataLoadApi;
 import com.mvcoding.financius.data.model.Tag;
@@ -27,42 +26,54 @@ import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Scheduler;
 
 @ActivityScope class TagsPresenter extends Presenter<TagsPresenter.View> {
     private final DisplayType displayType;
     private final DataLoadApi dataLoadApi;
     private final int pageSize;
-    private final SparseArrayCompat<Tag> cache;
+    private final Scheduler uiScheduler;
+    private final Scheduler ioScheduler;
+    private final List<Tag> cache;
 
-    TagsPresenter(@NonNull DisplayType displayType, @NonNull DataLoadApi dataLoadApi, @IntRange(from = 1) int pageSize) {
+    TagsPresenter(@NonNull DisplayType displayType, @NonNull DataLoadApi dataLoadApi, @IntRange(from = 1) int pageSize, @NonNull Scheduler uiScheduler, @NonNull Scheduler ioScheduler) {
         this.displayType = displayType;
         this.dataLoadApi = dataLoadApi;
         this.pageSize = pageSize;
-        cache = new SparseArrayCompat<>();
+        this.uiScheduler = uiScheduler;
+        this.ioScheduler = ioScheduler;
+        cache = new ArrayList<>();
     }
 
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
         view.setDisplayType(displayType);
+        if (!cache.isEmpty()) {
+            view.show(cache);
+        }
 
         final Observable<Page> pageObservable = getPageObservable();
-        dataLoadApi.loadTags(pageObservable).doOnNext(this::cachePage).subscribe();
+        dataLoadApi.loadTags(pageObservable)
+                .doOnNext(this::cachePage)
+                .subscribe(pageResult -> view.add(pageResult.getPage().getStart(), pageResult.getItems()));
     }
 
     @NonNull private Observable<Page> getPageObservable() {
-        return Observable.empty();
+        return Observable.just(new Page(0, pageSize));
     }
 
     private void cachePage(@NonNull PageResult<Tag> pageResult) {
+        cache.addAll(pageResult.getPage().getStart(), pageResult.getItems());
     }
 
     @NonNull private Page getPage(@NonNull Edge edge) {
-//        if (pageResult == null) {
-//            return new Page(0, pageSize);
-//        }
+        //        if (pageResult == null) {
+        //            return new Page(0, pageSize);
+        //        }
 
         switch (edge) {
             case Start:
@@ -87,8 +98,6 @@ import rx.Observable;
         @NonNull Observable<RefreshEvent> onRefresh();
         void setDisplayType(@NonNull DisplayType displayType);
         void show(@NonNull List<Tag> tags);
-        void update(List<Tag> tags);
-        void add(int position, List<Tag> tags);
-        void remove(List<Tag> tags);
+        void add(int position, @NonNull List<Tag> tags);
     }
 }

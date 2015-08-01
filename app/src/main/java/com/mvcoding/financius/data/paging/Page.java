@@ -17,9 +17,11 @@ package com.mvcoding.financius.data.paging;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
-public class Page {
+@ToString @EqualsAndHashCode public class Page {
     @Getter private final int start;
     @Getter private final int size;
     private final int preferredSize;

@@ -68,15 +68,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
 
     }
 
-    @Override public void update(List<Tag> tags) {
-
-    }
-
-    @Override public void add(int position, List<Tag> tags) {
-
-    }
-
-    @Override public void remove(List<Tag> tags) {
+    @Override public void add(int position, @NonNull List<Tag> tags) {
 
     }
 }

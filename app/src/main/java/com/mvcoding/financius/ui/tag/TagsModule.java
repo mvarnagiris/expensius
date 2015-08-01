@@ -19,8 +19,11 @@ import android.content.Context;
 import com.mvcoding.financius.AppContext;
 import com.mvcoding.financius.data.DataLoadApi;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+import rx.Scheduler;
 
 @Module public class TagsModule {
     private final TagsPresenter.DisplayType displayType;
@@ -29,8 +32,9 @@ import dagger.Provides;
         this.displayType = displayType;
     }
 
-    @Provides TagsPresenter providerTagsPresenter(@AppContext Context context, DataLoadApi dataLoadApi) {
+    @Provides
+    TagsPresenter providerTagsPresenter(@AppContext Context context, DataLoadApi dataLoadApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
         // TODO: Use context to get the required page size;
-        return new TagsPresenter(displayType, dataLoadApi, 20);
+        return new TagsPresenter(displayType, dataLoadApi, 20, uiScheduler, ioScheduler);
     }
 }
