@@ -25,13 +25,17 @@ public class Page {
     private final int preferredSize;
 
     public Page(@IntRange(from = 0) int start, @IntRange(from = 1) int size) {
+        this(start, size, size);
+    }
+
+    private Page(@IntRange(from = 0) int start, @IntRange(from = 1) int size, @IntRange(from = 1) int preferredSize) {
         this.start = start;
         this.size = size;
-        this.preferredSize = size;
+        this.preferredSize = preferredSize;
     }
 
     @NonNull public Page getPreviousPage() {
-        return new Page(Math.max(start - size, 0), Math.min(Math.abs(start - size), size));
+        return new Page(Math.max(start - size, 0), start - size < 0 ? size - Math.abs(start - size) : size, preferredSize);
     }
 
     @NonNull public Page getNextPage() {

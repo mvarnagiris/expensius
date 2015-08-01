@@ -18,15 +18,86 @@ import com.mvcoding.financius.BaseTest;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PageTest extends BaseTest {
+    @Test public void getPreviousPage_returnsFullPreviousPage_whenThereAreEnoughSize() throws Exception {
+        final Page page = new Page(5, 5);
 
-    @Test public void getPreviousPage() throws Exception {
-        fail("Not implemented.");
+        final Page previousPage = page.getPreviousPage();
+
+        assertThat(previousPage).isNotNull();
+        assertThat(previousPage.getStart()).isEqualTo(0);
+        assertThat(previousPage.getSize()).isEqualTo(5);
     }
 
-    @Test public void getNextPage() throws Exception {
-        fail("Not implemented.");
+    @Test public void getPreviousPage_returnsNotAFullPreviousPage_whenThereAreNotEnoughSize() throws Exception {
+        final Page page = new Page(3, 5);
+
+        final Page previousPage = page.getPreviousPage();
+
+        assertThat(previousPage).isNotNull();
+        assertThat(previousPage.getStart()).isEqualTo(0);
+        assertThat(previousPage.getSize()).isEqualTo(3);
+    }
+
+    @Test public void getPreviousPage_returnsEmptyPage_whenItIsAlreadyFirstPage() throws Exception {
+        final Page page = new Page(0, 5);
+
+        final Page previousPage = page.getPreviousPage();
+
+        assertThat(previousPage).isNotNull();
+        assertThat(previousPage.getStart()).isEqualTo(0);
+        assertThat(previousPage.getSize()).isEqualTo(0);
+    }
+
+    @Test public void getPreviousPage_returnsEmptyPage_whenItIsAlreadyEmptyPage() throws Exception {
+        final Page page = new Page(0, 5);
+
+        final Page previousPage = page.getPreviousPage().getPreviousPage();
+
+        assertThat(previousPage).isNotNull();
+        assertThat(previousPage.getStart()).isEqualTo(0);
+        assertThat(previousPage.getSize()).isEqualTo(0);
+    }
+
+    @Test public void getNextPage_returnsNextPage_whenItIsAFirstPage() throws Exception {
+        final Page page = new Page(0, 5);
+
+        final Page nextPage = page.getNextPage();
+
+        assertThat(nextPage).isNotNull();
+        assertThat(nextPage.getStart()).isEqualTo(5);
+        assertThat(nextPage.getSize()).isEqualTo(5);
+    }
+
+    @Test public void getNextPage_returnsNextPage_whenItIsNotAFirstPage() throws Exception {
+        final Page page = new Page(5, 5);
+
+        final Page nextPage = page.getNextPage();
+
+        assertThat(nextPage).isNotNull();
+        assertThat(nextPage.getStart()).isEqualTo(10);
+        assertThat(nextPage.getSize()).isEqualTo(5);
+    }
+
+    @Test public void getNextPage_returnsFullNextPage_whenItIsNotAFullFirstPage() throws Exception {
+        final Page page = new Page(3, 5);
+
+        final Page nextPage = page.getPreviousPage().getNextPage();
+
+        assertThat(nextPage).isNotNull();
+        assertThat(nextPage.getStart()).isEqualTo(3);
+        assertThat(nextPage.getSize()).isEqualTo(5);
+    }
+
+    @Test public void getNextPage_returnsFullNextPage_whenItIsEmptyPage() throws Exception {
+        final Page page = new Page(0, 5);
+
+        final Page nextPage = page.getPreviousPage().getNextPage();
+
+        assertThat(nextPage).isNotNull();
+        assertThat(nextPage.getStart()).isEqualTo(0);
+        assertThat(nextPage.getSize()).isEqualTo(5);
     }
 }
