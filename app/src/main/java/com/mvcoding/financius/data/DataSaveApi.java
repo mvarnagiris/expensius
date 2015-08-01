@@ -17,11 +17,7 @@ package com.mvcoding.financius.data;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.endpoints.body.ValidationException;
-import com.mvcoding.financius.core.model.ModelState;
-import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.database.Database;
-import com.mvcoding.financius.data.database.DatabaseQuery;
-import com.mvcoding.financius.data.database.table.TagTable;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 
@@ -30,15 +26,11 @@ import javax.inject.Singleton;
 
 import rx.Observable;
 
-@Singleton public class DataApi {
+@Singleton public class DataSaveApi {
     private final Database database;
-    private final PageLoader<Tag> tagPageLoader;
-    private final TagConverter tagConverter;
 
-    @Inject public DataApi(@NonNull Database database, @NonNull PageLoader<Tag> tagPageLoader, @NonNull TagConverter tagConverter) {
+    @Inject public DataSaveApi(@NonNull Database database) {
         this.database = database;
-        this.tagPageLoader = tagPageLoader;
-        this.tagConverter = tagConverter;
     }
 
     @NonNull public Observable<Transaction> saveTransaction(@NonNull Transaction transaction) throws ValidationException {
@@ -51,14 +43,5 @@ import rx.Observable;
         //        tag.validate();
         // TODO: Save tag
         return Observable.just(tag);
-    }
-
-    @NonNull public Observable<PageResult<Tag>> loadTags(@NonNull Observable<Page> pageObservable) {
-        final TagTable table = TagTable.get();
-        final DatabaseQuery databaseQuery = new DatabaseQuery().select(table.getQueryColumns())
-                .from(table.getTableName())
-                .where(table.modelState() + "=?", ModelState.Normal.name());
-
-        return tagPageLoader.load(tagConverter, databaseQuery, pageObservable);
     }
 }

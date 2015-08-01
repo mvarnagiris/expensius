@@ -20,7 +20,7 @@ import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.data.Currencies;
-import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.DataSaveApi;
 import com.mvcoding.financius.data.converter.TransactionConverter;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
@@ -43,16 +43,16 @@ import rx.Scheduler;
 
 @ActivityScope class TransactionPresenter extends Presenter<TransactionPresenter.View> {
     private final Transaction transaction;
-    private final DataApi dataApi;
+    private final DataSaveApi dataSaveApi;
     private final Currencies currencies;
     private final UserSettings userSettings;
     private final TransactionConverter transactionConverter;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataApi dataApi, @NonNull Currencies currencies, @NonNull UserSettings userSettings, @NonNull TransactionConverter transactionConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataSaveApi dataSaveApi, @NonNull Currencies currencies, @NonNull UserSettings userSettings, @NonNull TransactionConverter transactionConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.transaction = transaction;
-        this.dataApi = dataApi;
+        this.dataSaveApi = dataSaveApi;
         this.currencies = currencies;
         this.userSettings = userSettings;
         this.transactionConverter = transactionConverter;
@@ -67,7 +67,7 @@ import rx.Scheduler;
                                     .withLatestFrom(transactionObservable(view).doOnNext(view::showTransaction), (event, transaction) -> transaction)
                                     .filter(this::validate)
                                     .observeOn(ioScheduler)
-                                    .flatMap(dataApi::saveTransaction)
+                                    .flatMap(dataSaveApi::saveTransaction)
                                     .observeOn(uiScheduler)
                                     .subscribeOn(uiScheduler)
                                     .subscribe(view::startResult, throwable -> showFatalError(throwable, view, view, uiScheduler)));

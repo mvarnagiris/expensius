@@ -12,12 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.data;
+package com.mvcoding.financius.data.paging;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.util.SparseArrayCompat;
 
+import com.mvcoding.financius.data.DataConverter;
 import com.mvcoding.financius.data.database.Database;
 import com.mvcoding.financius.data.database.DatabaseQuery;
 
@@ -37,22 +38,22 @@ public class PageLoader<T> {
 
     @NonNull
     public Observable<PageResult<T>> load(@NonNull DataConverter<T> dataConverter, @NonNull DatabaseQuery databaseQuery, @NonNull Observable<Page> pageObservable) {
-        final SparseArrayCompat<T> allItems = new SparseArrayCompat<>();
-        final Observable<Cursor> cursorObservable = database.load(databaseQuery).doOnNext(cursor -> allItems.clear());
+        final SparseArrayCompat<T> cache = new SparseArrayCompat<>();
+        final Observable<Cursor> cursorObservable = database.load(databaseQuery).doOnNext(cursor -> cache.clear());
 
         return Observable.combineLatest(pageObservable, cursorObservable, (page, cursor) -> {
-            final List<T> pageItems = new ArrayList<>();
+            final List<T> items = new ArrayList<>();
             for (int i = page.getStart(), size = Math.min(cursor.getCount(), page.getStart() + page.getSize()); i < size; i++) {
-                T item = allItems.get(i);
+                T item = cache.get(i);
                 if (item == null) {
                     cursor.moveToPosition(i);
                     item = dataConverter.from(cursor);
-                    allItems.put(i, item);
+                    cache.put(i, item);
                 }
-                pageItems.add(item);
+                items.add(item);
             }
 
-            return new PageResult<>(cursor, allItems, pageItems, page);
+            return new PageResult<>(page, items, cache.size() == items.size());
         });
     }
 }

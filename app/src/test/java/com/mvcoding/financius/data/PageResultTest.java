@@ -14,55 +14,43 @@
 
 package com.mvcoding.financius.data;
 
-import android.database.Cursor;
-import android.support.v4.util.SparseArrayCompat;
-
 import com.mvcoding.financius.BaseTest;
+import com.mvcoding.financius.data.paging.Page;
+import com.mvcoding.financius.data.paging.PageResult;
 
 import org.junit.Test;
-import org.mockito.Mock;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 public class PageResultTest extends BaseTest {
-    @Mock private Cursor cursor;
-    @Mock private SparseArrayCompat<Object> allItems;
-    @Mock private List<Object> pageItems;
-    @Mock private Page page;
-
-    @Test public void hasMoreBefore_returnsFalse_whenPageStartIs0() throws Exception {
+    @Test public void hasPrevious_returnsFalse_whenPageStartIs0() throws Exception {
         final Page page = new Page(0, 1);
-        final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
+        final PageResult<Object> pageResult = new PageResult<>(page, Collections.emptyList(), false);
 
-        assertThat(pageResult.hasMoreBefore()).isFalse();
+        assertThat(pageResult.hasPrevious()).isFalse();
     }
 
-    @Test public void hasMoreBefore_returnsTrue_whenPageStartMoreThan0() throws Exception {
+    @Test public void hasPrevious_returnsTrue_whenPageStartMoreThan0() throws Exception {
         final Page page = new Page(1, 1);
-        final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
+        final PageResult<Object> pageResult = new PageResult<>(page, Collections.emptyList(), false);
 
-        assertThat(pageResult.hasMoreBefore()).isTrue();
+        assertThat(pageResult.hasPrevious()).isTrue();
     }
 
-    @Test public void hasMoreAfter_returnsFalse_whenRequestedPageWantsMoreOrSameAmountOfItemsThanThereAreInCursor() throws Exception {
+    @Test public void hasNext_returnsFalse_whenReturnedItemSizeIsLessThanRequestedSize() throws Exception {
         final Page page = new Page(0, 2);
-        final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
+        final PageResult<Object> pageResult = new PageResult<>(page, Collections.singletonList(new Object()), false);
 
-        when(cursor.getCount()).thenReturn(1);
-        assertThat(pageResult.hasMoreAfter()).isFalse();
-
-        when(cursor.getCount()).thenReturn(2);
-        assertThat(pageResult.hasMoreAfter()).isFalse();
+        assertThat(pageResult.hasNext()).isFalse();
     }
 
-    @Test public void hasMoreAfter_returnsTrue_whenRequestedPageWantsLessItemsThanThereAreInCursor() throws Exception {
+    @Test public void hasNext_returnsTrue_whenReturnedItemSizeEqualsRequestedSize() throws Exception {
         final Page page = new Page(0, 2);
-        final PageResult<Object> pageResult = new PageResult<>(cursor, allItems, pageItems, page);
+        final PageResult<Object> pageResult = new PageResult<>(page, Arrays.asList(new Object(), new Object()), false);
 
-        when(cursor.getCount()).thenReturn(3);
-        assertThat(pageResult.hasMoreAfter()).isTrue();
+        assertThat(pageResult.hasNext()).isTrue();
     }
 }

@@ -18,7 +18,7 @@ import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.data.Currencies;
-import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.DataSaveApi;
 import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.model.Tag;
 
@@ -36,7 +36,7 @@ import rx.Scheduler;
     }
 
     @Provides
-    TagPresenter provideTransactionPresenter(UserSettings userSettings, DataApi dataApi, Currencies currencies, TagConverter tagConverter, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
-        return new TagPresenter(tag, dataApi, tagConverter, uiScheduler, ioScheduler);
+    TagPresenter provideTransactionPresenter(UserSettings userSettings, DataSaveApi dataSaveApi, Currencies currencies, TagConverter tagConverter, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
+        return new TagPresenter(tag, dataSaveApi, tagConverter, uiScheduler, ioScheduler);
     }
 }

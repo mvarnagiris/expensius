@@ -16,11 +16,12 @@ package com.mvcoding.financius.ui.tag;
 
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 
-import com.mvcoding.financius.data.DataApi;
-import com.mvcoding.financius.data.Page;
-import com.mvcoding.financius.data.PageResult;
+import com.mvcoding.financius.data.DataLoadApi;
 import com.mvcoding.financius.data.model.Tag;
+import com.mvcoding.financius.data.paging.Page;
+import com.mvcoding.financius.data.paging.PageResult;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
@@ -32,28 +33,36 @@ import rx.Observable;
 
 @ActivityScope class TagsPresenter extends Presenter<TagsPresenter.View> {
     private final DisplayType displayType;
-    private final DataApi dataApi;
+    private final DataLoadApi dataLoadApi;
     private final int pageSize;
+    private final SparseArrayCompat<Tag> cache;
 
-    private PageResult<Tag> pageResult;
-
-    public TagsPresenter(@NonNull DisplayType displayType, @NonNull DataApi dataApi, @IntRange(from = 1) int pageSize) {
+    TagsPresenter(@NonNull DisplayType displayType, @NonNull DataLoadApi dataLoadApi, @IntRange(from = 1) int pageSize) {
         this.displayType = displayType;
-        this.dataApi = dataApi;
+        this.dataLoadApi = dataLoadApi;
         this.pageSize = pageSize;
+        cache = new SparseArrayCompat<>();
     }
 
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
         view.setDisplayType(displayType);
 
-        unsubscribeOnDetach(view.onEdgeReached().map(this::getPage).startWith(new Page(0, pageSize)).subscribe());
+        final Observable<Page> pageObservable = getPageObservable();
+        dataLoadApi.loadTags(pageObservable).doOnNext(this::cachePage).subscribe();
+    }
+
+    @NonNull private Observable<Page> getPageObservable() {
+        return Observable.empty();
+    }
+
+    private void cachePage(@NonNull PageResult<Tag> pageResult) {
     }
 
     @NonNull private Page getPage(@NonNull Edge edge) {
-        if (pageResult == null) {
-            return new Page(0, pageSize);
-        }
+//        if (pageResult == null) {
+//            return new Page(0, pageSize);
+//        }
 
         switch (edge) {
             case Start:
@@ -66,7 +75,7 @@ import rx.Observable;
     }
 
     public enum DisplayType {
-        View, SingleChoice, MultiChoice
+        View, Select, MultiChoice
     }
 
     public enum Edge {

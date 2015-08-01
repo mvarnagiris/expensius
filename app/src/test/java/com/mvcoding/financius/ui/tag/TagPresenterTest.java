@@ -15,7 +15,7 @@
 package com.mvcoding.financius.ui.tag;
 
 import com.mvcoding.financius.core.endpoints.body.TagBody;
-import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.DataSaveApi;
 import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.BasePresenterTest;
@@ -40,7 +40,7 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
     private PublishSubject<Integer> colorSubject = PublishSubject.create();
     private PublishSubject<Event> saveSubject = PublishSubject.create();
 
-    @Mock private DataApi dataApi;
+    @Mock private DataSaveApi dataSaveApi;
     @Mock private TagConverter tagConverter;
     @Mock private TagBody tagBody;
 
@@ -51,10 +51,10 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
         initialTag.setTitle("title");
         initialTag.setColor(1);
 
-        when(dataApi.saveTag(initialTag)).thenReturn(Observable.just(initialTag));
+        when(dataSaveApi.saveTag(initialTag)).thenReturn(Observable.just(initialTag));
         when(tagConverter.toBody(initialTag)).thenReturn(tagBody);
 
-        return new TagPresenter(initialTag, dataApi, tagConverter, Schedulers.immediate(), Schedulers.immediate());
+        return new TagPresenter(initialTag, dataSaveApi, tagConverter, Schedulers.immediate(), Schedulers.immediate());
     }
 
     @Override protected TagPresenter.View createView() {
@@ -88,7 +88,7 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
 
         saveSubject.onNext(new Event());
 
-        verify(dataApi).saveTag(initialTag);
+        verify(dataSaveApi).saveTag(initialTag);
         verify(view).startResult(initialTag);
     }
 
@@ -99,18 +99,18 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
 
         saveSubject.onNext(new Event());
 
-        verify(dataApi, never()).saveTag(initialTag);
+        verify(dataSaveApi, never()).saveTag(initialTag);
         verify(view, never()).startResult(initialTag);
     }
 
     @Test public void onSave_showError_whenSavingFails() throws Exception {
         final Throwable throwable = mock(RuntimeException.class);
-        doThrow(throwable).when(dataApi).saveTag(initialTag);
+        doThrow(throwable).when(dataSaveApi).saveTag(initialTag);
         presenterOnViewAttached();
 
         saveSubject.onNext(new Event());
 
-        verify(dataApi).saveTag(initialTag);
+        verify(dataSaveApi).saveTag(initialTag);
         verify(view, never()).startResult(initialTag);
         verify(view).showError(throwable);
     }

@@ -15,6 +15,7 @@
 package com.mvcoding.financius.data;
 
 import com.mvcoding.financius.BaseTest;
+import com.mvcoding.financius.data.paging.Page;
 
 import org.junit.Test;
 

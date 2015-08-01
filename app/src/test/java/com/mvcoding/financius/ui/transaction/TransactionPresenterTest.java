@@ -19,7 +19,7 @@ import com.mvcoding.financius.core.endpoints.body.TransactionBody;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.data.Currencies;
-import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.DataSaveApi;
 import com.mvcoding.financius.data.converter.TransactionConverter;
 import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
@@ -61,7 +61,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     private final PublishSubject<Event> saveSubject = PublishSubject.create();
 
     @Mock private UserSettings userSettings;
-    @Mock private DataApi dataApi;
+    @Mock private DataSaveApi dataSaveApi;
     @Mock private Currencies currencies;
     @Mock private TransactionConverter transactionConverter;
     @Mock private Place place;
@@ -90,10 +90,10 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         initialTransaction.setTags(tags);
         initialTransaction.setNote("note");
 
-        when(dataApi.saveTransaction(initialTransaction)).thenReturn(Observable.just(initialTransaction));
+        when(dataSaveApi.saveTransaction(initialTransaction)).thenReturn(Observable.just(initialTransaction));
         when(transactionConverter.toBody(initialTransaction)).thenReturn(transactionBody);
 
-        return new TransactionPresenter(initialTransaction, dataApi, currencies, userSettings, transactionConverter, Schedulers.immediate(), Schedulers
+        return new TransactionPresenter(initialTransaction, dataSaveApi, currencies, userSettings, transactionConverter, Schedulers.immediate(), Schedulers
                 .immediate());
     }
 
@@ -154,7 +154,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
 
         saveSubject.onNext(new Event());
 
-        verify(dataApi).saveTransaction(initialTransaction);
+        verify(dataSaveApi).saveTransaction(initialTransaction);
         verify(view).startResult(initialTransaction);
     }
 
@@ -165,18 +165,18 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
 
         saveSubject.onNext(new Event());
 
-        verify(dataApi, never()).saveTransaction(initialTransaction);
+        verify(dataSaveApi, never()).saveTransaction(initialTransaction);
         verify(view, never()).startResult(initialTransaction);
     }
 
     @Test public void onSave_showError_whenSavingFails() throws Exception {
         final Throwable throwable = mock(RuntimeException.class);
-        doThrow(throwable).when(dataApi).saveTransaction(initialTransaction);
+        doThrow(throwable).when(dataSaveApi).saveTransaction(initialTransaction);
         presenterOnViewAttached();
 
         saveSubject.onNext(new Event());
 
-        verify(dataApi).saveTransaction(initialTransaction);
+        verify(dataSaveApi).saveTransaction(initialTransaction);
         verify(view, never()).startResult(initialTransaction);
         verify(view).showError(throwable);
     }

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.data;
+package com.mvcoding.financius.data.paging;
 
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;

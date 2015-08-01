@@ -12,27 +12,24 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.data;
-
-import android.database.Cursor;
-import android.support.v4.util.SparseArrayCompat;
+package com.mvcoding.financius.data.paging;
 
 import java.util.List;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor @Getter public class PageResult<T> {
-    private final Cursor cursor;
-    private final SparseArrayCompat<T> allItems;
-    private final List<T> pageItems;
-    private final Page page;
+@RequiredArgsConstructor public class PageResult<T> {
+    @Getter @NonNull private final Page page;
+    @Getter @NonNull private final List<T> items;
+    @Getter private final boolean isDataInvalidated;
 
-    public boolean hasMoreBefore() {
+    public boolean hasPrevious() {
         return page.getStart() > 0;
     }
 
-    public boolean hasMoreAfter() {
-        return cursor.getCount() > page.getStart() + page.getSize();
+    public boolean hasNext() {
+        return page.getSize() == items.size();
     }
 }

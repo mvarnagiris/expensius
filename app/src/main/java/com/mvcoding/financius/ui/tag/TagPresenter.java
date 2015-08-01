@@ -16,7 +16,7 @@ package com.mvcoding.financius.ui.tag;
 
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.DataSaveApi;
 import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityScope;
@@ -33,14 +33,14 @@ import rx.Scheduler;
 
 @ActivityScope class TagPresenter extends Presenter<TagPresenter.View> {
     private final Tag tag;
-    private final DataApi dataApi;
+    private final DataSaveApi dataSaveApi;
     private final TagConverter tagConverter;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    TagPresenter(@NonNull Tag tag, @NonNull DataApi dataApi, @NonNull TagConverter tagConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TagPresenter(@NonNull Tag tag, @NonNull DataSaveApi dataSaveApi, @NonNull TagConverter tagConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.tag = tag;
-        this.dataApi = dataApi;
+        this.dataSaveApi = dataSaveApi;
         this.tagConverter = tagConverter;
         this.uiScheduler = uiScheduler;
         this.ioScheduler = ioScheduler;
@@ -53,7 +53,7 @@ import rx.Scheduler;
                                     .withLatestFrom(tagObservable(view).doOnNext(view::showTag), (event, tag) -> tag)
                                     .filter(this::validate)
                                     .observeOn(ioScheduler)
-                                    .flatMap(dataApi::saveTag)
+                                    .flatMap(dataSaveApi::saveTag)
                                     .observeOn(uiScheduler)
                                     .subscribeOn(uiScheduler)
                                     .subscribe(view::startResult, throwable -> showFatalError(throwable, view, view, uiScheduler)));

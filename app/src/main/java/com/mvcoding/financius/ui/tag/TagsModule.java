@@ -17,7 +17,7 @@ package com.mvcoding.financius.ui.tag;
 import android.content.Context;
 
 import com.mvcoding.financius.AppContext;
-import com.mvcoding.financius.data.DataApi;
+import com.mvcoding.financius.data.DataLoadApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,8 +29,8 @@ import dagger.Provides;
         this.displayType = displayType;
     }
 
-    @Provides TagsPresenter providerTagsPresenter(@AppContext Context context, DataApi dataApi) {
+    @Provides TagsPresenter providerTagsPresenter(@AppContext Context context, DataLoadApi dataLoadApi) {
         // TODO: Use context to get the required page size;
-        return new TagsPresenter(displayType, dataApi, 20);
+        return new TagsPresenter(displayType, dataLoadApi, 20);
     }
 }

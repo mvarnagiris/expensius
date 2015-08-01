@@ -21,6 +21,9 @@ import android.support.annotation.NonNull;
 import com.mvcoding.financius.BaseTest;
 import com.mvcoding.financius.data.database.Database;
 import com.mvcoding.financius.data.database.DatabaseQuery;
+import com.mvcoding.financius.data.paging.Page;
+import com.mvcoding.financius.data.paging.PageLoader;
+import com.mvcoding.financius.data.paging.PageResult;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -76,11 +79,11 @@ public class PageLoaderTest extends BaseTest {
         pageLoader.load(dataConverter, databaseQuery, pageSubject).subscribe(new Action1<PageResult<Item>>() {
             @Override public void call(PageResult<Item> itemPageResult) {
                 if (count.get() == 0) {
-                    assertPageResult(itemPageResult, 5, 5, false, true);
+                    assertPageResult(itemPageResult, 5, true, false, true);
                 } else if (count.get() == 1) {
-                    assertPageResult(itemPageResult, 5, 10, true, false);
+                    assertPageResult(itemPageResult, 5, false, true, false);
                 } else {
-                    assertPageResult(itemPageResult, 5, 5, true, false);
+                    assertPageResult(itemPageResult, 5, true, true, false);
                 }
             }
         });
@@ -99,10 +102,9 @@ public class PageLoaderTest extends BaseTest {
         pageLoader.load(dataConverter, databaseQuery, pageSubject).subscribe(new Action1<PageResult<Item>>() {
             @Override public void call(PageResult<Item> itemPageResult) {
                 final int expectedPageCount = Math.min(pageSize, cursorCount - (page.get() * pageSize));
-                final int expectedTotalCount = Math.min((page.get() + 1) * pageSize, cursorCount);
                 final boolean hasMoreBefore = page.get() > 0;
-                final boolean hasMoreAfter = expectedTotalCount < cursorCount;
-                assertPageResult(itemPageResult, expectedPageCount, expectedTotalCount, hasMoreBefore, hasMoreAfter);
+                final boolean hasMoreAfter = pageSize == expectedPageCount;
+                assertPageResult(itemPageResult, expectedPageCount, page.get() == 0, hasMoreBefore, hasMoreAfter);
             }
         });
 
@@ -114,14 +116,13 @@ public class PageLoaderTest extends BaseTest {
         }
     }
 
-    private void assertPageResult(PageResult pageResult, int pageCount, int totalCount, boolean hasItemsBefore, boolean hasItemsAfter) {
+    private void assertPageResult(PageResult pageResult, int pageCount, boolean isDataInvalidated, boolean hasItemsBefore, boolean hasItemsAfter) {
         assertThat(pageResult).isNotNull();
-        assertThat(pageResult.getPageItems()).isNotNull();
-        assertThat(pageResult.getPageItems()).hasSize(pageCount);
-        assertThat(pageResult.getAllItems()).isNotNull();
-        assertThat(pageResult.getAllItems().size()).isEqualTo(totalCount);
-        assertThat(pageResult.hasMoreBefore()).isEqualTo(hasItemsBefore);
-        assertThat(pageResult.hasMoreAfter()).isEqualTo(hasItemsAfter);
+        assertThat(pageResult.getItems()).isNotNull();
+        assertThat(pageResult.getItems()).hasSize(pageCount);
+        assertThat(pageResult.isDataInvalidated()).isEqualTo(isDataInvalidated);
+        assertThat(pageResult.hasPrevious()).isEqualTo(hasItemsBefore);
+        assertThat(pageResult.hasNext()).isEqualTo(hasItemsAfter);
     }
 
     private void prepareCursor(int count) {
