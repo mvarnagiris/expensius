@@ -65,9 +65,9 @@ import rx.Scheduler;
             view.show(cache);
         }
 
-        dataLoadApi.loadTags(getPageObservable(view))
-                .doOnNext(this::updateCache)
-                .subscribe(pageResult -> showItems(view, pageResult), throwable -> showFatalError(throwable, view, view, uiScheduler));
+        unsubscribeOnDetach(dataLoadApi.loadTags(getPageObservable(view))
+                                    .doOnNext(this::updateCache)
+                                    .subscribe(pageResult -> showItems(view, pageResult), throwable -> showFatalError(throwable, view, view, uiScheduler)));
     }
 
     @NonNull private Observable<Page> getPageObservable(@NonNull View view) {
