@@ -15,10 +15,15 @@
 package com.mvcoding.financius.ui.tag;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mvcoding.financius.AppContext;
 import com.mvcoding.financius.api.ServiceApi;
 import com.mvcoding.financius.data.DataLoadApi;
+import com.mvcoding.financius.data.model.Tag;
+
+import java.util.Set;
 
 import javax.inject.Named;
 
@@ -28,9 +33,11 @@ import rx.Scheduler;
 
 @Module public class TagsModule {
     private final TagsPresenter.DisplayType displayType;
+    private final Set<Tag> selectedItems;
 
-    public TagsModule(TagsPresenter.DisplayType displayType) {
+    public TagsModule(@NonNull TagsPresenter.DisplayType displayType, @Nullable Set<Tag> selectedItems) {
         this.displayType = displayType;
+        this.selectedItems = selectedItems;
     }
 
     @Provides

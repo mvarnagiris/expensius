@@ -28,6 +28,7 @@ import android.support.v4.util.Pair;
 import android.view.View;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 public final class ActivityStarter {
     private final Fragment mFragment;
@@ -56,6 +57,19 @@ public final class ActivityStarter {
     }
 
     @NonNull public ActivityStarter extra(@NonNull String name, @Nullable Parcelable value) {
+        mIntent.putExtra(name, value);
+        return this;
+    }
+
+    @NonNull public ActivityStarter extra(@NonNull String name, @Nullable Collection<? extends Parcelable> value) {
+        if (value == null) {
+            return extra(name, (Parcelable[]) null);
+        }
+
+        return extra(name, value.toArray(new Parcelable[value.size()]));
+    }
+
+    @NonNull public ActivityStarter extra(@NonNull String name, @Nullable Parcelable[] value) {
         mIntent.putExtra(name, value);
         return this;
     }

@@ -42,6 +42,7 @@ import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.DateDialogFragment;
 import com.mvcoding.financius.ui.TimeDialogFragment;
 import com.mvcoding.financius.ui.calculator.CalculatorActivity;
+import com.mvcoding.financius.ui.tag.TagsActivity;
 import com.mvcoding.financius.util.date.DateFormatter;
 import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RxBus;
@@ -69,7 +70,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     private static final int REQUEST_TIME = 2;
     private static final int REQUEST_AMOUNT = 3;
     private static final int REQUEST_PLACE = 4;
-    private static final int REQUEST_RESOLVE_ERRPR = 5;
+    private static final int REQUEST_TAGS = 5;
+    private static final int REQUEST_RESOLVE_ERROR = 6;
 
     private static final PublishSubject<TransactionType> transactionTypeSubject = PublishSubject.create();
     private static final PublishSubject<TransactionState> transactionStateSubject = PublishSubject.create();
@@ -108,8 +110,11 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
         transactionTypeRadioGroup.setOnCheckedChangeListener((group, checkedId) -> transactionTypeSubject.onNext(checkedId == R.id.transactionTypeExpenseRadioButton ? TransactionType.Expense : TransactionType.Income));
         transactionStateRadioGroup.setOnCheckedChangeListener((group, checkedId) -> transactionStateSubject.onNext(checkedId == R.id.transactionStateConfirmedRadioButton ? TransactionState.Confirmed : TransactionState.Pending));
+
+        // TODO: Run these through presenter.
         amountButton.setOnClickListener(v -> CalculatorActivity.startForResult(this, REQUEST_AMOUNT, transaction.getAmount()));
         placeButton.setOnClickListener(v -> onPlaceRequested());
+        tagsButton.setOnClickListener(v -> TagsActivity.startForResult(this, REQUEST_TAGS, transaction.getTags()));
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -126,7 +131,7 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
                     placeSubject.onNext(new Place(place));
                 }
                 break;
-            case REQUEST_RESOLVE_ERRPR:
+            case REQUEST_RESOLVE_ERROR:
                 if (resultCode == RESULT_OK) {
                     placeButton.performClick();
                 }
@@ -261,7 +266,7 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
     private void resolvePlayServicesError(@NonNull Throwable throwable) {
         if (throwable instanceof GooglePlayServicesRepairableException) {
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(((GooglePlayServicesRepairableException) throwable).getConnectionStatusCode(), this, REQUEST_RESOLVE_ERRPR);
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(((GooglePlayServicesRepairableException) throwable).getConnectionStatusCode(), this, REQUEST_RESOLVE_ERROR);
             dialog.show();
         }
     }

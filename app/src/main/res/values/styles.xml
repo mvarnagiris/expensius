@@ -144,6 +144,8 @@
         <item name="android:paddingRight">@dimen/keyline</item>
         <item name="android:paddingTop">@dimen/space_normal</item>
         <item name="android:paddingBottom">@dimen/space_normal</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:background">?selectableItemBackground</item>
     </style>
 
     <!-- Divider -->
