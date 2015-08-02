@@ -53,7 +53,6 @@ public class Column {
     }
 
     enum Type {
-        IntegerAutoIncrement("integer autoincrement"),
         Text("text"),
         TextPrimaryKey("text primary key"),
         Integer("integer"),

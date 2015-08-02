@@ -23,7 +23,7 @@ public final class TagTable extends BaseModelTable {
     private final Column color;
 
     private TagTable() {
-        this("tag");
+        this("tags");
     }
 
     private TagTable(@NonNull String tableName) {

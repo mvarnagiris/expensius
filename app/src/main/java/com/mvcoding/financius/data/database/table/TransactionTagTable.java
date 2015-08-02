@@ -32,7 +32,7 @@ import javax.inject.Singleton;
     private final DynamicColumn tagColors;
 
     private TransactionTagTable() {
-        this("transactionTag");
+        this("transactionTags");
     }
 
     private TransactionTagTable(@NonNull String tableName) {

@@ -33,7 +33,7 @@ import javax.inject.Singleton;
     private final Column note;
 
     private TransactionTable() {
-        this("transaction");
+        this("transactions");
     }
 
     private TransactionTable(@NonNull String tableName) {

@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.mvcoding.financius.App;
 import com.mvcoding.financius.BaseComponent;
@@ -76,6 +77,7 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
 
     @NonNull @Override public Observable<ErrorAction> showError(@NonNull Throwable throwable) {
         // TODO: Display error
+        Toast.makeText(this, throwable.getMessage(), Toast.LENGTH_LONG).show();
         return Observable.just(new ErrorAction());
     }
 

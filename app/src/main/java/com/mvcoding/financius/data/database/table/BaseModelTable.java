@@ -14,19 +14,16 @@
 
 package com.mvcoding.financius.data.database.table;
 
-import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.model.ModelState;
 
 public abstract class BaseModelTable extends BaseTable {
-    private final Column _id;
     private final Column id;
     private final Column modelState;
 
     protected BaseModelTable(@NonNull String tableName) {
         super(tableName);
-        _id = new Column(tableName, BaseColumns._ID, Column.Type.IntegerAutoIncrement);
         id = new Column(tableName, "id", Column.Type.TextPrimaryKey);
         modelState = new Column(tableName, "modelState", Column.Type.Text, ModelState.Normal.name());
     }
@@ -46,12 +43,12 @@ public abstract class BaseModelTable extends BaseTable {
     }
 
     @NonNull @Override protected Column[] getColumns() {
+        final int baseColumnCount = 2;
         final Column[] modelColumns = getModelColumns();
-        final Column[] allColumns = new Column[modelColumns.length + 3];
-        allColumns[0] = _id;
-        allColumns[1] = id;
-        allColumns[2] = modelState;
-        System.arraycopy(modelColumns, 0, allColumns, 3, modelColumns.length);
+        final Column[] allColumns = new Column[modelColumns.length + baseColumnCount];
+        allColumns[0] = id;
+        allColumns[1] = modelState;
+        System.arraycopy(modelColumns, 0, allColumns, baseColumnCount, modelColumns.length);
 
         return allColumns;
     }

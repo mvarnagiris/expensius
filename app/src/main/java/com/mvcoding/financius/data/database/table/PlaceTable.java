@@ -28,7 +28,7 @@ import javax.inject.Singleton;
     private final Column longitude;
 
     private PlaceTable() {
-        this("place");
+        this("places");
     }
 
     private PlaceTable(@NonNull String tableName) {

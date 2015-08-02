@@ -14,11 +14,13 @@
 
 package com.mvcoding.financius.ui.tag;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityComponent;
+import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.util.rx.RefreshEvent;
@@ -31,6 +33,10 @@ import rx.Observable;
 
 public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent> implements TagsPresenter.View {
     @Inject TagsPresenter presenter;
+
+    public static void start(@NonNull Context context) {
+        ActivityStarter.with(context, TagsActivity.class).start();
+    }
 
     @Override protected int getLayoutId() {
         return R.layout.activity_tags;
@@ -53,26 +59,28 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     @NonNull @Override public Observable<TagsPresenter.Edge> onEdgeReached() {
-        return null;
+        // TODO: Implement.
+        return Observable.empty();
     }
 
     @NonNull @Override public Observable<RefreshEvent> onRefresh() {
-        return null;
+        // TODO: Implement.
+        return Observable.empty();
     }
 
     @Override public void setDisplayType(@NonNull TagsPresenter.DisplayType displayType) {
-
+        // TODO: Implement.
     }
 
     @Override public void show(@NonNull List<Tag> tags) {
-
+        // TODO: Implement.
     }
 
     @Override public void add(int position, @NonNull List<Tag> tags) {
-
+        // TODO: Implement.
     }
 
     @Override public void update(int position, @NonNull List<Tag> tags) {
-
+        // TODO: Implement.
     }
 }

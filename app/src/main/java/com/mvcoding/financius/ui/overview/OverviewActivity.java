@@ -15,14 +15,17 @@
 package com.mvcoding.financius.ui.overview;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.widget.Button;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.calculator.CalculatorActivity;
+import com.mvcoding.financius.ui.tag.TagsActivity;
 
 import javax.inject.Inject;
 
@@ -32,6 +35,7 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 
 public class OverviewActivity extends BaseActivity<OverviewPresenter.View, OverviewComponent> implements OverviewPresenter.View {
+    @Bind(R.id.tagsButton) Button tagsButton;
     @Bind(R.id.newTransactionFloatingActionButton) FloatingActionButton newTransactionFloatingActionButton;
 
     @Inject OverviewPresenter presenter;
@@ -42,6 +46,11 @@ public class OverviewActivity extends BaseActivity<OverviewPresenter.View, Overv
 
     @Override protected int getLayoutId() {
         return R.layout.activity_overview;
+    }
+
+    @Override protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        tagsButton.setOnClickListener(v -> TagsActivity.start(this));
     }
 
     @NonNull @Override protected OverviewComponent createComponent(@NonNull ActivityComponent component) {
