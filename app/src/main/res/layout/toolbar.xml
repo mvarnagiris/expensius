@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
@@ -24,6 +23,6 @@
     android:elevation="@dimen/elevation_toolbar"
     android:minHeight="?actionBarSize"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:contentInsetStart="@dimen/keyline"
+    app:contentInsetStart="@dimen/keyline_content"
     app:titleTextAppearance="@style/Text.Title"
     tools:ignore="UnusedAttribute" />

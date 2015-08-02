@@ -104,7 +104,7 @@
         <item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>
         <item name="rippleColor">?colorAccentDark</item>
         <item name="borderWidth">0dp</item>
-        <item name="android:theme">@style/AppThemeDark</item>
+        <item name="android:theme">@style/AppTheme.Inverse</item>
     </style>
 
     <!-- CardView -->
@@ -134,6 +134,16 @@
 
     <style name="RecyclerView.Cards">
         <item name="android:padding">@dimen/keyline_half</item>
+    </style>
+
+    <style name="RecyclerViewItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">?actionBarSize</item>
+        <item name="android:paddingLeft">@dimen/keyline</item>
+        <item name="android:paddingRight">@dimen/keyline</item>
+        <item name="android:paddingTop">@dimen/space_normal</item>
+        <item name="android:paddingBottom">@dimen/space_normal</item>
     </style>
 
     <!-- Divider -->

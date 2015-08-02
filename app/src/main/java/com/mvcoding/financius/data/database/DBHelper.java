@@ -81,17 +81,17 @@ import javax.inject.Singleton;
 
             tag.withDefaultValues();
             tag.setTitle(context.getString(R.string.t_fixed));
-            tag.setColor(0x4CAF50);
+            tag.setColor(0xFF4CAF50);
             values.add(tagConverter.toContentValues(tag));
 
             tag.withDefaultValues();
             tag.setTitle(context.getString(R.string.t_essential));
-            tag.setColor(0x8BC34A);
+            tag.setColor(0xFF8BC34A);
             values.add(tagConverter.toContentValues(tag));
 
             tag.withDefaultValues();
             tag.setTitle(context.getString(R.string.t_non_essential));
-            tag.setColor(0xFF9800);
+            tag.setColor(0xFFFF9800);
             values.add(tagConverter.toContentValues(tag));
 
             for (ContentValues contentValues : values) {

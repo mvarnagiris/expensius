@@ -14,7 +14,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">#ffc107</item>
         <item name="colorPrimaryDark">#ffa000</item>
         <item name="colorPrimaryLight">#ffecb3</item>
@@ -43,32 +43,14 @@
         <item name="android:editTextStyle">@style/EditText</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#ffc107</item>
-        <item name="colorPrimaryDark">#ffa000</item>
-        <item name="colorPrimaryLight">#ffecb3</item>
-        <item name="colorAccent">#7c4dff</item>
-        <item name="colorAccentDark">#651fff</item>
+    <style name="AppTheme.Inverse">
         <item name="colorActionIcon">#ffffff</item>
         <item name="colorDivider">#88fdfdfd</item>
-        <item name="backgroundPrimary">#fdfdfd</item>
-
-        <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
 
         <item name="android:textColorPrimary">#ffffff</item>
         <item name="android:textColorPrimaryInverse">#212121</item>
         <item name="android:textColorSecondary">?colorPrimaryLight</item>
         <item name="android:textColorSecondaryInverse">#727272</item>
-
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@color/window_background</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-
-        <item name="android:progressBarStyle">@style/ProgressBar</item>
-        <item name="android:scrollViewStyle">@style/ScrollView</item>
-        <item name="floatingActionButtonStyle">@style/FloatingActionButton</item>
-        <item name="android:editTextStyle">@style/EditText</item>
     </style>
 
     <!-- Default styles -->

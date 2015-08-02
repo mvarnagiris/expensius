@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mvcoding.financius.App;
@@ -53,7 +54,21 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
         setContentView(getLayoutId());
         setupToolbar();
         ButterKnife.bind(this);
+        onViewCreated(savedInstanceState);
         getPresenter().onViewAttached(getPresenterView());
+    }
+
+    protected void onViewCreated(Bundle savedInstanceState) {
+
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override protected void onSaveInstanceState(Bundle outState) {

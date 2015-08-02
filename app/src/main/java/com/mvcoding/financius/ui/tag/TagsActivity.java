@@ -15,7 +15,9 @@
 package com.mvcoding.financius.ui.tag;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.data.model.Tag;
@@ -23,16 +25,22 @@ import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.util.recyclerview.RecyclerUtils;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import rx.Observable;
 
 public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent> implements TagsPresenter.View {
+    @Bind(R.id.recyclerView) RecyclerView recyclerView;
+
     @Inject TagsPresenter presenter;
+
+    private TagsAdapter adapter;
 
     public static void start(@NonNull Context context) {
         ActivityStarter.with(context, TagsActivity.class).start();
@@ -40,6 +48,14 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
 
     @Override protected int getLayoutId() {
         return R.layout.activity_tags;
+    }
+
+    @Override protected void onViewCreated(Bundle savedInstanceState) {
+        super.onViewCreated(savedInstanceState);
+
+        adapter = new TagsAdapter();
+        RecyclerUtils.setupList(recyclerView);
+        recyclerView.setAdapter(adapter);
     }
 
     @NonNull @Override protected TagsComponent createComponent(@NonNull ActivityComponent component) {
@@ -73,14 +89,14 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     @Override public void show(@NonNull List<Tag> tags) {
-        // TODO: Implement.
+        adapter.setItems(tags);
     }
 
     @Override public void add(int position, @NonNull List<Tag> tags) {
-        // TODO: Implement.
+        adapter.insertItems(position, tags);
     }
 
     @Override public void update(int position, @NonNull List<Tag> tags) {
-        // TODO: Implement.
+        adapter.updateItems(position, tags);
     }
 }

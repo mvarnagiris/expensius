@@ -14,9 +14,12 @@
 
 <resources>
     <dimen name="keyline">16dp</dimen>
+    <dimen name="keyline_2x">32dp</dimen>
     <dimen name="keyline_half">8dp</dimen>
     <dimen name="keyline_content">72dp</dimen>
     <dimen name="keyline_content_minus_keyline">56dp</dimen>
+    <dimen name="keyline_content_minus_keyline_2x">40dp</dimen>
+    <dimen name="keyline_content_minus_keyline_3x">24dp</dimen>
 
     <dimen name="space_normal">8dp</dimen>
     <dimen name="space_large">16dp</dimen>
