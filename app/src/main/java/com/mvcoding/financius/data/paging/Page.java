@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString @EqualsAndHashCode public class Page {
+@ToString @EqualsAndHashCode public class Page implements Comparable<Page> {
     @Getter private final int start;
     @Getter private final int size;
     private final int preferredSize;
@@ -42,5 +42,9 @@ import lombok.ToString;
 
     @NonNull public Page getNextPage() {
         return new Page(start + size, Math.max(size, preferredSize));
+    }
+
+    @Override public int compareTo(@NonNull Page another) {
+        return start > another.start ? 1 : start == another.start ? 0 : -1;
     }
 }

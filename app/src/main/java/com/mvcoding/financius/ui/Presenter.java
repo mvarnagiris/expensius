@@ -52,6 +52,7 @@ public class Presenter<V extends PresenterView> {
     }
 
     protected void showFatalError(@NonNull Throwable throwable, @NonNull ErrorPresenterView errorView, @NonNull CloseablePresenterView closeableView, @NonNull Scheduler uiScheduler) {
+        throwable.printStackTrace();
         unsubscribeOnDetach(errorView.showError(throwable).subscribeOn(uiScheduler).subscribe(errorAction -> closeableView.close()));
     }
 }

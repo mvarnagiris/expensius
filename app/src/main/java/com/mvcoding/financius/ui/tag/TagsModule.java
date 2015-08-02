@@ -17,6 +17,7 @@ package com.mvcoding.financius.ui.tag;
 import android.content.Context;
 
 import com.mvcoding.financius.AppContext;
+import com.mvcoding.financius.api.ServiceApi;
 import com.mvcoding.financius.data.DataLoadApi;
 
 import javax.inject.Named;
@@ -33,8 +34,8 @@ import rx.Scheduler;
     }
 
     @Provides
-    TagsPresenter providerTagsPresenter(@AppContext Context context, DataLoadApi dataLoadApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
+    TagsPresenter providerTagsPresenter(@AppContext Context context, DataLoadApi dataLoadApi, ServiceApi serviceApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
         // TODO: Use context to get the required page size;
-        return new TagsPresenter(displayType, dataLoadApi, 20, uiScheduler, ioScheduler);
+        return new TagsPresenter(displayType, dataLoadApi, serviceApi, 20, uiScheduler, ioScheduler);
     }
 }
