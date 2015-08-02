@@ -74,7 +74,7 @@ public class TransactionConverter extends ModelConverter<TransactionBody, Transa
         return transaction;
     }
 
-    @NonNull @Override public TransactionBody toBody(Transaction model) {
+    @NonNull @Override public TransactionBody toBody(@NonNull Transaction model) {
         final TransactionBody body = super.toBody(model);
         body.setTransactionType(model.getTransactionType());
         body.setTransactionState(model.getTransactionState());

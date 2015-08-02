@@ -21,10 +21,11 @@ import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Observable;
 
-public class Database {
+@Singleton public class Database {
     private final BriteDatabase database;
 
     @Inject public Database(@NonNull BriteDatabase database) {

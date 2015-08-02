@@ -39,7 +39,7 @@ public class PlaceConverter extends ModelConverter<PlaceBody, Place> {
         return place;
     }
 
-    @NonNull @Override public PlaceBody toBody(Place model) {
+    @NonNull @Override public PlaceBody toBody(@NonNull Place model) {
         final PlaceBody body = super.toBody(model);
         body.setPlaceId(model.getPlaceId());
         body.setName(model.getName());

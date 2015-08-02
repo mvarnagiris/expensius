@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.data.converter;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
@@ -32,11 +33,19 @@ abstract class ModelConverter<B extends ModelBody, M extends Model> implements D
         return model;
     }
 
-    @NonNull public B toBody(M model) {
+    @NonNull public B toBody(@NonNull M model) {
         final B body = createBody();
         body.setId(model.getId());
         body.setModelState(model.getModelState());
         return body;
+    }
+
+    @NonNull public ContentValues toContentValues(@NonNull M model) {
+        final BaseModelTable table = getModelTable();
+        final ContentValues contentValues = new ContentValues();
+        contentValues.put(table.id().name(), model.getId());
+        contentValues.put(table.modelState().name(), model.getModelState().name());
+        return contentValues;
     }
 
     @NonNull protected abstract M createModel();

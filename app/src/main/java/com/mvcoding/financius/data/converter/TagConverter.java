@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.data.converter;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
@@ -36,11 +37,19 @@ public class TagConverter extends ModelConverter<TagBody, Tag> {
         return tag;
     }
 
-    @NonNull @Override public TagBody toBody(Tag model) {
+    @NonNull @Override public TagBody toBody(@NonNull Tag model) {
         final TagBody body = super.toBody(model);
         body.setTitle(model.getTitle());
         body.setColor(model.getColor());
         return body;
+    }
+
+    @NonNull @Override public ContentValues toContentValues(@NonNull Tag model) {
+        final ContentValues contentValues = super.toContentValues(model);
+        final TagTable table = TagTable.get();
+        contentValues.put(table.title().name(), model.getTitle());
+        contentValues.put(table.color().name(), model.getColor());
+        return contentValues;
     }
 
     @NonNull @Override protected Tag createModel() {
