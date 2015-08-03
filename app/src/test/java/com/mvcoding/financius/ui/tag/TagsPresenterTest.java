@@ -30,7 +30,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -53,6 +55,8 @@ import static org.mockito.Mockito.when;
 
     private static final PublishSubject<TagsPresenter.Edge> edgeSubject = PublishSubject.create();
     private static final PublishSubject<RefreshEvent> refreshSubject = PublishSubject.create();
+    private static final PublishSubject<Tag> tagSelectedSubject = PublishSubject.create();
+    private static final PublishSubject<Event> saveSelectionSubject = PublishSubject.create();
 
     @Mock private DataLoadApi dataLoadApi;
     @Mock private ServiceApi serviceApi;
@@ -85,13 +89,15 @@ import static org.mockito.Mockito.when;
         });
         resetDataLoadApi();
 
-        return new TagsPresenter(TagsPresenter.DisplayType.View, dataLoadApi, serviceApi, PAGE_SIZE, Schedulers.immediate(), Schedulers.immediate());
+        return createPresenter(TagsPresenter.DisplayType.View, null);
     }
 
     @Override protected TagsPresenter.View createView() {
         final TagsPresenter.View view = mock(TagsPresenter.View.class);
         when(view.onEdgeReached()).thenReturn(edgeSubject);
         when(view.onRefresh()).thenReturn(refreshSubject);
+        when(view.onTagSelected()).thenReturn(tagSelectedSubject);
+        when(view.onSaveSelection()).thenReturn(saveSelectionSubject);
         return view;
     }
 
@@ -99,6 +105,21 @@ import static org.mockito.Mockito.when;
         presenterOnViewAttached();
 
         verify(view).setDisplayType(TagsPresenter.DisplayType.View);
+    }
+
+    @Test public void onViewAttached_setSelectedItems_whenThereAreSelectedItems() throws Exception {
+        final Set<Tag> selectedItems = new HashSet<>();
+        selectedItems.add(mock(Tag.class));
+        createPresenter(TagsPresenter.DisplayType.MultiChoice, selectedItems);
+        presenterOnViewAttached();
+
+        verify(view).setSelectedItems(selectedItems);
+    }
+
+    @Test public void onViewAttached_doNotSetSelectedItems_whenThereAreNoSelectedItems() throws Exception {
+        presenterOnViewAttached();
+
+        verify(view, never()).setSelectedItems(any());
     }
 
     @Test public void onViewAttached_loadFirstPageAndShow_whenDoNotHaveCachedItems() throws Exception {
@@ -180,6 +201,105 @@ import static org.mockito.Mockito.when;
         verify(view, times(1)).update(eq(0), any());
     }
 
+    @Test public void onTagSelected_startEdit_whenDisplayTypeIsView() throws Exception {
+        final Tag tag = mock(Tag.class);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag);
+
+        verify(view).startEdit(tag);
+    }
+
+    @Test public void onTagSelected_startSelected_whenDisplayTypeIsSelect() throws Exception {
+        createPresenter(TagsPresenter.DisplayType.Select, null);
+        final Tag tag = mock(Tag.class);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag);
+
+        verify(view).startSelected(tag);
+    }
+
+    @Test public void onTagSelected_setSelected_whenDisplayTypeIsSingleChoice() throws Exception {
+        createPresenter(TagsPresenter.DisplayType.SingleChoice, null);
+        final Tag tag = mock(Tag.class);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag);
+
+        verify(view).setSelected(tag, true);
+    }
+
+    @Test public void onTagSelected_doNothing_whenDisplayTypeIsSingleChoiceThatItemIsAlreadySelected() throws Exception {
+        createPresenter(TagsPresenter.DisplayType.SingleChoice, null);
+        final Tag tag = mock(Tag.class);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag);
+        verify(view).setSelected(tag, true);
+
+        tagSelectedSubject.onNext(tag);
+        verify(view, never()).setSelected(tag, false);
+    }
+
+    @Test public void onTagSelected_selectNewSingleItem_whenDisplayTypeIsSingleChoiceAndItemIsAlreadySelected() throws Exception {
+        final Tag tag1 = mock(Tag.class);
+        final Tag tag2 = mock(Tag.class);
+        createPresenter(TagsPresenter.DisplayType.SingleChoice, null);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag1);
+        verify(view).setSelected(tag1, true);
+
+        tagSelectedSubject.onNext(tag2);
+        verify(view).setSelected(tag1, false);
+        verify(view).setSelected(tag2, true);
+    }
+
+    @Test public void onTagSelected_setSelected_whenDisplayTypeIsMultiChoice() throws Exception {
+        createPresenter(TagsPresenter.DisplayType.MultiChoice, null);
+        final Tag tag = mock(Tag.class);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag);
+
+        verify(view).setSelected(tag, true);
+    }
+
+    @Test public void onTagSelected_setSelectedFalse_whenDisplayTypeIsMultiChoiceThatItemIsAlreadySelected() throws Exception {
+        createPresenter(TagsPresenter.DisplayType.MultiChoice, null);
+        final Tag tag = mock(Tag.class);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag);
+        verify(view).setSelected(tag, true);
+
+        tagSelectedSubject.onNext(tag);
+        verify(view).setSelected(tag, false);
+    }
+
+    @Test public void onSaveSelection_startSelectedSingle_whenDisplayTypeIsSingleChoice() throws Exception {
+        createPresenter(TagsPresenter.DisplayType.SingleChoice, null);
+        final Tag tag = mock(Tag.class);
+        presenterOnViewAttached();
+
+        tagSelectedSubject.onNext(tag);
+        saveSelectionSubject.onNext(new Event());
+
+        verify(view).startSelected(tag);
+    }
+
+    @Test public void onSaveSelection_startSelectedSet_whenDisplayTypeIsMultiChoice() throws Exception {
+        final Set<Tag> selectedItems = new HashSet<>();
+        selectedItems.add(mock(Tag.class));
+        createPresenter(TagsPresenter.DisplayType.MultiChoice, selectedItems);
+        presenterOnViewAttached();
+
+        saveSelectionSubject.onNext(new Event());
+
+        verify(view).startSelected(selectedItems);
+    }
+
     private void setTotalDataSize(int size) {
         totalDataSize = size;
     }
@@ -190,5 +310,10 @@ import static org.mockito.Mockito.when;
 
     private void resetDataLoadApi() {
         pageResultSubject = BehaviorSubject.create();
+    }
+
+    private TagsPresenter createPresenter(TagsPresenter.DisplayType displayType, Set<Tag> selectedItems) {
+        presenter = new TagsPresenter(displayType, selectedItems, dataLoadApi, serviceApi, PAGE_SIZE, Schedulers.immediate(), Schedulers.immediate());
+        return presenter;
     }
 }

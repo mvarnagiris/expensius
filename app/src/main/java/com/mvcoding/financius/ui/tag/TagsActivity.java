@@ -27,6 +27,7 @@ import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.util.recyclerview.RecyclerUtils;
+import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
 import java.util.Collections;
@@ -54,7 +55,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     public static void startForResult(@NonNull Context context, int requestCode, @Nullable Set<Tag> selectedTags) {
-        getActivityStarter(context).extra(EXTRA_DISPLAY_TYPE, TagsPresenter.DisplayType.Select)
+        getActivityStarter(context).extra(EXTRA_DISPLAY_TYPE, TagsPresenter.DisplayType.MultiChoice)
                 .extra(EXTRA_SELECTED_ITEMS, selectedTags)
                 .startForResult(requestCode);
     }
@@ -108,6 +109,23 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
         return Observable.empty();
     }
 
+    @NonNull @Override public Observable<Tag> onTagSelected() {
+        return adapter.getItemClickObservable();
+    }
+
+    @NonNull @Override public Observable<Event> onSaveSelection() {
+        // TODO: Implement.
+        return Observable.empty();
+    }
+
+    @Override public void setSelectedItems(@NonNull Set<Tag> tags) {
+        adapter.setSelectedItems(tags);
+    }
+
+    @Override public void setSelected(@NonNull Tag tag, boolean isSelected) {
+        adapter.setSelected(tag, isSelected);
+    }
+
     @Override public void setDisplayType(@NonNull TagsPresenter.DisplayType displayType) {
         adapter.setDisplayType(displayType);
     }
@@ -122,5 +140,17 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
 
     @Override public void update(int position, @NonNull List<Tag> tags) {
         adapter.updateItems(position, tags);
+    }
+
+    @Override public void startEdit(@NonNull Tag tag) {
+        // TODO: Implement.
+    }
+
+    @Override public void startSelected(@NonNull Tag tag) {
+        // TODO: Implement.
+    }
+
+    @Override public void startSelected(@NonNull Set<Tag> tag) {
+        // TODO: Implement.
     }
 }

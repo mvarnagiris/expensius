@@ -43,6 +43,6 @@ import rx.Scheduler;
     @Provides
     TagsPresenter providerTagsPresenter(@AppContext Context context, DataLoadApi dataLoadApi, ServiceApi serviceApi, @Named("ui") Scheduler uiScheduler, @Named("io") Scheduler ioScheduler) {
         // TODO: Use context to get the required page size;
-        return new TagsPresenter(displayType, dataLoadApi, serviceApi, 20, uiScheduler, ioScheduler);
+        return new TagsPresenter(displayType, selectedItems, dataLoadApi, serviceApi, 20, uiScheduler, ioScheduler);
     }
 }

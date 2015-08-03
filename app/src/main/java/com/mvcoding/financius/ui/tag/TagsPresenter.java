@@ -16,6 +16,7 @@ package com.mvcoding.financius.ui.tag;
 
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mvcoding.financius.api.ServiceApi;
 import com.mvcoding.financius.data.DataLoadApi;
@@ -27,10 +28,14 @@ import com.mvcoding.financius.ui.CloseablePresenterView;
 import com.mvcoding.financius.ui.ErrorPresenterView;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
+import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Scheduler;
@@ -42,32 +47,51 @@ import rx.Scheduler;
     private final int pageSize;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
+    private final Set<Tag> selectedItems;
     private final List<Tag> cache;
 
     private PageResult<Tag> startPageResult;
     private PageResult<Tag> endPageResult;
     private Observable<Page> pageObservable;
 
-    TagsPresenter(@NonNull DisplayType displayType, @NonNull DataLoadApi dataLoadApi, @NonNull ServiceApi serviceApi, @IntRange(from = 1) int pageSize, @NonNull Scheduler uiScheduler, @NonNull Scheduler ioScheduler) {
+    TagsPresenter(@NonNull DisplayType displayType, @Nullable Set<Tag> selectedItems, @NonNull DataLoadApi dataLoadApi, @NonNull ServiceApi serviceApi, @IntRange(from = 1) int pageSize, @NonNull Scheduler uiScheduler, @NonNull Scheduler ioScheduler) {
         this.displayType = displayType;
         this.dataLoadApi = dataLoadApi;
         this.serviceApi = serviceApi;
         this.pageSize = pageSize;
         this.uiScheduler = uiScheduler;
         this.ioScheduler = ioScheduler;
+        this.selectedItems = new HashSet<>();
+        if (selectedItems != null) {
+            this.selectedItems.addAll(selectedItems);
+        }
         cache = new ArrayList<>();
     }
 
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
         view.setDisplayType(displayType);
+
+        if (!selectedItems.isEmpty()) {
+            view.setSelectedItems(selectedItems);
+        }
+
         if (!cache.isEmpty()) {
             view.show(cache);
         }
 
         unsubscribeOnDetach(dataLoadApi.loadTags(getPageObservable(view))
                                     .doOnNext(this::updateCache)
+                                    .observeOn(uiScheduler)
+                                    .subscribeOn(ioScheduler)
                                     .subscribe(pageResult -> showItems(view, pageResult), throwable -> showFatalError(throwable, view, view, uiScheduler)));
+
+        unsubscribeOnDetach(view.onTagSelected()
+                                    .subscribe(tag -> onItemSelected(view, tag), throwable -> showFatalError(throwable, view, view, uiScheduler)));
+
+        unsubscribeOnDetach(view.onSaveSelection()
+                                    .map(event -> selectedItems)
+                                    .subscribe(tags -> onSaveSelection(view, tags), throwable -> showFatalError(throwable, view, view, uiScheduler)));
     }
 
     @NonNull private Observable<Page> getPageObservable(@NonNull View view) {
@@ -135,8 +159,60 @@ import rx.Scheduler;
         return page.getStart() >= loadedStart && page.getStart() + page.getSize() <= loadedCount;
     }
 
+    private void onItemSelected(@NonNull View view, @NonNull Tag tag) {
+        switch (displayType) {
+            case View: {
+                view.startEdit(tag);
+                break;
+            }
+            case Select: {
+                view.startSelected(tag);
+                break;
+            }
+            case SingleChoice: {
+                final boolean isSelected = selectedItems.contains(tag);
+
+                if (!isSelected) {
+                    final Iterator<Tag> iterator = selectedItems.iterator();
+                    if (iterator.hasNext()) {
+                        final Tag oldTag = iterator.next();
+                        view.setSelected(oldTag, false);
+                    }
+                    selectedItems.clear();
+                    selectedItems.add(tag);
+                    view.setSelected(tag, true);
+                }
+                break;
+            }
+            case MultiChoice: {
+                final boolean isSelected = selectedItems.contains(tag);
+                if (isSelected) {
+                    selectedItems.remove(tag);
+                } else {
+                    selectedItems.add(tag);
+                }
+                view.setSelected(tag, !isSelected);
+                break;
+            }
+            default:
+                throw new IllegalStateException("DisplayType " + displayType + " is not supported.");
+        }
+    }
+
+    private void onSaveSelection(@NonNull View view, @NonNull Set<Tag> selectedItems) {
+        if (displayType == DisplayType.SingleChoice) {
+            final Iterator<Tag> iterator = selectedItems.iterator();
+            if (iterator.hasNext()) {
+                final Tag selectedTag = iterator.next();
+                view.startSelected(selectedTag);
+            }
+        } else {
+            view.startSelected(selectedItems);
+        }
+    }
+
     public enum DisplayType {
-        View, Select, MultiChoice
+        View, Select, SingleChoice, MultiChoice
     }
 
     public enum Edge {
@@ -146,9 +222,16 @@ import rx.Scheduler;
     public interface View extends PresenterView, ErrorPresenterView, CloseablePresenterView {
         @NonNull Observable<Edge> onEdgeReached();
         @NonNull Observable<RefreshEvent> onRefresh();
+        @NonNull Observable<Tag> onTagSelected();
+        @NonNull Observable<Event> onSaveSelection();
+        void setSelectedItems(@NonNull Set<Tag> tags);
+        void setSelected(@NonNull Tag tag, boolean isSelected);
         void setDisplayType(@NonNull DisplayType displayType);
         void show(@NonNull List<Tag> tags);
         void add(int position, @NonNull List<Tag> tags);
         void update(int position, @NonNull List<Tag> tags);
+        void startEdit(@NonNull Tag tag);
+        void startSelected(@NonNull Tag tag);
+        void startSelected(@NonNull Set<Tag> tag);
     }
 }
