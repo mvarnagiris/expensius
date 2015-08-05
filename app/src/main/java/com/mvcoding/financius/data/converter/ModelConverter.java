@@ -28,8 +28,8 @@ abstract class ModelConverter<B extends ModelBody, M extends Model> implements D
     @Override public M from(@NonNull Cursor cursor) {
         final BaseModelTable table = getModelTable();
         final M model = createModel();
-        model.setId(cursor.getString(cursor.getColumnIndexOrThrow(table.id().selectName())));
-        model.setModelState(ModelState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.modelState().selectName()))));
+        model.setId(cursor.getString(cursor.getColumnIndexOrThrow(table.id().name())));
+        model.setModelState(ModelState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.modelState().name()))));
         return model;
     }
 

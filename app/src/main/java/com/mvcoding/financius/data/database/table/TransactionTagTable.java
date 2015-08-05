@@ -41,10 +41,10 @@ import javax.inject.Singleton;
         tagId = new Column(tableName, "tagId", Column.Type.Text);
 
         final TagTable tagTable = TagTable.get();
-        tagIds = new DynamicColumn("GROUP_CONCAT(" + tagTable.id().selectName() + ")", "tagIds");
-        tagModelStates = new DynamicColumn("GROUP_CONCAT(" + tagTable.modelState().selectName() + ")", "tagModelStates");
-        tagTitles = new DynamicColumn("GROUP_CONCAT(" + tagTable.title().selectName() + ")", "tagTitles");
-        tagColors = new DynamicColumn("GROUP_CONCAT(" + tagTable.color().selectName() + ")", "tagColors");
+        tagIds = new DynamicColumn("GROUP_CONCAT(" + tagTable.id().name() + ")", "tagIds");
+        tagModelStates = new DynamicColumn("GROUP_CONCAT(" + tagTable.modelState().name() + ")", "tagModelStates");
+        tagTitles = new DynamicColumn("GROUP_CONCAT(" + tagTable.title().name() + ")", "tagTitles");
+        tagColors = new DynamicColumn("GROUP_CONCAT(" + tagTable.color().name() + ")", "tagColors");
     }
 
     public static TransactionTagTable get() {

@@ -20,6 +20,7 @@ public class DynamicColumn {
     private final String query;
     private final String selectName;
 
+    // TODO: Review this. Make it similar to Column.
     DynamicColumn(@NonNull String query, @NonNull String selectName) {
         this.query = query + " as " + selectName;
         this.selectName = selectName;

@@ -50,15 +50,15 @@ public class TransactionConverter extends ModelConverter<TransactionBody, Transa
         final Transaction transaction = super.from(cursor);
         final TransactionTable table = TransactionTable.get();
         transaction.setTransactionType(TransactionType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionType()
-                                                                                                                     .selectName()))));
+                                                                                                                     .name()))));
         transaction.setTransactionState(TransactionState.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(table.transactionState()
-                                                                                                                       .selectName()))));
-        transaction.setDate(cursor.getLong(cursor.getColumnIndexOrThrow(table.date().selectName())));
-        transaction.setAmount(BigDecimal.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(table.amount().selectName()))));
-        transaction.setCurrency(cursor.getString(cursor.getColumnIndexOrThrow(table.currency().selectName())));
-        transaction.setNote(cursor.getString(cursor.getColumnIndexOrThrow(table.note().selectName())));
+                                                                                                                       .name()))));
+        transaction.setDate(cursor.getLong(cursor.getColumnIndexOrThrow(table.date().name())));
+        transaction.setAmount(BigDecimal.valueOf(cursor.getDouble(cursor.getColumnIndexOrThrow(table.amount().name()))));
+        transaction.setCurrency(cursor.getString(cursor.getColumnIndexOrThrow(table.currency().name())));
+        transaction.setNote(cursor.getString(cursor.getColumnIndexOrThrow(table.note().name())));
 
-        if (cursor.getString(cursor.getColumnIndexOrThrow(PlaceTable.get().id().selectName())) != null) {
+        if (cursor.getString(cursor.getColumnIndexOrThrow(PlaceTable.get().id().name())) != null) {
             transaction.setPlace(placeConverter.from(cursor));
         }
 

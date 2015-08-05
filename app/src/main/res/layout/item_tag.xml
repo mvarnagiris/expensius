@@ -25,6 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="-4dp"
         android:layout_marginRight="-4dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:visibility="gone" />
 
     <ImageView

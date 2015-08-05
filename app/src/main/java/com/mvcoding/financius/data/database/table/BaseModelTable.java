@@ -31,12 +31,12 @@ public abstract class BaseModelTable extends BaseTable {
     @NonNull public String[] getQueryColumns() {
         final Column[] modelColumns = getModelColumns();
         final String[] queryColumns = new String[modelColumns.length + 2];
-        queryColumns[0] = id.selectName();
-        queryColumns[1] = modelState.selectName();
+        queryColumns[0] = id.name();
+        queryColumns[1] = modelState.name();
 
         int index = 2;
         for (Column column : modelColumns) {
-            queryColumns[index++] = column.selectName();
+            queryColumns[index++] = column.name();
         }
 
         return queryColumns;

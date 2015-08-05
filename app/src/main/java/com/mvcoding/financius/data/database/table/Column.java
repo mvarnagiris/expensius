@@ -18,22 +18,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class Column {
-    private final String tableName;
     private final String name;
     private final Type type;
     private final String defaultValue;
-    private final String selectName;
 
     Column(@NonNull String tableName, @NonNull String name, @NonNull Type type) {
         this(tableName, name, type, null);
     }
 
     Column(@NonNull String tableName, @NonNull String name, @NonNull Type type, @Nullable String defaultValue) {
-        this.tableName = tableName;
-        this.name = name;
+        this.name = tableName + "_" + name;
         this.type = type;
         this.defaultValue = defaultValue;
-        selectName = tableName + "." + name;
     }
 
     @NonNull String getCreateScript() {
@@ -44,12 +40,8 @@ public class Column {
         return name;
     }
 
-    @NonNull public String selectName() {
-        return selectName;
-    }
-
     @Override public String toString() {
-        return selectName();
+        return name();
     }
 
     enum Type {

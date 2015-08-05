@@ -32,8 +32,8 @@ public class TagConverter extends ModelConverter<TagBody, Tag> {
     @Override public Tag from(@NonNull Cursor cursor) {
         final Tag tag = super.from(cursor);
         final TagTable table = TagTable.get();
-        tag.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(table.title().selectName())));
-        tag.setColor(cursor.getInt(cursor.getColumnIndexOrThrow(table.color().selectName())));
+        tag.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(table.title().name())));
+        tag.setColor(cursor.getInt(cursor.getColumnIndexOrThrow(table.color().name())));
         return tag;
     }
 

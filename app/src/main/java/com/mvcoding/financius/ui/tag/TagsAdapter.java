@@ -85,7 +85,6 @@ class TagsAdapter extends BaseAdapter<Tag, TagsAdapter.ViewHolder> {
 
         ViewHolder(@NonNull View itemView, @NonNull PublishSubject<Integer> clickSubject) {
             super(itemView, clickSubject);
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> clickSubject.onNext(getAdapterPosition()));
         }
 
         public void setDisplayTypeAndCheckState(@NonNull TagsPresenter.DisplayType displayType, boolean isSelected) {

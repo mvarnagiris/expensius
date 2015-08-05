@@ -31,11 +31,11 @@ public class PlaceConverter extends ModelConverter<PlaceBody, Place> {
     @Override public Place from(@NonNull Cursor cursor) {
         final Place place = super.from(cursor);
         final PlaceTable table = PlaceTable.get();
-        place.setPlaceId(cursor.getString(cursor.getColumnIndexOrThrow(table.placeId().selectName())));
-        place.setName(cursor.getString(cursor.getColumnIndexOrThrow(table.name().selectName())));
-        place.setAddress(cursor.getString(cursor.getColumnIndexOrThrow(table.address().selectName())));
-        place.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow(table.latitude().selectName())));
-        place.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow(table.longitude().selectName())));
+        place.setPlaceId(cursor.getString(cursor.getColumnIndexOrThrow(table.placeId().name())));
+        place.setName(cursor.getString(cursor.getColumnIndexOrThrow(table.name().name())));
+        place.setAddress(cursor.getString(cursor.getColumnIndexOrThrow(table.address().name())));
+        place.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow(table.latitude().name())));
+        place.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow(table.longitude().name())));
         return place;
     }
 
