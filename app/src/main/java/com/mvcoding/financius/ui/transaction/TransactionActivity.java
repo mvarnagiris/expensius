@@ -131,6 +131,12 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
                     placeSubject.onNext(new Place(place));
                 }
                 break;
+            case REQUEST_TAGS:
+                if (resultCode == RESULT_OK) {
+                    final Set<Tag> tags = TagsActivity.getResultTags(data);
+                    tagsSubject.onNext(tags);
+                }
+                break;
             case REQUEST_RESOLVE_ERROR:
                 if (resultCode == RESULT_OK) {
                     placeButton.performClick();
@@ -237,6 +243,17 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
         currencyButton.setText(transaction.getCurrency());
         final Place place = transaction.getPlace();
         placeButton.setText(place == null ? null : place.getName());
+        final Set<Tag> tags = transaction.getTags();
+        final StringBuilder tagsStringBuilder = new StringBuilder();
+        if (tags != null) {
+            for (Tag tag : tags) {
+                if (tagsStringBuilder.length() > 0) {
+                    tagsStringBuilder.append(", ");
+                }
+                tagsStringBuilder.append(tag.getTitle());
+            }
+        }
+        tagsButton.setText(tagsStringBuilder.toString());
 
         ignoreChanges = false;
     }

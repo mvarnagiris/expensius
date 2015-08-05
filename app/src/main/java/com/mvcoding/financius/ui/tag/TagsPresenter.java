@@ -232,6 +232,6 @@ import rx.Scheduler;
         void update(int position, @NonNull List<Tag> tags);
         void startEdit(@NonNull Tag tag);
         void startSelected(@NonNull Tag tag);
-        void startSelected(@NonNull Set<Tag> tag);
+        void startSelected(@NonNull Set<Tag> tags);
     }
 }

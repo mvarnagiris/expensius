@@ -12,7 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Text -->
     <!-- =============================================================================================================================== -->
@@ -85,6 +85,10 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
+    <style name="Button.Flat.Borderless.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
+
     <style name="Button.Flat.Borderless.Calc">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -105,6 +109,15 @@
         <item name="rippleColor">?colorAccentDark</item>
         <item name="borderWidth">0dp</item>
         <item name="android:theme">@style/AppTheme.Inverse</item>
+    </style>
+
+    <!-- ButtonBar -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="ButtonBar" parent="Widget.AppCompat.ButtonBar">
+        <item name="android:minHeight">?actionBarSize</item>
+        <item name="android:elevation" tools:targetApi="lollipop">@dimen/elevation_fab</item>
+        <item name="android:background">?backgroundSecondary</item>
     </style>
 
     <!-- CardView -->

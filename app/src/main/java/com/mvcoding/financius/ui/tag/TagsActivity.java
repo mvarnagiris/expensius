@@ -15,10 +15,14 @@
 package com.mvcoding.financius.ui.tag;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.data.model.Tag;
@@ -39,12 +43,20 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.Observable;
+import rx.android.view.ViewObservable;
 
 public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent> implements TagsPresenter.View {
     private static final String EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE";
     private static final String EXTRA_SELECTED_ITEMS = "EXTRA_SELECTED_ITEMS";
 
+    private static final String RESULT_EXTRA_ITEM = "RESULT_EXTRA_ITEM";
+    private static final String RESULT_EXTRA_ITEMS = "RESULT_EXTRA_ITEMS";
+
+    private static final int REQUEST_TAG = 1;
+
     @Bind(R.id.recyclerView) RecyclerView recyclerView;
+    @Bind(R.id.buttonBarView) View buttonBarView;
+    @Bind(R.id.saveButton) Button saveButton;
 
     @Inject TagsPresenter presenter;
 
@@ -60,7 +72,31 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
                 .startForResult(requestCode);
     }
 
-    private static ActivityStarter getActivityStarter(@NonNull Context context) {
+    @Nullable public static Tag getResultTag(@NonNull Intent data) {
+        return data.getParcelableExtra(RESULT_EXTRA_ITEM);
+    }
+
+    @Nullable public static Set<Tag> getResultTags(@NonNull Intent data) {
+        return getTags(data, RESULT_EXTRA_ITEMS);
+    }
+
+    @Nullable private static Set<Tag> getTags(@NonNull Intent intent, @NonNull String extraName) {
+        final Parcelable[] parcelables = intent.getParcelableArrayExtra(extraName);
+        final Tag[] itemArray = new Tag[parcelables == null ? 0 : parcelables.length];
+        for (int i = 0, size = parcelables == null ? 0 : parcelables.length; i < size; i++) {
+            itemArray[i] = (Tag) parcelables[i];
+        }
+
+        Set<Tag> items = null;
+        if (itemArray.length > 0) {
+            items = new HashSet<>();
+            Collections.addAll(items, itemArray);
+        }
+
+        return items;
+    }
+
+    @NonNull private static ActivityStarter getActivityStarter(@NonNull Context context) {
         return ActivityStarter.with(context, TagsActivity.class);
     }
 
@@ -78,12 +114,8 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
 
     @NonNull @Override protected TagsComponent createComponent(@NonNull ActivityComponent component) {
         final TagsPresenter.DisplayType displayType = (TagsPresenter.DisplayType) getIntent().getSerializableExtra(EXTRA_DISPLAY_TYPE);
-        final Tag[] selectedItemsArray = (Tag[]) getIntent().getParcelableArrayExtra(EXTRA_SELECTED_ITEMS);
-        Set<Tag> selectedItems = null;
-        if (selectedItemsArray != null) {
-            selectedItems = new HashSet<>();
-            Collections.addAll(selectedItems, selectedItemsArray);
-        }
+        final Set<Tag> selectedItems = getTags(getIntent(), EXTRA_SELECTED_ITEMS);
+
         return component.plus(new TagsModule(displayType, selectedItems));
     }
 
@@ -114,8 +146,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     @NonNull @Override public Observable<Event> onSaveSelection() {
-        // TODO: Implement.
-        return Observable.empty();
+        return ViewObservable.clicks(saveButton).map(onClickEvent -> new Event());
     }
 
     @Override public void setSelectedItems(@NonNull Set<Tag> tags) {
@@ -128,6 +159,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
 
     @Override public void setDisplayType(@NonNull TagsPresenter.DisplayType displayType) {
         adapter.setDisplayType(displayType);
+        buttonBarView.setVisibility(displayType == TagsPresenter.DisplayType.View ? View.GONE : View.VISIBLE);
     }
 
     @Override public void show(@NonNull List<Tag> tags) {
@@ -143,14 +175,20 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     @Override public void startEdit(@NonNull Tag tag) {
-        // TODO: Implement.
+        TagActivity.startForResult(this, REQUEST_TAG, tag);
     }
 
     @Override public void startSelected(@NonNull Tag tag) {
-        // TODO: Implement.
+        final Intent data = new Intent();
+        data.putExtra(RESULT_EXTRA_ITEM, tag);
+        setResult(RESULT_OK, data);
+        close();
     }
 
-    @Override public void startSelected(@NonNull Set<Tag> tag) {
-        // TODO: Implement.
+    @Override public void startSelected(@NonNull Set<Tag> tags) {
+        final Intent data = new Intent();
+        data.putExtra(RESULT_EXTRA_ITEMS, tags.toArray(new Tag[tags.size()]));
+        setResult(RESULT_OK, data);
+        close();
     }
 }
