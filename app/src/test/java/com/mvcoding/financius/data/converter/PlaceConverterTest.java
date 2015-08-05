@@ -38,11 +38,11 @@ public class PlaceConverterTest extends BaseModelConverterTest<PlaceConverter, P
 
     @Override protected int prepareModelCursor(PlaceTable table, Cursor cursor) {
         final int startIndex = super.prepareModelCursor(table, cursor);
-        when(cursor.getColumnIndexOrThrow(table.placeId().selectName())).thenReturn(startIndex);
-        when(cursor.getColumnIndexOrThrow(table.name().selectName())).thenReturn(startIndex + 1);
-        when(cursor.getColumnIndexOrThrow(table.address().selectName())).thenReturn(startIndex + 2);
-        when(cursor.getColumnIndexOrThrow(table.latitude().selectName())).thenReturn(startIndex + 3);
-        when(cursor.getColumnIndexOrThrow(table.longitude().selectName())).thenReturn(startIndex + 4);
+        when(cursor.getColumnIndexOrThrow(table.placeId().name())).thenReturn(startIndex);
+        when(cursor.getColumnIndexOrThrow(table.name().name())).thenReturn(startIndex + 1);
+        when(cursor.getColumnIndexOrThrow(table.address().name())).thenReturn(startIndex + 2);
+        when(cursor.getColumnIndexOrThrow(table.latitude().name())).thenReturn(startIndex + 3);
+        when(cursor.getColumnIndexOrThrow(table.longitude().name())).thenReturn(startIndex + 4);
         when(cursor.getString(startIndex)).thenReturn("placeId");
         when(cursor.getString(startIndex + 1)).thenReturn("name");
         when(cursor.getString(startIndex + 2)).thenReturn("address");

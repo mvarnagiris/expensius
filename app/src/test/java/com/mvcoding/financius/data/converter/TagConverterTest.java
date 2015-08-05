@@ -38,8 +38,8 @@ public class TagConverterTest extends BaseModelConverterTest<TagConverter, Tag, 
 
     @Override protected int prepareModelCursor(TagTable table, Cursor cursor) {
         final int startIndex = super.prepareModelCursor(table, cursor);
-        when(cursor.getColumnIndexOrThrow(table.title().selectName())).thenReturn(startIndex);
-        when(cursor.getColumnIndexOrThrow(table.color().selectName())).thenReturn(startIndex + 1);
+        when(cursor.getColumnIndexOrThrow(table.title().name())).thenReturn(startIndex);
+        when(cursor.getColumnIndexOrThrow(table.color().name())).thenReturn(startIndex + 1);
         when(cursor.getString(startIndex)).thenReturn("title");
         when(cursor.getInt(startIndex + 1)).thenReturn(1);
         return startIndex + 2;

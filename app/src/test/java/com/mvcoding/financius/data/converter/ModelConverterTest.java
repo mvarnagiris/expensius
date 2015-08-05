@@ -32,11 +32,11 @@ public class ModelConverterTest extends BaseModelConverterTest<ModelConverter<Mo
     @Override protected ModelConverter<ModelBody, Model> createConverter() {
         final Column idColumn = mock(Column.class);
         final Column modelStateColumn = mock(Column.class);
-        when(idColumn.selectName()).thenReturn("table.id");
-        when(modelStateColumn.selectName()).thenReturn("table.modelState");
+        when(idColumn.name()).thenReturn("table.id");
+        when(modelStateColumn.name()).thenReturn("table.modelState");
         when(table.id()).thenReturn(idColumn);
         when(table.modelState()).thenReturn(modelStateColumn);
-        final String[] columns = new String[]{idColumn.selectName(), modelStateColumn.selectName()};
+        final String[] columns = new String[]{idColumn.name(), modelStateColumn.name()};
         when(table.getQueryColumns()).thenReturn(columns);
 
         return new ModelConverter<ModelBody, Model>() {

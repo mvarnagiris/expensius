@@ -91,10 +91,10 @@ public class TransactionConverterTest extends BaseModelConverterTest<Transaction
 
     private void prepareCursorRow(Cursor cursor, List<Tag> cursorTags, int position) {
         final TagTable table = TagTable.get();
-        when(cursor.getColumnIndexOrThrow(table.id().selectName())).thenReturn(0);
-        when(cursor.getColumnIndexOrThrow(table.modelState().selectName())).thenReturn(1);
-        when(cursor.getColumnIndexOrThrow(table.title().selectName())).thenReturn(2);
-        when(cursor.getColumnIndexOrThrow(table.color().selectName())).thenReturn(3);
+        when(cursor.getColumnIndexOrThrow(table.id().name())).thenReturn(0);
+        when(cursor.getColumnIndexOrThrow(table.modelState().name())).thenReturn(1);
+        when(cursor.getColumnIndexOrThrow(table.title().name())).thenReturn(2);
+        when(cursor.getColumnIndexOrThrow(table.color().name())).thenReturn(3);
         final Tag tag = cursorTags.get(position);
         when(cursor.getString(0)).thenReturn(tag.getId());
         when(cursor.getString(1)).thenReturn(tag.getModelState().name());
@@ -112,13 +112,13 @@ public class TransactionConverterTest extends BaseModelConverterTest<Transaction
 
     @Override protected int prepareModelCursor(TransactionTable table, Cursor cursor) {
         final int startIndex = super.prepareModelCursor(table, cursor);
-        when(cursor.getColumnIndexOrThrow(table.transactionType().selectName())).thenReturn(startIndex);
-        when(cursor.getColumnIndexOrThrow(table.transactionState().selectName())).thenReturn(startIndex + 1);
-        when(cursor.getColumnIndexOrThrow(table.date().selectName())).thenReturn(startIndex + 2);
-        when(cursor.getColumnIndexOrThrow(table.amount().selectName())).thenReturn(startIndex + 3);
-        when(cursor.getColumnIndexOrThrow(table.currency().selectName())).thenReturn(startIndex + 4);
-        when(cursor.getColumnIndexOrThrow(table.placeId().selectName())).thenReturn(startIndex + 5);
-        when(cursor.getColumnIndexOrThrow(table.note().selectName())).thenReturn(startIndex + 6);
+        when(cursor.getColumnIndexOrThrow(table.transactionType().name())).thenReturn(startIndex);
+        when(cursor.getColumnIndexOrThrow(table.transactionState().name())).thenReturn(startIndex + 1);
+        when(cursor.getColumnIndexOrThrow(table.date().name())).thenReturn(startIndex + 2);
+        when(cursor.getColumnIndexOrThrow(table.amount().name())).thenReturn(startIndex + 3);
+        when(cursor.getColumnIndexOrThrow(table.currency().name())).thenReturn(startIndex + 4);
+        when(cursor.getColumnIndexOrThrow(table.placeId().name())).thenReturn(startIndex + 5);
+        when(cursor.getColumnIndexOrThrow(table.note().name())).thenReturn(startIndex + 6);
         when(cursor.getString(startIndex)).thenReturn(TransactionType.Expense.name());
         when(cursor.getString(startIndex + 1)).thenReturn(TransactionState.Confirmed.name());
         when(cursor.getLong(startIndex + 2)).thenReturn(10L);
@@ -128,13 +128,13 @@ public class TransactionConverterTest extends BaseModelConverterTest<Transaction
         when(cursor.getString(startIndex + 6)).thenReturn("note");
 
         final PlaceTable placeTable = PlaceTable.get();
-        when(cursor.getColumnIndexOrThrow(placeTable.id().selectName())).thenReturn(startIndex + 7);
-        when(cursor.getColumnIndexOrThrow(placeTable.modelState().selectName())).thenReturn(startIndex + 8);
-        when(cursor.getColumnIndexOrThrow(placeTable.placeId().selectName())).thenReturn(startIndex + 9);
-        when(cursor.getColumnIndexOrThrow(placeTable.name().selectName())).thenReturn(startIndex + 10);
-        when(cursor.getColumnIndexOrThrow(placeTable.address().selectName())).thenReturn(startIndex + 11);
-        when(cursor.getColumnIndexOrThrow(placeTable.latitude().selectName())).thenReturn(startIndex + 12);
-        when(cursor.getColumnIndexOrThrow(placeTable.longitude().selectName())).thenReturn(startIndex + 13);
+        when(cursor.getColumnIndexOrThrow(placeTable.id().name())).thenReturn(startIndex + 7);
+        when(cursor.getColumnIndexOrThrow(placeTable.modelState().name())).thenReturn(startIndex + 8);
+        when(cursor.getColumnIndexOrThrow(placeTable.placeId().name())).thenReturn(startIndex + 9);
+        when(cursor.getColumnIndexOrThrow(placeTable.name().name())).thenReturn(startIndex + 10);
+        when(cursor.getColumnIndexOrThrow(placeTable.address().name())).thenReturn(startIndex + 11);
+        when(cursor.getColumnIndexOrThrow(placeTable.latitude().name())).thenReturn(startIndex + 12);
+        when(cursor.getColumnIndexOrThrow(placeTable.longitude().name())).thenReturn(startIndex + 13);
         when(cursor.getString(startIndex + 7)).thenReturn("id");
         when(cursor.getString(startIndex + 8)).thenReturn(ModelState.Normal.name());
         when(cursor.getString(startIndex + 9)).thenReturn("placeId");

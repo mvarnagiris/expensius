@@ -111,7 +111,7 @@ public class TransactionConverter extends ModelConverter<TransactionBody, Transa
         return new TransactionBody();
     }
 
-    MatrixCursor createEmptyTagsCursor() {
+    @NonNull MatrixCursor createEmptyTagsCursor() {
         return new MatrixCursor(TagTable.get().getQueryColumns());
     }
 
