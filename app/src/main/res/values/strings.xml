@@ -29,6 +29,7 @@
     <string name="transaction">Transaction</string>
     <string name="tag">Tag</string>
     <string name="tags">Tags</string>
+    <string name="create">Create</string>
 
     <string name="t_fixed">Fixed</string>
     <string name="t_essential">Essential</string>

@@ -20,6 +20,7 @@ import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.paging.Page;
 import com.mvcoding.financius.data.paging.PageResult;
 import com.mvcoding.financius.ui.BasePresenterTest;
+import com.mvcoding.financius.util.recyclerview.PagingEdge;
 import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
@@ -53,7 +54,7 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("Convert2Lambda") public class TagsPresenterTest extends BasePresenterTest<TagsPresenter, TagsPresenter.View> {
     private static final int PAGE_SIZE = 20;
 
-    private static final PublishSubject<TagsPresenter.Edge> edgeSubject = PublishSubject.create();
+    private static final PublishSubject<PagingEdge> edgeSubject = PublishSubject.create();
     private static final PublishSubject<RefreshEvent> refreshSubject = PublishSubject.create();
     private static final PublishSubject<Tag> tagSelectedSubject = PublishSubject.create();
     private static final PublishSubject<Event> saveSelectionSubject = PublishSubject.create();
@@ -150,7 +151,7 @@ import static org.mockito.Mockito.when;
         setTotalDataSize(PAGE_SIZE - 1);
         presenterOnViewAttached();
 
-        edgeSubject.onNext(TagsPresenter.Edge.End);
+        edgeSubject.onNext(PagingEdge.End);
 
         verify(view, times(1)).show(any());
         verify(view, never()).add(anyInt(), any());
@@ -161,7 +162,7 @@ import static org.mockito.Mockito.when;
         presenterOnViewAttached();
         setInvalidateCache(false);
 
-        edgeSubject.onNext(TagsPresenter.Edge.End);
+        edgeSubject.onNext(PagingEdge.End);
 
         verify(view, times(1)).show(any());
         verify(view, times(1)).add(anyInt(), any());
@@ -170,7 +171,7 @@ import static org.mockito.Mockito.when;
     @Test public void onEdgeReached_doNotLoadMoreItems_whenEdgeIsStartAndFirstPageIsLoaded() throws Exception {
         presenterOnViewAttached();
 
-        edgeSubject.onNext(TagsPresenter.Edge.Start);
+        edgeSubject.onNext(PagingEdge.Start);
 
         verify(view, times(1)).show(any());
         verify(view, never()).add(anyInt(), any());
@@ -179,10 +180,10 @@ import static org.mockito.Mockito.when;
     @Test public void onEdgeReached_loadPreviousPage_whenEdgeIsStartAndFirstPageIsNotLoaded() throws Exception {
         setTotalDataSize(PAGE_SIZE * 2);
         presenterOnViewAttached();
-        edgeSubject.onNext(TagsPresenter.Edge.End);
+        edgeSubject.onNext(PagingEdge.End);
         setInvalidateCache(false);
 
-        edgeSubject.onNext(TagsPresenter.Edge.Start);
+        edgeSubject.onNext(PagingEdge.Start);
 
         verify(view, times(2)).show(any());
         verify(view, times(1)).add(anyInt(), any());
@@ -192,7 +193,7 @@ import static org.mockito.Mockito.when;
         setTotalDataSize(PAGE_SIZE * 2);
         presenterOnViewAttached();
         setInvalidateCache(false);
-        edgeSubject.onNext(TagsPresenter.Edge.End);
+        edgeSubject.onNext(PagingEdge.End);
 
         refreshSubject.onNext(new RefreshEvent());
 

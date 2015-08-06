@@ -21,6 +21,8 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -30,6 +32,7 @@ import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
+import com.mvcoding.financius.util.recyclerview.PagingEdge;
 import com.mvcoding.financius.util.recyclerview.RecyclerUtils;
 import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
@@ -112,6 +115,22 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
         recyclerView.setAdapter(adapter);
     }
 
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.models, menu);
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_create:
+                // TODO: Go through presenter.
+                TagActivity.startForResult(this, REQUEST_TAG, new Tag().withDefaultValues());
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @NonNull @Override protected TagsComponent createComponent(@NonNull ActivityComponent component) {
         final TagsPresenter.DisplayType displayType = (TagsPresenter.DisplayType) getIntent().getSerializableExtra(EXTRA_DISPLAY_TYPE);
         final Set<Tag> selectedItems = getTags(getIntent(), EXTRA_SELECTED_ITEMS);
@@ -131,7 +150,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
         return this;
     }
 
-    @NonNull @Override public Observable<TagsPresenter.Edge> onEdgeReached() {
+    @NonNull @Override public Observable<PagingEdge> onEdgeReached() {
         // TODO: Implement.
         return Observable.empty();
     }

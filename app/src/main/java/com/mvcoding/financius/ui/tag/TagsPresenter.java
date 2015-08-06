@@ -28,6 +28,7 @@ import com.mvcoding.financius.ui.CloseablePresenterView;
 import com.mvcoding.financius.ui.ErrorPresenterView;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
+import com.mvcoding.financius.util.recyclerview.PagingEdge;
 import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
@@ -95,14 +96,14 @@ import rx.Scheduler;
     }
 
     @NonNull private Observable<Page> getPageObservable(@NonNull View view) {
-        final Observable<Edge> edgeObservable = view.onEdgeReached();
+        final Observable<PagingEdge> edgeObservable = view.onEdgeReached();
 
-        final Observable<Page> startEdgePageObservable = edgeObservable.filter(edge -> edge == Edge.Start)
+        final Observable<Page> startEdgePageObservable = edgeObservable.filter(edge -> edge == PagingEdge.Start)
                 .filter(edge -> startPageResult != null)
                 .filter(edge -> startPageResult.hasPrevious())
                 .map(edge -> startPageResult.getPage().getPreviousPage());
 
-        final Observable<Page> endEdgePageObservable = edgeObservable.filter(edge -> edge == Edge.End)
+        final Observable<Page> endEdgePageObservable = edgeObservable.filter(edge -> edge == PagingEdge.End)
                 .filter(edge -> endPageResult != null)
                 .filter(edge -> endPageResult.hasNext())
                 .map(edge -> endPageResult.getPage().getNextPage());
@@ -215,12 +216,8 @@ import rx.Scheduler;
         View, Select, SingleChoice, MultiChoice
     }
 
-    public enum Edge {
-        Start, End
-    }
-
     public interface View extends PresenterView, ErrorPresenterView, CloseablePresenterView {
-        @NonNull Observable<Edge> onEdgeReached();
+        @NonNull Observable<PagingEdge> onEdgeReached();
         @NonNull Observable<RefreshEvent> onRefresh();
         @NonNull Observable<Tag> onTagSelected();
         @NonNull Observable<Event> onSaveSelection();
