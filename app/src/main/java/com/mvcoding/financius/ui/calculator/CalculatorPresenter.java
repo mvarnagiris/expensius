@@ -38,39 +38,37 @@ import rx.Observable;
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
 
+        final Observable<Object> equalsObservable = view.onEquals();
+        final Observable<Object> numberObservable = view.on0Number()
+                .doOnNext(o -> calculator.digit0())
+                .mergeWith(view.on1Number().doOnNext(o -> calculator.digit1()))
+                .mergeWith(view.on2Number().doOnNext(o -> calculator.digit2()))
+                .mergeWith(view.on3Number().doOnNext(o -> calculator.digit3()))
+                .mergeWith(view.on4Number().doOnNext(o -> calculator.digit4()))
+                .mergeWith(view.on5Number().doOnNext(o -> calculator.digit5()))
+                .mergeWith(view.on6Number().doOnNext(o -> calculator.digit6()))
+                .mergeWith(view.on7Number().doOnNext(o -> calculator.digit7()))
+                .mergeWith(view.on8Number().doOnNext(o -> calculator.digit8()))
+                .mergeWith(view.on9Number().doOnNext(o -> calculator.digit9()));
+
         final List<Observable<Object>> expressionUpdates = new ArrayList<>();
-        expressionUpdates.add(view.on0Number().doOnNext(o -> calculator.digit0()));
-        expressionUpdates.add(view.on1Number().doOnNext(o -> calculator.digit1()));
-        expressionUpdates.add(view.on2Number().doOnNext(o -> calculator.digit2()));
-        expressionUpdates.add(view.on3Number().doOnNext(o -> calculator.digit3()));
-        expressionUpdates.add(view.on4Number().doOnNext(o -> calculator.digit4()));
-        expressionUpdates.add(view.on5Number().doOnNext(o -> calculator.digit5()));
-        expressionUpdates.add(view.on6Number().doOnNext(o -> calculator.digit6()));
-        expressionUpdates.add(view.on7Number().doOnNext(o -> calculator.digit7()));
-        expressionUpdates.add(view.on8Number().doOnNext(o -> calculator.digit8()));
-        expressionUpdates.add(view.on9Number().doOnNext(o -> calculator.digit9()));
+        expressionUpdates.add(numberObservable);
         expressionUpdates.add(view.onDecimal().doOnNext(o -> calculator.decimal()));
         expressionUpdates.add(view.onAdd().doOnNext(o -> calculator.add()));
         expressionUpdates.add(view.onSubtract().doOnNext(o -> calculator.subtract()));
         expressionUpdates.add(view.onMultiply().doOnNext(o -> calculator.multiply()));
         expressionUpdates.add(view.onDivide().doOnNext(o -> calculator.divide()));
         expressionUpdates.add(view.onDelete().doOnNext(o -> calculator.delete()));
-        expressionUpdates.add(view.onClear().doOnNext(o -> calculator.clear()).doOnNext(e -> view.clearExpression()));
+        expressionUpdates.add(view.onClear().doOnNext(o -> calculator.clear()).doOnNext(o -> view.clearExpression()));
         expressionUpdates.add(view.onNumberChange().doOnNext(calculator::setNumber).map(number -> new Object()));
-        expressionUpdates.add(view.onEquals()
-                                      .filter(o -> !calculator.isEmptyOrSingleNumber())
+        expressionUpdates.add(equalsObservable.filter(o -> !calculator.isEmptyOrSingleNumber())
                                       .map(o -> calculator.calculate())
                                       .doOnNext(calculator::setNumber)
                                       .map(number -> new Object()));
         expressionUpdates.add(calculator.getExpression().isEmpty() ? Observable.empty() : Observable.just(new Object()));
 
-        unsubscribeOnDetach(view.onEquals()
-                                    .filter(c -> calculator.isEmptyOrSingleNumber())
-                                    .map(c -> calculator.calculate())
-                                    .subscribe(view::startResult));
-
         unsubscribeOnDetach(Observable.merge(expressionUpdates)
-                                    .map(e -> calculator.getExpression())
+                                    .map(o -> calculator.getExpression())
                                     .doOnNext(view::showExpression)
                                     .subscribe(expression -> {
                                         if (calculator.isEmptyOrSingleNumber()) {
@@ -79,6 +77,10 @@ import rx.Observable;
                                             view.showCalculate();
                                         }
                                     }));
+
+        unsubscribeOnDetach(equalsObservable.filter(o -> calculator.isEmptyOrSingleNumber())
+                                    .map(o -> calculator.calculate())
+                                    .subscribe(view::startResult));
     }
 
     public interface View extends PresenterView {

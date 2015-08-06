@@ -136,6 +136,15 @@ public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresent
         verify(view).showExpression(any(String.class));
     }
 
+    @Test public void on6Number_callsCalculatorAndShowsExpression() {
+        presenterOnViewAttached();
+
+        performEvent(click6);
+
+        verify(calculator).digit6();
+        verify(view).showExpression(any(String.class));
+    }
+
     @Test public void on7Number_callsCalculatorAndShowsExpression() {
         presenterOnViewAttached();
 
