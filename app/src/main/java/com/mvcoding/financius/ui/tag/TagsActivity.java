@@ -63,6 +63,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     @Inject TagsPresenter presenter;
 
     private TagsAdapter adapter;
+    private View lastClickedView;
 
     public static void start(@NonNull Context context) {
         getActivityStarter(context).extra(EXTRA_DISPLAY_TYPE, TagsPresenter.DisplayType.View).start();
@@ -160,7 +161,9 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     @NonNull @Override public Observable<Tag> onTagSelected() {
-        return adapter.getItemClickObservable();
+        return adapter.getItemClickObservable()
+                .doOnNext(tagClickEvent -> lastClickedView = tagClickEvent.getView().findViewById(R.id.titleTextView))
+                .map(TagsAdapter.TagClickEvent::getTag);
     }
 
     @NonNull @Override public Observable<Object> onSaveSelection() {
@@ -193,7 +196,7 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
     }
 
     @Override public void startEdit(@NonNull Tag tag) {
-        TagActivity.startForResult(this, REQUEST_TAG, tag);
+        TagActivity.startForResult(this, REQUEST_TAG, tag, lastClickedView);
     }
 
     @Override public void startSelected(@NonNull Tag tag) {

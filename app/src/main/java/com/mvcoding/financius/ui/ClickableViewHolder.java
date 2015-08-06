@@ -14,14 +14,26 @@
 
 package com.mvcoding.financius.ui;
 
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import lombok.Getter;
 import rx.subjects.PublishSubject;
 
 public class ClickableViewHolder extends BaseViewHolder {
-    public ClickableViewHolder(@NonNull View itemView, @NonNull PublishSubject<Integer> clickSubject) {
+    public ClickableViewHolder(@NonNull View itemView, @NonNull PublishSubject<ViewHolderClickEvent> clickSubject) {
         super(itemView);
-        itemView.setOnClickListener(v -> clickSubject.onNext(getAdapterPosition()));
+        itemView.setOnClickListener(v -> clickSubject.onNext(new ViewHolderClickEvent(v, getAdapterPosition())));
+    }
+
+    @Getter public static class ViewHolderClickEvent {
+        private final View view;
+        private final int position;
+
+        public ViewHolderClickEvent(@NonNull View view, @IntRange(from = 0) int position) {
+            this.view = view;
+            this.position = position;
+        }
     }
 }

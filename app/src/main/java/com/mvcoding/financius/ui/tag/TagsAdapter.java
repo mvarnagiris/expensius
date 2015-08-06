@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.ui.tag;
 
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -32,11 +33,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import butterknife.Bind;
+import lombok.Getter;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 class TagsAdapter extends BaseAdapter<Tag, TagsAdapter.ViewHolder> {
-    private final PublishSubject<Integer> clickSubject = PublishSubject.create();
+    private final PublishSubject<ClickableViewHolder.ViewHolderClickEvent> clickSubject = PublishSubject.create();
     private final Set<Tag> selectedItems = new HashSet<>();
 
     private TagsPresenter.DisplayType displayType;
@@ -69,8 +71,8 @@ class TagsAdapter extends BaseAdapter<Tag, TagsAdapter.ViewHolder> {
         notifyItemChanged(getItems().indexOf(item));
     }
 
-    public Observable<Tag> getItemClickObservable() {
-        return clickSubject.map(this::getItem);
+    public Observable<TagClickEvent> getItemClickObservable() {
+        return clickSubject.map(event -> new TagClickEvent(event, getItem(event.getPosition())));
     }
 
     public void setDisplayType(@NonNull TagsPresenter.DisplayType displayType) {
@@ -78,12 +80,25 @@ class TagsAdapter extends BaseAdapter<Tag, TagsAdapter.ViewHolder> {
         notifyItemRangeChanged(0, getItemCount());
     }
 
+    @Getter public static class TagClickEvent extends ClickableViewHolder.ViewHolderClickEvent {
+        private final Tag tag;
+
+        public TagClickEvent(@NonNull ClickableViewHolder.ViewHolderClickEvent event, @NonNull Tag tag) {
+            this(event.getView(), event.getPosition(), tag);
+        }
+
+        public TagClickEvent(@NonNull View view, @IntRange(from = 0) int position, @NonNull Tag tag) {
+            super(view, position);
+            this.tag = tag;
+        }
+    }
+
     static class ViewHolder extends ClickableViewHolder {
         @Bind(R.id.colorImageView) ImageView colorImageView;
         @Bind(R.id.titleTextView) TextView titleTextView;
         @Bind(R.id.checkBox) CheckBox checkBox;
 
-        ViewHolder(@NonNull View itemView, @NonNull PublishSubject<Integer> clickSubject) {
+        ViewHolder(@NonNull View itemView, @NonNull PublishSubject<ViewHolderClickEvent> clickSubject) {
             super(itemView, clickSubject);
         }
 

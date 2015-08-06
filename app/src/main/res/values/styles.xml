@@ -120,6 +120,9 @@
     <!-- =============================================================================================================================== -->
 
     <style name="ButtonBar" parent="Widget.AppCompat.ButtonBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">right</item>
         <item name="android:minHeight">?actionBarSize</item>
         <item name="android:elevation" tools:targetApi="lollipop">@dimen/elevation_fab</item>
         <item name="android:background">?backgroundSecondary</item>

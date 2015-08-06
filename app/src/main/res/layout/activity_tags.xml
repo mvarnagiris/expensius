@@ -29,9 +29,6 @@
     <LinearLayout
         android:id="@+id/buttonBarView"
         style="@style/ButtonBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
         android:visibility="gone"
         tools:visibility="visible">
 

@@ -32,4 +32,5 @@
     <string name="calculator_delete">DEL</string>
 
     <string name="transition_name_fab">transition:fab</string>
+    <string name="transition_name_title">transition:title</string>
 </resources>

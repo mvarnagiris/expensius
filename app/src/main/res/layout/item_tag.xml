@@ -45,6 +45,8 @@
         android:layout_marginLeft="@dimen/keyline_2x"
         android:layout_weight="1"
         android:textAppearance="@style/Text.Subhead"
+        android:transitionName="@string/transition_name_title"
+        tools:ignore="UnusedAttribute"
         tools:text="@string/t_non_essential" />
 
 </LinearLayout>

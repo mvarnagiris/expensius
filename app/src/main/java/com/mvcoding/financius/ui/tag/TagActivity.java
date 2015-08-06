@@ -17,6 +17,7 @@ package com.mvcoding.financius.ui.tag;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -50,8 +51,8 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
 
     private boolean ignoreChanges = true;
 
-    public static void startForResult(@NonNull Context context, int requestCode, @NonNull Tag tag) {
-        ActivityStarter.with(context, TagActivity.class).extra(EXTRA_TAG, tag).startForResult(requestCode);
+    public static void startForResult(@NonNull Context context, int requestCode, @NonNull Tag tag, View... sharedViews) {
+        ActivityStarter.with(context, TagActivity.class).extra(EXTRA_TAG, tag).enableTransition(sharedViews).startForResult(requestCode);
     }
 
     @Override protected int getLayoutId() {
