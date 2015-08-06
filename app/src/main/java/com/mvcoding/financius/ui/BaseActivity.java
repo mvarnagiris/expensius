@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.ui;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -34,6 +35,7 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.Icicle;
 import rx.Observable;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public abstract class BaseActivity<V extends PresenterView, C extends BaseComponent> extends AppCompatActivity implements CloseablePresenterView, ErrorPresenterView {
     @Icicle String componentKey;
@@ -77,6 +79,10 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
         if (isFinishing()) {
             App.with(this).removeComponent(componentKey);
         }
+    }
+
+    @Override protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override public void close() {

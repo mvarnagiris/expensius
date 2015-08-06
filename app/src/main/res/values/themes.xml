@@ -40,8 +40,8 @@
 
         <item name="android:progressBarStyle">@style/ProgressBar</item>
         <item name="android:scrollViewStyle">@style/ScrollView</item>
-        <item name="floatingActionButtonStyle">@style/FloatingActionButton</item>
         <item name="android:editTextStyle">@style/EditText</item>
+        <item name="floatingActionButtonStyle">@style/Button.Fab</item>
     </style>
 
     <style name="AppTheme.Inverse">
@@ -52,26 +52,6 @@
         <item name="android:textColorPrimaryInverse">#212121</item>
         <item name="android:textColorSecondary">?colorPrimaryLight</item>
         <item name="android:textColorSecondaryInverse">#727272</item>
-    </style>
-
-    <!-- Default styles -->
-    <!-- =============================================================================================================================== -->
-
-    <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar" />
-
-    <style name="ScrollView">
-        <item name="android:fillViewport">true</item>
-    </style>
-
-    <style name="FloatingActionButton" parent="CardView">
-        <item name="cardBackgroundColor">?colorAccent</item>
-        <item name="cardElevation">@dimen/elevation_fab</item>
-        <item name="android:tint">?colorActionIcon</item>
-        <item name="android:foreground">?selectableItemBackgroundBorderless</item>
-    </style>
-
-    <style name="EditText" parent="Widget.AppCompat.EditText">
-        <item name="android:textColorHint">?android:textColorSecondary</item>
     </style>
 
 </resources>

@@ -38,14 +38,9 @@ public class App extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
-
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setFontAttrId(R.attr.fontPath).build());
         JodaTimeAndroid.init(this);
-
         LeakCanary.install(this);
-
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/Roboto-Regular.ttf")
-                                              .setFontAttrId(R.attr.fontPath)
-                                              .build());
 
         appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
     }

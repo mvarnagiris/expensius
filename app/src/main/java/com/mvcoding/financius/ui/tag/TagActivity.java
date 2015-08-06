@@ -48,6 +48,8 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
 
     @Inject TagPresenter presenter;
 
+    private boolean ignoreChanges = true;
+
     public static void startForResult(@NonNull Context context, int requestCode, @NonNull Tag tag) {
         ActivityStarter.with(context, TagActivity.class).extra(EXTRA_TAG, tag).startForResult(requestCode);
     }
@@ -74,7 +76,7 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
     }
 
     @NonNull @Override public Observable<String> onTitleChanged() {
-        return RxTextView.textChanges(titleEditText).map(CharSequence::toString);
+        return RxTextView.textChanges(titleEditText).filter(charSequence -> !ignoreChanges).map(CharSequence::toString);
     }
 
     @NonNull @Override public Observable<Integer> onColorChanged() {
@@ -86,8 +88,12 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
     }
 
     @Override public void showTag(@NonNull Tag tag) {
+        ignoreChanges = true;
+
         titleEditText.setText(tag.getTitle());
         colorButton.setText(String.valueOf(tag.getColor()));
+
+        ignoreChanges = false;
     }
 
     @Override public void startResult(@NonNull Tag tag) {

@@ -24,11 +24,6 @@
         <attr name="floatingActionButtonStyle" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="FloatingActionButton">
-        <attr name="android:src" />
-        <attr name="android:tint" />
-    </declare-styleable>
-
     <declare-styleable name="AspectLayout">
         <attr name="aspectBase" format="enum">
             <enum name="width" value="0" />
