@@ -14,9 +14,12 @@
 
 package com.mvcoding.financius.data.database;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import com.mvcoding.financius.data.database.table.BaseTable;
 import com.squareup.sqlbrite.BriteDatabase;
 import com.squareup.sqlbrite.SqlBrite;
 
@@ -34,5 +37,9 @@ import rx.Observable;
 
     @NonNull public Observable<Cursor> load(@NonNull DatabaseQuery databaseQuery) {
         return database.createQuery(databaseQuery.getTables(), databaseQuery.getSql(), databaseQuery.getArgs()).map(SqlBrite.Query::run);
+    }
+
+    public void save(@NonNull BaseTable table, @NonNull ContentValues contentValues) {
+        database.insert(table.getTableName(), contentValues, SQLiteDatabase.CONFLICT_REPLACE);
     }
 }

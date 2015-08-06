@@ -43,7 +43,8 @@ import rx.Observable;
         final TagTable table = TagTable.get();
         final DatabaseQuery databaseQuery = new DatabaseQuery().select(table.getQueryColumns())
                 .from(table.getTableName())
-                .where(table.modelState() + "=?", ModelState.Normal.name());
+                .where(table.modelState() + "=?", ModelState.Normal.name())
+                .orderBy(table.title().name());
 
         return tagPageLoader.load(tagConverter, databaseQuery, pageObservable);
     }

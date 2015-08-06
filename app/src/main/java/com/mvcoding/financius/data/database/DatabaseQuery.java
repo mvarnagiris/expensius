@@ -24,6 +24,7 @@ public class DatabaseQuery {
     private final List<String> columns = new ArrayList<>();
     private final List<String> args = new ArrayList<>();
     private final StringBuilder selection = new StringBuilder();
+    private final List<String> orderBy = new ArrayList<>();
     private String table;
 
     public DatabaseQuery select(String... columns) {
@@ -46,6 +47,11 @@ public class DatabaseQuery {
 
         this.selection.append(selection);
         Collections.addAll(this.args, args);
+        return this;
+    }
+
+    public DatabaseQuery orderBy(String... order) {
+        Collections.addAll(orderBy, order);
         return this;
     }
 
@@ -76,6 +82,18 @@ public class DatabaseQuery {
 
         if (selection.length() > 0) {
             query.append(" WHERE ").append(selection);
+        }
+
+        if (!orderBy.isEmpty()) {
+            query.append(" ORDER BY ");
+            boolean isNotFirstItem = false;
+            for (String order : orderBy) {
+                if (isNotFirstItem) {
+                    query.append(",");
+                }
+                query.append(order);
+                isNotFirstItem = true;
+            }
         }
 
         return query.toString();

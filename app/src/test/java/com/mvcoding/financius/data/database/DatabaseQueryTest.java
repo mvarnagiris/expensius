@@ -24,7 +24,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DatabaseQueryTest extends BaseTest {
-    private static final String SQL_REGEX = "(SELECT )|( FROM )|( WHERE )";
+    private static final String SQL_REGEX = "(SELECT )|( FROM )|( WHERE )|( ORDER BY )";
     private DatabaseQuery databaseQuery;
 
     @Override public void setUp() {
@@ -137,5 +137,31 @@ public class DatabaseQueryTest extends BaseTest {
     @Test(expected = IllegalStateException.class)
     public void getTables_throwIllegalStateException_whenTablesWereNotProvided() throws Exception {
         databaseQuery.getTables();
+    }
+
+    @Test public void getSql_doNotHaveWhereOrderBy_whenOrderByIsNotProvided() throws Exception {
+        databaseQuery.from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        assertThat(sql).doesNotContain("ORDER BY");
+    }
+
+    @Test public void getSql_useProvidedOrderByColumns_whenOrderByColumnsAreNotEmpty() throws Exception {
+        databaseQuery.orderBy("column1", "column2").from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        final String[] parts = sql.split(SQL_REGEX);
+        assertThat(parts[3]).isEqualTo("column1,column2");
+    }
+
+    @Test public void getSql_useProvidedOrderByColumns_whenOrderByIsCalledMoreThanOnce() throws Exception {
+        databaseQuery.orderBy("column1", "column2").orderBy("column3").from("table");
+
+        final String sql = databaseQuery.getSql();
+
+        final String[] parts = sql.split(SQL_REGEX);
+        assertThat(parts[3]).isEqualTo("column1,column2,column3");
     }
 }

@@ -17,7 +17,9 @@ package com.mvcoding.financius.data;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.core.endpoints.body.ValidationException;
+import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.database.Database;
+import com.mvcoding.financius.data.database.table.TagTable;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 
@@ -28,9 +30,11 @@ import rx.Observable;
 
 @Singleton public class DataSaveApi {
     private final Database database;
+    private final TagConverter tagConverter;
 
-    @Inject public DataSaveApi(@NonNull Database database) {
+    @Inject public DataSaveApi(@NonNull Database database, @NonNull TagConverter tagConverter) {
         this.database = database;
+        this.tagConverter = tagConverter;
     }
 
     @NonNull public Observable<Transaction> saveTransaction(@NonNull Transaction transaction) throws ValidationException {
@@ -39,9 +43,9 @@ import rx.Observable;
         return Observable.just(transaction);
     }
 
-    @NonNull public Observable<Tag> saveTag(@NonNull Tag tag) throws ValidationException {
-        //        tag.validate();
-        // TODO: Save tag
-        return Observable.just(tag);
+    @NonNull public Observable<Tag> saveTag(@NonNull Tag model) throws ValidationException {
+        return Observable.just(model)
+                .doOnNext(tag -> tagConverter.toBody(tag).validate())
+                .doOnNext(tag -> database.save(TagTable.get(), tagConverter.toContentValues(tag)));
     }
 }
