@@ -90,7 +90,11 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
     @Override public void showTag(@NonNull Tag tag) {
         ignoreChanges = true;
 
-        titleEditText.setText(tag.getTitle());
+        final boolean isTitleDifferent = !titleEditText.getText().toString().equals(tag.getTitle());
+        if (isTitleDifferent) {
+            titleEditText.setText(tag.getTitle());
+            titleEditText.setSelection(titleEditText.getText().length());
+        }
         colorButton.setText(String.valueOf(tag.getColor()));
 
         ignoreChanges = false;
