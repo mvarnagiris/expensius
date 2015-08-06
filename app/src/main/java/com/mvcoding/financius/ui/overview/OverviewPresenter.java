@@ -23,7 +23,6 @@ import com.mvcoding.financius.ui.PresenterView;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.view.OnClickEvent;
 
 @ActivityScope class OverviewPresenter extends Presenter<OverviewPresenter.View> {
     @Inject OverviewPresenter() {
@@ -35,8 +34,7 @@ import rx.android.view.OnClickEvent;
     }
 
     public interface View extends PresenterView {
-        @NonNull Observable<OnClickEvent> onNewTransactionClick();
-
+        @NonNull Observable<Object> onNewTransactionClick();
         void startNewTransaction();
     }
 }

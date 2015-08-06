@@ -20,6 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.widget.Button;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
@@ -31,8 +32,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.Observable;
-import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
 
 public class OverviewActivity extends BaseActivity<OverviewPresenter.View, OverviewComponent> implements OverviewPresenter.View {
     @Bind(R.id.tagsButton) Button tagsButton;
@@ -69,8 +68,8 @@ public class OverviewActivity extends BaseActivity<OverviewPresenter.View, Overv
         return this;
     }
 
-    @NonNull @Override public Observable<OnClickEvent> onNewTransactionClick() {
-        return ViewObservable.clicks(newTransactionFloatingActionButton);
+    @NonNull @Override public Observable<Object> onNewTransactionClick() {
+        return RxView.clicks(newTransactionFloatingActionButton);
     }
 
     @Override public void startNewTransaction() {

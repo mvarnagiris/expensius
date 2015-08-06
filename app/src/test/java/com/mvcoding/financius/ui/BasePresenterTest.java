@@ -17,7 +17,6 @@ package com.mvcoding.financius.ui;
 import android.support.annotation.NonNull;
 
 import com.mvcoding.financius.BaseTest;
-import com.mvcoding.financius.util.rx.Event;
 
 import rx.subjects.Subject;
 
@@ -45,8 +44,8 @@ public abstract class BasePresenterTest<P extends Presenter<V>, V extends Presen
         presenter.onViewDetached();
     }
 
-    protected void performEvent(@NonNull Subject<Event, Event> subject) {
-        final Event event = mock(Event.class);
+    protected void performEvent(@NonNull Subject<Object, Object> subject) {
+        final Object event = mock(Object.class);
         subject.onNext(event);
     }
 }

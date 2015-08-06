@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityComponent;
@@ -34,7 +35,6 @@ import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.util.recyclerview.PagingEdge;
 import com.mvcoding.financius.util.recyclerview.RecyclerUtils;
-import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
 import java.util.Collections;
@@ -46,7 +46,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.Observable;
-import rx.android.view.ViewObservable;
 
 public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent> implements TagsPresenter.View {
     private static final String EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE";
@@ -164,8 +163,8 @@ public class TagsActivity extends BaseActivity<TagsPresenter.View, TagsComponent
         return adapter.getItemClickObservable();
     }
 
-    @NonNull @Override public Observable<Event> onSaveSelection() {
-        return ViewObservable.clicks(saveButton).map(onClickEvent -> new Event());
+    @NonNull @Override public Observable<Object> onSaveSelection() {
+        return RxView.clicks(saveButton);
     }
 
     @Override public void setSelectedItems(@NonNull Set<Tag> tags) {

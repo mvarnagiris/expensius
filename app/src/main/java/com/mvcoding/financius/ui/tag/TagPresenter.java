@@ -24,7 +24,6 @@ import com.mvcoding.financius.ui.CloseablePresenterView;
 import com.mvcoding.financius.ui.ErrorPresenterView;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
-import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Named;
 
@@ -84,7 +83,7 @@ import rx.Scheduler;
     public interface View extends PresenterView, ErrorPresenterView, CloseablePresenterView {
         @NonNull Observable<String> onTitleChanged();
         @NonNull Observable<Integer> onColorChanged();
-        @NonNull Observable<Event> onSave();
+        @NonNull Observable<Object> onSave();
         void showTag(@NonNull Tag tag);
         void startResult(@NonNull Tag tag);
     }

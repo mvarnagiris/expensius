@@ -15,7 +15,6 @@
 package com.mvcoding.financius.ui.calculator;
 
 import com.mvcoding.financius.ui.BasePresenterTest;
-import com.mvcoding.financius.util.rx.Event;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -32,24 +31,24 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CalculatorPresenterTest extends BasePresenterTest<CalculatorPresenter, CalculatorPresenter.View> {
-    private final PublishSubject<Event> click0 = PublishSubject.create();
-    private final PublishSubject<Event> click1 = PublishSubject.create();
-    private final PublishSubject<Event> click2 = PublishSubject.create();
-    private final PublishSubject<Event> click3 = PublishSubject.create();
-    private final PublishSubject<Event> click4 = PublishSubject.create();
-    private final PublishSubject<Event> click5 = PublishSubject.create();
-    private final PublishSubject<Event> click6 = PublishSubject.create();
-    private final PublishSubject<Event> click7 = PublishSubject.create();
-    private final PublishSubject<Event> click8 = PublishSubject.create();
-    private final PublishSubject<Event> click9 = PublishSubject.create();
-    private final PublishSubject<Event> clickAdd = PublishSubject.create();
-    private final PublishSubject<Event> clickSub = PublishSubject.create();
-    private final PublishSubject<Event> clickMul = PublishSubject.create();
-    private final PublishSubject<Event> clickDiv = PublishSubject.create();
-    private final PublishSubject<Event> clickDecimal = PublishSubject.create();
-    private final PublishSubject<Event> clickClear = PublishSubject.create();
-    private final PublishSubject<Event> clickDelete = PublishSubject.create();
-    private final PublishSubject<Event> clickEquals = PublishSubject.create();
+    private final PublishSubject<Object> click0 = PublishSubject.create();
+    private final PublishSubject<Object> click1 = PublishSubject.create();
+    private final PublishSubject<Object> click2 = PublishSubject.create();
+    private final PublishSubject<Object> click3 = PublishSubject.create();
+    private final PublishSubject<Object> click4 = PublishSubject.create();
+    private final PublishSubject<Object> click5 = PublishSubject.create();
+    private final PublishSubject<Object> click6 = PublishSubject.create();
+    private final PublishSubject<Object> click7 = PublishSubject.create();
+    private final PublishSubject<Object> click8 = PublishSubject.create();
+    private final PublishSubject<Object> click9 = PublishSubject.create();
+    private final PublishSubject<Object> clickAdd = PublishSubject.create();
+    private final PublishSubject<Object> clickSub = PublishSubject.create();
+    private final PublishSubject<Object> clickMul = PublishSubject.create();
+    private final PublishSubject<Object> clickDiv = PublishSubject.create();
+    private final PublishSubject<Object> clickDecimal = PublishSubject.create();
+    private final PublishSubject<Object> clickClear = PublishSubject.create();
+    private final PublishSubject<Object> clickDelete = PublishSubject.create();
+    private final PublishSubject<Object> clickEquals = PublishSubject.create();
     private final PublishSubject<BigDecimal> numberChange = PublishSubject.create();
 
     @Mock private Calculator calculator;

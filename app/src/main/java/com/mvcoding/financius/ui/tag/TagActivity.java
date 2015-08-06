@@ -20,20 +20,19 @@ import android.support.annotation.NonNull;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
-import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.Observable;
-import rx.android.view.ViewObservable;
-import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
 
 public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> implements TagPresenter.View {
@@ -75,15 +74,15 @@ public class TagActivity extends BaseActivity<TagPresenter.View, TagComponent> i
     }
 
     @NonNull @Override public Observable<String> onTitleChanged() {
-        return WidgetObservable.text(titleEditText).compose(textTransformer);
+        return RxTextView.textChanges(titleEditText).map(CharSequence::toString);
     }
 
     @NonNull @Override public Observable<Integer> onColorChanged() {
         return colorSubject;
     }
 
-    @NonNull @Override public Observable<Event> onSave() {
-        return ViewObservable.clicks(saveButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onSave() {
+        return RxView.clicks(saveButton);
     }
 
     @Override public void showTag(@NonNull Tag tag) {

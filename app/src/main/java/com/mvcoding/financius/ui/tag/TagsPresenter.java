@@ -29,7 +29,6 @@ import com.mvcoding.financius.ui.ErrorPresenterView;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
 import com.mvcoding.financius.util.recyclerview.PagingEdge;
-import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
 import java.util.ArrayList;
@@ -220,7 +219,7 @@ import rx.Scheduler;
         @NonNull Observable<PagingEdge> onEdgeReached();
         @NonNull Observable<RefreshEvent> onRefresh();
         @NonNull Observable<Tag> onTagSelected();
-        @NonNull Observable<Event> onSaveSelection();
+        @NonNull Observable<Object> onSaveSelection();
         void setSelectedItems(@NonNull Set<Tag> tags);
         void setSelected(@NonNull Tag tag, boolean isSelected);
         void setDisplayType(@NonNull DisplayType displayType);

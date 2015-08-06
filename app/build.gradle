@@ -86,8 +86,9 @@ dependencies {
     compile 'net.danlew:android.joda:2.8.1'
 
     // RxJava
-    compile 'io.reactivex:rxjava:1.0.12'
-    compile 'io.reactivex:rxandroid:0.25.0'
+    compile 'io.reactivex:rxjava:1.0.13'
+    compile 'io.reactivex:rxandroid:1.0.0'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.1.0'
     compile 'com.squareup.sqlbrite:sqlbrite:0.2.0'
 
     // Injection

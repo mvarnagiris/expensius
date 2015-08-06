@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
@@ -29,7 +30,6 @@ import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.overview.OverviewActivity;
 import com.mvcoding.financius.ui.user.LoginActivity;
-import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import me.relex.circleindicator.CircleIndicator;
 import rx.Observable;
-import rx.android.view.ViewObservable;
 
 public class IntroductionActivity extends BaseActivity<IntroductionPresenter.View, IntroductionComponent> implements IntroductionPresenter.View, ViewPager.OnPageChangeListener {
     @Bind(R.id.viewPager) ViewPager viewPager;
@@ -96,12 +95,12 @@ public class IntroductionActivity extends BaseActivity<IntroductionPresenter.Vie
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
     }
 
-    @NonNull @Override public Observable<Event> onSkipLogin() {
-        return ViewObservable.clicks(skipLoginButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onSkipLogin() {
+        return RxView.clicks(skipLoginButton);
     }
 
-    @NonNull @Override public Observable<Event> onLogin() {
-        return ViewObservable.clicks(loginButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onLogin() {
+        return RxView.clicks(loginButton);
     }
 
     @Override public void startOverviewAndClose() {

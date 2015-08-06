@@ -25,7 +25,6 @@ import com.mvcoding.financius.data.model.Place;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.ui.BasePresenterTest;
-import com.mvcoding.financius.util.rx.Event;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -57,8 +56,8 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     private final PublishSubject<Place> placeSubject = PublishSubject.create();
     private final PublishSubject<Set<Tag>> tagsSubject = PublishSubject.create();
     private final PublishSubject<String> noteSubject = PublishSubject.create();
-    private final PublishSubject<Event> requestCurrencySubject = PublishSubject.create();
-    private final PublishSubject<Event> saveSubject = PublishSubject.create();
+    private final PublishSubject<Object> requestCurrencySubject = PublishSubject.create();
+    private final PublishSubject<Object> saveSubject = PublishSubject.create();
 
     @Mock private UserSettings userSettings;
     @Mock private DataSaveApi dataSaveApi;
@@ -135,7 +134,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         amountSubject.onNext(BigDecimal.ONE);
         verify(view, times(5)).showTransaction(initialTransaction);
 
-        requestCurrencySubject.onNext(new Event());
+        requestCurrencySubject.onNext(new Object());
         currencySubject.onNext("EUR");
         verify(view, times(6)).showTransaction(initialTransaction);
 
@@ -152,7 +151,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     @Test public void onSave_startResult_whenTransactionIsSavedSuccessfully() throws Exception {
         presenterOnViewAttached();
 
-        saveSubject.onNext(new Event());
+        saveSubject.onNext(new Object());
 
         verify(dataSaveApi).saveTransaction(initialTransaction);
         verify(view).startResult(initialTransaction);
@@ -163,7 +162,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         doThrow(throwable).when(transactionBody).validate();
         presenterOnViewAttached();
 
-        saveSubject.onNext(new Event());
+        saveSubject.onNext(new Object());
 
         verify(dataSaveApi, never()).saveTransaction(initialTransaction);
         verify(view, never()).startResult(initialTransaction);
@@ -174,7 +173,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
         doThrow(throwable).when(dataSaveApi).saveTransaction(initialTransaction);
         presenterOnViewAttached();
 
-        saveSubject.onNext(new Event());
+        saveSubject.onNext(new Object());
 
         verify(dataSaveApi).saveTransaction(initialTransaction);
         verify(view, never()).startResult(initialTransaction);
@@ -184,7 +183,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     @Test public void onRequestCurrency_showCurrencies() throws Exception {
         presenterOnViewAttached();
 
-        requestCurrencySubject.onNext(new Event());
+        requestCurrencySubject.onNext(new Object());
 
         verify(view).showCurrencies(availableCurrencies);
     }
@@ -192,7 +191,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     @Test public void updateUserSettings_whenCurrencyChanges() throws Exception {
         presenterOnViewAttached();
 
-        requestCurrencySubject.onNext(new Event());
+        requestCurrencySubject.onNext(new Object());
         currencySubject.onNext("EUR");
 
         verify(userSettings).setCurrency("EUR");

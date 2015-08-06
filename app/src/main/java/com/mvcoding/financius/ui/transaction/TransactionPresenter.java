@@ -30,7 +30,6 @@ import com.mvcoding.financius.ui.CloseablePresenterView;
 import com.mvcoding.financius.ui.ErrorPresenterView;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
-import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -121,8 +120,8 @@ import rx.Scheduler;
         @NonNull Observable<Place> onPlaceChanged();
         @NonNull Observable<Set<Tag>> onTagsChanged();
         @NonNull Observable<String> onNoteChanged();
-        @NonNull Observable<Event> onRequestCurrency();
-        @NonNull Observable<Event> onSave();
+        @NonNull Observable<Object> onRequestCurrency();
+        @NonNull Observable<Object> onSave();
         void showTransaction(@NonNull Transaction transaction);
         void startResult(@NonNull Transaction transaction);
     }

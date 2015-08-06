@@ -17,7 +17,6 @@ package com.mvcoding.financius.ui.introduction;
 import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.api.Session;
 import com.mvcoding.financius.ui.BasePresenterTest;
-import com.mvcoding.financius.util.rx.Event;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,8 +28,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class IntroductionPresenterTest extends BasePresenterTest<IntroductionPresenter, IntroductionPresenter.View> {
-    private final PublishSubject<Event> skipLoginClick = PublishSubject.create();
-    private final PublishSubject<Event> loginClick = PublishSubject.create();
+    private final PublishSubject<Object> skipLoginClick = PublishSubject.create();
+    private final PublishSubject<Object> loginClick = PublishSubject.create();
 
     @Mock private Session session;
     @Mock private UserSettings userSettings;

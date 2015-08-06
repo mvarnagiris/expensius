@@ -14,8 +14,6 @@
 
 package com.mvcoding.financius.api;
 
-import com.mvcoding.financius.util.rx.Event;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -25,7 +23,7 @@ import rx.Observable;
     @Inject public ServiceApi() {
     }
 
-    public Observable<Event> refresh() {
+    public Observable<Object> refresh() {
         // TODO Implement.
         return Observable.empty();
     }

@@ -31,6 +31,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.data.model.Transaction;
@@ -38,7 +39,6 @@ import com.mvcoding.financius.ui.ActivityComponent;
 import com.mvcoding.financius.ui.ActivityStarter;
 import com.mvcoding.financius.ui.BaseActivity;
 import com.mvcoding.financius.ui.transaction.TransactionActivity;
-import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
@@ -49,8 +49,6 @@ import butterknife.Bind;
 import butterknife.OnLongClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
 import rx.subjects.PublishSubject;
 
 public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, CalculatorComponent> implements CalculatorPresenter.View {
@@ -61,8 +59,8 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
 
     private static final long ANIMATION_DURATION_CLEAR_START = 400;
 
-    private static final PublishSubject<OnClickEvent> clearSubject = PublishSubject.create();
-    private static final PublishSubject<BigDecimal> numberChangeSubject = PublishSubject.create();
+    private final PublishSubject<Object> clearSubject = PublishSubject.create();
+    private final PublishSubject<BigDecimal> numberChangeSubject = PublishSubject.create();
 
     @Bind(R.id.resultContainerView) View resultContainerView;
     @Bind(R.id.resultTextView) TextView resultTextView;
@@ -152,77 +150,76 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         return this;
     }
 
-    @NonNull @Override public Observable<Event> on0Number() {
-        return ViewObservable.clicks(number0Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on0Number() {
+        return RxView.clicks(number0Button);
     }
 
-    @NonNull @Override public Observable<Event> on1Number() {
-        return ViewObservable.clicks(number1Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on1Number() {
+        return RxView.clicks(number1Button);
     }
 
-    @NonNull @Override public Observable<Event> on2Number() {
-        return ViewObservable.clicks(number2Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on2Number() {
+        return RxView.clicks(number2Button);
     }
 
-    @NonNull @Override public Observable<Event> on3Number() {
-        return ViewObservable.clicks(number3Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on3Number() {
+        return RxView.clicks(number3Button);
     }
 
-    @NonNull @Override public Observable<Event> on4Number() {
-        return ViewObservable.clicks(number4Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on4Number() {
+        return RxView.clicks(number4Button);
     }
 
-    @NonNull @Override public Observable<Event> on5Number() {
-        return ViewObservable.clicks(number5Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on5Number() {
+        return RxView.clicks(number5Button);
     }
 
-    @NonNull @Override public Observable<Event> on6Number() {
-        return ViewObservable.clicks(number6Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on6Number() {
+        return RxView.clicks(number6Button);
     }
 
-    @NonNull @Override public Observable<Event> on7Number() {
-        return ViewObservable.clicks(number7Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on7Number() {
+        return RxView.clicks(number7Button);
     }
 
-    @NonNull @Override public Observable<Event> on8Number() {
-        return ViewObservable.clicks(number8Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on8Number() {
+        return RxView.clicks(number8Button);
     }
 
-    @NonNull @Override public Observable<Event> on9Number() {
-        return ViewObservable.clicks(number9Button).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> on9Number() {
+        return RxView.clicks(number9Button);
     }
 
-    @NonNull @Override public Observable<Event> onDecimal() {
-        return ViewObservable.clicks(decimalButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onDecimal() {
+        return RxView.clicks(decimalButton);
     }
 
-    @NonNull @Override public Observable<Event> onEquals() {
-        return ViewObservable.clicks(equalsFloatingActionButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onEquals() {
+        return RxView.clicks(equalsFloatingActionButton);
     }
 
-    @NonNull @Override public Observable<Event> onDivide() {
-        return ViewObservable.clicks(divideButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onDivide() {
+        return RxView.clicks(divideButton);
     }
 
-    @NonNull @Override public Observable<Event> onMultiply() {
-        return ViewObservable.clicks(multiplyButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onMultiply() {
+        return RxView.clicks(multiplyButton);
     }
 
-    @NonNull @Override public Observable<Event> onSubtract() {
-        return ViewObservable.clicks(subtractButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onSubtract() {
+        return RxView.clicks(subtractButton);
     }
 
-    @NonNull @Override public Observable<Event> onAdd() {
-        return ViewObservable.clicks(addButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onAdd() {
+        return RxView.clicks(addButton);
     }
 
-    @NonNull @Override public Observable<Event> onDelete() {
-        return ViewObservable.clicks(deleteButton).compose(clickTransformer);
+    @NonNull @Override public Observable<Object> onDelete() {
+        return RxView.clicks(deleteButton);
     }
 
-    @NonNull @Override public Observable<Event> onClear() {
-        return clearSubject.compose(clickTransformer)
-                .doOnNext(event -> clearAnimation())
+    @NonNull @Override public Observable<Object> onClear() {
+        return clearSubject.doOnNext(o -> clearAnimation())
                 .delay(ANIMATION_DURATION_CLEAR_START, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -316,7 +313,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     }
 
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {
-        clearSubject.onNext(OnClickEvent.create(view));
+        clearSubject.onNext(new Object());
         return true;
     }
 

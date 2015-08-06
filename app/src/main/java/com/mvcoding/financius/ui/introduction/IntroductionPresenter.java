@@ -20,7 +20,6 @@ import com.mvcoding.financius.UserSettings;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
-import com.mvcoding.financius.util.rx.Event;
 
 import javax.inject.Inject;
 
@@ -50,8 +49,8 @@ import rx.Observable;
     }
 
     public interface View extends PresenterView {
-        @NonNull Observable<Event> onSkipLogin();
-        @NonNull Observable<Event> onLogin();
+        @NonNull Observable<Object> onSkipLogin();
+        @NonNull Observable<Object> onLogin();
         void startOverviewAndClose();
         void startLoginAndClose();
     }

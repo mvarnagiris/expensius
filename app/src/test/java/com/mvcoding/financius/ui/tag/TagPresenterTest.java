@@ -19,7 +19,6 @@ import com.mvcoding.financius.data.DataSaveApi;
 import com.mvcoding.financius.data.converter.TagConverter;
 import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.BasePresenterTest;
-import com.mvcoding.financius.util.rx.Event;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresenter.View> {
     private PublishSubject<String> titleSubject = PublishSubject.create();
     private PublishSubject<Integer> colorSubject = PublishSubject.create();
-    private PublishSubject<Event> saveSubject = PublishSubject.create();
+    private PublishSubject<Object> saveSubject = PublishSubject.create();
 
     @Mock private DataSaveApi dataSaveApi;
     @Mock private TagConverter tagConverter;
@@ -86,7 +85,7 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
     @Test public void onSave_startResult_whenTagIsSavedSuccessfully() throws Exception {
         presenterOnViewAttached();
 
-        saveSubject.onNext(new Event());
+        saveSubject.onNext(new Object());
 
         verify(dataSaveApi).saveTag(initialTag);
         verify(view).startResult(initialTag);
@@ -97,7 +96,7 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
         doThrow(throwable).when(tagBody).validate();
         presenterOnViewAttached();
 
-        saveSubject.onNext(new Event());
+        saveSubject.onNext(new Object());
 
         verify(dataSaveApi, never()).saveTag(initialTag);
         verify(view, never()).startResult(initialTag);
@@ -108,7 +107,7 @@ public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresent
         doThrow(throwable).when(dataSaveApi).saveTag(initialTag);
         presenterOnViewAttached();
 
-        saveSubject.onNext(new Event());
+        saveSubject.onNext(new Object());
 
         verify(dataSaveApi).saveTag(initialTag);
         verify(view, never()).startResult(initialTag);

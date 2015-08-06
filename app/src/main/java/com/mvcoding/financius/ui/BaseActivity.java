@@ -27,7 +27,6 @@ import android.widget.Toast;
 import com.mvcoding.financius.App;
 import com.mvcoding.financius.BaseComponent;
 import com.mvcoding.financius.R;
-import com.mvcoding.financius.util.rx.Event;
 
 import java.util.UUID;
 
@@ -35,14 +34,8 @@ import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.Icicle;
 import rx.Observable;
-import rx.android.view.OnClickEvent;
-import rx.android.widget.OnTextChangeEvent;
 
 public abstract class BaseActivity<V extends PresenterView, C extends BaseComponent> extends AppCompatActivity implements CloseablePresenterView, ErrorPresenterView {
-    protected static final Observable.Transformer<OnClickEvent, Event> clickTransformer = onClickEventObservable -> onClickEventObservable.map(onClickEvent -> new Event());
-    protected static final Observable.Transformer<OnTextChangeEvent, String> textTransformer = onTextChangeEventObservable -> onTextChangeEventObservable
-            .map(onTextChangeEvent -> onTextChangeEvent.text().toString());
-
     @Icicle String componentKey;
 
     @LayoutRes protected abstract int getLayoutId();

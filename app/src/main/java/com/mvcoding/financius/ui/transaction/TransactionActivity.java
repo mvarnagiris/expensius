@@ -30,6 +30,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.mvcoding.financius.R;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
@@ -44,7 +46,6 @@ import com.mvcoding.financius.ui.TimeDialogFragment;
 import com.mvcoding.financius.ui.calculator.CalculatorActivity;
 import com.mvcoding.financius.ui.tag.TagsActivity;
 import com.mvcoding.financius.util.date.DateFormatter;
-import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RxBus;
 
 import org.joda.time.DateTime;
@@ -57,8 +58,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import rx.Observable;
-import rx.android.view.ViewObservable;
-import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
 
 public class TransactionActivity extends BaseActivity<TransactionPresenter.View, TransactionComponent> implements TransactionPresenter.View {
@@ -172,9 +171,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
 
     @NonNull @Override public Observable<Long> onDateChanged() {
         final Observable<Long> dateObservable = rxBus.observe(DateDialogFragment.DateDialogResult.class)
-                .mergeWith(ViewObservable.clicks(dateButton)
-                                   .flatMap(onClickEvent -> DateDialogFragment.show(getSupportFragmentManager(), REQUEST_DATE, rxBus, transaction
-                                           .getDate())))
+                .mergeWith(RxView.clicks(dateButton)
+                                   .flatMap(o -> DateDialogFragment.show(getSupportFragmentManager(), REQUEST_DATE, rxBus, transaction.getDate())))
                 .map(dateDialogResult -> {
                     final DateTime dateTime = new DateTime(transaction.getDate());
                     return new DateTime(dateDialogResult.getYear(), dateDialogResult.getMonthOfYear(), dateDialogResult.getDayOfMonth(), dateTime
@@ -182,9 +180,8 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
                 });
 
         final Observable<Long> timeObservable = rxBus.observe(TimeDialogFragment.TimeDialogResult.class)
-                .mergeWith(ViewObservable.clicks(timeButton)
-                                   .flatMap(onClickEvent -> TimeDialogFragment.show(getSupportFragmentManager(), REQUEST_TIME, rxBus, transaction
-                                           .getDate())))
+                .mergeWith(RxView.clicks(timeButton)
+                                   .flatMap(o -> TimeDialogFragment.show(getSupportFragmentManager(), REQUEST_TIME, rxBus, transaction.getDate())))
                 .map(timeDialogResult -> {
                     final DateTime dateTime = new DateTime(transaction.getDate());
                     return new DateTime(dateTime.getYear(), dateTime.getMonthOfYear(), dateTime.getDayOfMonth(), timeDialogResult.getHourOfDay(), timeDialogResult
@@ -220,15 +217,15 @@ public class TransactionActivity extends BaseActivity<TransactionPresenter.View,
     }
 
     @NonNull @Override public Observable<String> onNoteChanged() {
-        return WidgetObservable.text(noteEditText).map(onTextChangeEvent -> onTextChangeEvent.text().toString());
+        return RxTextView.textChanges(noteEditText).map(CharSequence::toString);
     }
 
-    @NonNull @Override public Observable<Event> onRequestCurrency() {
-        return ViewObservable.clicks(currencyButton).map(onClickEvent -> new Event());
+    @NonNull @Override public Observable<Object> onRequestCurrency() {
+        return RxView.clicks(currencyButton);
     }
 
-    @NonNull @Override public Observable<Event> onSave() {
-        return ViewObservable.clicks(saveButton).map(onClickEvent -> new Event());
+    @NonNull @Override public Observable<Object> onSave() {
+        return RxView.clicks(saveButton);
     }
 
     @Override public void showTransaction(@NonNull Transaction transaction) {

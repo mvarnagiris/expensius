@@ -21,7 +21,6 @@ import com.mvcoding.financius.data.paging.Page;
 import com.mvcoding.financius.data.paging.PageResult;
 import com.mvcoding.financius.ui.BasePresenterTest;
 import com.mvcoding.financius.util.recyclerview.PagingEdge;
-import com.mvcoding.financius.util.rx.Event;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
 import org.junit.Test;
@@ -57,7 +56,7 @@ import static org.mockito.Mockito.when;
     private static final PublishSubject<PagingEdge> edgeSubject = PublishSubject.create();
     private static final PublishSubject<RefreshEvent> refreshSubject = PublishSubject.create();
     private static final PublishSubject<Tag> tagSelectedSubject = PublishSubject.create();
-    private static final PublishSubject<Event> saveSelectionSubject = PublishSubject.create();
+    private static final PublishSubject<Object> saveSelectionSubject = PublishSubject.create();
 
     @Mock private DataLoadApi dataLoadApi;
     @Mock private ServiceApi serviceApi;
@@ -69,7 +68,7 @@ import static org.mockito.Mockito.when;
     @Override protected TagsPresenter createPresenter() {
         setTotalDataSize(PAGE_SIZE);
         setInvalidateCache(true);
-        when(serviceApi.refresh()).thenReturn(Observable.just(new Event()));
+        when(serviceApi.refresh()).thenReturn(Observable.just(new Object()));
         when(dataLoadApi.loadTags(any())).thenAnswer(new Answer<Observable<PageResult<Tag>>>() {
             @Override public Observable<PageResult<Tag>> answer(InvocationOnMock invocation) throws Throwable {
                 //noinspection unchecked
@@ -285,7 +284,7 @@ import static org.mockito.Mockito.when;
         presenterOnViewAttached();
 
         tagSelectedSubject.onNext(tag);
-        saveSelectionSubject.onNext(new Event());
+        saveSelectionSubject.onNext(new Object());
 
         verify(view).startSelected(tag);
     }
@@ -296,7 +295,7 @@ import static org.mockito.Mockito.when;
         createPresenter(TagsPresenter.DisplayType.MultiChoice, selectedItems);
         presenterOnViewAttached();
 
-        saveSelectionSubject.onNext(new Event());
+        saveSelectionSubject.onNext(new Object());
 
         verify(view).startSelected(selectedItems);
     }

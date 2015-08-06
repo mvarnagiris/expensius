@@ -19,7 +19,6 @@ import android.support.annotation.NonNull;
 import com.mvcoding.financius.ui.ActivityScope;
 import com.mvcoding.financius.ui.Presenter;
 import com.mvcoding.financius.ui.PresenterView;
-import com.mvcoding.financius.util.rx.Event;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -39,30 +38,31 @@ import rx.Observable;
     @Override protected void onViewAttached(@NonNull View view) {
         super.onViewAttached(view);
 
-        final List<Observable<Event>> expressionUpdates = new ArrayList<>();
-        expressionUpdates.add(view.on0Number().doOnNext(e -> calculator.digit0()));
-        expressionUpdates.add(view.on1Number().doOnNext(e -> calculator.digit1()));
-        expressionUpdates.add(view.on2Number().doOnNext(e -> calculator.digit2()));
-        expressionUpdates.add(view.on3Number().doOnNext(e -> calculator.digit3()));
-        expressionUpdates.add(view.on4Number().doOnNext(e -> calculator.digit4()));
-        expressionUpdates.add(view.on5Number().doOnNext(e -> calculator.digit5()));
-        expressionUpdates.add(view.on6Number().doOnNext(e -> calculator.digit6()));
-        expressionUpdates.add(view.on7Number().doOnNext(e -> calculator.digit7()));
-        expressionUpdates.add(view.on8Number().doOnNext(e -> calculator.digit8()));
-        expressionUpdates.add(view.on9Number().doOnNext(e -> calculator.digit9()));
-        expressionUpdates.add(view.onDecimal().doOnNext(e -> calculator.decimal()));
-        expressionUpdates.add(view.onAdd().doOnNext(e -> calculator.add()));
-        expressionUpdates.add(view.onSubtract().doOnNext(e -> calculator.subtract()));
-        expressionUpdates.add(view.onMultiply().doOnNext(e -> calculator.multiply()));
-        expressionUpdates.add(view.onDivide().doOnNext(e -> calculator.divide()));
-        expressionUpdates.add(view.onDelete().doOnNext(e -> calculator.delete()));
-        expressionUpdates.add(view.onClear().doOnNext(e -> calculator.clear()).doOnNext(e -> view.clearExpression()));
-        expressionUpdates.add(view.onNumberChange().doOnNext(calculator::setNumber).map(number -> new Event()));
+        final List<Observable<Object>> expressionUpdates = new ArrayList<>();
+        expressionUpdates.add(view.on0Number().doOnNext(o -> calculator.digit0()));
+        expressionUpdates.add(view.on1Number().doOnNext(o -> calculator.digit1()));
+        expressionUpdates.add(view.on2Number().doOnNext(o -> calculator.digit2()));
+        expressionUpdates.add(view.on3Number().doOnNext(o -> calculator.digit3()));
+        expressionUpdates.add(view.on4Number().doOnNext(o -> calculator.digit4()));
+        expressionUpdates.add(view.on5Number().doOnNext(o -> calculator.digit5()));
+        expressionUpdates.add(view.on6Number().doOnNext(o -> calculator.digit6()));
+        expressionUpdates.add(view.on7Number().doOnNext(o -> calculator.digit7()));
+        expressionUpdates.add(view.on8Number().doOnNext(o -> calculator.digit8()));
+        expressionUpdates.add(view.on9Number().doOnNext(o -> calculator.digit9()));
+        expressionUpdates.add(view.onDecimal().doOnNext(o -> calculator.decimal()));
+        expressionUpdates.add(view.onAdd().doOnNext(o -> calculator.add()));
+        expressionUpdates.add(view.onSubtract().doOnNext(o -> calculator.subtract()));
+        expressionUpdates.add(view.onMultiply().doOnNext(o -> calculator.multiply()));
+        expressionUpdates.add(view.onDivide().doOnNext(o -> calculator.divide()));
+        expressionUpdates.add(view.onDelete().doOnNext(o -> calculator.delete()));
+        expressionUpdates.add(view.onClear().doOnNext(o -> calculator.clear()).doOnNext(e -> view.clearExpression()));
+        expressionUpdates.add(view.onNumberChange().doOnNext(calculator::setNumber).map(number -> new Object()));
         expressionUpdates.add(view.onEquals()
-                                      .filter(e -> !calculator.isEmptyOrSingleNumber())
-                                      .map(e -> calculator.calculate())
+                                      .filter(o -> !calculator.isEmptyOrSingleNumber())
+                                      .map(o -> calculator.calculate())
                                       .doOnNext(calculator::setNumber)
-                                      .map(number -> new Event()));
+                                      .map(number -> new Object()));
+        expressionUpdates.add(calculator.getExpression().isEmpty() ? Observable.empty() : Observable.just(new Object()));
 
         unsubscribeOnDetach(view.onEquals()
                                     .filter(c -> calculator.isEmptyOrSingleNumber())
@@ -70,7 +70,6 @@ import rx.Observable;
                                     .subscribe(view::startResult));
 
         unsubscribeOnDetach(Observable.merge(expressionUpdates)
-                                    .mergeWith(calculator.getExpression().isEmpty() ? Observable.empty() : Observable.just(new Event()))
                                     .map(e -> calculator.getExpression())
                                     .doOnNext(view::showExpression)
                                     .subscribe(expression -> {
@@ -83,24 +82,24 @@ import rx.Observable;
     }
 
     public interface View extends PresenterView {
-        @NonNull Observable<Event> on0Number();
-        @NonNull Observable<Event> on1Number();
-        @NonNull Observable<Event> on2Number();
-        @NonNull Observable<Event> on3Number();
-        @NonNull Observable<Event> on4Number();
-        @NonNull Observable<Event> on5Number();
-        @NonNull Observable<Event> on6Number();
-        @NonNull Observable<Event> on7Number();
-        @NonNull Observable<Event> on8Number();
-        @NonNull Observable<Event> on9Number();
-        @NonNull Observable<Event> onDecimal();
-        @NonNull Observable<Event> onEquals();
-        @NonNull Observable<Event> onDivide();
-        @NonNull Observable<Event> onMultiply();
-        @NonNull Observable<Event> onSubtract();
-        @NonNull Observable<Event> onAdd();
-        @NonNull Observable<Event> onDelete();
-        @NonNull Observable<Event> onClear();
+        @NonNull Observable<Object> on0Number();
+        @NonNull Observable<Object> on1Number();
+        @NonNull Observable<Object> on2Number();
+        @NonNull Observable<Object> on3Number();
+        @NonNull Observable<Object> on4Number();
+        @NonNull Observable<Object> on5Number();
+        @NonNull Observable<Object> on6Number();
+        @NonNull Observable<Object> on7Number();
+        @NonNull Observable<Object> on8Number();
+        @NonNull Observable<Object> on9Number();
+        @NonNull Observable<Object> onDecimal();
+        @NonNull Observable<Object> onEquals();
+        @NonNull Observable<Object> onDivide();
+        @NonNull Observable<Object> onMultiply();
+        @NonNull Observable<Object> onSubtract();
+        @NonNull Observable<Object> onAdd();
+        @NonNull Observable<Object> onDelete();
+        @NonNull Observable<Object> onClear();
         @NonNull Observable<BigDecimal> onNumberChange();
         void showExpression(@NonNull String expression);
         void clearExpression();
