@@ -46,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import butterknife.OnLongClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,6 +61,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     private static final long ANIMATION_DURATION_CLEAR_START = 400;
 
     private final PublishSubject<Object> clearSubject = PublishSubject.create();
+    private final PublishSubject<Object> equalsSubject = PublishSubject.create();
     private final PublishSubject<BigDecimal> numberChangeSubject = PublishSubject.create();
 
     @Bind(R.id.resultContainerView) View resultContainerView;
@@ -195,7 +197,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     }
 
     @NonNull @Override public Observable<Object> onEquals() {
-        return RxView.clicks(equalsFloatingActionButton);
+        return equalsSubject;
     }
 
     @NonNull @Override public Observable<Object> onDivide() {
@@ -310,6 +312,10 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
         });
         animator.playSequentially(startAnimator, endAnimator);
         animator.start();
+    }
+
+    @OnClick(R.id.equalsFloatingActionButton) void onEqualsClick(@NonNull View view) {
+        equalsSubject.onNext(new Object());
     }
 
     @OnLongClick(R.id.deleteButton) boolean onDeleteLongClick(@NonNull View view) {

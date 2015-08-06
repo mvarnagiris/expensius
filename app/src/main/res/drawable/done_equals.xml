@@ -13,6 +13,6 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/vector_equals" android:state_selected="true" />
-    <item android:drawable="@drawable/vector_done" />
+    <item android:drawable="@drawable/ic_action_equals" android:state_selected="true" />
+    <item android:drawable="@drawable/ic_action_done" />
 </selector>
