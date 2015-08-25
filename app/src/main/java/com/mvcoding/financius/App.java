@@ -18,6 +18,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
 import com.squareup.leakcanary.LeakCanary;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -25,6 +26,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class App extends Application {
@@ -38,6 +40,7 @@ public class App extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setFontAttrId(R.attr.fontPath).build());
         JodaTimeAndroid.init(this);
         LeakCanary.install(this);

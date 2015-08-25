@@ -24,7 +24,6 @@ import android.support.v4.util.ArrayMap;
 import android.transition.TransitionValues;
 import android.transition.Visibility;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -42,8 +41,7 @@ import java.util.ArrayList;
     static float calculateMaxRadius(View view) {
         float widthSquared = view.getWidth() * view.getWidth();
         float heightSquared = view.getHeight() * view.getHeight();
-        float radius = FloatMath.sqrt(widthSquared + heightSquared) / 2;
-        return radius;
+        return (float) (Math.sqrt(widthSquared + heightSquared) / 2);
     }
 
     @Override public Animator onAppear(ViewGroup sceneRoot, final View view, TransitionValues startValues, TransitionValues endValues) {

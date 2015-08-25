@@ -33,12 +33,12 @@ import java.util.UUID;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
-import icepick.Icicle;
+import icepick.State;
 import rx.Observable;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public abstract class BaseActivity<V extends PresenterView, C extends BaseComponent> extends AppCompatActivity implements CloseablePresenterView, ErrorPresenterView {
-    @Icicle String componentKey;
+    @State String componentKey;
 
     @LayoutRes protected abstract int getLayoutId();
 
