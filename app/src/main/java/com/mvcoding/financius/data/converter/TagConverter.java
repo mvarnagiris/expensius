@@ -25,7 +25,7 @@ import com.mvcoding.financius.data.model.Tag;
 
 import javax.inject.Inject;
 
-public class TagConverter extends ModelConverter<TagBody, Tag> {
+public final class TagConverter extends ModelConverter<TagBody, Tag> {
     @Inject public TagConverter() {
     }
 

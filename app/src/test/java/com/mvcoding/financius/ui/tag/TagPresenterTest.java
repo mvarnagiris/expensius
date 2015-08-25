@@ -21,7 +21,10 @@ import com.mvcoding.financius.data.model.Tag;
 import com.mvcoding.financius.ui.BasePresenterTest;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -34,6 +37,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(PowerMockRunner.class) @PrepareForTest(TagConverter.class)
 public class TagPresenterTest extends BasePresenterTest<TagPresenter, TagPresenter.View> {
     private PublishSubject<String> titleSubject = PublishSubject.create();
     private PublishSubject<Integer> colorSubject = PublishSubject.create();
