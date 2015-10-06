@@ -20,12 +20,13 @@
 
     <include layout="@layout/toolbar" />
 
-    <me.grantland.widget.AutofitLayout
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorPrimary"
         android:elevation="@dimen/elevation_toolbar"
         android:padding="@dimen/keyline"
+        android:theme="?themeInverse"
         tools:ignore="UnusedAttribute">
 
         <EditText
@@ -36,10 +37,10 @@
             android:hint="@string/title"
             android:inputType="textCapSentences"
             android:maxLines="1"
-            android:theme="@style/AppTheme.Inverse"
-            android:transitionName="@string/transition_name_title" />
+            android:transitionName="@string/transition_name_title"
+            tools:theme="?themeInverse" />
 
-    </me.grantland.widget.AutofitLayout>
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/colorButton"

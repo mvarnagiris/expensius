@@ -64,7 +64,8 @@
             android:label="@string/transaction" />
         <activity
             android:name=".ui.tag.TagActivity"
-            android:label="@string/tag" />
+            android:label="@string/tag"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.tag.TagsActivity"
             android:label="@string/tags" />

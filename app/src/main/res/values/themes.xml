@@ -25,6 +25,7 @@
         <item name="colorControlHighlight">?colorAccent</item>
         <item name="backgroundPrimary">#fdfdfd</item>
         <item name="backgroundSecondary">#ebebeb</item>
+        <item name="themeInverse">@style/AppTheme.Inverse</item>
 
         <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
 
@@ -48,6 +49,7 @@
     <style name="AppTheme.Inverse">
         <item name="colorActionIcon">#ffffff</item>
         <item name="colorDivider">#88fdfdfd</item>
+        <item name="themeInverse">@style/AppTheme</item>
 
         <item name="android:textColorPrimary">#ffffff</item>
         <item name="android:textColorPrimaryInverse">#212121</item>
