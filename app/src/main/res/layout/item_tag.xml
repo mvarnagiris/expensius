@@ -34,8 +34,9 @@
         android:id="@+id/colorImageView"
         android:layout_width="@dimen/keyline_content_minus_keyline_3x"
         android:layout_height="@dimen/keyline_content_minus_keyline_3x"
+        android:elevation="@dimen/elevation_card"
         android:src="@drawable/oval"
-        tools:ignore="ContentDescription"
+        tools:ignore="ContentDescription,UnusedAttribute"
         tools:tint="#8bc34a" />
 
     <TextView

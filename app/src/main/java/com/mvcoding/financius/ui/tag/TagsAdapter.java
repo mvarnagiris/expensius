@@ -37,6 +37,8 @@ import lombok.Getter;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import static com.mvcoding.financius.util.ViewUtils.setOutlineProviderCircle;
+
 class TagsAdapter extends BaseAdapter<Tag, TagsAdapter.ViewHolder> {
     private final PublishSubject<ClickableViewHolder.ViewHolderClickEvent> clickSubject = PublishSubject.create();
     private final Set<Tag> selectedItems = new HashSet<>();
@@ -100,6 +102,7 @@ class TagsAdapter extends BaseAdapter<Tag, TagsAdapter.ViewHolder> {
 
         ViewHolder(@NonNull View itemView, @NonNull PublishSubject<ViewHolderClickEvent> clickSubject) {
             super(itemView, clickSubject);
+            setOutlineProviderCircle(colorImageView);
         }
 
         public void setDisplayTypeAndCheckState(@NonNull TagsPresenter.DisplayType displayType, boolean isSelected) {
