@@ -24,7 +24,6 @@ import com.mvcoding.financius.util.recyclerview.PagingEdge;
 import com.mvcoding.financius.util.rx.RefreshEvent;
 
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -40,7 +39,7 @@ import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -125,11 +124,12 @@ import static org.mockito.Mockito.when;
     @Test public void onViewAttached_loadFirstPageAndShow_whenDoNotHaveCachedItems() throws Exception {
         presenterOnViewAttached();
 
-        final ArgumentCaptor<List<Tag>> tagsArgument = ArgumentCaptor.forClass(List.class);
-        verify(view).show(tagsArgument.capture());
-        final List<Tag> tags = tagsArgument.getValue();
-        assertThat(tags).isNotNull();
-        assertThat(tags).hasSize(PAGE_SIZE);
+        fail("This test is not implemented properly.");
+        //        final ArgumentCaptor<List<Tag>> tagsArgument = ArgumentCaptor.forClass(List.class);
+        //        verify(view).show(tagsArgument.capture());
+        //        final List<Tag> tags = tagsArgument.getValue();
+        //        assertThat(tags).isNotNull();
+        //        assertThat(tags).hasSize(PAGE_SIZE);
     }
 
     @Test public void onViewAttached_showAndDoNotLoad_whenAlreadyHaveCachedItems() throws Exception {
@@ -139,11 +139,12 @@ import static org.mockito.Mockito.when;
 
         presenterOnViewAttached();
 
-        final ArgumentCaptor<List<Tag>> tagsArgument = ArgumentCaptor.forClass(List.class);
-        verify(view, times(2)).show(tagsArgument.capture());
-        final List<Tag> tags = tagsArgument.getValue();
-        assertThat(tags).isNotNull();
-        assertThat(tags).hasSize(PAGE_SIZE);
+        fail("This test is not implemented properly.");
+        //        final ArgumentCaptor<List<Tag>> tagsArgument = ArgumentCaptor.forClass(List.class);
+        //        verify(view, times(2)).show(tagsArgument.capture());
+        //        final List<Tag> tags = tagsArgument.getValue();
+        //        assertThat(tags).isNotNull();
+        //        assertThat(tags).hasSize(PAGE_SIZE);
     }
 
     @Test public void onEdgeReached_doNotLoadMoreItems_whenEdgeIsEndAndLastPageIsLoaded() throws Exception {
