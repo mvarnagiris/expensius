@@ -38,7 +38,7 @@
         <!-- =========================================================================================================================== -->
 
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".feature.splash.SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,27 +47,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.introduction.IntroductionActivity"
+            android:name=".feature.introduction.IntroductionActivity"
             android:label="@string/introduction"
             android:theme="@style/AppTheme.Inverse" />
         <activity
-            android:name=".ui.user.LoginActivity"
+            android:name=".feature.user.LoginActivity"
             android:label="@string/log_in" />
         <activity
-            android:name=".ui.overview.OverviewActivity"
+            android:name=".feature.overview.OverviewActivity"
             android:label="@string/overview" />
         <activity
-            android:name=".ui.calculator.CalculatorActivity"
+            android:name=".feature.calculator.CalculatorActivity"
             android:label="@string/calculator" />
         <activity
-            android:name=".ui.transaction.TransactionActivity"
+            android:name=".feature.transaction.TransactionActivity"
             android:label="@string/transaction" />
         <activity
-            android:name=".ui.tag.TagActivity"
+            android:name=".feature.tag.TagActivity"
             android:label="@string/tag"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.tag.TagsActivity"
+            android:name=".feature.tag.TagsActivity"
             android:label="@string/tags" />
 
         <!-- Meta data -->

@@ -15,10 +15,10 @@
 package com.mvcoding.financius;
 
 import com.mvcoding.financius.api.ApiModule;
-import com.mvcoding.financius.ui.ActivityComponent;
-import com.mvcoding.financius.ui.ActivityModule;
-import com.mvcoding.financius.ui.DateDialogFragment;
-import com.mvcoding.financius.ui.TimeDialogFragment;
+import com.mvcoding.financius.feature.ActivityComponent;
+import com.mvcoding.financius.feature.ActivityModule;
+import com.mvcoding.financius.feature.DateDialogFragment;
+import com.mvcoding.financius.feature.TimeDialogFragment;
 
 import javax.inject.Singleton;
 
