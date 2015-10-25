@@ -12,4 +12,27 @@
  * GNU General Public License for more details.
  */
 
-include ':backend', ':app', ':core', ':core-android'
+package com.mvcoding.financius.splash
+
+import com.mvcoding.financius.UserSettings
+import org.junit.Test
+import org.mockito.Mockito
+
+class SplashPresenterTest {
+    val userSettings: UserSettings = Mockito.mock(UserSettings::class.java)
+    val presenter = SplashPresenter(userSettings);
+
+    @Test
+    fun startsOverviewWhenIntroductionWasSeen() {
+
+    }
+
+    @Test
+    fun startsOverviewWhenSessionIsLoggedIn() {
+    }
+
+    @Test
+    fun startsTutorialWhenSessionIsNotLoggedIn() {
+    }
+}
+

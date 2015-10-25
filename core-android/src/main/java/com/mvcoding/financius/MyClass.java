@@ -12,4 +12,7 @@
  * GNU General Public License for more details.
  */
 
-include ':backend', ':app', ':core', ':core-android'
+package com.mvcoding.financius;
+
+public class MyClass {
+}
