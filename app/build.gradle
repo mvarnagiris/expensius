@@ -13,6 +13,7 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: "kotlin-android"
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'io.fabric'
@@ -59,6 +60,9 @@ android {
         debug {
             storeFile file('debug.keystore')
         }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
@@ -122,6 +126,9 @@ dependencies {
     // Lombok
     provided "org.projectlombok:lombok:1.16.6"
     apt "org.projectlombok:lombok:1.16.6"
+
+    // Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 def getLocalIp() {
