@@ -1,66 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
-  ~
-  ~ This program is free software; you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation; either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
-<resources xmlns:tools="http://schemas.android.com/tools">
-
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#ffc107</item>
-        <item name="colorPrimaryDark">#ffa000</item>
-        <item name="colorPrimaryLight">#ffecb3</item>
-        <item name="colorAccent">#7c4dff</item>
-        <item name="colorAccentDark">#651fff</item>
-        <item name="colorActionIcon">#212121</item>
-        <item name="colorDivider">#88333333</item>
-        <item name="colorControlHighlight">?colorAccent</item>
-        <item name="backgroundPrimary">#fdfdfd</item>
-        <item name="backgroundSecondary">#ebebeb</item>
-        <item name="themeInverse">@style/AppTheme.Inverse</item>
-
-        <item name="android:windowContentTransitions" tools:ignore="NewApi">true</item>
-
-        <item name="android:textColorPrimary">#212121</item>
-        <item name="android:textColorPrimaryInverse">#ffffff</item>
-        <item name="android:textColorSecondary">#727272</item>
-        <item name="android:textColorSecondaryInverse">?colorPrimaryLight</item>
-
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@color/window_background</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-
-        <item name="android:progressBarStyle">@style/ProgressBar</item>
-        <item name="android:scrollViewStyle">@style/ScrollView</item>
-        <item name="android:editTextStyle">@style/EditText</item>
-        <item name="floatingActionButtonStyle">@style/Button.Fab</item>
-        <item name="android:dialogTheme">@style/DialogTheme</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.Inverse">
-        <item name="colorActionIcon">#ffffff</item>
-        <item name="colorDivider">#88fdfdfd</item>
-        <item name="themeInverse">@style/AppTheme</item>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-        <item name="android:textColorPrimary">#ffffff</item>
-        <item name="android:textColorPrimaryInverse">#212121</item>
-        <item name="android:textColorSecondary">?colorPrimaryLight</item>
-        <item name="android:textColorSecondaryInverse">#727272</item>
-    </style>
-
-    <style name="DialogTheme" parent="Base.Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">#ffc107</item>
-        <item name="colorPrimaryDark">#ffa000</item>
-        <item name="colorAccent">#7c4dff</item>
-    </style>
-
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
