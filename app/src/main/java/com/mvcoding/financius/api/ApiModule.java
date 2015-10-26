@@ -49,10 +49,10 @@ import retrofit.client.OkClient;
                 .build();
     }
 
-    @Provides @Singleton public Session provideSession(@AppContext Context context) {
-        Session session = PreferencesUtils.get(context, Session.class.getName(), Session.class);
+    @Provides @Singleton public SessionOld provideSession(@AppContext Context context) {
+        SessionOld session = PreferencesUtils.get(context, SessionOld.class.getName(), SessionOld.class);
         if (session == null) {
-            session = new Session();
+            session = new SessionOld();
         }
         session.context = context;
         return session;

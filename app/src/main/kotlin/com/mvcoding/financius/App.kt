@@ -12,11 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvdev.financius.feature.splash
+package com.mvcoding.financius
 
-import android.content.Context
-import android.util.AttributeSet
-import android.widget.FrameLayout
+import android.app.Application
+import com.memoizrlabs.ShankModuleInitializer
 
-class SplashView(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
+class App : Application() {
+    init {
+        ShankModuleInitializer.initializeModules(AppModule())
+    }
 }

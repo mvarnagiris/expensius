@@ -21,9 +21,9 @@ import javax.inject.Inject;
 import retrofit.RequestInterceptor;
 
 public class EndpointInterceptor implements RequestInterceptor {
-    private final Session session;
+    private final SessionOld session;
 
-    @Inject public EndpointInterceptor(@NonNull Session session) {
+    @Inject public EndpointInterceptor(@NonNull SessionOld session) {
         this.session = session;
     }
 

@@ -14,7 +14,7 @@
 
 package com.mvcoding.financius.feature.transaction;
 
-import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.UserSettingsOld;
 import com.mvcoding.financius.core.endpoints.body.TransactionBody;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
@@ -59,7 +59,7 @@ public class TransactionPresenterTest extends BasePresenterTest<TransactionPrese
     private final PublishSubject<Object> requestCurrencySubject = PublishSubject.create();
     private final PublishSubject<Object> saveSubject = PublishSubject.create();
 
-    @Mock private UserSettings userSettings;
+    @Mock private UserSettingsOld userSettings;
     @Mock private DataSaveApi dataSaveApi;
     @Mock private Currencies currencies;
     @Mock private TransactionConverter transactionConverter;

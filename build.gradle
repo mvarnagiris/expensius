@@ -12,6 +12,7 @@
  * GNU General Public License for more details.
  */
 
+
 buildscript {
     ext.kotlin_version = '1.0.0-beta-1038'
     repositories {
@@ -33,6 +34,7 @@ allprojects {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://clojars.org/repo' }
+        maven { url "https://jitpack.io" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 }

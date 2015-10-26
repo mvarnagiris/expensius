@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.splash;
+package com.mvcoding.financius
 
-import dagger.Module;
-
-@Module public class SplashModule {
+interface UserSettings {
+    fun isIntroductionSeen(): Boolean
+    fun setIsIntroductionSeen(isIntroductionSeen: Boolean)
 }

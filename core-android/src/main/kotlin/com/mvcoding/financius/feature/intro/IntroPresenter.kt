@@ -14,8 +14,8 @@
 
 package com.mvcoding.financius.feature.intro
 
+import com.mvcoding.financius.UserSettings
 import com.mvcoding.financius.feature.Presenter
-import com.mvcoding.financius.feature.UserSettings
 import rx.Observable
 
 class IntroPresenter(private val introPages: List<IntroPage>, private val userSettings: UserSettings) : Presenter<IntroPresenter.View>() {

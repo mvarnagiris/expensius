@@ -12,9 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature
+package com.mvcoding.financius
 
-interface UserSettings {
-    fun isIntroductionSeen(): Boolean
-    fun setIsIntroductionSeen(isIntroductionSeen: Boolean)
+class UserSession : Session {
+    override fun isLoggedIn(): Boolean {
+        throw UnsupportedOperationException()
+    }
 }

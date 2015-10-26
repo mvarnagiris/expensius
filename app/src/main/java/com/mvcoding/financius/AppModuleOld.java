@@ -31,10 +31,10 @@ import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@Module public class AppModule {
+@Module public class AppModuleOld {
     private final Context context;
 
-    public AppModule(@NonNull Context context) {
+    public AppModuleOld(@NonNull Context context) {
         this.context = context;
     }
 
@@ -42,10 +42,10 @@ import rx.schedulers.Schedulers;
         return context;
     }
 
-    @Provides @Singleton public UserSettings provideUserSettings(@AppContext Context context) {
-        UserSettings userSettings = PreferencesUtils.get(context, UserSettings.class.getName(), UserSettings.class);
+    @Provides @Singleton public UserSettingsOld provideUserSettings(@AppContext Context context) {
+        UserSettingsOld userSettings = PreferencesUtils.get(context, UserSettingsOld.class.getName(), UserSettingsOld.class);
         if (userSettings == null) {
-            userSettings = new UserSettings();
+            userSettings = new UserSettingsOld();
         }
         userSettings.context = context;
         return userSettings;

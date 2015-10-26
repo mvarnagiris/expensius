@@ -32,9 +32,9 @@ import javax.inject.Inject;
 
 public class EndpointAuthenticator implements Authenticator {
     private final Context context;
-    private final Session session;
+    private final SessionOld session;
 
-    @Inject public EndpointAuthenticator(@AppContext @NonNull Context context, @NonNull Session session) {
+    @Inject public EndpointAuthenticator(@AppContext @NonNull Context context, @NonNull SessionOld session) {
         this.context = context;
         this.session = session;
     }

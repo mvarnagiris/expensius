@@ -22,15 +22,15 @@ import com.mvcoding.financius.util.PreferencesUtils;
 
 import javax.inject.Singleton;
 
-@Singleton public class Session {
+@Singleton public class SessionOld {
     transient Context context;
 
     private String email;
     private String token;
     private String gcmId;
 
-    private static void persist(@NonNull Context context, @NonNull Session session) {
-        PreferencesUtils.put(context.getApplicationContext(), Session.class.getName(), session);
+    private static void persist(@NonNull Context context, @NonNull SessionOld session) {
+        PreferencesUtils.put(context.getApplicationContext(), SessionOld.class.getName(), session);
     }
 
     public String getTokenForRequest() {

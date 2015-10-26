@@ -14,8 +14,8 @@
 
 package com.mvcoding.financius.feature.intro
 
-import com.mvcoding.financius.feature.Session
-import com.mvcoding.financius.feature.UserSettings
+import com.mvcoding.financius.Session
+import com.mvcoding.financius.UserSettings
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*

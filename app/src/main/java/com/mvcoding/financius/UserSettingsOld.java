@@ -22,14 +22,14 @@ import com.mvcoding.financius.util.PreferencesUtils;
 import java.util.Currency;
 import java.util.Locale;
 
-public class UserSettings {
+public class UserSettingsOld {
     transient Context context;
 
     private boolean isIntroductionSeen;
     private String currency;
 
-    private static void persist(@NonNull Context context, @NonNull UserSettings userSettings) {
-        PreferencesUtils.put(context.getApplicationContext(), UserSettings.class.getName(), userSettings);
+    private static void persist(@NonNull Context context, @NonNull UserSettingsOld userSettings) {
+        PreferencesUtils.put(context.getApplicationContext(), UserSettingsOld.class.getName(), userSettings);
     }
 
     public boolean isIntroductionSeen() {

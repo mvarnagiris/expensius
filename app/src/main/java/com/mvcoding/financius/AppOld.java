@@ -29,13 +29,13 @@ import java.util.Map;
 import io.fabric.sdk.android.Fabric;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
-public class App extends Application {
+public class AppOld extends Application {
     private final Map<String, ? super BaseComponent> components = new HashMap<>();
 
     private AppComponent appComponent;
 
-    public static App with(@NonNull Context context) {
-        return (App) context.getApplicationContext();
+    public static AppOld with(@NonNull Context context) {
+        return (AppOld) context.getApplicationContext();
     }
 
     @Override public void onCreate() {
@@ -45,7 +45,7 @@ public class App extends Application {
         JodaTimeAndroid.init(this);
         LeakCanary.install(this);
 
-        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+        appComponent = DaggerAppComponent.builder().appModule(new AppModuleOld(this)).build();
     }
 
     public AppComponent getComponent() {

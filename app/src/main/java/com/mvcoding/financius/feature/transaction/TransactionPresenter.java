@@ -16,7 +16,7 @@ package com.mvcoding.financius.feature.transaction;
 
 import android.support.annotation.NonNull;
 
-import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.UserSettingsOld;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 import com.mvcoding.financius.data.Currencies;
@@ -44,12 +44,12 @@ import rx.Scheduler;
     private final Transaction transaction;
     private final DataSaveApi dataSaveApi;
     private final Currencies currencies;
-    private final UserSettings userSettings;
+    private final UserSettingsOld userSettings;
     private final TransactionConverter transactionConverter;
     private final Scheduler uiScheduler;
     private final Scheduler ioScheduler;
 
-    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataSaveApi dataSaveApi, @NonNull Currencies currencies, @NonNull UserSettings userSettings, @NonNull TransactionConverter transactionConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
+    TransactionPresenter(@NonNull Transaction transaction, @NonNull DataSaveApi dataSaveApi, @NonNull Currencies currencies, @NonNull UserSettingsOld userSettings, @NonNull TransactionConverter transactionConverter, @NonNull @Named("ui") Scheduler uiScheduler, @NonNull @Named("io") Scheduler ioScheduler) {
         this.transaction = transaction;
         this.dataSaveApi = dataSaveApi;
         this.currencies = currencies;

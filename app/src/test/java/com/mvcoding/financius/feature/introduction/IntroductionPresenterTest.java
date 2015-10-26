@@ -14,8 +14,8 @@
 
 package com.mvcoding.financius.feature.introduction;
 
-import com.mvcoding.financius.UserSettings;
-import com.mvcoding.financius.api.Session;
+import com.mvcoding.financius.UserSettingsOld;
+import com.mvcoding.financius.api.SessionOld;
 import com.mvcoding.financius.feature.BasePresenterTest;
 
 import org.junit.Test;
@@ -31,8 +31,8 @@ public class IntroductionPresenterTest extends BasePresenterTest<IntroductionPre
     private final PublishSubject<Object> skipLoginClick = PublishSubject.create();
     private final PublishSubject<Object> loginClick = PublishSubject.create();
 
-    @Mock private Session session;
-    @Mock private UserSettings userSettings;
+    @Mock private SessionOld session;
+    @Mock private UserSettingsOld userSettings;
 
     @Override protected IntroductionPresenter createPresenter() {
         return new IntroductionPresenter(userSettings);

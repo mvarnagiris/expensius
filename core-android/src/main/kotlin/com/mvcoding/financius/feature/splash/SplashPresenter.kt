@@ -14,9 +14,9 @@
 
 package com.mvcoding.financius.feature.splash
 
+import com.mvcoding.financius.Session
+import com.mvcoding.financius.UserSettings
 import com.mvcoding.financius.feature.Presenter
-import com.mvcoding.financius.feature.Session
-import com.mvcoding.financius.feature.UserSettings
 
 class SplashPresenter(private val userSettings: UserSettings, private val session: Session) : Presenter<SplashPresenter.View>() {
     override fun onAttachView(view: View) {

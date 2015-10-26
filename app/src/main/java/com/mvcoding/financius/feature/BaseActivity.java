@@ -25,7 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.mvcoding.financius.App;
+import com.mvcoding.financius.AppOld;
 import com.mvcoding.financius.BaseComponent;
 import com.mvcoding.financius.R;
 
@@ -77,7 +77,7 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
         ButterKnife.unbind(this);
 
         if (isFinishing()) {
-            App.with(this).removeComponent(componentKey);
+            AppOld.with(this).removeComponent(componentKey);
         }
     }
 
@@ -117,7 +117,7 @@ public abstract class BaseActivity<V extends PresenterView, C extends BaseCompon
     }
 
     private C getComponent() {
-        final App app = App.with(this);
+        final AppOld app = AppOld.with(this);
         final C component;
         if (componentKey == null) {
             componentKey = UUID.randomUUID().toString();

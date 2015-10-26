@@ -33,7 +33,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.mvcoding.financius.R;
-import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.UserSettingsOld;
 import com.mvcoding.financius.data.model.Transaction;
 import com.mvcoding.financius.feature.ActivityComponent;
 import com.mvcoding.financius.feature.ActivityStarter;
@@ -86,7 +86,7 @@ public class CalculatorActivity extends BaseActivity<CalculatorPresenter.View, C
     @Bind(R.id.equalsFloatingActionButton) FloatingActionButton equalsFloatingActionButton;
 
     @Inject CalculatorPresenter presenter;
-    @Inject UserSettings userSettings;
+    @Inject UserSettingsOld userSettings;
 
     private boolean isInShowCalculateMode;
 

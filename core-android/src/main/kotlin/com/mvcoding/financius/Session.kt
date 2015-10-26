@@ -12,13 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.splash;
+package com.mvcoding.financius
 
-import com.mvcoding.financius.BaseComponent;
-import com.mvcoding.financius.feature.ActivityScope;
-
-import dagger.Subcomponent;
-
-@ActivityScope @Subcomponent(modules = SplashModule.class) public interface SplashComponent extends BaseComponent {
-    void inject(SplashActivity activity);
+interface Session {
+    fun isLoggedIn(): Boolean
 }

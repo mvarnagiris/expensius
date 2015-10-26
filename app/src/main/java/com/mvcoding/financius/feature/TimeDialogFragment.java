@@ -21,7 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.widget.TimePicker;
 
-import com.mvcoding.financius.App;
+import com.mvcoding.financius.AppOld;
 import com.mvcoding.financius.util.rx.RxBus;
 
 import org.joda.time.DateTime;
@@ -58,7 +58,7 @@ public class TimeDialogFragment extends BaseDialogFragment implements TimePicker
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.with(getActivity()).getComponent().inject(this);
+        AppOld.with(getActivity()).getComponent().inject(this);
     }
 
     @NonNull @Override public Dialog onCreateDialog(Bundle savedInstanceState) {

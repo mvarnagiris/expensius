@@ -19,7 +19,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-import com.mvcoding.financius.UserSettings;
+import com.mvcoding.financius.UserSettingsOld;
 import com.mvcoding.financius.core.model.TransactionState;
 import com.mvcoding.financius.core.model.TransactionType;
 
@@ -100,7 +100,7 @@ import lombok.ToString;
         return this;
     }
 
-    @NonNull public Transaction withDefaultValues(@NonNull UserSettings userSettings) {
+    @NonNull public Transaction withDefaultValues(@NonNull UserSettingsOld userSettings) {
         withDefaultValues();
         currency = userSettings.getCurrency();
         return this;

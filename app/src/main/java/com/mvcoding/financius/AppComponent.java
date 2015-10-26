@@ -24,7 +24,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
-@Singleton @Component(modules = {AppModule.class, ApiModule.class}) public interface AppComponent extends BaseComponent {
+@Singleton @Component(modules = {AppModuleOld.class, ApiModule.class}) public interface AppComponent extends BaseComponent {
     ActivityComponent plus(ActivityModule module);
 
     void inject(DateDialogFragment fragment);
