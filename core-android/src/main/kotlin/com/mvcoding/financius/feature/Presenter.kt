@@ -14,8 +14,12 @@
 
 package com.mvcoding.financius.feature
 
+import rx.Subscription
+import rx.subscriptions.CompositeSubscription
+
 abstract class Presenter<in V : Presenter.View> {
-    open var view: View? = null
+    private var view: View? = null
+    private var subscriptions: CompositeSubscription? = null
 
     open fun onAttachView(view: V) {
         if (this.view !== null) {
@@ -23,6 +27,7 @@ abstract class Presenter<in V : Presenter.View> {
         }
 
         this.view = view
+        this.subscriptions = CompositeSubscription()
     }
 
     open fun onDetachView(view: V) {
@@ -34,6 +39,12 @@ abstract class Presenter<in V : Presenter.View> {
             throw IllegalStateException("Trying to detach different view. We have view: " + this.view + ". Trying to detach view: " + view)
         }
         this.view = null;
+        this.subscriptions?.unsubscribe()
+        this.subscriptions = null;
+    }
+
+    protected fun unsubscribeOnDetach(subscription: Subscription) {
+        subscriptions!!.add(subscription)
     }
 
     interface View {

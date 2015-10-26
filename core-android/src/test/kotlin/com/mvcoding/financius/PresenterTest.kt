@@ -15,21 +15,10 @@
 package com.mvcoding.financius
 
 import com.mvcoding.financius.feature.Presenter
-import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
 import org.junit.Test
 
 class PresenterTest {
     val presenter: Presenter<Presenter.View> = PresenterForTest()
-
-    @Test
-    fun setsView() {
-        val view: Presenter.View = ViewForTest()
-
-        presenter.onAttachView(view)
-
-        assertThat(presenter.view, equalTo(view))
-    }
 
     @Test(expected = IllegalStateException::class)
     fun throwsIllegalStateExceptionWhenViewIsAlreadySet() {

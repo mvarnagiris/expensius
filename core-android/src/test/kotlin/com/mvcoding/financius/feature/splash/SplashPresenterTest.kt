@@ -55,4 +55,3 @@ class SplashPresenterTest {
         verify(view).startIntroduction()
     }
 }
-

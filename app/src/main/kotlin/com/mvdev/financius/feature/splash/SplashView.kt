@@ -14,5 +14,9 @@
 
 package com.mvdev.financius.feature.splash
 
-object SplashView {
+import android.content.Context
+import android.util.AttributeSet
+import android.widget.FrameLayout
+
+class SplashView(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
 }

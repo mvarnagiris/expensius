@@ -12,9 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature
+package com.mvcoding.financius.feature.intro
 
-interface UserSettings {
-    fun isIntroductionSeen(): Boolean
-    fun setIsIntroductionSeen(isIntroductionSeen: Boolean)
+class IntroPage {
+
 }

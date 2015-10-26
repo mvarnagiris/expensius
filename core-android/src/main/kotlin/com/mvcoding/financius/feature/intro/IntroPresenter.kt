@@ -12,25 +12,31 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.splash
+package com.mvcoding.financius.feature.intro
 
 import com.mvcoding.financius.feature.Presenter
-import com.mvcoding.financius.feature.Session
 import com.mvcoding.financius.feature.UserSettings
+import rx.Observable
 
-class SplashPresenter(private val userSettings: UserSettings, private val session: Session) : Presenter<SplashPresenter.View>() {
+class IntroPresenter(private val introPages: List<IntroPage>, private val userSettings: UserSettings) : Presenter<IntroPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
+        view.showIntroPages(introPages)
 
-        if (session.isLoggedIn() || userSettings.isIntroductionSeen()) {
-            view.startOverview()
-        } else {
-            view.startIntroduction()
-        }
+        unsubscribeOnDetach(view.onLogin()
+                .doOnNext { userSettings.setIsIntroductionSeen(true) }
+                .subscribe { view.startLogin() })
+
+        unsubscribeOnDetach(view.onSkipLogin()
+                .doOnNext { userSettings.setIsIntroductionSeen(true) }
+                .subscribe { view.startOverview() })
     }
 
     interface View : Presenter.View {
+        fun showIntroPages(introPages: List<IntroPage>)
+        fun onSkipLogin(): Observable<Any>
+        fun onLogin(): Observable<Any>
         fun startOverview()
-        fun startIntroduction()
+        fun startLogin()
     }
 }
