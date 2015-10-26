@@ -15,14 +15,22 @@
 package com.mvcoding.financius.splash
 
 import com.mvcoding.financius.Presenter
+import com.mvcoding.financius.Session
 import com.mvcoding.financius.UserSettings
 
-class SplashPresenter(userSettings: UserSettings) : Presenter<SplashPresenter.View>() {
+class SplashPresenter(val userSettings: UserSettings, val session: Session) : Presenter<SplashPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
+
+        if (session.isLoggedIn() || userSettings.isIntroductionSeen()) {
+            view.startOverview()
+        } else {
+            view.startIntroduction()
+        }
     }
 
     interface View : Presenter.View {
-        fun something()
+        fun startOverview()
+        fun startIntroduction()
     }
 }

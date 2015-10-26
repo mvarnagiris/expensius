@@ -15,5 +15,5 @@
 package com.mvcoding.financius
 
 interface UserSettings {
-
+    fun isIntroductionSeen(): Boolean
 }

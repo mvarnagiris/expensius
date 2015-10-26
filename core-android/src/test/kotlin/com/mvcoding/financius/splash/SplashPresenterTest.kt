@@ -14,25 +14,45 @@
 
 package com.mvcoding.financius.splash
 
+import com.mvcoding.financius.Session
 import com.mvcoding.financius.UserSettings
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.Mockito.*
 
 class SplashPresenterTest {
-    val userSettings: UserSettings = Mockito.mock(UserSettings::class.java)
-    val presenter = SplashPresenter(userSettings);
+    val userSettings: UserSettings = mock(UserSettings::class.java)
+    val session: Session = mock(Session::class.java)
+    val view: SplashPresenter.View = mock(SplashPresenter.View::class.java)
+    val presenter = SplashPresenter(userSettings, session)
 
     @Test
     fun startsOverviewWhenIntroductionWasSeen() {
+        `when`(session.isLoggedIn()).thenReturn(false)
+        `when`(userSettings.isIntroductionSeen()).thenReturn(true)
 
+        presenter.onAttachView(view)
+
+        verify(view).startOverview()
     }
 
     @Test
     fun startsOverviewWhenSessionIsLoggedIn() {
+        `when`(session.isLoggedIn()).thenReturn(true)
+        `when`(userSettings.isIntroductionSeen()).thenReturn(false)
+
+        presenter.onAttachView(view)
+
+        verify(view).startOverview()
     }
 
     @Test
-    fun startsTutorialWhenSessionIsNotLoggedIn() {
+    fun startsIntroductionWhenSessionIsNotLoggedIn() {
+        `when`(session.isLoggedIn()).thenReturn(false)
+        `when`(userSettings.isIntroductionSeen()).thenReturn(false)
+
+        presenter.onAttachView(view)
+
+        verify(view).startIntroduction()
     }
 }
 
