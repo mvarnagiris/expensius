@@ -17,7 +17,7 @@ package com.mvcoding.financius.feature.splash
 import com.mvcoding.financius.feature.Session
 import com.mvcoding.financius.feature.UserSettings
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.BDDMockito.*
 
 class SplashPresenterTest {
     val userSettings: UserSettings = mock(UserSettings::class.java)
@@ -27,8 +27,8 @@ class SplashPresenterTest {
 
     @Test
     fun startsOverviewWhenIntroductionWasSeen() {
-        `when`(session.isLoggedIn()).thenReturn(false)
-        `when`(userSettings.isIntroductionSeen()).thenReturn(true)
+        given(session.isLoggedIn()).willReturn(false)
+        given(userSettings.isIntroductionSeen()).willReturn(true)
 
         presenter.onAttachView(view)
 
@@ -37,8 +37,8 @@ class SplashPresenterTest {
 
     @Test
     fun startsOverviewWhenSessionIsLoggedIn() {
-        `when`(session.isLoggedIn()).thenReturn(true)
-        `when`(userSettings.isIntroductionSeen()).thenReturn(false)
+        given(session.isLoggedIn()).willReturn(true)
+        given(userSettings.isIntroductionSeen()).willReturn(false)
 
         presenter.onAttachView(view)
 
@@ -47,8 +47,8 @@ class SplashPresenterTest {
 
     @Test
     fun startsIntroductionWhenSessionIsNotLoggedIn() {
-        `when`(session.isLoggedIn()).thenReturn(false)
-        `when`(userSettings.isIntroductionSeen()).thenReturn(false)
+        given(session.isLoggedIn()).willReturn(false)
+        given(userSettings.isIntroductionSeen()).willReturn(false)
 
         presenter.onAttachView(view)
 
