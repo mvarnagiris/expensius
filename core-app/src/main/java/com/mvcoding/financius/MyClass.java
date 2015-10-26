@@ -12,19 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.api;
+package com.mvcoding.financius;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import rx.Observable;
-
-@Singleton public class ServiceApi {
-    @Inject public ServiceApi() {
-    }
-
-    public Observable<Object> refresh() {
-        // TODO Implement.
-        return Observable.empty();
-    }
+public class MyClass {
 }
