@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.splash
+package com.mvcoding.financius.feature.splash
 
-import com.mvcoding.financius.Presenter
-import com.mvcoding.financius.Session
-import com.mvcoding.financius.UserSettings
+import com.mvcoding.financius.feature.Presenter
+import com.mvcoding.financius.feature.Session
+import com.mvcoding.financius.feature.UserSettings
 
 class SplashPresenter(val userSettings: UserSettings, val session: Session) : Presenter<SplashPresenter.View>() {
     override fun onAttachView(view: View) {

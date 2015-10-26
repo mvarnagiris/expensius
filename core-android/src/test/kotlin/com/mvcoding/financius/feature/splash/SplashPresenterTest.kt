@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.splash
+package com.mvcoding.financius.feature.splash
 
-import com.mvcoding.financius.Session
-import com.mvcoding.financius.UserSettings
+import com.mvcoding.financius.feature.Session
+import com.mvcoding.financius.feature.UserSettings
 import org.junit.Test
 import org.mockito.Mockito.*
 

@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius
+package com.mvcoding.financius.feature
 
-interface Session {
-    fun isLoggedIn(): Boolean
+interface UserSettings {
+    fun isIntroductionSeen(): Boolean
 }

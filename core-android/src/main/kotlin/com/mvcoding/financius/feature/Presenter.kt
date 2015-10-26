@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius
+package com.mvcoding.financius.feature
 
 abstract class Presenter<in V : Presenter.View> {
     open var view: View? = null

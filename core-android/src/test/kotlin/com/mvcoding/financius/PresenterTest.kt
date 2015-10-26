@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius
 
+import com.mvcoding.financius.feature.Presenter
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Test
