@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.intro
+package com.mvcoding.financius
 
-import com.mvcoding.financius.Image
+interface Image {
 
-data class IntroPage(val imageImage: Image, val title: String, val message: String)
+}

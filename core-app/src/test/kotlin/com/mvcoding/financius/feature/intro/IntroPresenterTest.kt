@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.feature.intro
 
+import com.mvcoding.financius.Image
 import com.mvcoding.financius.Settings
 import org.junit.Before
 import org.junit.Test
@@ -25,7 +26,7 @@ class IntroPresenterTest {
     val loginSubject = PublishSubject.create<Unit>()
     val userSettings = mock(Settings::class.java)
     val view = mock(IntroPresenter.View::class.java)
-    val introPages = arrayListOf(IntroPage(), IntroPage(), IntroPage())
+    val introPages = arrayListOf(IntroPage(ImageForTest(), "title1", "message1"), IntroPage(ImageForTest(), "title2", "message2"), IntroPage(ImageForTest(), "title3", "message3"))
     val presenter = IntroPresenter(introPages, userSettings)
 
     @Before
@@ -68,4 +69,7 @@ class IntroPresenterTest {
     private fun skipLogin() {
         skipLoginSubject.onNext(Unit)
     }
+}
+
+class ImageForTest : Image {
 }
