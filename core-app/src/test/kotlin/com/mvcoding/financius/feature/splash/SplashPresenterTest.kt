@@ -52,6 +52,6 @@ class SplashPresenterTest {
 
         presenter.onAttachView(view)
 
-        verify(view).startIntroduction()
+        verify(view).startIntro()
     }
 }

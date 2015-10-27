@@ -18,6 +18,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.memoizrlabs.Shank
+import com.mvcoding.financius.feature.intro.IntroActivity
+import com.mvcoding.financius.feature.overview.OverviewActivity
+import com.mvcoding.financius.toActivity
 
 class SplashView : FrameLayout, SplashPresenter.View {
     private val presenter = Shank.withScope(SplashView::class.java).provide(SplashPresenter::class.java)
@@ -39,10 +42,12 @@ class SplashView : FrameLayout, SplashPresenter.View {
     }
 
     override fun startOverview() {
-        throw UnsupportedOperationException()
+        OverviewActivity.start(context)
+        context.toActivity().finish()
     }
 
-    override fun startIntroduction() {
-        throw UnsupportedOperationException()
+    override fun startIntro() {
+        IntroActivity.start(context)
+        context.toActivity().finish()
     }
 }

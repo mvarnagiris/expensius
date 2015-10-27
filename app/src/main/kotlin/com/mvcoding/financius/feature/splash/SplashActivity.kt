@@ -14,23 +14,12 @@
 
 package com.mvcoding.financius.feature.splash
 
-import com.mvcoding.financius.Session
-import com.mvcoding.financius.Settings
-import com.mvcoding.financius.feature.Presenter
+import android.os.Bundle
+import com.mvcoding.financius.feature.BaseActivity
 
-class SplashPresenter(private val settings: Settings, private val session: Session) : Presenter<SplashPresenter.View>() {
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
-
-        if (session.isLoggedIn() || settings.isIntroductionSeen()) {
-            view.startOverview()
-        } else {
-            view.startIntro()
-        }
-    }
-
-    interface View : Presenter.View {
-        fun startOverview()
-        fun startIntro()
+class SplashActivity : BaseActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(SplashView(this))
     }
 }
