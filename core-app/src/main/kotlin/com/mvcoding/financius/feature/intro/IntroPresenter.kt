@@ -19,9 +19,11 @@ import com.mvcoding.financius.feature.Presenter
 import rx.Observable
 
 class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val settings: Settings) : Presenter<IntroPresenter.View<T>>() {
+    var activeIntroPagePosition = 0
+
     override fun onAttachView(view: View<T>) {
         super.onAttachView(view)
-        view.showIntroPages(introPages)
+        view.showIntroPages(introPages, activeIntroPagePosition)
 
         unsubscribeOnDetach(view.onLogin()
                 .doOnNext { settings.setIsIntroductionSeen(true) }
@@ -30,11 +32,14 @@ class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val 
         unsubscribeOnDetach(view.onSkipLogin()
                 .doOnNext { settings.setIsIntroductionSeen(true) }
                 .subscribe { view.startOverview() })
+
+        unsubscribeOnDetach(view.onActiveIntroPagePositionChanged().subscribe { position -> activeIntroPagePosition = position })
     }
 
     interface View<T> : Presenter.View {
-        fun showIntroPages(introPages: List<IntroPage<T>>)
+        fun showIntroPages(introPages: List<IntroPage<T>>, activeIntroPagePosition: Int)
         fun onSkipLogin(): Observable<Unit>
+        fun onActiveIntroPagePositionChanged(): Observable<Int>
         fun onLogin(): Observable<Unit>
         fun startOverview()
         fun startLogin()

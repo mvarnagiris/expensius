@@ -17,6 +17,7 @@ package com.mvcoding.financius.feature.intro
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.financius.feature.login.LoginActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
@@ -52,17 +53,16 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
         presenter?.onDetachView(this)
     }
 
-    override fun showIntroPages(introPages: List<IntroPage<Int>>) {
+    override fun showIntroPages(introPages: List<IntroPage<Int>>, activeIntroPagePosition: Int) {
         adapter.introPages = introPages
+        viewPager.setCurrentItem(activeIntroPagePosition, false)
     }
 
-    override fun onSkipLogin(): Observable<Unit> {
-        return skipButton.clicks()
-    }
+    override fun onSkipLogin(): Observable<Unit> = skipButton.clicks()
 
-    override fun onLogin(): Observable<Unit> {
-        return loginButton.clicks()
-    }
+    override fun onLogin(): Observable<Unit> = loginButton.clicks()
+
+    override fun onActiveIntroPagePositionChanged(): Observable<Int> = viewPager.pageSelections()
 
     override fun startOverview() {
         OverviewActivity.start(context)

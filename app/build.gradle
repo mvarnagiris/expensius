@@ -63,5 +63,6 @@ dependencies {
     compile 'io.reactivex:rxkotlin:0.24.100'
 //    compile 'io.reactivex:rxandroid:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-support-v4-kotlin:0.3.0'
     testCompile 'junit:junit:4.12'
 }

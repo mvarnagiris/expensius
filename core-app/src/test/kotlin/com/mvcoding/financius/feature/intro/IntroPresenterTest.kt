@@ -24,6 +24,7 @@ import rx.subjects.PublishSubject
 class IntroPresenterTest {
     val skipLoginSubject = PublishSubject.create<Unit>()
     val loginSubject = PublishSubject.create<Unit>()
+    val activeIntroPageSubject = PublishSubject.create<Int>()
     val userSettings = mock(Settings::class.java)
     val view = mock(ViewForTest::class.java)
     val introPages = arrayListOf(IntroPage(ImageForTest(), "title1", "message1"), IntroPage(ImageForTest(), "title2", "message2"), IntroPage(ImageForTest(), "title3", "message3"))
@@ -33,13 +34,26 @@ class IntroPresenterTest {
     fun setUp() {
         given(view.onSkipLogin()).willReturn(skipLoginSubject)
         given(view.onLogin()).willReturn(loginSubject)
+        given(view.onActiveIntroPagePositionChanged()).willReturn(activeIntroPageSubject)
     }
 
     @Test
-    fun showsIntroPages() {
+    fun initiallyShowsIntroPagesWithActivePosition0() {
         presenter.onAttachView(view)
 
-        verify(view).showIntroPages(introPages)
+        verify(view).showIntroPages(introPages, 0)
+    }
+
+    @Test
+    fun showsIntroPagesWithPreservedPositionAfterReattach() {
+        presenter.onAttachView(view)
+        setActiveIntroPagePosition(1)
+        presenter.onDetachView(view)
+
+        presenter.onAttachView(view)
+
+
+        verify(view).showIntroPages(introPages, 1)
     }
 
     @Test
@@ -62,13 +76,11 @@ class IntroPresenterTest {
         verify(view).startLogin()
     }
 
-    private fun login() {
-        loginSubject.onNext(Unit)
-    }
+    private fun login() = loginSubject.onNext(Unit)
 
-    private fun skipLogin() {
-        skipLoginSubject.onNext(Unit)
-    }
+    private fun skipLogin() = skipLoginSubject.onNext(Unit)
+
+    private fun setActiveIntroPagePosition(position: Int) = activeIntroPageSubject.onNext(position)
 
     class ImageForTest : Image<Any> {
         override val value = Any()
