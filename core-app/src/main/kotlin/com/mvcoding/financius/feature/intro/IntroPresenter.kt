@@ -14,21 +14,21 @@
 
 package com.mvcoding.financius.feature.intro
 
-import com.mvcoding.financius.UserSettings
+import com.mvcoding.financius.Settings
 import com.mvcoding.financius.feature.Presenter
 import rx.Observable
 
-class IntroPresenter(private val introPages: List<IntroPage>, private val userSettings: UserSettings) : Presenter<IntroPresenter.View>() {
+class IntroPresenter(private val introPages: List<IntroPage>, private val settings: Settings) : Presenter<IntroPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
         view.showIntroPages(introPages)
 
         unsubscribeOnDetach(view.onLogin()
-                .doOnNext { userSettings.setIsIntroductionSeen(true) }
+                .doOnNext { settings.setIsIntroductionSeen(true) }
                 .subscribe { view.startLogin() })
 
         unsubscribeOnDetach(view.onSkipLogin()
-                .doOnNext { userSettings.setIsIntroductionSeen(true) }
+                .doOnNext { settings.setIsIntroductionSeen(true) }
                 .subscribe { view.startOverview() })
     }
 

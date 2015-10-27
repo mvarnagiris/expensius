@@ -15,7 +15,7 @@
 package com.mvcoding.financius.feature.intro
 
 import com.mvcoding.financius.Session
-import com.mvcoding.financius.UserSettings
+import com.mvcoding.financius.Settings
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
@@ -25,7 +25,7 @@ class IntroPresenterTest {
     val skipLoginSubject = PublishSubject.create<Any>()
     val loginSubject = PublishSubject.create<Any>()
     val session = mock(Session::class.java)
-    val userSettings = mock(UserSettings::class.java)
+    val userSettings = mock(Settings::class.java)
     val view = mock(IntroPresenter.View::class.java)
     val introPages = arrayListOf(IntroPage(), IntroPage(), IntroPage())
     val presenter = IntroPresenter(introPages, userSettings)

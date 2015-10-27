@@ -14,7 +14,8 @@
 
 package com.mvcoding.financius
 
-interface UserSettings {
-    fun isIntroductionSeen(): Boolean
-    fun setIsIntroductionSeen(isIntroductionSeen: Boolean)
+class UserSession : Session {
+    override fun isLoggedIn(): Boolean {
+        throw UnsupportedOperationException()
+    }
 }
