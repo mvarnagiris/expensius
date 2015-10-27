@@ -14,5 +14,6 @@
 
 package com.mvcoding.financius
 
-data class ResourceImage(val drawableResId: Int) : Image {
+class ResourceImage(drawableResId: Int) : Image<Int> {
+    override val value = drawableResId
 }

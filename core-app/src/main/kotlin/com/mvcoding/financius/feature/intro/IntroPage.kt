@@ -16,4 +16,4 @@ package com.mvcoding.financius.feature.intro
 
 import com.mvcoding.financius.Image
 
-data class IntroPage(val imageImage: Image, val title: String, val message: String)
+data class IntroPage<T>(val image: Image<T>, val title: String, val message: String)

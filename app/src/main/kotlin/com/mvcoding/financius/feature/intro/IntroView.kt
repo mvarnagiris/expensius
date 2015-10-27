@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.view_intro.view.skipButton
 import kotlinx.android.synthetic.view_intro.view.viewPager
 import rx.Observable
 
-class IntroView : LinearLayout, IntroPresenter.View {
+class IntroView : LinearLayout, IntroPresenter.View<Int> {
     val presenter = Shank.withScope(IntroView::class.java).provide(IntroPresenter::class.java)
     val adapter = IntroPagesAdapter()
 
@@ -52,7 +52,7 @@ class IntroView : LinearLayout, IntroPresenter.View {
         presenter.onDetachView(this)
     }
 
-    override fun showIntroPages(introPages: List<IntroPage>) {
+    override fun showIntroPages(introPages: List<IntroPage<Int>>) {
         adapter.introPages = introPages
     }
 

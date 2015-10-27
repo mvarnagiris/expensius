@@ -19,7 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 
 class IntroPagesAdapter() : PagerAdapter() {
-    var introPages: List<IntroPage>? = null
+    var introPages: List<IntroPage<Int>>? = null
         set(value) {
             notifyDataSetChanged();
         }

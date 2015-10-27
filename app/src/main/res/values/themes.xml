@@ -21,6 +21,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorPrimaryInverse">@color/text_primary_inverse</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorSecondaryInverse">@color/text_secondary_inverse</item>
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
@@ -33,6 +38,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textColorPrimary">@color/text_primary_inverse</item>
+        <item name="android:textColorPrimaryInverse">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary_inverse</item>
+        <item name="android:textColorSecondaryInverse">@color/text_secondary</item>
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

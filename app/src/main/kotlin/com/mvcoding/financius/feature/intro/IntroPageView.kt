@@ -15,13 +15,16 @@
 package com.mvcoding.financius.feature.intro
 
 import android.content.Context
+import android.support.percent.PercentRelativeLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.mvcoding.financius.R
+import kotlinx.android.synthetic.view_intro_page.view.imageView
+import kotlinx.android.synthetic.view_intro_page.view.messageTextView
+import kotlinx.android.synthetic.view_intro_page.view.titleTextView
 
-class IntroPageView : LinearLayout {
+class IntroPageView : PercentRelativeLayout {
     constructor(context: Context?) : this(context, null)
 
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -34,7 +37,9 @@ class IntroPageView : LinearLayout {
         }
     }
 
-    fun setIntroPage(introPage: IntroPage) {
-        throw UnsupportedOperationException()
+    fun setIntroPage(introPage: IntroPage<Int>) {
+        imageView.setImageResource(introPage.image.value)
+        titleTextView.text = introPage.title
+        messageTextView.text = introPage.message
     }
 }

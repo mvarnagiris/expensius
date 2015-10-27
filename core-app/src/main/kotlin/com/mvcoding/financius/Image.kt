@@ -14,6 +14,6 @@
 
 package com.mvcoding.financius
 
-interface Image {
-
+interface Image<T> {
+    val value: T
 }

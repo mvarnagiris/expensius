@@ -25,7 +25,7 @@ class IntroPresenterTest {
     val skipLoginSubject = PublishSubject.create<Unit>()
     val loginSubject = PublishSubject.create<Unit>()
     val userSettings = mock(Settings::class.java)
-    val view = mock(IntroPresenter.View::class.java)
+    val view = mock(ViewForTest::class.java)
     val introPages = arrayListOf(IntroPage(ImageForTest(), "title1", "message1"), IntroPage(ImageForTest(), "title2", "message2"), IntroPage(ImageForTest(), "title3", "message3"))
     val presenter = IntroPresenter(introPages, userSettings)
 
@@ -69,7 +69,10 @@ class IntroPresenterTest {
     private fun skipLogin() {
         skipLoginSubject.onNext(Unit)
     }
-}
 
-class ImageForTest : Image {
+    class ImageForTest : Image<Any> {
+        override val value = Any()
+    }
+
+    abstract class ViewForTest : IntroPresenter.View<Any>
 }
