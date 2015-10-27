@@ -13,8 +13,28 @@
   -->
 
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="keyline">16dp</dimen>
+    <dimen name="keyline_2x">32dp</dimen>
+    <dimen name="keyline_half">8dp</dimen>
+    <dimen name="keyline_content">72dp</dimen>
+    <dimen name="keyline_content_minus_keyline">56dp</dimen>
+    <dimen name="keyline_content_minus_keyline_2x">40dp</dimen>
+    <dimen name="keyline_content_minus_keyline_3x">24dp</dimen>
+
+    <dimen name="space_normal">8dp</dimen>
+    <dimen name="space_large">16dp</dimen>
+    <dimen name="space_xlarge">24dp</dimen>
+    <dimen name="space_xxlarge">32dp</dimen>
+
+    <dimen name="actionbar_2x">112dp</dimen>
+
+    <dimen name="elevation_toolbar">4dp</dimen>
+    <dimen name="elevation_fab">6dp</dimen>
+    <dimen name="elevation_fab_pressed">12dp</dimen>
+    <dimen name="elevation_card">2dp</dimen>
+
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_size_half_negative">-28dp</dimen>
+
+    <dimen name="recycler_card_space">@dimen/keyline_half</dimen>
 </resources>
