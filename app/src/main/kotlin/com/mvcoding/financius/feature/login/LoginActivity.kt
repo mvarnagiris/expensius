@@ -12,23 +12,16 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.intro
+package com.mvcoding.financius.feature.login
 
 import android.content.Context
-import android.os.Bundle
-import com.mvcoding.financius.R
 import com.mvcoding.financius.feature.ActivityStarter
 import com.mvcoding.financius.feature.BaseActivity
 
-class IntroActivity : BaseActivity() {
+class LoginActivity : BaseActivity() {
     companion object {
         fun start(context: Context) {
-            ActivityStarter(context, IntroActivity::class).start()
+            ActivityStarter(context, LoginActivity::class).start()
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_intro)
     }
 }

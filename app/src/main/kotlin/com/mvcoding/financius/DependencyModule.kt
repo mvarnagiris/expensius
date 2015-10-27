@@ -14,16 +14,30 @@
 
 package com.mvcoding.financius
 
+import android.content.Context
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
+import com.mvcoding.financius.feature.intro.IntroPage
+import com.mvcoding.financius.feature.intro.IntroPresenter
 import com.mvcoding.financius.feature.splash.SplashPresenter
 
-class DependencyModule : ShankModule {
+class DependencyModule(val context: Context) : ShankModule {
+    init {
+        Shank.registerFactory(Context::class.java, { context })
+    }
+
     override fun registerFactories() {
         userSettings()
         session()
 
         splashPresenter()
+        introPresenter()
+    }
+
+    private fun introPresenter() {
+        val userSettings = Shank.provide(Settings::class.java)
+        val introPages = listOf(IntroPage(), IntroPage(), IntroPage())
+        Shank.registerFactory(IntroPresenter::class.java, { IntroPresenter(introPages, userSettings) })
     }
 
     private fun splashPresenter() {

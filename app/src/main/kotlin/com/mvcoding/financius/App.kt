@@ -19,6 +19,6 @@ import com.memoizrlabs.ShankModuleInitializer
 
 class App : Application() {
     init {
-        ShankModuleInitializer.initializeModules(DependencyModule())
+        ShankModuleInitializer.initializeModules(DependencyModule(this))
     }
 }

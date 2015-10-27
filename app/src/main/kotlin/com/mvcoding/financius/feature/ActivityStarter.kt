@@ -22,6 +22,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
 import android.view.View
+import com.mvcoding.financius.isActivity
+import com.mvcoding.financius.toActivity
 import kotlin.reflect.KClass
 
 class ActivityStarter(val context: Context, activityClass: KClass<out BaseActivity>) {
@@ -66,18 +68,18 @@ class ActivityStarter(val context: Context, activityClass: KClass<out BaseActivi
     }
 
     fun start() {
-        if (context is Activity) {
-            ActivityCompat.startActivity(context, intent, options?.toBundle());
+        if (context.isActivity()) {
+            ActivityCompat.startActivity(context.toActivity(), intent, options?.toBundle());
         } else {
             context.startActivity(intent)
         }
     }
 
     fun startForResult(requestCode: Int) {
-        if (context !is Activity) {
+        if (!context.isActivity()) {
             throw IllegalArgumentException("Context must be an Activity, when starting for result.")
         }
 
-        ActivityCompat.startActivityForResult(context, intent, requestCode, options?.toBundle());
+        ActivityCompat.startActivityForResult(context.toActivity(), intent, requestCode, options?.toBundle());
     }
 }

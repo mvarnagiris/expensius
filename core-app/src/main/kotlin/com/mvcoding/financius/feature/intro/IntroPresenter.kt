@@ -34,8 +34,8 @@ class IntroPresenter(private val introPages: List<IntroPage>, private val settin
 
     interface View : Presenter.View {
         fun showIntroPages(introPages: List<IntroPage>)
-        fun onSkipLogin(): Observable<Any>
-        fun onLogin(): Observable<Any>
+        fun onSkipLogin(): Observable<Unit>
+        fun onLogin(): Observable<Unit>
         fun startOverview()
         fun startLogin()
     }

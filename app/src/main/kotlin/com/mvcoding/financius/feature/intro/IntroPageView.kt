@@ -15,20 +15,26 @@
 package com.mvcoding.financius.feature.intro
 
 import android.content.Context
-import android.os.Bundle
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.mvcoding.financius.R
-import com.mvcoding.financius.feature.ActivityStarter
-import com.mvcoding.financius.feature.BaseActivity
 
-class IntroActivity : BaseActivity() {
+class IntroPageView : LinearLayout {
+    constructor(context: Context?) : this(context, null)
+
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
+
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
     companion object {
-        fun start(context: Context) {
-            ActivityStarter(context, IntroActivity::class).start()
+        fun inflate(viewGroup: ViewGroup): IntroPageView {
+            return LayoutInflater.from(viewGroup.context).inflate(R.layout.view_intro_page, viewGroup, false) as IntroPageView
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_intro)
+    fun setIntroPage(introPage: IntroPage) {
+        throw UnsupportedOperationException()
     }
 }

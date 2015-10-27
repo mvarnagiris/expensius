@@ -14,7 +14,6 @@
 
 package com.mvcoding.financius.feature.intro
 
-import com.mvcoding.financius.Session
 import com.mvcoding.financius.Settings
 import org.junit.Before
 import org.junit.Test
@@ -22,9 +21,8 @@ import org.mockito.BDDMockito.*
 import rx.subjects.PublishSubject
 
 class IntroPresenterTest {
-    val skipLoginSubject = PublishSubject.create<Any>()
-    val loginSubject = PublishSubject.create<Any>()
-    val session = mock(Session::class.java)
+    val skipLoginSubject = PublishSubject.create<Unit>()
+    val loginSubject = PublishSubject.create<Unit>()
     val userSettings = mock(Settings::class.java)
     val view = mock(IntroPresenter.View::class.java)
     val introPages = arrayListOf(IntroPage(), IntroPage(), IntroPage())
@@ -64,10 +62,10 @@ class IntroPresenterTest {
     }
 
     private fun login() {
-        loginSubject.onNext(Any())
+        loginSubject.onNext(Unit)
     }
 
     private fun skipLogin() {
-        skipLoginSubject.onNext(Any())
+        skipLoginSubject.onNext(Unit)
     }
 }

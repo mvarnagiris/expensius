@@ -59,5 +59,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:design:23.1.0'
     compile 'com.github.memoizr:shank:v0.2.2'
+    compile 'io.reactivex:rxkotlin:0.24.100'
+//    compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.3.0'
     testCompile 'junit:junit:4.12'
 }
