@@ -15,12 +15,14 @@
 package com.mvcoding.financius.feature.intro
 
 import android.support.v4.view.PagerAdapter
+import android.support.v4.view.PagerAdapter.POSITION_NONE
 import android.view.View
 import android.view.ViewGroup
 
 class IntroPagesAdapter() : PagerAdapter() {
     var introPages: List<IntroPage<Int>>? = null
         set(value) {
+            field = value
             notifyDataSetChanged();
         }
 
@@ -39,6 +41,10 @@ class IntroPagesAdapter() : PagerAdapter() {
         if (obj is View) {
             container?.removeView(obj)
         }
+    }
+
+    override fun getItemPosition(obj: Any?): Int {
+        return POSITION_NONE
     }
 
     override fun isViewFromObject(view: View?, obj: Any?): Boolean = view === obj

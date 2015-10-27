@@ -18,7 +18,8 @@ import android.app.Application
 import com.memoizrlabs.ShankModuleInitializer
 
 class App : Application() {
-    init {
+    override fun onCreate() {
+        super.onCreate()
         ShankModuleInitializer.initializeModules(DependencyModule(this))
     }
 }

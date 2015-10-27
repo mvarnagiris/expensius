@@ -16,6 +16,6 @@ package com.mvcoding.financius
 
 class UserSession : Session {
     override fun isLoggedIn(): Boolean {
-        throw UnsupportedOperationException()
+        return false
     }
 }

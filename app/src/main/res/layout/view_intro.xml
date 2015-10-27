@@ -13,9 +13,12 @@
   -->
 
 <com.mvcoding.financius.feature.intro.IntroView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="?colorPrimary"
+    android:orientation="vertical"
+    android:theme="?themeInverse">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
@@ -24,19 +27,22 @@
         android:layout_weight="1" />
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/ButtonBar"
+        android:background="?colorPrimaryDark"
+        tools:theme="?themeInverse">
 
         <Button
             android:id="@+id/skipButton"
+            style="@style/Button.Flat.Borderless"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/skip" />
 
         <Button
             android:id="@+id/loginButton"
+            style="@style/Button.Flat.Borderless"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="end"
             android:text="@string/login" />
 

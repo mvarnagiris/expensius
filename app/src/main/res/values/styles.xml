@@ -105,14 +105,14 @@
     </style>
 
     <!--<style name="Button.Fab" parent="Widget.Design.FloatingActionButton">-->
-        <!--<item name="android:layout_width">wrap_content</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:tint">?colorActionIcon</item>-->
-        <!--<item name="elevation">@dimen/elevation_fab</item>-->
-        <!--<item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>-->
-        <!--<item name="rippleColor">?colorAccentDark</item>-->
-        <!--<item name="borderWidth">0dp</item>-->
-        <!--<item name="android:theme">@style/AppTheme.Inverse</item>-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:tint">?colorActionIcon</item>-->
+    <!--<item name="elevation">@dimen/elevation_fab</item>-->
+    <!--<item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>-->
+    <!--<item name="rippleColor">?colorAccentDark</item>-->
+    <!--<item name="borderWidth">0dp</item>-->
+    <!--<item name="android:theme">@style/AppTheme.Inverse</item>-->
     <!--</style>-->
 
     <!-- ButtonBar -->
@@ -120,9 +120,8 @@
 
     <style name="ButtonBar" parent="Widget.AppCompat.ButtonBar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">?actionBarSize</item>
         <item name="android:gravity">right</item>
-        <item name="android:minHeight">?actionBarSize</item>
         <item name="android:elevation" tools:targetApi="lollipop">@dimen/elevation_fab</item>
         <item name="android:background">?colorBackgroundSecondary</item>
     </style>
@@ -131,54 +130,54 @@
     <!-- =============================================================================================================================== -->
 
     <!--<style name="CardView">-->
-        <!--<item name="cardUseCompatPadding">false</item>-->
-        <!--<item name="cardElevation">@dimen/elevation_card</item>-->
-        <!--<item name="cardBackgroundColor">?backgroundPrimary</item>-->
+    <!--<item name="cardUseCompatPadding">false</item>-->
+    <!--<item name="cardElevation">@dimen/elevation_card</item>-->
+    <!--<item name="cardBackgroundColor">?backgroundPrimary</item>-->
     <!--</style>-->
 
     <!-- EditText -->
     <!-- =============================================================================================================================== -->
 
     <!--<style name="EditText" parent="Widget.AppCompat.EditText">-->
-        <!--<item name="android:textColorHint">?android:textColorSecondary</item>-->
+    <!--<item name="android:textColorHint">?android:textColorSecondary</item>-->
     <!--</style>-->
 
     <!--<style name="EditText.Big">-->
-        <!--<item name="android:textAppearance">@style/Text.Display1</item>-->
+    <!--<item name="android:textAppearance">@style/Text.Display1</item>-->
     <!--</style>-->
 
     <!-- RecyclerView -->
     <!-- =============================================================================================================================== -->
 
     <!--<style name="RecyclerView">-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">match_parent</item>-->
-        <!--<item name="android:clipToPadding">false</item>-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">match_parent</item>-->
+    <!--<item name="android:clipToPadding">false</item>-->
     <!--</style>-->
 
     <!--<style name="RecyclerView.Cards">-->
-        <!--<item name="android:padding">@dimen/keyline_half</item>-->
+    <!--<item name="android:padding">@dimen/keyline_half</item>-->
     <!--</style>-->
 
     <!--<style name="RecyclerViewItem">-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">wrap_content</item>-->
-        <!--<item name="android:minHeight">?actionBarSize</item>-->
-        <!--<item name="android:paddingLeft">@dimen/keyline</item>-->
-        <!--<item name="android:paddingRight">@dimen/keyline</item>-->
-        <!--<item name="android:paddingTop">@dimen/space_normal</item>-->
-        <!--<item name="android:paddingBottom">@dimen/space_normal</item>-->
-        <!--<item name="android:clipToPadding">false</item>-->
-        <!--<item name="android:background">?selectableItemBackground</item>-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:minHeight">?actionBarSize</item>-->
+    <!--<item name="android:paddingLeft">@dimen/keyline</item>-->
+    <!--<item name="android:paddingRight">@dimen/keyline</item>-->
+    <!--<item name="android:paddingTop">@dimen/space_normal</item>-->
+    <!--<item name="android:paddingBottom">@dimen/space_normal</item>-->
+    <!--<item name="android:clipToPadding">false</item>-->
+    <!--<item name="android:background">?selectableItemBackground</item>-->
     <!--</style>-->
 
     <!-- Divider -->
     <!-- =============================================================================================================================== -->
 
     <!--<style name="Divider">-->
-        <!--<item name="android:layout_width">match_parent</item>-->
-        <!--<item name="android:layout_height">0.67dp</item>-->
-        <!--<item name="android:background">?colorDivider</item>-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">0.67dp</item>-->
+    <!--<item name="android:background">?colorDivider</item>-->
     <!--</style>-->
 
     <!-- ProgressBar -->
@@ -190,7 +189,7 @@
     <!-- =============================================================================================================================== -->
 
     <!--<style name="ScrollView">-->
-        <!--<item name="android:fillViewport">true</item>-->
-        <!--<item name="android:clipToPadding">false</item>-->
+    <!--<item name="android:fillViewport">true</item>-->
+    <!--<item name="android:clipToPadding">false</item>-->
     <!--</style>-->
 </resources>

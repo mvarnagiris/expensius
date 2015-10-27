@@ -12,14 +12,15 @@
   ~ GNU General Public License for more details.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="themeInverse">@style/AppTheme.Inverse</item>
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#FF4081</item>
+        <item name="colorBackgroundSecondary">#AAAAAA</item>
 
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorPrimaryInverse">@color/text_primary_inverse</item>
@@ -28,26 +29,20 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/backgroundWindow</item>
     </style>
 
-    <style name="AppTheme.Inverse" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.Inverse">
         <item name="themeInverse">@style/AppTheme</item>
 
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorBackgroundSecondary">#666666</item>
 
         <item name="android:textColorPrimary">@color/text_primary_inverse</item>
         <item name="android:textColorPrimaryInverse">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary_inverse</item>
         <item name="android:textColorSecondaryInverse">@color/text_secondary</item>
 
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/backgroundWindowInverse</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

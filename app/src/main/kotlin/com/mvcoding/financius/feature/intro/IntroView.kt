@@ -18,9 +18,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
-import com.memoizrlabs.Shank
 import com.mvcoding.financius.feature.login.LoginActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
+import com.mvcoding.financius.shankWithScope
 import com.mvcoding.financius.toActivity
 import kotlinx.android.synthetic.view_intro.view.loginButton
 import kotlinx.android.synthetic.view_intro.view.skipButton
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.view_intro.view.viewPager
 import rx.Observable
 
 class IntroView : LinearLayout, IntroPresenter.View<Int> {
-    val presenter = Shank.withScope(IntroView::class.java).provide(IntroPresenter::class.java)
+    val presenter = shankWithScope(IntroView::class)?.provide(IntroPresenter::class.java)
     val adapter = IntroPagesAdapter()
 
     constructor(context: Context?) : this(context, null)
@@ -44,12 +44,12 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onAttachView(this)
+        presenter?.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onDetachView(this)
+        presenter?.onDetachView(this)
     }
 
     override fun showIntroPages(introPages: List<IntroPage<Int>>) {

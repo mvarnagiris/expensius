@@ -18,6 +18,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.support.v7.internal.view.ContextThemeWrapper
+import android.view.View
+import com.memoizrlabs.Shank
+import kotlin.reflect.KClass
 
 fun Context.toActivity(): Activity {
     when (this) {
@@ -39,4 +42,12 @@ fun Context.isActivity(): Boolean {
         else -> return false
 
     }
+}
+
+fun <T : Any> View.shankWithScope(cls: KClass<T>): Shank.ScopedCache? {
+    if (isInEditMode) {
+        return null
+    }
+
+    return Shank.withScope(cls.javaClass)
 }

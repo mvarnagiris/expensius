@@ -16,10 +16,10 @@ package com.mvcoding.financius
 
 class UserSettings : Settings {
     override fun isIntroductionSeen(): Boolean {
-        throw UnsupportedOperationException()
+        return false
     }
 
     override fun setIsIntroductionSeen(isIntroductionSeen: Boolean) {
-        throw UnsupportedOperationException()
+
     }
 }
