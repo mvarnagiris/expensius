@@ -20,6 +20,8 @@ import android.content.ContextWrapper
 import android.support.v7.internal.view.ContextThemeWrapper
 import android.view.View
 import com.memoizrlabs.Shank
+import com.mvcoding.financius.feature.BaseActivity
+import rx.Observable
 import kotlin.reflect.KClass
 
 fun Context.toActivity(): Activity {
@@ -44,10 +46,34 @@ fun Context.isActivity(): Boolean {
     }
 }
 
+fun Activity.observeFinish(): Observable<Unit> {
+    if (this !is BaseActivity) {
+        throw IllegalStateException("Activity must extend ${BaseActivity::class.java.name}")
+    }
+
+    return this.finishSubject
+}
+
 fun <T : Any> View.shankWithScope(cls: KClass<T>): Shank.ScopedCache? {
     if (isInEditMode) {
         return null
     }
 
     return Shank.withScope(cls.javaClass)
+}
+
+fun <T : Any> View.shankWithBoundScope(cls: KClass<T>, context: Context): Shank.ScopedCache? {
+    if (isInEditMode) {
+        return null
+    }
+
+    return Shank.withBoundScope(cls.javaClass, context.toActivity().observeFinish().map { Any() })
+}
+
+fun <T : Any> View.shankWithBoundScope(cls: KClass<T>, whenLifetimeExpires: Observable<Any>): Shank.ScopedCache? {
+    if (isInEditMode) {
+        return null
+    }
+
+    return Shank.withBoundScope(cls.javaClass, whenLifetimeExpires)
 }

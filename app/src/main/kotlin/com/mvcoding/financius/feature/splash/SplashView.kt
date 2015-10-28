@@ -17,13 +17,13 @@ package com.mvcoding.financius.feature.splash
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import com.memoizrlabs.Shank
 import com.mvcoding.financius.feature.intro.IntroActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
+import com.mvcoding.financius.shankWithBoundScope
 import com.mvcoding.financius.toActivity
 
 class SplashView : FrameLayout, SplashPresenter.View {
-    private val presenter = Shank.withScope(SplashView::class.java).provide(SplashPresenter::class.java)
+    private val presenter = shankWithBoundScope(SplashView::class, context)?.provide(SplashPresenter::class.java)
 
     constructor(context: Context?) : this(context, null)
 
@@ -33,12 +33,12 @@ class SplashView : FrameLayout, SplashPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onAttachView(this)
+        presenter?.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onDetachView(this)
+        presenter?.onDetachView(this)
     }
 
     override fun startOverview() {

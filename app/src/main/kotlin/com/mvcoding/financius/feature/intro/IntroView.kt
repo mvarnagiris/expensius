@@ -21,7 +21,7 @@ import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.financius.feature.login.LoginActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
-import com.mvcoding.financius.shankWithScope
+import com.mvcoding.financius.shankWithBoundScope
 import com.mvcoding.financius.toActivity
 import kotlinx.android.synthetic.view_intro.view.loginButton
 import kotlinx.android.synthetic.view_intro.view.skipButton
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.view_intro.view.viewPager
 import rx.Observable
 
 class IntroView : LinearLayout, IntroPresenter.View<Int> {
-    val presenter = shankWithScope(IntroView::class)?.provide(IntroPresenter::class.java)
+    val presenter = shankWithBoundScope(IntroView::class, context)?.provide(IntroPresenter::class.java)
     val adapter = IntroPagesAdapter()
 
     constructor(context: Context?) : this(context, null)

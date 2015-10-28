@@ -15,6 +15,15 @@
 package com.mvcoding.financius.feature
 
 import android.support.v7.app.AppCompatActivity
+import rx.lang.kotlin.PublishSubject
 
 abstract class BaseActivity : AppCompatActivity() {
+    val finishSubject = PublishSubject<Unit>()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing) {
+            finishSubject.onNext(Unit)
+        }
+    }
 }
