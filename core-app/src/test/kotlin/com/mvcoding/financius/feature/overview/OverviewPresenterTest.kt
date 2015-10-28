@@ -30,7 +30,7 @@ class OverviewPresenterTest {
     }
 
     @Test
-    fun startTransactionEditOnAddNewTransaction() {
+    fun startsTransactionEditOnAddNewTransaction() {
         presenter.onAttachView(view)
 
         addNewTransaction()
