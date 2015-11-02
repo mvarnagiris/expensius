@@ -17,23 +17,43 @@ package com.mvcoding.financius.feature.tag
 import com.mvcoding.financius.feature.Presenter
 import rx.Observable
 
-class TagsPresenter(val displayType: TagsPresenter.DisplayType = TagsPresenter.DisplayType.VIEW, val selectedTags: Set<Tag>? = null) : Presenter<TagsPresenter.View>() {
+class TagsPresenter(
+        private val tagsRepository: TagsRepository,
+        private val displayType: TagsPresenter.DisplayType = TagsPresenter.DisplayType.VIEW,
+        private var selectedTags: Set<Tag> = setOf()) : Presenter<TagsPresenter.View>() {
+
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
         view.setDisplayType(displayType)
-        if (displayType === DisplayType.SINGLE_CHOICE || displayType === DisplayType.MULTI_CHOICE) {
+        if (displayType === DisplayType.MULTI_CHOICE) {
             view.showSelectedTags(selectedTags.orEmpty())
+        }
+
+        unsubscribeOnDetach(tagsRepository.observeTags().subscribe { view.showTags(it) })
+        unsubscribeOnDetach(view.onTagSelected().subscribe { selectTag(view, it) })
+        unsubscribeOnDetach(view.onSave().map { selectedTags }.subscribe { view.startResult(it) })
+    }
+
+    private fun selectTag(view: View, tag: Tag) {
+        when (displayType) {
+            DisplayType.VIEW -> view.startTagEdit(tag)
+            DisplayType.MULTI_CHOICE -> selectedTags = if (selectedTags.contains(tag)) selectedTags.minus(tag) else selectedTags.plus(tag)
+            else -> throw IllegalArgumentException("Display type $displayType is not supported.")
         }
     }
 
     interface View : Presenter.View {
         fun onTagSelected(): Observable<Tag>
+        fun onSave(): Observable<Unit>
         fun setDisplayType(displayType: DisplayType)
         fun showSelectedTags(selectedTags: Set<Tag>)
+        fun showTags(tags: List<Tag>)
+        fun startTagEdit(tag: Tag)
+        fun startResult(tag: Set<Tag>)
     }
 
     enum class DisplayType {
-        VIEW, SELECT, SINGLE_CHOICE, MULTI_CHOICE
+        VIEW, MULTI_CHOICE
     }
 }

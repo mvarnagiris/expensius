@@ -31,7 +31,6 @@ fun Context.toActivity(): Activity {
         is android.view.ContextThemeWrapper -> return this.baseContext.toActivity()
         is ContextWrapper -> return this.baseContext.toActivity()
         else -> throw IllegalArgumentException("Context " + this + " is not an Activity.")
-
     }
 }
 
@@ -42,7 +41,6 @@ fun Context.isActivity(): Boolean {
         is android.view.ContextThemeWrapper -> return this.baseContext.isActivity()
         is ContextWrapper -> return this.baseContext.isActivity()
         else -> return false
-
     }
 }
 
