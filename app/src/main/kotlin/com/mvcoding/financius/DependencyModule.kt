@@ -32,6 +32,10 @@ class DependencyModule(val context: Context) : ShankModule {
 
         splashPresenter()
         introPresenter()
+        tagsPresenter()
+    }
+
+    private fun tagsPresenter() {
     }
 
     private fun introPresenter() {
