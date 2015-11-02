@@ -16,41 +16,25 @@ package com.mvcoding.financius.feature.tag
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.FrameLayout
-import rx.Observable
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import com.mvcoding.financius.R
 
-class TagView : FrameLayout, TagsPresenter.View {
+class TagItemView : LinearLayout {
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    override fun onTagSelected(): Observable<Tag> {
-        throw UnsupportedOperationException()
+    companion object {
+        fun inflate(viewGroup: ViewGroup): TagItemView {
+            return LayoutInflater.from(viewGroup.context).inflate(R.layout.item_view_tag, viewGroup, false) as TagItemView
+        }
     }
 
-    override fun onSave(): Observable<Unit> {
-        throw UnsupportedOperationException()
-    }
+    fun setTag(tag: Tag) {
 
-    override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun showSelectedTags(selectedTags: Set<Tag>) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun showTags(tags: List<Tag>) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun startTagEdit(tag: Tag) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun startResult(tag: Set<Tag>) {
-        throw UnsupportedOperationException()
     }
 }
