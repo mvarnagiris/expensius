@@ -29,6 +29,6 @@ class TagsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_tags)
+        setContentView(R.layout.activity_tags)
     }
 }

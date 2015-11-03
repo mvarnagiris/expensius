@@ -15,15 +15,43 @@
 package com.mvcoding.financius.feature
 
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
+import android.view.View
+import android.view.ViewGroup
+import com.mvcoding.financius.R
 import rx.lang.kotlin.PublishSubject
 
 abstract class BaseActivity : AppCompatActivity() {
     val finishSubject = PublishSubject<Unit>()
 
+    override fun setContentView(layoutResID: Int) {
+        super.setContentView(layoutResID)
+        setupToolbar()
+    }
+
+    override fun setContentView(view: View?) {
+        super.setContentView(view)
+        setupToolbar()
+    }
+
+    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+        super.setContentView(view, params)
+        setupToolbar()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
             finishSubject.onNext(Unit)
+        }
+    }
+
+    protected fun setupToolbar() {
+        val toolbar = findViewById(R.id.toolbar) as Toolbar?
+        if (toolbar != null) {
+            setSupportActionBar(toolbar)
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setHomeButtonEnabled(true);
         }
     }
 }
