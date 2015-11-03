@@ -32,6 +32,7 @@
         <activity android:name=".feature.intro.IntroActivity" />
         <activity android:name=".feature.login.LoginActivity" />
         <activity android:name=".feature.overview.OverviewActivity" />
+        <activity android:name=".feature.tag.TagsActivity" />
     </application>
 
 </manifest>
