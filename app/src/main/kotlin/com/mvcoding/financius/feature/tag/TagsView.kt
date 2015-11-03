@@ -15,15 +15,18 @@
 package com.mvcoding.financius.feature.tag
 
 import android.content.Context
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
-import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.shankWithBoundScope
+import kotlinx.android.synthetic.view_tags.view.recyclerView
 import kotlinx.android.synthetic.view_tags.view.saveButton
 import rx.Observable
 
-class TagsView : FrameLayout, TagsPresenter.View {
+class TagsView : LinearLayout, TagsPresenter.View {
     private val presenter: TagsPresenter? by lazy { shankWithBoundScope(TagsView::class, context)?.provide(TagsPresenter::class.java) }
     private val adapter = TagsAdapter()
 
@@ -40,6 +43,14 @@ class TagsView : FrameLayout, TagsPresenter.View {
         this.displayType = displayType
         this.selectedTags = selectedTags
         ShankModuleInitializer.initializeModules(TagsModule(displayType, selectedTags))
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.adapter = adapter
     }
 
     override fun onAttachedToWindow() {
