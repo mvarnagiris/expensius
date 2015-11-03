@@ -24,6 +24,7 @@ import android.support.v4.util.Pair
 import android.view.View
 import com.mvcoding.financius.isActivity
 import com.mvcoding.financius.toActivity
+import java.io.Serializable
 import kotlin.reflect.KClass
 
 class ActivityStarter(val context: Context, activityClass: KClass<out BaseActivity>) {
@@ -35,6 +36,11 @@ class ActivityStarter(val context: Context, activityClass: KClass<out BaseActivi
     }
 
     fun extra(name: String, value: String): ActivityStarter {
+        intent.putExtra(name, value);
+        return this
+    }
+
+    fun extra(name: String, value: Serializable): ActivityStarter {
         intent.putExtra(name, value);
         return this
     }

@@ -22,8 +22,13 @@ import com.mvcoding.financius.feature.BaseActivity
 
 class TagsActivity : BaseActivity() {
     companion object {
-        fun start(context: Context) {
-            ActivityStarter(context, TagsActivity::class).start()
+        private const val EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE"
+        private const val EXTRA_SELECTED_TAGS = "EXTRA_SELECTED_TAGS"
+
+        fun startView(context: Context) {
+            ActivityStarter(context, TagsActivity::class)
+                    .extra(EXTRA_DISPLAY_TYPE, TagsPresenter.DisplayType.VIEW)
+                    .start()
         }
     }
 
