@@ -19,9 +19,12 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import android.widget.LinearLayout.GONE
+import android.widget.LinearLayout.VISIBLE
 import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.shankWithBoundScope
+import kotlinx.android.synthetic.view_tags.view.buttonBarView
 import kotlinx.android.synthetic.view_tags.view.recyclerView
 import kotlinx.android.synthetic.view_tags.view.saveButton
 import rx.Observable
@@ -69,6 +72,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
         adapter.displayType = displayType
+        buttonBarView.visibility = if (displayType == TagsPresenter.DisplayType.VIEW) GONE else VISIBLE
     }
 
     override fun showSelectedTags(selectedTags: Set<Tag>) {

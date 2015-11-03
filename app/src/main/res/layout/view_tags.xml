@@ -23,7 +23,9 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <FrameLayout style="@style/ButtonBar">
+    <FrameLayout
+        android:id="@+id/buttonBarView"
+        style="@style/ButtonBar">
 
         <Button
             android:id="@+id/saveButton"
