@@ -16,5 +16,8 @@ package com.mvcoding.financius.feature.tag
 
 import java.util.*
 
-data class Tag(val id: String = UUID.randomUUID().toString()) {
+data class Tag(
+        val id: String = UUID.randomUUID().toString(),
+        val title: String,
+        val color: Int) {
 }
