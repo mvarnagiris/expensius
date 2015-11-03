@@ -19,6 +19,7 @@ import android.os.Bundle
 import com.mvcoding.financius.R
 import com.mvcoding.financius.feature.ActivityStarter
 import com.mvcoding.financius.feature.BaseActivity
+import kotlinx.android.synthetic.activity_tags.tagsView
 
 class TagsActivity : BaseActivity() {
     companion object {
@@ -35,5 +36,9 @@ class TagsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tags)
+
+        val displayType = intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as TagsPresenter.DisplayType
+        val selectedTags = setOf<Tag>() // TODO: Get selected tags from extras.
+        (tagsView as TagsView).init(displayType, selectedTags)
     }
 }

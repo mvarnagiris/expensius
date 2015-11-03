@@ -19,6 +19,8 @@
 
     <include layout="@layout/toolbar" />
 
-    <include layout="@layout/view_tags" />
+    <include
+        android:id="@+id/tagsView"
+        layout="@layout/view_tags" />
 
 </LinearLayout>
