@@ -20,6 +20,8 @@ import com.memoizrlabs.ShankModule
 import com.mvcoding.financius.feature.intro.IntroPage
 import com.mvcoding.financius.feature.intro.IntroPresenter
 import com.mvcoding.financius.feature.splash.SplashPresenter
+import com.mvcoding.financius.feature.tag.PersistedTagsRepository
+import com.mvcoding.financius.feature.tag.TagsRepository
 
 class DependencyModule(val context: Context) : ShankModule {
     init {
@@ -30,12 +32,14 @@ class DependencyModule(val context: Context) : ShankModule {
         userSettings()
         session()
 
+        tagsRepository()
+
         splashPresenter()
         introPresenter()
-        tagsPresenter()
     }
 
-    private fun tagsPresenter() {
+    private fun tagsRepository() {
+        Shank.registerFactory(TagsRepository::class.java, { PersistedTagsRepository() })
     }
 
     private fun introPresenter() {

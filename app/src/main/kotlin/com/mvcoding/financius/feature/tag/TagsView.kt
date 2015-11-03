@@ -17,17 +17,30 @@ package com.mvcoding.financius.feature.tag
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import com.jakewharton.rxbinding.view.clicks
+import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.shankWithBoundScope
+import kotlinx.android.synthetic.view_tags.view.saveButton
 import rx.Observable
 
 class TagsView : FrameLayout, TagsPresenter.View {
-    val presenter = shankWithBoundScope(TagsView::class, context)?.provide(TagsPresenter::class.java)
+    private val presenter: TagsPresenter? by lazy { shankWithBoundScope(TagsView::class, context)?.provide(TagsPresenter::class.java) }
+    private val adapter = TagsAdapter()
+
+    private lateinit var displayType: TagsPresenter.DisplayType
+    private lateinit var selectedTags: Set<Tag>
 
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    fun init(displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag>) {
+        this.displayType = displayType
+        this.selectedTags = selectedTags
+        ShankModuleInitializer.initializeModules(TagsModule(displayType, selectedTags))
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -39,24 +52,22 @@ class TagsView : FrameLayout, TagsPresenter.View {
         presenter?.onDetachView(this)
     }
 
-    override fun onTagSelected(): Observable<Tag> {
-        throw UnsupportedOperationException()
-    }
+    override fun onTagSelected(): Observable<Tag> = adapter.onTagSelected()
 
-    override fun onSave(): Observable<Unit> {
-        throw UnsupportedOperationException()
-    }
+    override fun onSave(): Observable<Unit> = saveButton.clicks()
 
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
-        throw UnsupportedOperationException()
+        adapter.displayType = displayType
     }
 
     override fun showSelectedTags(selectedTags: Set<Tag>) {
-        throw UnsupportedOperationException()
+        adapter.selectedTags = selectedTags
     }
 
+    override fun showTagSelected(tag: Tag, selected: Boolean) = adapter.setTagSelected(tag, selected)
+
     override fun showTags(tags: List<Tag>) {
-        throw UnsupportedOperationException()
+        adapter.items = tags
     }
 
     override fun startTagEdit(tag: Tag) {

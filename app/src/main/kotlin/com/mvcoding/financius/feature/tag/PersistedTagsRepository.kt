@@ -12,22 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature
+package com.mvcoding.financius.feature.tag
 
-import android.support.v7.widget.RecyclerView
+import rx.Observable
 
-abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Adapter<VH>() {
-    var items: List<T> = listOf()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
-    fun getItem(position: Int): T {
-        return items[position]
+class PersistedTagsRepository : TagsRepository {
+    override fun observeTags(): Observable<List<Tag>> {
+        throw UnsupportedOperationException()
     }
 }

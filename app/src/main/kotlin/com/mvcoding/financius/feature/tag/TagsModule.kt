@@ -12,22 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature
+package com.mvcoding.financius.feature.tag
 
-import android.support.v7.widget.RecyclerView
+import com.memoizrlabs.Shank
+import com.memoizrlabs.ShankModule
 
-abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Adapter<VH>() {
-    var items: List<T> = listOf()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
-    fun getItem(position: Int): T {
-        return items[position]
+class TagsModule(private val displayType: TagsPresenter.DisplayType, private val selectedTags: Set<Tag>) : ShankModule {
+    override fun registerFactories() {
+        val tagsRepository = Shank.provide(TagsRepository::class.java)
+        Shank.registerFactory(TagsPresenter::class.java, { TagsPresenter(tagsRepository, displayType, selectedTags) })
     }
 }

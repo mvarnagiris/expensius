@@ -61,6 +61,29 @@ class TagsPresenterTest {
     }
 
     @Test
+    fun showsSelectedTagWhenTagIsSelectedAndDisplayTypeIsMultiChoice() {
+        val presenter = presenterWithDisplayTypeMultiChoice()
+        val tag = Tag()
+        presenter.onAttachView(view)
+
+        selectTag(tag)
+
+        verify(view).showTagSelected(tag, true)
+    }
+
+    @Test
+    fun showsDeselectedTagWhenTagIsDeselectedAndDisplayTypeIsMultiChoice() {
+        val presenter = presenterWithDisplayTypeMultiChoice()
+        val tag = Tag()
+        presenter.onAttachView(view)
+
+        selectTag(tag)
+        selectTag(tag)
+
+        verify(view).showTagSelected(tag, false)
+    }
+
+    @Test
     fun showsTagsFromTagsRepository() {
         val presenter = presenterWithDisplayTypeView()
         val tags = listOf(Tag(), Tag(), Tag())

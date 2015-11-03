@@ -17,8 +17,18 @@ package com.mvcoding.financius.feature.tag
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.mvcoding.financius.feature.BaseAdapter
+import rx.Observable
+import rx.lang.kotlin.PublishSubject
 
-class TagsAdapter : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
+class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
+    val tagSelectedSubject = PublishSubject<Tag>()
+    var displayType: TagsPresenter.DisplayType = TagsPresenter.DisplayType.VIEW
+    var selectedTags: Set<Tag> = setOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tagItemView.setTag(getItem(position))
     }
@@ -28,4 +38,16 @@ class TagsAdapter : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
     }
 
     class ViewHolder(itemView: TagItemView, val tagItemView: TagItemView = itemView) : RecyclerView.ViewHolder(itemView)
+
+    fun setTagSelected(tag: Tag, selected: Boolean) {
+        if (selected) {
+            selectedTags = selectedTags.plus(tag)
+        } else {
+            selectedTags = selectedTags.minus(tag)
+        }
+    }
+
+    fun onTagSelected(): Observable<Tag> {
+        return tagSelectedSubject
+    }
 }

@@ -38,7 +38,13 @@ class TagsPresenter(
     private fun selectTag(view: View, tag: Tag) {
         when (displayType) {
             DisplayType.VIEW -> view.startTagEdit(tag)
-            DisplayType.MULTI_CHOICE -> selectedTags = if (selectedTags.contains(tag)) selectedTags.minus(tag) else selectedTags.plus(tag)
+            DisplayType.MULTI_CHOICE -> selectedTags = if (selectedTags.contains(tag)) {
+                view.showTagSelected(tag, false)
+                selectedTags.minus(tag)
+            } else {
+                view.showTagSelected(tag, true)
+                selectedTags.plus(tag)
+            }
             else -> throw IllegalArgumentException("Display type $displayType is not supported.")
         }
     }
@@ -48,6 +54,7 @@ class TagsPresenter(
         fun onSave(): Observable<Unit>
         fun setDisplayType(displayType: DisplayType)
         fun showSelectedTags(selectedTags: Set<Tag>)
+        fun showTagSelected(tag: Tag, selected: Boolean)
         fun showTags(tags: List<Tag>)
         fun startTagEdit(tag: Tag)
         fun startResult(tag: Set<Tag>)
