@@ -12,9 +12,8 @@
   ~ GNU General Public License for more details.
   -->
 
-<manifest
-    package="com.mvcoding.financius"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mvcoding.financius">
 
     <application
         android:name=".App"
@@ -32,7 +31,9 @@
         <activity android:name=".feature.intro.IntroActivity" />
         <activity android:name=".feature.login.LoginActivity" />
         <activity android:name=".feature.overview.OverviewActivity" />
-        <activity android:name=".feature.tag.TagsActivity" />
+        <activity
+            android:name=".feature.tag.TagsActivity"
+            android:label="@string/tags" />
     </application>
 
 </manifest>

@@ -13,7 +13,31 @@
   -->
 
 <com.mvcoding.financius.feature.tag.TagItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:minHeight="?actionBarSize"
+    android:paddingLeft="@dimen/keyline"
+    android:paddingRight="@dimen/keyline">
+
+    <ImageView
+        android:id="@+id/colorImageView"
+        android:layout_width="@dimen/keyline_content_minus_keyline_3x"
+        android:layout_height="@dimen/keyline_content_minus_keyline_3x"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/keyline_2x"
+        android:contentDescription="@string/color"
+        android:elevation="@dimen/elevation_card"
+        android:src="@drawable/oval"
+        tools:ignore="UnusedAttribute"
+        tools:tint="#ffcc00" />
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textAppearance="@style/Text.Subhead"
+        tools:text="Essential" />
 
 </com.mvcoding.financius.feature.tag.TagItemView>

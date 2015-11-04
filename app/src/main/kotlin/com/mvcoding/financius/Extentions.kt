@@ -17,8 +17,11 @@ package com.mvcoding.financius
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.graphics.Outline
+import android.os.Build
 import android.support.v7.internal.view.ContextThemeWrapper
 import android.view.View
+import android.view.ViewOutlineProvider
 import com.memoizrlabs.Shank
 import com.mvcoding.financius.feature.BaseActivity
 import rx.Observable
@@ -74,4 +77,18 @@ fun <T : Any> View.shankWithBoundScope(cls: KClass<T>, whenLifetimeExpires: Obse
     }
 
     return Shank.withBoundScope(cls.javaClass, whenLifetimeExpires)
+}
+
+fun View.supportsLollipop(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+}
+
+fun View.makeOutlineProviderOval() {
+    if (supportsLollipop()) {
+        outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setOval(0, 0, view.width, view.height)
+            }
+        }
+    }
 }

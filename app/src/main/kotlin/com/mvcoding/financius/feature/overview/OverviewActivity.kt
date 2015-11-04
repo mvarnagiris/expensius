@@ -15,13 +15,24 @@
 package com.mvcoding.financius.feature.overview
 
 import android.content.Context
+import android.os.Bundle
+import android.widget.Button
 import com.mvcoding.financius.feature.ActivityStarter
 import com.mvcoding.financius.feature.BaseActivity
+import com.mvcoding.financius.feature.tag.TagsActivity
 
 class OverviewActivity : BaseActivity() {
     companion object {
         fun start(context: Context) {
             ActivityStarter(context, OverviewActivity::class).start()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val button = Button(this)
+        setContentView(button)
+        button.setOnClickListener { TagsActivity.startView(this) }
     }
 }

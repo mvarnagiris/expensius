@@ -14,10 +14,11 @@
 
 package com.mvcoding.financius.feature.tag
 
+import android.graphics.Color
 import rx.Observable
 
 class PersistedTagsRepository : TagsRepository {
     override fun observeTags(): Observable<List<Tag>> {
-        throw UnsupportedOperationException()
+        return Observable.just(listOf(Tag("1", "Essential", Color.GREEN), Tag("2", "Fixed", Color.BLUE), Tag("3", "Non-essential", Color.RED)))
     }
 }

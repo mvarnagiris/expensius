@@ -20,6 +20,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.mvcoding.financius.R
+import com.mvcoding.financius.makeOutlineProviderOval
+import kotlinx.android.synthetic.item_view_tag.view.colorImageView
+import kotlinx.android.synthetic.item_view_tag.view.titleTextView
 
 class TagItemView : LinearLayout {
     constructor(context: Context?) : super(context)
@@ -34,7 +37,13 @@ class TagItemView : LinearLayout {
         }
     }
 
-    fun setTag(tag: Tag) {
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        colorImageView.makeOutlineProviderOval()
+    }
 
+    fun setTag(tag: Tag) {
+        colorImageView.setColorFilter(tag.color)
+        titleTextView.text = tag.title
     }
 }
