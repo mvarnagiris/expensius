@@ -19,6 +19,9 @@ import rx.Observable
 
 class PersistedTagsRepository : TagsRepository {
     override fun observeTags(): Observable<List<Tag>> {
-        return Observable.just(listOf(Tag("1", "Essential", Color.GREEN), Tag("2", "Fixed", Color.BLUE), Tag("3", "Non-essential", Color.RED)))
+        return Observable.just(listOf(
+                Tag("1", "Essential", Color.parseColor("#8bc34a")),
+                Tag("2", "Fixed", Color.parseColor("#00BCD4")),
+                Tag("3", "Non-essential", Color.parseColor("#FF5722"))))
     }
 }
