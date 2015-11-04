@@ -28,4 +28,6 @@
     <string name="save">Save</string>
     <string name="tags">Tags</string>
     <string name="color">Color</string>
+    <string name="title">Title</string>
+    <string name="tag">Tag</string>
 </resources>

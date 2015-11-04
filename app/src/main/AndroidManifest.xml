@@ -34,6 +34,9 @@
         <activity
             android:name=".feature.tag.TagsActivity"
             android:label="@string/tags" />
+        <activity
+            android:name=".feature.tag.TagActivity"
+            android:label="@string/tag" />
     </application>
 
 </manifest>

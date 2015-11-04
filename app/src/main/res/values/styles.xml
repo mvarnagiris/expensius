@@ -138,13 +138,14 @@
     <!-- EditText -->
     <!-- =============================================================================================================================== -->
 
-    <!--<style name="EditText" parent="Widget.AppCompat.EditText">-->
-    <!--<item name="android:textColorHint">?android:textColorSecondary</item>-->
-    <!--</style>-->
+    <style name="EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textAppearance">@style/Text.Subhead</item>
+        <item name="android:textColorHint">?android:textColorSecondary</item>
+    </style>
 
-    <!--<style name="EditText.Big">-->
-    <!--<item name="android:textAppearance">@style/Text.Display1</item>-->
-    <!--</style>-->
+    <style name="EditText.Big">
+        <item name="android:textAppearance">@style/Text.Display1</item>
+    </style>
 
     <!-- RecyclerView -->
     <!-- =============================================================================================================================== -->

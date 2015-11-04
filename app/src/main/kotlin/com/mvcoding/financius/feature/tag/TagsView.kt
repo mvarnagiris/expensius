@@ -86,7 +86,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
     }
 
     override fun startTagEdit(tag: Tag) {
-        throw UnsupportedOperationException()
+        TagActivity.start(context)
     }
 
     override fun startResult(tag: Set<Tag>) {

@@ -19,9 +19,10 @@ import android.view.ViewGroup
 import com.mvcoding.financius.feature.BaseAdapter
 import rx.Observable
 import rx.lang.kotlin.PublishSubject
+import rx.subjects.PublishSubject
 
 class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
-    val tagSelectedSubject = PublishSubject<Tag>()
+    val tagSelectedSubject = PublishSubject<Int>()
     var displayType: TagsPresenter.DisplayType = TagsPresenter.DisplayType.VIEW
     var selectedTags: Set<Tag> = setOf()
         set(value) {
@@ -29,15 +30,26 @@ class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
+    init {
+
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tagItemView.setTag(getItem(position))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(TagItemView.inflate(parent))
+        return ViewHolder(TagItemView.inflate(parent), tagSelectedSubject)
     }
 
-    class ViewHolder(itemView: TagItemView, val tagItemView: TagItemView = itemView) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(
+            itemView: TagItemView,
+            tagSelectedSubject: PublishSubject<Int>,
+            val tagItemView: TagItemView = itemView) : RecyclerView.ViewHolder(itemView) {
+        init {
+            tagItemView.setOnClickListener({ tagSelectedSubject.onNext(adapterPosition) })
+        }
+    }
 
     fun setTagSelected(tag: Tag, selected: Boolean) {
         if (selected) {
@@ -48,6 +60,6 @@ class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
     }
 
     fun onTagSelected(): Observable<Tag> {
-        return tagSelectedSubject
+        return tagSelectedSubject.map({ getItem(it) })
     }
 }
