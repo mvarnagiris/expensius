@@ -18,4 +18,5 @@ import rx.Observable
 
 interface TagsRepository {
     fun observeTags(): Observable<List<Tag>>
+    fun save(tag: Tag)
 }

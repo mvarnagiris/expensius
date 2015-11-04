@@ -53,7 +53,7 @@ class TagsPresenterTest {
 
     @Test
     fun showsSelectedTagsWhenDisplayTypeIsMultiChoice() {
-        val selectedTags = setOf(Tag(), Tag())
+        val selectedTags = setOf(aTag(), aTag())
         val presenter = TagsPresenter(tagsRepository, TagsPresenter.DisplayType.MULTI_CHOICE, selectedTags)
         presenter.onAttachView(view)
 
@@ -63,7 +63,7 @@ class TagsPresenterTest {
     @Test
     fun showsSelectedTagWhenTagIsSelectedAndDisplayTypeIsMultiChoice() {
         val presenter = presenterWithDisplayTypeMultiChoice()
-        val tag = Tag()
+        val tag = aTag()
         presenter.onAttachView(view)
 
         selectTag(tag)
@@ -74,7 +74,7 @@ class TagsPresenterTest {
     @Test
     fun showsDeselectedTagWhenTagIsDeselectedAndDisplayTypeIsMultiChoice() {
         val presenter = presenterWithDisplayTypeMultiChoice()
-        val tag = Tag()
+        val tag = aTag()
         presenter.onAttachView(view)
 
         selectTag(tag)
@@ -86,7 +86,7 @@ class TagsPresenterTest {
     @Test
     fun showsTagsFromTagsRepository() {
         val presenter = presenterWithDisplayTypeView()
-        val tags = listOf(Tag(), Tag(), Tag())
+        val tags = listOf(aTag(), aTag(), aTag())
         given(tagsRepository.observeTags()).willReturn(Observable.just(tags))
 
         presenter.onAttachView(view)
@@ -97,7 +97,7 @@ class TagsPresenterTest {
     @Test
     fun startsTagEditWhenSelectingATagAndDisplayTypeIsView() {
         val presenter = presenterWithDisplayTypeView()
-        val tag = Tag()
+        val tag = aTag()
         presenter.onAttachView(view)
 
         selectTag(tag)
@@ -108,8 +108,8 @@ class TagsPresenterTest {
     @Test
     fun canSelectMultipleTagsWhenDisplayTypeIsMultiChoice() {
         val presenter = presenterWithDisplayTypeMultiChoice()
-        val tag1 = Tag()
-        val tag2 = Tag()
+        val tag1 = aTag()
+        val tag2 = aTag()
         presenter.onAttachView(view)
 
         selectTag(tag1)
@@ -123,8 +123,8 @@ class TagsPresenterTest {
     @Test
     fun selectingAlreadySelectedItemDeselectsItWhenDisplayTypeIsMultiChoice() {
         val presenter = presenterWithDisplayTypeMultiChoice()
-        val tag1 = Tag()
-        val tag2 = Tag()
+        val tag1 = aTag()
+        val tag2 = aTag()
         presenter.onAttachView(view)
 
         selectTag(tag1)
@@ -139,8 +139,8 @@ class TagsPresenterTest {
     @Test
     fun startsResultWithSelectedTagsWhenSavingAndDisplayTypeIsMultiChoice() {
         val presenter = presenterWithDisplayTypeMultiChoice()
-        val tag1 = Tag()
-        val tag2 = Tag()
+        val tag1 = aTag()
+        val tag2 = aTag()
         presenter.onAttachView(view)
         selectTag(tag1)
         selectTag(tag2)
