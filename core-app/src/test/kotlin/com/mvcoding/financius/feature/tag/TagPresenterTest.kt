@@ -43,10 +43,9 @@ class TagPresenterTest {
 
         updateTitle("updatedTitle")
         presenter.onDetachView(view)
-        reset(view)
         presenter.onAttachView(view)
 
-        verify(view).showTitle("updatedTitle")
+        verify(view, times(2)).showTitle("updatedTitle")
     }
 
     @Test
@@ -71,10 +70,20 @@ class TagPresenterTest {
 
         updateColor(10)
         presenter.onDetachView(view)
-        reset(view)
         presenter.onAttachView(view)
 
-        verify(view).showColor(10)
+        verify(view, times(2)).showColor(10)
+    }
+
+    @Test
+    fun doesNotTryToSaveAndShowsErrorWhenTitleIsEmptyOnSave() {
+        presenter.onAttachView(view)
+        updateTitle("")
+
+        save()
+
+        verify(view, never()).startResult(any())
+        verify(view).showTitleCannotBeEmptyError()
     }
 
     @Test
@@ -93,17 +102,6 @@ class TagPresenterTest {
         save()
 
         verify(view).startResult(tag)
-    }
-
-    @Test
-    fun doesNotTryToSaveAndShowsErrorWhenTitleIsEmptyOnSave() {
-        presenter.onAttachView(view)
-        updateTitle("")
-
-        save()
-
-        verify(view, never()).startResult(any())
-        verify(view).showTitleCannotBeEmptyError()
     }
 
     private fun updateTitle(title: String) {
