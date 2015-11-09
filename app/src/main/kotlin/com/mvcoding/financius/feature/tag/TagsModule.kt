@@ -19,7 +19,7 @@ import com.memoizrlabs.ShankModule
 
 class TagsModule(private val displayType: TagsPresenter.DisplayType, private val selectedTags: Set<Tag>) : ShankModule {
     override fun registerFactories() {
-        val tagsRepository = Shank.provide(TagsRepository::class.java)
+        val tagsRepository = Shank.withScope(Unit::class.java).provide(TagsRepository::class.java)
         Shank.registerFactory(TagsPresenter::class.java, { TagsPresenter(tagsRepository, displayType, selectedTags) })
     }
 }

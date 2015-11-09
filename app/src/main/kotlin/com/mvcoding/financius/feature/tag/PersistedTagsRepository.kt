@@ -16,12 +16,21 @@ package com.mvcoding.financius.feature.tag
 
 import android.graphics.Color
 import rx.Observable
+import rx.lang.kotlin.BehaviourSubject
 
 class PersistedTagsRepository : TagsRepository {
+    var tags = listOf(
+            Tag("1", "Essential", Color.parseColor("#8bc34a")),
+            Tag("2", "Fixed", Color.parseColor("#00BCD4")),
+            Tag("3", "Non-essential", Color.parseColor("#FF5722")))
+    val tagsSubject = BehaviourSubject(tags)
+
+    override fun save(tag: Tag) {
+        tags = tags.plus(tag)
+        tagsSubject.onNext(tags)
+    }
+
     override fun observeTags(): Observable<List<Tag>> {
-        return Observable.just(listOf(
-                Tag("1", "Essential", Color.parseColor("#8bc34a")),
-                Tag("2", "Fixed", Color.parseColor("#00BCD4")),
-                Tag("3", "Non-essential", Color.parseColor("#FF5722"))))
+        return tagsSubject
     }
 }

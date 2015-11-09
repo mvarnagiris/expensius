@@ -39,6 +39,6 @@ class TagsActivity : BaseActivity() {
 
         val displayType = intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as TagsPresenter.DisplayType
         val selectedTags = setOf<Tag>() // TODO: Get selected tags from extras.
-        (tagsView as TagsView).init(displayType, selectedTags)
+        tagsView.init(displayType, selectedTags)
     }
 }

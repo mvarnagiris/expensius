@@ -14,11 +14,12 @@
 
 package com.mvcoding.financius.feature.tag
 
-import java.io.Serializable
-import java.util.*
+import com.memoizrlabs.Shank
+import com.memoizrlabs.ShankModule
 
-data class Tag(
-        val id: String = UUID.randomUUID().toString(),
-        val title: String,
-        val color: Int) : Serializable {
+class TagModule(private val tag: Tag) : ShankModule {
+    override fun registerFactories() {
+        val tagsRepository = Shank.withScope(Unit::class.java).provide(TagsRepository::class.java)
+        Shank.registerFactory(TagPresenter::class.java, { TagPresenter(tag, tagsRepository) })
+    }
 }

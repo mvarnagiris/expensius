@@ -43,8 +43,8 @@ class DependencyModule(val context: Context) : ShankModule {
     }
 
     private fun introPresenter() {
-        val context = Shank.provide(Context::class.java)
-        val userSettings = Shank.provide(Settings::class.java)
+        val context = Shank.withScope(Unit::class.java).provide(Context::class.java)
+        val userSettings = Shank.withScope(Unit::class.java).provide(Settings::class.java)
 
         val introPage1 = IntroPage(ResourceImage(R.drawable.intro_1), context.getString(R.string.intro_title_1), context.getString(R.string.intro_message_1))
         val introPage2 = IntroPage(ResourceImage(R.drawable.intro_2), context.getString(R.string.intro_title_2), context.getString(R.string.intro_message_2))
@@ -57,8 +57,8 @@ class DependencyModule(val context: Context) : ShankModule {
     }
 
     private fun splashPresenter() {
-        val userSettings = Shank.provide(Settings::class.java)
-        val session = Shank.provide(Session::class.java)
+        val userSettings = Shank.withScope(Unit::class.java).provide(Settings::class.java)
+        val session = Shank.withScope(Unit::class.java).provide(Session::class.java)
         Shank.registerFactory(SplashPresenter::class.java, { SplashPresenter(userSettings, session) })
     }
 

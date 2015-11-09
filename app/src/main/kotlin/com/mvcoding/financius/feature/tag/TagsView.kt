@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.view_tags.view.saveButton
 import rx.Observable
 
 class TagsView : LinearLayout, TagsPresenter.View {
-    private val presenter: TagsPresenter? by lazy { shankWithBoundScope(TagsView::class, context)?.provide(TagsPresenter::class.java) }
+    private val presenter by lazy { shankWithBoundScope(TagsView::class, context)?.provide(TagsPresenter::class.java) }
     private val adapter = TagsAdapter()
 
     constructor(context: Context?) : super(context)
@@ -81,7 +81,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
     }
 
     override fun startTagEdit(tag: Tag) {
-        TagActivity.start(context)
+        TagActivity.start(context, tag)
     }
 
     override fun startResult(tag: Set<Tag>) {
