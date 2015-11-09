@@ -33,9 +33,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
     private val presenter: TagsPresenter? by lazy { shankWithBoundScope(TagsView::class, context)?.provide(TagsPresenter::class.java) }
     private val adapter = TagsAdapter()
 
-    private lateinit var displayType: TagsPresenter.DisplayType
-    private lateinit var selectedTags: Set<Tag>
-
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -43,8 +40,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag>) {
-        this.displayType = displayType
-        this.selectedTags = selectedTags
         ShankModuleInitializer.initializeModules(TagsModule(displayType, selectedTags))
     }
 
