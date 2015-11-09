@@ -3,7 +3,7 @@ package com.mvcoding.financius.feature.tag
 import com.mvcoding.financius.feature.Presenter
 import rx.Observable
 
-class TagPresenter(private val tag: Tag, private val tagsRepository: TagsRepository) : Presenter<TagPresenter.View>() {
+class TagPresenter(private var tag: Tag, private val tagsRepository: TagsRepository) : Presenter<TagPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
@@ -11,10 +11,14 @@ class TagPresenter(private val tag: Tag, private val tagsRepository: TagsReposit
         val titleObservable = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }
         val colorObservable = view.onColorChanged().startWith(tag.color).doOnNext { view.showColor(it) }
 
-        val tagObservable = Observable.combineLatest(idObservable, titleObservable, colorObservable,
-                { id, title, color -> Tag(id, title, color) })
+        val tagObservable = Observable.combineLatest(idObservable, titleObservable, colorObservable, { id, title, color -> Tag(id, title, color) })
+                .doOnNext { tag = it }
 
-        unsubscribeOnDetach(tagObservable.filter { validate(it, view) }.subscribe { })
+        unsubscribeOnDetach(view.onSave()
+                .withLatestFrom(tagObservable, { action, tag -> tag })
+                .filter { validate(it, view) }
+                .doOnNext { tagsRepository.save(it) }
+                .subscribe { view.startResult(it) })
     }
 
     private fun validate(tag: Tag, view: View): Boolean {

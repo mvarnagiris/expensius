@@ -82,7 +82,7 @@ class TagPresenterTest {
 
         save()
 
-        verify(view, never()).startResult(any())
+        verify(tagsRepository, never()).save(any())
         verify(view).showTitleCannotBeEmptyError()
     }
 
