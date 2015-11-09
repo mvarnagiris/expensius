@@ -20,12 +20,4 @@ data class Tag(
         val id: String = UUID.randomUUID().toString(),
         val title: String,
         val color: Int) {
-
-    fun withTitle(title: String): Tag {
-        return Tag(id, title, color)
-    }
-
-    fun witColor(color: Int): Tag {
-        return Tag(id, title, color)
-    }
 }
