@@ -19,6 +19,8 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.ColorUtils
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
@@ -34,6 +36,8 @@ import rx.Observable
 
 class TagView : LinearLayout, TagPresenter.View {
     val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
+    val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
+    val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
     var titleUpdatesAvailable = true
     var colorAnimator: ValueAnimator? = null
 
@@ -72,7 +76,7 @@ class TagView : LinearLayout, TagPresenter.View {
     override fun showColor(color: Int) {
         lobsterPicker.history = color;
         if (colorAnimator == null) {
-            setColorOnViews(color, false)
+            onTagColorUpdated(color, false)
         }
     }
 
@@ -89,7 +93,7 @@ class TagView : LinearLayout, TagPresenter.View {
             lobsterPicker.addOnColorListener(object : OnColorListener {
                 override fun onColorChanged(color: Int) {
                     it.onNext(color)
-                    setColorOnViews(color, true)
+                    onTagColorUpdated(color, true)
                 }
 
                 override fun onColorSelected(color: Int) {
@@ -108,11 +112,10 @@ class TagView : LinearLayout, TagPresenter.View {
         // TODO: Set the result
     }
 
-    fun setColorOnViews(color: Int, animate: Boolean) {
+    fun onTagColorUpdated(color: Int, animate: Boolean) {
         colorAnimator?.cancel()
         if (!animate) {
-            titleContainerView.setBackgroundColor(color)
-            toolbar.setBackgroundColor(color)
+            setColorOnViews(color)
             return
         }
 
@@ -121,12 +124,28 @@ class TagView : LinearLayout, TagPresenter.View {
         animator.setIntValues(startColor, color);
         animator.setEvaluator(ArgbEvaluator());
         animator.addUpdateListener(ValueAnimator.AnimatorUpdateListener({
-            val animatedColor = it.animatedValue as Int
-            titleContainerView.setBackgroundColor(animatedColor)
-            toolbar.setBackgroundColor(animatedColor)
+            setColorOnViews(it.animatedValue as Int)
         }))
         animator.setDuration(150);
         animator.start();
         colorAnimator = animator;
+    }
+
+    private fun setColorOnViews(color: Int) {
+        titleContainerView.setBackgroundColor(color)
+        toolbar.setBackgroundColor(color)
+
+        val textColor = calculateTextColor(color)
+        titleEditText.setTextColor(textColor)
+
+        context.toActivity().window.statusBarColor = color;
+    }
+
+    private fun calculateTextColor(color: Int): Int {
+        if (ColorUtils.calculateContrast(lightTextColor, color) > 2) {
+            return lightTextColor
+        } else {
+            return darkTextColor
+        }
     }
 }
