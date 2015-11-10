@@ -14,7 +14,10 @@
 
 package com.mvcoding.financius.feature.tag
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.support.design.widget.Snackbar
 import android.util.AttributeSet
 import android.widget.LinearLayout
@@ -32,6 +35,7 @@ import rx.Observable
 class TagView : LinearLayout, TagPresenter.View {
     val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
     var titleUpdatesAvailable = true
+    var colorAnimator: ValueAnimator? = null
 
     constructor(context: Context?) : this(context, null)
 
@@ -67,6 +71,9 @@ class TagView : LinearLayout, TagPresenter.View {
 
     override fun showColor(color: Int) {
         lobsterPicker.history = color;
+        if (colorAnimator == null) {
+            setColorOnViews(color, false)
+        }
     }
 
     override fun showTitleCannotBeEmptyError() {
@@ -82,8 +89,7 @@ class TagView : LinearLayout, TagPresenter.View {
             lobsterPicker.addOnColorListener(object : OnColorListener {
                 override fun onColorChanged(color: Int) {
                     it.onNext(color)
-                    titleContainerView.setBackgroundColor(color)
-                    toolbar.setBackgroundColor(color)
+                    setColorOnViews(color, true)
                 }
 
                 override fun onColorSelected(color: Int) {
@@ -100,5 +106,27 @@ class TagView : LinearLayout, TagPresenter.View {
     override fun startResult(tag: Tag) {
         context.toActivity().finish()
         // TODO: Set the result
+    }
+
+    fun setColorOnViews(color: Int, animate: Boolean) {
+        colorAnimator?.cancel()
+        if (!animate) {
+            titleContainerView.setBackgroundColor(color)
+            toolbar.setBackgroundColor(color)
+            return
+        }
+
+        val startColor = (titleContainerView.background as ColorDrawable).color
+        val animator = ValueAnimator();
+        animator.setIntValues(startColor, color);
+        animator.setEvaluator(ArgbEvaluator());
+        animator.addUpdateListener(ValueAnimator.AnimatorUpdateListener({
+            val animatedColor = it.animatedValue as Int
+            titleContainerView.setBackgroundColor(animatedColor)
+            toolbar.setBackgroundColor(animatedColor)
+        }))
+        animator.setDuration(150);
+        animator.start();
+        colorAnimator = animator;
     }
 }
