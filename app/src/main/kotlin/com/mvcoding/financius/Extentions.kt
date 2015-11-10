@@ -19,6 +19,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Outline
 import android.os.Build
+import android.support.design.widget.Snackbar
 import android.support.v7.internal.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewOutlineProvider
@@ -79,7 +80,7 @@ fun <T : Any> View.shankWithBoundScope(cls: KClass<T>, whenLifetimeExpires: Obse
     return Shank.withBoundScope(cls.javaClass, whenLifetimeExpires)
 }
 
-fun View.supportsLollipop(): Boolean {
+fun supportsLollipop(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
 }
 
@@ -91,4 +92,8 @@ fun View.makeOutlineProviderOval() {
             }
         }
     }
+}
+
+fun View.showSnackbar(resId: Int, duration: Int) {
+    Snackbar.make(this, resId, duration).show()
 }

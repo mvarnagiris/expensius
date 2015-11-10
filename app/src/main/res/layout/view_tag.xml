@@ -12,48 +12,70 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.financius.feature.tag.TagView
-    android:id="@+id/tagView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.financius.feature.tag.TagView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tagView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?colorPrimary"
-        android:padding="@dimen/keyline"
-        android:theme="?themeInverse">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/titleEditText"
-            style="@style/EditText.Big"
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
+        <FrameLayout
+            android:id="@+id/titleContainerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title" />
+            android:background="?colorPrimary"
+            android:elevation="@dimen/elevation_toolbar"
+            android:padding="@dimen/keyline"
+            android:theme="?themeInverse"
+            tools:ignore="UnusedAttribute">
+
+            <EditText
+                android:id="@+id/titleEditText"
+                style="@style/EditText.Big"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/title" />
+        </FrameLayout>
+
+        <com.larswerkman.lobsterpicker.LobsterPicker
+            android:id="@+id/lobsterPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/space_normal"
+            app:color_history_enabled="true" />
+
+        <com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
+            android:id="@+id/lobsterShadeSlider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/space_normal" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/buttonBarView"
+        style="@style/ButtonBar">
+
+        <Button
+            android:id="@+id/saveButton"
+            style="@style/Button.Flat.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:text="@string/save" />
     </FrameLayout>
-
-    <com.larswerkman.lobsterpicker.LobsterPicker
-        android:id="@+id/lobsterPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/space_normal"
-        app:color_history_enabled="true" />
-
-    <com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
-        android:id="@+id/lobsterShadeSlider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/space_normal" />
-
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/save" />
 
 </com.mvcoding.financius.feature.tag.TagView>

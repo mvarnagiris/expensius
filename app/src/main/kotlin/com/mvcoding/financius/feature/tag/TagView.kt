@@ -15,23 +15,22 @@
 package com.mvcoding.financius.feature.tag
 
 import android.content.Context
+import android.support.design.widget.Snackbar
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.textChanges
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.memoizrlabs.ShankModuleInitializer
+import com.mvcoding.financius.R
 import com.mvcoding.financius.shankWithBoundScope
+import com.mvcoding.financius.showSnackbar
 import com.mvcoding.financius.toActivity
-import kotlinx.android.synthetic.view_tag.view.lobsterPicker
-import kotlinx.android.synthetic.view_tag.view.lobsterShadeSlider
-import kotlinx.android.synthetic.view_tag.view.saveButton
-import kotlinx.android.synthetic.view_tag.view.titleEditText
+import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
 
 class TagView : LinearLayout, TagPresenter.View {
     val presenter by lazy { shankWithBoundScope(TagView::class, context)?.provide(TagPresenter::class.java) }
-
     var titleUpdatesAvailable = true
 
     constructor(context: Context?) : this(context, null)
@@ -71,7 +70,7 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun showTitleCannotBeEmptyError() {
-        throw UnsupportedOperationException()
+        showSnackbar(R.string.error_title_empty, Snackbar.LENGTH_LONG)
     }
 
     override fun onTitleChanged(): Observable<String> {
@@ -83,6 +82,8 @@ class TagView : LinearLayout, TagPresenter.View {
             lobsterPicker.addOnColorListener(object : OnColorListener {
                 override fun onColorChanged(color: Int) {
                     it.onNext(color)
+                    titleContainerView.setBackgroundColor(color)
+                    toolbar.setBackgroundColor(color)
                 }
 
                 override fun onColorSelected(color: Int) {
