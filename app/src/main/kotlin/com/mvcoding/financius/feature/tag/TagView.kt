@@ -23,14 +23,14 @@ import com.jakewharton.rxbinding.widget.textChanges
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.R
-import com.mvcoding.financius.extension.shankWithBoundScope
+import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import com.mvcoding.financius.extension.showSnackbar
 import com.mvcoding.financius.extension.toActivity
 import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
 
 class TagView : LinearLayout, TagPresenter.View {
-    val presenter by lazy { shankWithBoundScope(TagView::class, context)?.provide(TagPresenter::class.java) }
+    val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
     var titleUpdatesAvailable = true
 
     constructor(context: Context?) : this(context, null)

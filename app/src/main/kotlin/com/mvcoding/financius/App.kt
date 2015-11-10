@@ -16,10 +16,12 @@ package com.mvcoding.financius
 
 import android.app.Application
 import com.memoizrlabs.ShankModuleInitializer
+import com.mvcoding.financius.feature.intro.IntroModule
+import com.mvcoding.financius.feature.splash.SplashModule
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        ShankModuleInitializer.initializeModules(DependencyModule(this))
+        ShankModuleInitializer.initializeModules(AppModule(this), SplashModule(), IntroModule())
     }
 }

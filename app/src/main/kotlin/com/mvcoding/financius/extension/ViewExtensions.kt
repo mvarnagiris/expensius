@@ -1,6 +1,5 @@
 package com.mvcoding.financius.extension
 
-import android.content.Context
 import android.graphics.Outline
 import android.support.design.widget.Snackbar
 import android.view.View
@@ -8,12 +7,13 @@ import android.view.ViewOutlineProvider
 import com.memoizrlabs.Shank
 import kotlin.reflect.KClass
 
-fun <T : Any> View.shankWithBoundScope(cls: KClass<T>, context: Context): Shank.ScopedCache? {
+fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>): T? {
     if (isInEditMode) {
         return null
     }
 
-    return Shank.withBoundScope(cls.javaClass, context.toActivity().observeFinish().map { Any() })
+    val activity = context.toActivity()
+    return Shank.withBoundScope(activity.javaClass, activity.observeFinish().map { Any() }).provide(cls.java)
 }
 
 fun View.makeOutlineProviderOval() {

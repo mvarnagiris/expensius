@@ -16,10 +16,11 @@ package com.mvcoding.financius.feature.tag
 
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
+import com.mvcoding.financius.extension.provideSingleton
 
 class TagsModule(private val displayType: TagsPresenter.DisplayType, private val selectedTags: Set<Tag>) : ShankModule {
     override fun registerFactories() {
-        val tagsRepository = Shank.withScope(Unit::class.java).provide(TagsRepository::class.java)
+        val tagsRepository = provideSingleton(TagsRepository::class)
         Shank.registerFactory(TagsPresenter::class.java, { TagsPresenter(tagsRepository, displayType, selectedTags) })
     }
 }

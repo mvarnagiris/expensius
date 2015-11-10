@@ -12,15 +12,23 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.tag
+package com.mvcoding.financius
 
+import android.content.Context
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
-import com.mvcoding.financius.extension.provideSingleton
+import com.mvcoding.financius.feature.tag.PersistedTagsRepository
+import com.mvcoding.financius.feature.tag.TagsRepository
 
-class TagModule(private val tag: Tag) : ShankModule {
+class AppModule(val context: Context) : ShankModule {
+    init {
+        Shank.registerFactory(Context::class.java, { context })
+    }
+
     override fun registerFactories() {
-        val tagsRepository = provideSingleton(TagsRepository::class)
-        Shank.registerFactory(TagPresenter::class.java, { TagPresenter(tag, tagsRepository) })
+        Shank.registerFactory(Settings::class.java, { UserSettings() })
+        Shank.registerFactory(Session::class.java, { UserSession() })
+        Shank.registerFactory(TagsRepository::class.java, { PersistedTagsRepository() })
     }
 }
+

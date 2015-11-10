@@ -19,7 +19,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
-import com.mvcoding.financius.extension.shankWithBoundScope
+import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import com.mvcoding.financius.extension.toActivity
 import com.mvcoding.financius.feature.login.LoginActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.view_intro.view.viewPager
 import rx.Observable
 
 class IntroView : LinearLayout, IntroPresenter.View<Int> {
-    val presenter = shankWithBoundScope(IntroView::class, context)?.provide(IntroPresenter::class.java)
+    val presenter = provideActivityScopedSingleton(IntroPresenter::class)
     val adapter = IntroPagesAdapter()
 
     constructor(context: Context?) : this(context, null)

@@ -23,14 +23,14 @@ import android.widget.LinearLayout.GONE
 import android.widget.LinearLayout.VISIBLE
 import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer
-import com.mvcoding.financius.extension.shankWithBoundScope
+import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import kotlinx.android.synthetic.view_tags.view.buttonBarView
 import kotlinx.android.synthetic.view_tags.view.recyclerView
 import kotlinx.android.synthetic.view_tags.view.saveButton
 import rx.Observable
 
 class TagsView : LinearLayout, TagsPresenter.View {
-    private val presenter by lazy { shankWithBoundScope(TagsView::class, context)?.provide(TagsPresenter::class.java) }
+    private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class) }
     private val adapter = TagsAdapter()
 
     constructor(context: Context?) : super(context)
