@@ -15,6 +15,7 @@
 <resources>
     <declare-styleable name="Theme">
         <attr name="themeInverse" format="reference" />
+        <attr name="colorBackgroundPrimary" format="color" />
         <attr name="colorBackgroundSecondary" format="color" />
     </declare-styleable>
 </resources>

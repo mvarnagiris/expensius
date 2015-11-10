@@ -123,7 +123,7 @@
         <item name="android:layout_height">?actionBarSize</item>
         <item name="android:gravity">right</item>
         <item name="android:elevation" tools:targetApi="lollipop">@dimen/elevation_fab</item>
-        <item name="android:background">?colorPrimary</item>
+        <item name="android:background">?colorBackgroundPrimary</item>
     </style>
 
     <!-- CardView -->
