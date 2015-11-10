@@ -22,8 +22,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
 import android.view.View
-import com.mvcoding.financius.isActivity
-import com.mvcoding.financius.toActivity
+import com.mvcoding.financius.extension.isActivity
+import com.mvcoding.financius.extension.toActivity
 import java.io.Serializable
 import kotlin.reflect.KClass
 

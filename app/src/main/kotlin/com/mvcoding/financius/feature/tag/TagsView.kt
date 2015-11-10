@@ -23,7 +23,7 @@ import android.widget.LinearLayout.GONE
 import android.widget.LinearLayout.VISIBLE
 import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer
-import com.mvcoding.financius.shankWithBoundScope
+import com.mvcoding.financius.extension.shankWithBoundScope
 import kotlinx.android.synthetic.view_tags.view.buttonBarView
 import kotlinx.android.synthetic.view_tags.view.recyclerView
 import kotlinx.android.synthetic.view_tags.view.saveButton

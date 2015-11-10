@@ -17,10 +17,10 @@ package com.mvcoding.financius.feature.splash
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import com.mvcoding.financius.extension.shankWithBoundScope
+import com.mvcoding.financius.extension.toActivity
 import com.mvcoding.financius.feature.intro.IntroActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
-import com.mvcoding.financius.shankWithBoundScope
-import com.mvcoding.financius.toActivity
 
 class SplashView : FrameLayout, SplashPresenter.View {
     private val presenter = shankWithBoundScope(SplashView::class, context)?.provide(SplashPresenter::class.java)

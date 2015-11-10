@@ -20,7 +20,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.mvcoding.financius.R
-import com.mvcoding.financius.makeOutlineProviderOval
+import com.mvcoding.financius.extension.makeOutlineProviderOval
 import kotlinx.android.synthetic.item_view_tag.view.colorImageView
 import kotlinx.android.synthetic.item_view_tag.view.titleTextView
 

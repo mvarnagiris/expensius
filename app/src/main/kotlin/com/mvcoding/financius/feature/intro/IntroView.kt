@@ -19,10 +19,10 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
+import com.mvcoding.financius.extension.shankWithBoundScope
+import com.mvcoding.financius.extension.toActivity
 import com.mvcoding.financius.feature.login.LoginActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
-import com.mvcoding.financius.shankWithBoundScope
-import com.mvcoding.financius.toActivity
 import kotlinx.android.synthetic.view_intro.view.loginButton
 import kotlinx.android.synthetic.view_intro.view.skipButton
 import kotlinx.android.synthetic.view_intro.view.viewPager

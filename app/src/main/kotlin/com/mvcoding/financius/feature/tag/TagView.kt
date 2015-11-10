@@ -23,9 +23,9 @@ import com.jakewharton.rxbinding.widget.textChanges
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.R
-import com.mvcoding.financius.shankWithBoundScope
-import com.mvcoding.financius.showSnackbar
-import com.mvcoding.financius.toActivity
+import com.mvcoding.financius.extension.shankWithBoundScope
+import com.mvcoding.financius.extension.showSnackbar
+import com.mvcoding.financius.extension.toActivity
 import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
 
