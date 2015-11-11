@@ -21,6 +21,8 @@ import android.graphics.drawable.ColorDrawable
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.ColorUtils
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
@@ -132,11 +134,17 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     private fun setColorOnViews(color: Int) {
+        val toolbarView = toolbar as Toolbar
+
         titleContainerView.setBackgroundColor(color)
-        toolbar.setBackgroundColor(color)
+        toolbarView.setBackgroundColor(color)
 
         val textColor = calculateTextColor(color)
         titleEditText.setTextColor(textColor)
+        toolbarView.setTitleTextColor(textColor)
+        val navigationIcon = DrawableCompat.wrap(toolbarView.navigationIcon.mutate())
+        DrawableCompat.setTint(navigationIcon, textColor)
+        toolbarView.navigationIcon = navigationIcon
 
         context.toActivity().window.statusBarColor = color;
     }
