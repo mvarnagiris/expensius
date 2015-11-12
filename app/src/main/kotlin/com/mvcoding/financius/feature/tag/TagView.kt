@@ -32,6 +32,7 @@ import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import com.mvcoding.financius.extension.showSnackbar
+import com.mvcoding.financius.extension.supportsLollipop
 import com.mvcoding.financius.extension.toActivity
 import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
@@ -79,6 +80,18 @@ class TagView : LinearLayout, TagPresenter.View {
         lobsterPicker.history = color;
         if (colorAnimator == null) {
             onTagColorUpdated(color, false)
+
+            val colorAdapter = lobsterPicker.colorAdapter
+            colorAdapter.size().rangeTo(0)
+                    .flatMap {
+                        colorPosition ->
+                        colorAdapter.shades(colorPosition).rangeTo(0).map { Pair(colorPosition, it) }
+                    }
+                    .find { colorAdapter.color(it.first, it.second) == color }
+                    ?.let {
+                        lobsterPicker.colorPosition = it.first
+                        lobsterShadeSlider.shadePosition = it.second
+                    }
         }
     }
 
@@ -146,7 +159,9 @@ class TagView : LinearLayout, TagPresenter.View {
         DrawableCompat.setTint(navigationIcon, textColor)
         toolbarView.navigationIcon = navigationIcon
 
-        context.toActivity().window.statusBarColor = color;
+        if (supportsLollipop()) {
+            context.toActivity().window.statusBarColor = color;
+        }
     }
 
     private fun calculateTextColor(color: Int): Int {
