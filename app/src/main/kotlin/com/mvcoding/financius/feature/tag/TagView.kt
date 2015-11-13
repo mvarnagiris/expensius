@@ -24,6 +24,7 @@ import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.textChanges
@@ -82,10 +83,12 @@ class TagView : LinearLayout, TagPresenter.View {
             onTagColorUpdated(color, false)
 
             val colorAdapter = lobsterPicker.colorAdapter
-            colorAdapter.size().rangeTo(0)
+            Log.d("TAG", "Colors: ${lobsterPicker.colorAdapter.size()}")
+            colorAdapter.size().minus(1)
+                    .downTo(0)
                     .flatMap {
                         colorPosition ->
-                        colorAdapter.shades(colorPosition).rangeTo(0).map { Pair(colorPosition, it) }
+                        colorAdapter.shades(colorPosition).minus(1).downTo(0).map { Pair(colorPosition, it) }
                     }
                     .find { colorAdapter.color(it.first, it.second) == color }
                     ?.let {
