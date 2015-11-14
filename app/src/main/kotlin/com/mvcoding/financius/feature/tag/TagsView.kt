@@ -17,19 +17,22 @@ package com.mvcoding.financius.feature.tag
 import android.content.Context
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.LinearLayout.GONE
 import android.widget.LinearLayout.VISIBLE
 import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer
+import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import kotlinx.android.synthetic.view_tags.view.buttonBarView
-import kotlinx.android.synthetic.view_tags.view.recyclerView
 import kotlinx.android.synthetic.view_tags.view.saveButton
 import rx.Observable
 
 class TagsView : LinearLayout, TagsPresenter.View {
+    private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
+
     private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class) }
     private val adapter = TagsAdapter()
 
