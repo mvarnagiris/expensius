@@ -3,7 +3,7 @@ package com.mvcoding.financius.extension
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.support.v7.internal.view.ContextThemeWrapper
+import android.support.v7.view.ContextThemeWrapper
 
 fun Context.toActivity(): Activity {
     when (this) {
