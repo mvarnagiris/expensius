@@ -212,7 +212,7 @@
     <color name="blue_grey_700">#455A64</color>
     <color name="blue_grey_800">#37474F</color>
     <color name="blue_grey_900">#263238</color>
-    <array name="blue_grays">
+    <array name="blue_greys">
         <item>@color/blue_grey_50</item>
         <item>@color/blue_grey_100</item>
         <item>@color/blue_grey_200</item>
