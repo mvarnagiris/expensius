@@ -18,24 +18,15 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.ColorUtils
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import android.util.Pair
 import android.widget.LinearLayout
-import com.jakewharton.rxbinding.view.clicks
-import com.jakewharton.rxbinding.widget.textChanges
-import com.larswerkman.lobsterpicker.OnColorListener
-import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import com.mvcoding.financius.extension.showSnackbar
 import com.mvcoding.financius.extension.supportsLollipop
 import com.mvcoding.financius.extension.toActivity
 import kotlinx.android.synthetic.view_tag.view.*
-import rx.Observable
 
 class TagView : LinearLayout, TagPresenter.View {
     val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
@@ -170,6 +161,37 @@ class TagView : LinearLayout, TagPresenter.View {
             return lightTextColor
         } else {
             return darkTextColor
+        }
+    }
+
+    private class MaterialColorAdapter(context: Context) : ColorAdapter {
+        val colors: Array<Int>
+
+        init {
+            val red = context.resources.getIntArray(R.array.reds)
+            val deepPurple = context.resources.getIntArray(R.array.reds)
+            val lightBlue = context.resources.getIntArray(R.array.reds)
+            val green = context.resources.getIntArray(R.array.reds)
+            val yellow = context.resources.getIntArray(R.array.reds)
+            val deepOrange = context.resources.getIntArray(R.array.reds)
+            val blueGrey = context.resources.getIntArray(R.array.reds)
+            val pink = context.resources.getIntArray(R.array.reds)
+            val indigo = context.resources.getIntArray(R.array.reds)
+            val cyan = context.resources.getIntArray(R.array.reds)
+
+            colors = arrayOf()
+        }
+
+        override fun size(): Int {
+            throw UnsupportedOperationException()
+        }
+
+        override fun shades(position: Int): Int {
+            throw UnsupportedOperationException()
+        }
+
+        override fun color(position: Int, shade: Int): Int {
+            throw UnsupportedOperationException()
         }
     }
 }
