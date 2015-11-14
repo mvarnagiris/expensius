@@ -15,22 +15,25 @@
 package com.mvcoding.financius.feature.intro
 
 import android.content.Context
+import android.support.v4.view.ViewPager
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
+import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import com.mvcoding.financius.extension.toActivity
 import com.mvcoding.financius.feature.login.LoginActivity
 import com.mvcoding.financius.feature.overview.OverviewActivity
 import kotlinx.android.synthetic.view_intro.view.loginButton
 import kotlinx.android.synthetic.view_intro.view.skipButton
-import kotlinx.android.synthetic.view_intro.view.viewPager
 import rx.Observable
 
 class IntroView : LinearLayout, IntroPresenter.View<Int> {
-    val presenter = provideActivityScopedSingleton(IntroPresenter::class)
-    val adapter = IntroPagesAdapter()
+    private val viewPager by lazy { findViewById(R.id.viewPager) as ViewPager }
+
+    private val presenter = provideActivityScopedSingleton(IntroPresenter::class)
+    private val adapter = IntroPagesAdapter()
 
     constructor(context: Context?) : this(context, null)
 

@@ -15,10 +15,16 @@
 package com.mvcoding.financius.feature.tag
 
 import android.graphics.Color
+import com.mvcoding.financius.database.Database
+import com.mvcoding.financius.database.select
+import com.mvcoding.financius.database.table.TagsTable
+import com.mvcoding.financius.extension.provideSingleton
 import rx.Observable
 import rx.lang.kotlin.BehaviourSubject
 
-class PersistedTagsRepository : TagsRepository {
+class PersistedTagsRepository(private val database: Database) : TagsRepository {
+    private val tagsTable = provideSingleton(TagsTable::class)
+
     private var tags = listOf(
             Tag("1", "Essential", Color.parseColor("#ff8bc34a")),
             Tag("2", "Fixed", Color.parseColor("#ff00bcd4")),
@@ -31,6 +37,6 @@ class PersistedTagsRepository : TagsRepository {
     }
 
     override fun observeTags(): Observable<List<Tag>> {
-        return tagsSubject
+        return database.load(select("").from("")).map { tags }
     }
 }
