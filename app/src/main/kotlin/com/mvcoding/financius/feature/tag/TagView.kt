@@ -45,14 +45,14 @@ import kotlinx.android.synthetic.view_tag.view.toolbar
 import rx.Observable
 
 class TagView : LinearLayout, TagPresenter.View {
-    val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
-    val lobsterShadeSlider by lazy { findViewById(R.id.lobsterShadeSlider) as LobsterShadeSlider }
+    private val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
+    private val lobsterShadeSlider by lazy { findViewById(R.id.lobsterShadeSlider) as LobsterShadeSlider }
 
-    val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
-    val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
-    val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
-    var titleUpdatesAvailable = true
-    var colorAnimator: ValueAnimator? = null
+    private val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
+    private val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
+    private val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
+    private var titleUpdatesAvailable = true
+    private var colorAnimator: ValueAnimator? = null
 
     constructor(context: Context?) : this(context, null)
 

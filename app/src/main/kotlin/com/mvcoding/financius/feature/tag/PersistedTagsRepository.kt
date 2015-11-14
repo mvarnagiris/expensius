@@ -19,11 +19,11 @@ import rx.Observable
 import rx.lang.kotlin.BehaviourSubject
 
 class PersistedTagsRepository : TagsRepository {
-    var tags = listOf(
-            Tag("1", "Essential", Color.parseColor("#8bc34a")),
-            Tag("2", "Fixed", Color.parseColor("#00BCD4")),
-            Tag("3", "Non-essential", Color.parseColor("#FF5722")))
-    val tagsSubject = BehaviourSubject(tags)
+    private var tags = listOf(
+            Tag("1", "Essential", Color.parseColor("#ff8bc34a")),
+            Tag("2", "Fixed", Color.parseColor("#ff00bcd4")),
+            Tag("3", "Non-essential", Color.parseColor("#ffff5722")))
+    private val tagsSubject = BehaviourSubject(tags)
 
     override fun save(tag: Tag) {
         tags = tags.plus(tag)
