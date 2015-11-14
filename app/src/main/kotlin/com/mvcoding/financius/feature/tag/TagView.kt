@@ -29,17 +29,25 @@ import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.textChanges
 import com.larswerkman.lobsterpicker.ColorAdapter
+import com.larswerkman.lobsterpicker.LobsterPicker
 import com.larswerkman.lobsterpicker.OnColorListener
+import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
 import com.memoizrlabs.ShankModuleInitializer
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import com.mvcoding.financius.extension.showSnackbar
 import com.mvcoding.financius.extension.supportsLollipop
 import com.mvcoding.financius.extension.toActivity
-import kotlinx.android.synthetic.view_tag.view.*
+import kotlinx.android.synthetic.view_tag.view.saveButton
+import kotlinx.android.synthetic.view_tag.view.titleContainerView
+import kotlinx.android.synthetic.view_tag.view.titleEditText
+import kotlinx.android.synthetic.view_tag.view.toolbar
 import rx.Observable
 
 class TagView : LinearLayout, TagPresenter.View {
+    val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
+    val lobsterShadeSlider by lazy { findViewById(R.id.lobsterShadeSlider) as LobsterShadeSlider }
+
     val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
     val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
     val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
