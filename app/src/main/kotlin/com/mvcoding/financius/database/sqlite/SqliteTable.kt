@@ -12,12 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database
+package com.mvcoding.financius.database.sqlite
 
-open class Query {
-    class Select(private val columns: Array<out Column>) {
-        fun from(table: Table): From = From(this, table)
+import com.mvcoding.financius.database.Table
+
+abstract class SqliteTable(override val name: String) : Table {
+    fun createScript(): String {
+        return "create table $name (${columns().joinToString { it.createScript() }})"
     }
 
-    class From(private val select: Select, private val table: Table) : Query()
+    abstract fun columns(): Array<SqliteColumn>
 }

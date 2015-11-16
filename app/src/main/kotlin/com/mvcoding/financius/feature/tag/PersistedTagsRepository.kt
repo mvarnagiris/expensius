@@ -14,29 +14,41 @@
 
 package com.mvcoding.financius.feature.tag
 
-import android.graphics.Color
+import android.database.Cursor
 import com.mvcoding.financius.database.Database
-import com.mvcoding.financius.database.select
-import com.mvcoding.financius.database.table.TagsTable
-import com.mvcoding.financius.extension.provideSingleton
+import com.mvcoding.financius.database.DatabaseQueryResult
+import com.mvcoding.financius.database.sqlite.TagsTable
+import com.mvcoding.financius.extension.select
 import rx.Observable
-import rx.lang.kotlin.BehaviourSubject
 
-class PersistedTagsRepository(private val database: Database) : TagsRepository {
-    private val tagsTable = provideSingleton(TagsTable::class)
-
-    private var tags = listOf(
-            Tag("1", "Essential", Color.parseColor("#ff8bc34a")),
-            Tag("2", "Fixed", Color.parseColor("#ff00bcd4")),
-            Tag("3", "Non-essential", Color.parseColor("#ffff5722")))
-    private val tagsSubject = BehaviourSubject(tags)
-
+class PersistedTagsRepository(private val database: Database, private val tagsTable: TagsTable) : TagsRepository {
     override fun save(tag: Tag) {
-        tags = tags.plus(tag)
-        tagsSubject.onNext(tags)
+        //        database.save(tagsTable, convertToDatabaseRecord(tag))
     }
 
     override fun observeTags(): Observable<List<Tag>> {
-        return database.load(select("").from("")).map { tags }
+        return database.load(select(tagsTable.columns()).from(tagsTable)).map { convertToTags(it) }
+    }
+
+    //    private fun convertToDatabaseRecord(tag: Tag): DatabaseRecord {
+    //        return
+    //    }
+
+    private fun convertToTags(databaseQueryResult: DatabaseQueryResult): List<Tag> {
+        val tags = arrayListOf<Tag>()
+        //        if (cursor?.moveToFirst() ?: false) {
+        //            do {
+        //                tags.add(convertToTag(cursor!!))
+        //            } while (cursor!!.moveToNext())
+        //        }
+
+        return tags
+    }
+
+    private fun convertToTag(cursor: Cursor): Tag {
+        val id = cursor.getString(cursor.getColumnIndex(tagsTable.id.name))
+        val title = cursor.getString(cursor.getColumnIndex(tagsTable.title.name))
+        val color = cursor.getInt(cursor.getColumnIndex(tagsTable.color.name))
+        return Tag(id, title, color)
     }
 }

@@ -12,16 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.table
+package com.mvcoding.financius.database.sqlite
 
-internal fun column(table: Table, name: String, type: Column.Type, defaultValue: String = ""): Column {
-    return Column("${table.name}_$name", type, defaultValue)
-}
+import com.mvcoding.financius.database.Column
 
-data class Column(
-        val name: String,
-        private val type: Column.Type,
-        private val defaultValue: String = "") {
+class SqliteColumn(
+        override val name: String,
+        private val type: SqliteColumn.Type,
+        private val defaultValue: String = "") : Column {
 
     fun createScript() = "$name $type ${if (defaultValue.isBlank()) "" else "default $defaultValue"}"
 

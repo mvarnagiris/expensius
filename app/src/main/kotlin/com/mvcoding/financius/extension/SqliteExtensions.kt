@@ -12,13 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.table
+package com.mvcoding.financius.extension
 
-class TagsTable : ModelTable("tags") {
-    val title = column(this, "title", Column.Type.Text);
-    val color = column(this, "color", Column.Type.Integer, "0");
+import com.mvcoding.financius.database.Query
+import com.mvcoding.financius.database.sqlite.SqliteColumn
+import com.mvcoding.financius.database.sqlite.SqliteTable
 
-    override fun modelColumns(): Array<Column> {
-        return arrayOf(title, color)
-    }
+fun column(table: SqliteTable, name: String, type: SqliteColumn.Type, defaultValue: String = ""): SqliteColumn {
+    return SqliteColumn("${table.name}_$name", type, defaultValue)
 }
+
+fun select(columns: Array<SqliteColumn>): Query.Select = Query.Select(columns);

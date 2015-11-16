@@ -12,12 +12,21 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database
+package com.mvcoding.financius.database.sqlite
 
-open class Query {
-    class Select(private val columns: Array<out Column>) {
-        fun from(table: Table): From = From(this, table)
+import com.mvcoding.financius.extension.column
+
+abstract class SqliteModelTable(name: String) : SqliteTable(name) {
+    val id = column(this, "id", SqliteColumn.Type.TextPrimaryKey);
+    val modelState = column(this, "modelState", SqliteColumn.Type.Text, ModelState.None.name);
+
+    override fun columns(): Array<SqliteColumn> {
+        return arrayOf(id, modelState).plus(modelColumns())
     }
 
-    class From(private val select: Select, private val table: Table) : Query()
+    abstract fun modelColumns(): Array<SqliteColumn>
+
+    enum class ModelState {
+        None, Deleted
+    }
 }

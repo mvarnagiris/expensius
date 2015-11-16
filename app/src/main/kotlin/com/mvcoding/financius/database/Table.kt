@@ -14,10 +14,7 @@
 
 package com.mvcoding.financius.database
 
-open class Query {
-    class Select(private val columns: Array<out Column>) {
-        fun from(table: Table): From = From(this, table)
-    }
 
-    class From(private val select: Select, private val table: Table) : Query()
+interface Table {
+    val name: String
 }
