@@ -12,15 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.tag
+package com.mvcoding.financius.database.sqlite
 
-import com.mvcoding.financius.ModelState
-import java.io.Serializable
-import java.util.*
+import android.content.ContentValues
+import com.mvcoding.financius.database.DatabaseRecord
 
-data class Tag(
-        val id: String = UUID.randomUUID().toString(),
-        val modelState: ModelState = ModelState.None,
-        val title: String,
-        val color: Int) : Serializable {
-}
+class ContentValuesDatabaseRecord(val contentValues: ContentValues) : DatabaseRecord

@@ -17,4 +17,4 @@ package com.mvcoding.financius.database.sqlite
 import android.database.Cursor
 import com.mvcoding.financius.database.DatabaseQueryResult
 
-data class CursorDatabaseQueryResult(val cursor: Cursor) : DatabaseQueryResult
+abstract class CursorDatabaseQueryResult<T>(val cursor: Cursor) : DatabaseQueryResult<T>

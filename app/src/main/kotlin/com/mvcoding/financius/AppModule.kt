@@ -17,7 +17,9 @@ package com.mvcoding.financius
 import android.content.Context
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
-import com.mvcoding.financius.feature.tag.PersistedTagsRepository
+import com.mvcoding.financius.database.sqlite.SqliteDatabase
+import com.mvcoding.financius.database.sqlite.TagsTable
+import com.mvcoding.financius.feature.tag.DatabaseTagsRepository
 import com.mvcoding.financius.feature.tag.TagsRepository
 
 class AppModule(val context: Context) : ShankModule {
@@ -28,7 +30,12 @@ class AppModule(val context: Context) : ShankModule {
     override fun registerFactories() {
         Shank.registerFactory(Settings::class.java, { UserSettings() })
         Shank.registerFactory(Session::class.java, { UserSession() })
-        Shank.registerFactory(TagsRepository::class.java, { PersistedTagsRepository() })
+        tagsRepository()
+    }
+
+    private fun tagsRepository() {
+        val database = SqliteDatabase()
+        val tagsTable = TagsTable();
+        Shank.registerFactory(TagsRepository::class.java, { DatabaseTagsRepository(database, tagsTable) })
     }
 }
-

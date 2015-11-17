@@ -14,4 +14,6 @@
 
 package com.mvcoding.financius.database
 
-interface DatabaseQueryResult
+interface DatabaseQueryResult<T> {
+    fun getResult(): T
+}

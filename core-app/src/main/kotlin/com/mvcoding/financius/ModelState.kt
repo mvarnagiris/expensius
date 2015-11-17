@@ -12,15 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.tag
+package com.mvcoding.financius
 
-import com.mvcoding.financius.ModelState
-import java.io.Serializable
-import java.util.*
-
-data class Tag(
-        val id: String = UUID.randomUUID().toString(),
-        val modelState: ModelState = ModelState.None,
-        val title: String,
-        val color: Int) : Serializable {
+enum class ModelState {
+    None, Deleted
 }

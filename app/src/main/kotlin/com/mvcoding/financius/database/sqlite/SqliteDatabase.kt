@@ -12,15 +12,17 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.tag
+package com.mvcoding.financius.database.sqlite
 
-import com.mvcoding.financius.ModelState
-import java.io.Serializable
-import java.util.*
+import com.mvcoding.financius.database.*
+import rx.Observable
 
-data class Tag(
-        val id: String = UUID.randomUUID().toString(),
-        val modelState: ModelState = ModelState.None,
-        val title: String,
-        val color: Int) : Serializable {
+class SqliteDatabase : Database {
+    override fun save(table: Table, databaseRecord: DatabaseRecord) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun <T> load(query: Query): Observable<DatabaseQueryResult<T>> {
+        throw UnsupportedOperationException()
+    }
 }

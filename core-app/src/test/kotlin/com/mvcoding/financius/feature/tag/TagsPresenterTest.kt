@@ -23,7 +23,7 @@ import rx.subjects.PublishSubject
 class TagsPresenterTest {
     val tagSelectedSubject = PublishSubject.create<Tag>()
     val saveSubject = PublishSubject.create<Unit>()
-    val tagsRepository = mock(TagsRepository::class.java)
+    private val tagsRepository = mock(TagsRepository::class.java)
     val view = mock(TagsPresenter.View::class.java)
 
     @Before
@@ -48,7 +48,7 @@ class TagsPresenterTest {
 
         presenter.onAttachView(view)
 
-        verify(view, never()).showSelectedTags(any())
+        verify(view, never()).showSelectedTags(anySetOf(Tag::class.java))
     }
 
     @Test

@@ -20,7 +20,6 @@ class SqliteColumn(
         override val name: String,
         private val type: SqliteColumn.Type,
         private val defaultValue: String = "") : Column {
-
     fun createScript() = "$name $type ${if (defaultValue.isBlank()) "" else "default $defaultValue"}"
 
     enum class Type(val dataType: String) {

@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.database.sqlite
 
+import com.mvcoding.financius.ModelState
 import com.mvcoding.financius.extension.column
 
 abstract class SqliteModelTable(name: String) : SqliteTable(name) {
@@ -25,8 +26,4 @@ abstract class SqliteModelTable(name: String) : SqliteTable(name) {
     }
 
     abstract fun modelColumns(): Array<SqliteColumn>
-
-    enum class ModelState {
-        None, Deleted
-    }
 }
