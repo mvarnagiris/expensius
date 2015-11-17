@@ -14,12 +14,17 @@
 
 package com.mvcoding.financius.database.sqlite
 
-import com.mvcoding.financius.database.*
+import com.mvcoding.financius.database.Database
+import com.mvcoding.financius.database.DatabaseQueryResult
+import com.mvcoding.financius.database.Query
+import com.mvcoding.financius.database.Table
+import com.squareup.sqlbrite.BriteDatabase
 import rx.Observable
 
-class SqliteDatabase : Database {
-    override fun save(table: Table, databaseRecord: DatabaseRecord) {
-        throw UnsupportedOperationException()
+class SqliteDatabase(private val database: BriteDatabase) : Database<ContentValuesDatabaseRecord, Query> {
+    override fun save(table: Table, databaseRecord: ContentValuesDatabaseRecord) {
+        // TODO: Do update or insert.
+        database.insert(table.name, databaseRecord.contentValues)
     }
 
     override fun <T> load(query: Query): Observable<DatabaseQueryResult<T>> {

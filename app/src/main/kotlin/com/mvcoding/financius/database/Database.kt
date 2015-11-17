@@ -16,7 +16,7 @@ package com.mvcoding.financius.database
 
 import rx.Observable
 
-interface Database {
-    fun save(table: Table, databaseRecord: DatabaseRecord)
-    fun <T> load(query: Query): Observable<DatabaseQueryResult<T>>
+interface Database<DR : DatabaseRecord, Q : Query> {
+    fun save(table: Table, databaseRecord: DR)
+    fun <T> load(query: Q): Observable<DatabaseQueryResult<T>>
 }
