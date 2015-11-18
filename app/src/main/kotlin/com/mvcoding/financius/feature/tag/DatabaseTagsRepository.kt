@@ -15,12 +15,14 @@
 package com.mvcoding.financius.feature.tag
 
 import com.mvcoding.financius.database.Database
+import com.mvcoding.financius.database.DatabaseRecord
+import com.mvcoding.financius.database.Query
 import com.mvcoding.financius.database.sqlite.TagsTable
 import com.mvcoding.financius.extension.select
 import com.mvcoding.financius.extension.toDatabaseRecord
 import rx.Observable
 
-class DatabaseTagsRepository(private val database: Database, private val tagsTable: TagsTable) : TagsRepository {
+class DatabaseTagsRepository(private val database: Database<DatabaseRecord, Query>, private val tagsTable: TagsTable) : TagsRepository {
     override fun save(tag: Tag) {
         database.save(tagsTable, tag.toDatabaseRecord(tagsTable))
     }
