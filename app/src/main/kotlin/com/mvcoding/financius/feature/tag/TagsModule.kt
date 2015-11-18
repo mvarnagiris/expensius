@@ -20,7 +20,7 @@ import com.mvcoding.financius.extension.provideSingleton
 
 class TagsModule(private val displayType: TagsPresenter.DisplayType, private val selectedTags: Set<Tag>) : ShankModule {
     override fun registerFactories() {
-        val tagsRepository = provideSingleton(TagsRepository::class)
+        val tagsRepository = provideSingleton(TagsCache::class)
         Shank.registerFactory(TagsPresenter::class.java, { TagsPresenter(tagsRepository, displayType, selectedTags) })
     }
 }

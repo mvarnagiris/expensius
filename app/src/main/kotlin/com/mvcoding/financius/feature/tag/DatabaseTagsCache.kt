@@ -22,7 +22,7 @@ import com.mvcoding.financius.extension.select
 import com.mvcoding.financius.extension.toDatabaseRecord
 import rx.Observable
 
-class DatabaseTagsRepository(private val database: Database<DatabaseRecord, Query>, private val tagsTable: TagsTable) : TagsRepository {
+class DatabaseTagsCache(private val database: Database<DatabaseRecord, Query>, private val tagsTable: TagsTable) : TagsCache {
     override fun save(tag: Tag) {
         database.save(tagsTable, tag.toDatabaseRecord(tagsTable))
     }

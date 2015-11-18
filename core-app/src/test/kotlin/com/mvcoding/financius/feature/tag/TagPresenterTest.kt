@@ -24,7 +24,7 @@ class TagPresenterTest {
     val colorSubject = PublishSubject.create<Int>()
     val saveSubject = PublishSubject.create<Unit>()
     val tag = aTag()
-    val tagsRepository = mock(TagsRepository::class.java)
+    val tagsRepository = mock(TagsCache::class.java)
     val view = mock(TagPresenter.View::class.java)
     val presenter = TagPresenter(tag, tagsRepository)
 

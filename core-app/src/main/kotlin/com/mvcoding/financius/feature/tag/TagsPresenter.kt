@@ -18,7 +18,7 @@ import com.mvcoding.financius.feature.Presenter
 import rx.Observable
 
 class TagsPresenter(
-        private val tagsRepository: TagsRepository,
+        private val tagsCache: TagsCache,
         private val displayType: TagsPresenter.DisplayType = TagsPresenter.DisplayType.VIEW,
         private var selectedTags: Set<Tag> = setOf()) : Presenter<TagsPresenter.View>() {
 
@@ -30,7 +30,7 @@ class TagsPresenter(
             view.showSelectedTags(selectedTags.orEmpty())
         }
 
-        unsubscribeOnDetach(tagsRepository.observeTags().subscribe { view.showTags(it) })
+        unsubscribeOnDetach(tagsCache.observeTags().subscribe { view.showTags(it) })
         unsubscribeOnDetach(view.onTagSelected().subscribe { selectTag(view, it) })
         unsubscribeOnDetach(view.onSave().map { selectedTags }.subscribe { view.startResult(it) })
     }

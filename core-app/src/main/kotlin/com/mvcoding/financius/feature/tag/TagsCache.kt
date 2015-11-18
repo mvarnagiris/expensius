@@ -12,18 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius;
+package com.mvcoding.financius.feature.tag
 
-import org.junit.Test;
+import rx.Observable
 
-import static org.junit.Assert.assertEquals;
-
-/**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
-    }
+interface TagsCache {
+    fun observeTags(): Observable<List<Tag>>
+    fun save(tag: Tag)
 }

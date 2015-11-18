@@ -23,7 +23,7 @@ import rx.subjects.PublishSubject
 class TagsPresenterTest {
     val tagSelectedSubject = PublishSubject.create<Tag>()
     val saveSubject = PublishSubject.create<Unit>()
-    private val tagsRepository = mock(TagsRepository::class.java)
+    private val tagsRepository = mock(TagsCache::class.java)
     val view = mock(TagsPresenter.View::class.java)
 
     @Before
