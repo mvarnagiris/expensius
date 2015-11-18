@@ -17,22 +17,27 @@ package com.mvcoding.financius.cache.database
 import com.mvcoding.financius.cache.database.table.Column
 import com.mvcoding.financius.cache.database.table.Table
 
-open class QueryRequest {
-    class Select(private val columns: Array<out Column>) {
-        fun from(table: Table): From = From(this, table)
+abstract class QueryRequest {
+    protected abstract val tables: List<Table>
+    protected abstract val columns: List<Column>
+
+    class Select(private val columns: List<Column>) {
+        fun from(table: Table): From = From(columns, table)
     }
 
-    class From(private val select: Select, private val table: Table) : QueryRequest()
+    class From(override val columns: List<Column>, table: Table) : QueryRequest() {
+        override val tables = listOf(table)
+    }
 
     fun getTables(): Iterable<Table> {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return tables
     }
 
     fun getSql(): String {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return "SELECT ${columns.joinToString { it.name }} FROM ${tables.first().name}"
     }
 
     fun getArguments(): Array<String> {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return emptyArray()
     }
 }

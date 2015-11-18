@@ -15,23 +15,34 @@
 package com.mvcoding.financius
 
 import android.content.Context
-import com.memoizrlabs.Shank
+import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.financius.cache.DatabaseTagsCache
+import com.mvcoding.financius.cache.database.Database
+import com.mvcoding.financius.cache.database.table.TagsTable
+import com.mvcoding.financius.extension.provideSingleton
+import com.mvcoding.financius.feature.tag.TagsCache
+import com.squareup.sqlbrite.SqlBrite
 
 class AppModule(val context: Context) : ShankModule {
     init {
-        Shank.registerFactory(Context::class.java, { context })
+        registerFactory(Context::class.java, { context })
     }
 
     override fun registerFactories() {
-        Shank.registerFactory(Settings::class.java, { UserSettings() })
-        Shank.registerFactory(Session::class.java, { UserSession() })
+        registerFactory(Settings::class.java, { UserSettings() })
+        registerFactory(Session::class.java, { UserSession() })
+        database()
         tagsRepository()
     }
 
+    private fun database() {
+        val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(context, TagsTable()))
+        registerFactory(Database::class.java, { Database(briteDatabase) })
+    }
+
     private fun tagsRepository() {
-        //        val database = SqliteDatabase()
-        //        val tagsTable = TagsTable();
-        //        Shank.registerFactory(TagsRepository::class.java, { DatabaseTagsRepository(database, tagsTable) })
+        val database = provideSingleton(Database::class)
+        registerFactory(TagsCache::class.java, { DatabaseTagsCache(database, TagsTable()) })
     }
 }

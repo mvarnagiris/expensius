@@ -18,7 +18,7 @@ class TagsTable : ModelTable("tags") {
     val title = Column(this, "title", Column.Type.Text);
     val color = Column(this, "color", Column.Type.Integer, "0");
 
-    override fun modelColumns(): Array<Column> {
-        return arrayOf(title, color)
+    override fun modelColumns(): List<Column> {
+        return listOf(title, color)
     }
 }

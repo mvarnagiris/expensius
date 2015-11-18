@@ -16,6 +16,9 @@
     <string name="app_name">Financius</string>
     <string name="skip">Skip</string>
     <string name="login">Login</string>
+    <string name="fixed">Fixed</string>
+    <string name="essential">Essential</string>
+    <string name="non_essential">Non-essential</string>
 
     <string name="intro_title_1">Intro title 1</string>
     <string name="intro_title_2">Intro title 2</string>

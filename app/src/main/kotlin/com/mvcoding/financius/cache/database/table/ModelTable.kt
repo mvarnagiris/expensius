@@ -20,9 +20,9 @@ abstract class ModelTable(name: String) : Table(name) {
     val id = Column(this, "id", Column.Type.TextPrimaryKey);
     val modelState = Column(this, "modelState", Column.Type.Text, ModelState.None.name);
 
-    override fun columns(): Array<Column> {
-        return arrayOf(id, modelState).plus(modelColumns())
+    override fun columns(): List<Column> {
+        return listOf(id, modelState).plus(modelColumns())
     }
 
-    abstract fun modelColumns(): Array<Column>
+    abstract fun modelColumns(): List<Column>
 }

@@ -23,7 +23,7 @@ import com.mvcoding.financius.cache.database.table.Table
 import com.mvcoding.financius.cache.database.table.TagsTable
 import com.mvcoding.financius.feature.tag.Tag
 
-fun select(columns: Array<Column>): QueryRequest.Select = QueryRequest.Select(columns);
+fun select(columns: List<Column>): QueryRequest.Select = QueryRequest.Select(columns);
 fun selectFrom(table: Table): QueryRequest.From = select(table.columns()).from(table);
 
 fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
@@ -49,7 +49,7 @@ fun <T> Cursor.map(mapper: ((Cursor) -> T)): List<T> {
 
 fun Cursor.toTag(tagsTable: TagsTable): Tag {
     val id = getString(this.getColumnIndex(tagsTable.id.name))
-    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.id.name)))
+    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.modelState.name)))
     val title = getString(this.getColumnIndex(tagsTable.title.name))
     val color = getInt(this.getColumnIndex(tagsTable.color.name))
     return Tag(id, modelState, title, color)
