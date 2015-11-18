@@ -12,14 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.feature.tag
+package com.mvcoding.financius.cache
 
-import com.mvcoding.financius.cache.Database
-import com.mvcoding.financius.cache.DatabaseRecord
-import com.mvcoding.financius.cache.Query
 import com.mvcoding.financius.cache.sqlite.TagsTable
 import com.mvcoding.financius.extension.select
 import com.mvcoding.financius.extension.toDatabaseRecord
+import com.mvcoding.financius.feature.tag.Tag
+import com.mvcoding.financius.feature.tag.TagsCache
 import rx.Observable
 
 class DatabaseTagsCache(private val database: Database<DatabaseRecord, Query>, private val tagsTable: TagsTable) : TagsCache {
