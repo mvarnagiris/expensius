@@ -12,14 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.cache.sqlite
+package com.mvcoding.financius.cache.database.table
 
-import com.mvcoding.financius.cache.Column
+class Column(val name: String, private val type: Column.Type, private val defaultValue: String = "") {
+    constructor(table: Table, name: String, type: Column.Type, defaultValue: String = "") : this("${table.name}_$name", type, defaultValue)
 
-class SqliteColumn(
-        override val name: String,
-        private val type: SqliteColumn.Type,
-        private val defaultValue: String = "") : Column {
     fun createScript() = "$name $type ${if (defaultValue.isBlank()) "" else "default $defaultValue"}"
 
     enum class Type(val dataType: String) {

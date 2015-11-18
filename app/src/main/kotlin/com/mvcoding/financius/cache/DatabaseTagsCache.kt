@@ -14,19 +14,20 @@
 
 package com.mvcoding.financius.cache
 
-import com.mvcoding.financius.cache.sqlite.TagsTable
-import com.mvcoding.financius.extension.select
-import com.mvcoding.financius.extension.toDatabaseRecord
+import com.mvcoding.financius.cache.database.Database
+import com.mvcoding.financius.cache.database.table.TagsTable
+import com.mvcoding.financius.extension.toContentValues
 import com.mvcoding.financius.feature.tag.Tag
 import com.mvcoding.financius.feature.tag.TagsCache
 import rx.Observable
 
-class DatabaseTagsCache(private val database: Database<DatabaseRecord, Query>, private val tagsTable: TagsTable) : TagsCache {
+class DatabaseTagsCache(private val database: Database, private val tagsTable: TagsTable) : TagsCache {
     override fun save(tag: Tag) {
-        database.save(tagsTable, tag.toDatabaseRecord(tagsTable))
+        database.save(tagsTable, tag.toContentValues(tagsTable))
     }
 
     override fun observeTags(): Observable<List<Tag>> {
-        return database.load<List<Tag>>(select(tagsTable.columns()).from(tagsTable)).map { it.getResult() }
+        return Observable.empty()
     }
 }
+

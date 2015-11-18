@@ -15,30 +15,26 @@
 package com.mvcoding.financius.extension
 
 import android.content.ContentValues
-import android.database.Cursor
-import com.mvcoding.financius.ModelState
-import com.mvcoding.financius.cache.DatabaseRecord
-import com.mvcoding.financius.cache.sqlite.ContentValuesDatabaseRecord
-import com.mvcoding.financius.cache.sqlite.TagsTable
+import com.mvcoding.financius.cache.database.table.TagsTable
 import com.mvcoding.financius.feature.tag.Tag
 
-fun Tag.toDatabaseRecord(tagsTable: TagsTable): DatabaseRecord {
+fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
     val contentValues = ContentValues()
     contentValues.put(tagsTable.id.name, id)
     contentValues.put(tagsTable.modelState.name, modelState.name)
     contentValues.put(tagsTable.title.name, title)
     contentValues.put(tagsTable.color.name, color)
-    return contentValues.toDatabaseRecord()
+    return contentValues
 }
 
-fun ContentValues.toDatabaseRecord(): DatabaseRecord {
-    return ContentValuesDatabaseRecord(this)
-}
-
-fun Cursor.toTag(tagsTable: TagsTable): Tag {
-    val id = getString(this.getColumnIndex(tagsTable.id.name))
-    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.id.name)))
-    val title = getString(this.getColumnIndex(tagsTable.title.name))
-    val color = getInt(this.getColumnIndex(tagsTable.color.name))
-    return Tag(id, modelState, title, color)
-}
+//fun ContentValues.toDatabaseRecord(): DatabaseRecord {
+//    return ContentValuesDatabaseRecord(this)
+//}
+//
+//fun Cursor.toTag(tagsTable: TagsTable): Tag {
+//    val id = getString(this.getColumnIndex(tagsTable.id.name))
+//    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.id.name)))
+//    val title = getString(this.getColumnIndex(tagsTable.title.name))
+//    val color = getInt(this.getColumnIndex(tagsTable.color.name))
+//    return Tag(id, modelState, title, color)
+//}

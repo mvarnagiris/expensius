@@ -14,12 +14,7 @@
 
 package com.mvcoding.financius.extension
 
-import com.mvcoding.financius.cache.Query
-import com.mvcoding.financius.cache.sqlite.SqliteColumn
-import com.mvcoding.financius.cache.sqlite.SqliteTable
+import com.mvcoding.financius.cache.database.QueryRequest
+import com.mvcoding.financius.cache.database.table.Column
 
-fun column(table: SqliteTable, name: String, type: SqliteColumn.Type, defaultValue: String = ""): SqliteColumn {
-    return SqliteColumn("${table.name}_$name", type, defaultValue)
-}
-
-fun select(columns: Array<SqliteColumn>): Query.Select = Query.Select(columns);
+fun select(columns: Array<Column>): QueryRequest.Select = QueryRequest.Select(columns);

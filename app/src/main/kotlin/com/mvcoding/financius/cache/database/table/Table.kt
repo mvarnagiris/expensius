@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.cache
+package com.mvcoding.financius.cache.database.table
 
-open class Query {
-    class Select(private val columns: Array<out Column>) {
-        fun from(table: Table): From = From(this, table)
+abstract class Table(val name: String) {
+    fun createScript(): String {
+        return "create table $name (${columns().joinToString { it.createScript() }})"
     }
 
-    class From(private val select: Select, private val table: Table) : Query()
+    abstract fun columns(): Array<Column>
 }

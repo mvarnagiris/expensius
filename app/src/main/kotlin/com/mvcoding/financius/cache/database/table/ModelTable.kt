@@ -12,8 +12,17 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.cache
+package com.mvcoding.financius.cache.database.table
 
-interface DatabaseQueryResult<T> {
-    fun getResult(): T
+import com.mvcoding.financius.ModelState
+
+abstract class ModelTable(name: String) : Table(name) {
+    val id = Column(this, "id", Column.Type.TextPrimaryKey);
+    val modelState = Column(this, "modelState", Column.Type.Text, ModelState.None.name);
+
+    override fun columns(): Array<Column> {
+        return arrayOf(id, modelState).plus(modelColumns())
+    }
+
+    abstract fun modelColumns(): Array<Column>
 }
