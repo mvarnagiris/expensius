@@ -15,9 +15,9 @@
 package com.mvcoding.financius.cache.database
 
 import android.content.ContentValues
+import android.database.Cursor
 import com.mvcoding.financius.cache.database.table.Table
 import com.squareup.sqlbrite.BriteDatabase
-import com.squareup.sqlbrite.SqlBrite
 import rx.Observable
 
 class Database(private val database: BriteDatabase) {
@@ -26,10 +26,10 @@ class Database(private val database: BriteDatabase) {
         database.insert(table.name, contentValues)
     }
 
-    fun query(queryRequest: QueryRequest): Observable<SqlBrite.Query> {
+    fun query(queryRequest: QueryRequest): Observable<Cursor> {
         val tables: Iterable<String> = queryRequest.getTables().map { it.name }
         val sql = queryRequest.getSql()
         val arguments = queryRequest.getArguments()
-        return database.createQuery(tables, sql, *arguments)
+        return database.createQuery(tables, sql, *arguments).map { it.run() }
     }
 }

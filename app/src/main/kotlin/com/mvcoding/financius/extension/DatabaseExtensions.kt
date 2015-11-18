@@ -15,8 +15,16 @@
 package com.mvcoding.financius.extension
 
 import android.content.ContentValues
+import android.database.Cursor
+import com.mvcoding.financius.ModelState
+import com.mvcoding.financius.cache.database.QueryRequest
+import com.mvcoding.financius.cache.database.table.Column
+import com.mvcoding.financius.cache.database.table.Table
 import com.mvcoding.financius.cache.database.table.TagsTable
 import com.mvcoding.financius.feature.tag.Tag
+
+fun select(columns: Array<Column>): QueryRequest.Select = QueryRequest.Select(columns);
+fun selectFrom(table: Table): QueryRequest.From = select(table.columns()).from(table);
 
 fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
     val contentValues = ContentValues()
@@ -27,14 +35,22 @@ fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
     return contentValues
 }
 
-//fun ContentValues.toDatabaseRecord(): DatabaseRecord {
-//    return ContentValuesDatabaseRecord(this)
-//}
-//
-//fun Cursor.toTag(tagsTable: TagsTable): Tag {
-//    val id = getString(this.getColumnIndex(tagsTable.id.name))
-//    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.id.name)))
-//    val title = getString(this.getColumnIndex(tagsTable.title.name))
-//    val color = getInt(this.getColumnIndex(tagsTable.color.name))
-//    return Tag(id, modelState, title, color)
-//}
+fun <T> Cursor.map(mapper: ((Cursor) -> T)): List<T> {
+    if (!moveToFirst()) {
+        return emptyList()
+    }
+
+    val items = arrayListOf<T>()
+    do {
+        items.add(mapper.invoke(this))
+    } while (moveToNext())
+    return items
+}
+
+fun Cursor.toTag(tagsTable: TagsTable): Tag {
+    val id = getString(this.getColumnIndex(tagsTable.id.name))
+    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.id.name)))
+    val title = getString(this.getColumnIndex(tagsTable.title.name))
+    val color = getInt(this.getColumnIndex(tagsTable.color.name))
+    return Tag(id, modelState, title, color)
+}

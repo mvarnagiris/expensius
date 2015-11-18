@@ -16,7 +16,10 @@ package com.mvcoding.financius.cache
 
 import com.mvcoding.financius.cache.database.Database
 import com.mvcoding.financius.cache.database.table.TagsTable
+import com.mvcoding.financius.extension.map
+import com.mvcoding.financius.extension.selectFrom
 import com.mvcoding.financius.extension.toContentValues
+import com.mvcoding.financius.extension.toTag
 import com.mvcoding.financius.feature.tag.Tag
 import com.mvcoding.financius.feature.tag.TagsCache
 import rx.Observable
@@ -27,7 +30,6 @@ class DatabaseTagsCache(private val database: Database, private val tagsTable: T
     }
 
     override fun observeTags(): Observable<List<Tag>> {
-        return Observable.empty()
+        return database.query(selectFrom(tagsTable)).map { it.map { it.toTag(tagsTable) } }
     }
 }
-
