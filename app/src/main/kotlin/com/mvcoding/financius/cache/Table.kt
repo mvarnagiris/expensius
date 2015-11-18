@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database
+package com.mvcoding.financius.cache
 
 
 interface Table {

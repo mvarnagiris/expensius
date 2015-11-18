@@ -12,15 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.sqlite
+package com.mvcoding.financius.cache.sqlite
 
-import com.mvcoding.financius.extension.column
+import android.content.ContentValues
+import com.mvcoding.financius.cache.DatabaseRecord
 
-class TagsTable : SqliteModelTable("tags") {
-    val title = column(this, "title", SqliteColumn.Type.Text);
-    val color = column(this, "color", SqliteColumn.Type.Integer, "0");
-
-    override fun modelColumns(): Array<SqliteColumn> {
-        return arrayOf(title, color)
-    }
-}
+class ContentValuesDatabaseRecord(val contentValues: ContentValues) : DatabaseRecord

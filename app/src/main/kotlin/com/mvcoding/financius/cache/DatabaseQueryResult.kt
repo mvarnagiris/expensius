@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database
+package com.mvcoding.financius.cache
 
-interface DatabaseRecord
+interface DatabaseQueryResult<T> {
+    fun getResult(): T
+}

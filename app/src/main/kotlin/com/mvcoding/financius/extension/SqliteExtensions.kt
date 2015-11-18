@@ -14,9 +14,9 @@
 
 package com.mvcoding.financius.extension
 
-import com.mvcoding.financius.database.Query
-import com.mvcoding.financius.database.sqlite.SqliteColumn
-import com.mvcoding.financius.database.sqlite.SqliteTable
+import com.mvcoding.financius.cache.Query
+import com.mvcoding.financius.cache.sqlite.SqliteColumn
+import com.mvcoding.financius.cache.sqlite.SqliteTable
 
 fun column(table: SqliteTable, name: String, type: SqliteColumn.Type, defaultValue: String = ""): SqliteColumn {
     return SqliteColumn("${table.name}_$name", type, defaultValue)

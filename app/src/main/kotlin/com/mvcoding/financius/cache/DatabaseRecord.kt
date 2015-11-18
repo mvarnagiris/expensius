@@ -12,14 +12,6 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.sqlite
+package com.mvcoding.financius.cache
 
-import com.mvcoding.financius.database.Table
-
-abstract class SqliteTable(override val name: String) : Table {
-    fun createScript(): String {
-        return "create table $name (${columns().joinToString { it.createScript() }})"
-    }
-
-    abstract fun columns(): Array<SqliteColumn>
-}
+interface DatabaseRecord

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.sqlite
+package com.mvcoding.financius.cache.sqlite
 
 import com.mvcoding.financius.ModelState
 import com.mvcoding.financius.extension.column

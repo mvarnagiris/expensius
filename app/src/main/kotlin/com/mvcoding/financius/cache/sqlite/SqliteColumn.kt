@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.sqlite
+package com.mvcoding.financius.cache.sqlite
 
-import com.mvcoding.financius.database.Column
+import com.mvcoding.financius.cache.Column
 
 class SqliteColumn(
         override val name: String,

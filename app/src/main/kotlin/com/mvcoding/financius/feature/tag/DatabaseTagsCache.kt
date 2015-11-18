@@ -14,10 +14,10 @@
 
 package com.mvcoding.financius.feature.tag
 
-import com.mvcoding.financius.database.Database
-import com.mvcoding.financius.database.DatabaseRecord
-import com.mvcoding.financius.database.Query
-import com.mvcoding.financius.database.sqlite.TagsTable
+import com.mvcoding.financius.cache.Database
+import com.mvcoding.financius.cache.DatabaseRecord
+import com.mvcoding.financius.cache.Query
+import com.mvcoding.financius.cache.sqlite.TagsTable
 import com.mvcoding.financius.extension.select
 import com.mvcoding.financius.extension.toDatabaseRecord
 import rx.Observable

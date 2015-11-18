@@ -12,9 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.sqlite
+package com.mvcoding.financius.cache
 
-import android.database.Cursor
-import com.mvcoding.financius.database.DatabaseQueryResult
-
-abstract class CursorDatabaseQueryResult<T>(val cursor: Cursor) : DatabaseQueryResult<T>
+interface Column {
+    val name: String
+}

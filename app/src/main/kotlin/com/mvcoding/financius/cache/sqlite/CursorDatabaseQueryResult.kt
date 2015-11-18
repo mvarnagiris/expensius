@@ -12,12 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database
+package com.mvcoding.financius.cache.sqlite
 
-open class Query {
-    class Select(private val columns: Array<out Column>) {
-        fun from(table: Table): From = From(this, table)
-    }
+import android.database.Cursor
+import com.mvcoding.financius.cache.DatabaseQueryResult
 
-    class From(private val select: Select, private val table: Table) : Query()
-}
+abstract class CursorDatabaseQueryResult<T>(val cursor: Cursor) : DatabaseQueryResult<T>

@@ -17,9 +17,9 @@ package com.mvcoding.financius.extension
 import android.content.ContentValues
 import android.database.Cursor
 import com.mvcoding.financius.ModelState
-import com.mvcoding.financius.database.DatabaseRecord
-import com.mvcoding.financius.database.sqlite.ContentValuesDatabaseRecord
-import com.mvcoding.financius.database.sqlite.TagsTable
+import com.mvcoding.financius.cache.DatabaseRecord
+import com.mvcoding.financius.cache.sqlite.ContentValuesDatabaseRecord
+import com.mvcoding.financius.cache.sqlite.TagsTable
 import com.mvcoding.financius.feature.tag.Tag
 
 fun Tag.toDatabaseRecord(tagsTable: TagsTable): DatabaseRecord {

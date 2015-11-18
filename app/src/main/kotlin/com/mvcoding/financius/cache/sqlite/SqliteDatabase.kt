@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database.sqlite
+package com.mvcoding.financius.cache.sqlite
 
-import com.mvcoding.financius.database.Database
-import com.mvcoding.financius.database.DatabaseQueryResult
-import com.mvcoding.financius.database.Query
-import com.mvcoding.financius.database.Table
+import com.mvcoding.financius.cache.Database
+import com.mvcoding.financius.cache.DatabaseQueryResult
+import com.mvcoding.financius.cache.Query
+import com.mvcoding.financius.cache.Table
 import com.squareup.sqlbrite.BriteDatabase
 import rx.Observable
 

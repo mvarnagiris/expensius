@@ -12,11 +12,15 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database
+package com.mvcoding.financius.cache.sqlite
 
-import rx.Observable
+import com.mvcoding.financius.extension.column
 
-interface Database<DR : DatabaseRecord, Q : Query> {
-    fun save(table: Table, databaseRecord: DR)
-    fun <T> load(query: Q): Observable<DatabaseQueryResult<T>>
+class TagsTable : SqliteModelTable("tags") {
+    val title = column(this, "title", SqliteColumn.Type.Text);
+    val color = column(this, "color", SqliteColumn.Type.Integer, "0");
+
+    override fun modelColumns(): Array<SqliteColumn> {
+        return arrayOf(title, color)
+    }
 }

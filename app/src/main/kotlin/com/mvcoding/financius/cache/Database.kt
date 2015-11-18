@@ -12,8 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.financius.database
+package com.mvcoding.financius.cache
 
-interface DatabaseQueryResult<T> {
-    fun getResult(): T
+import rx.Observable
+
+interface Database<DR : DatabaseRecord, Q : Query> {
+    fun save(table: Table, databaseRecord: DR)
+    fun <T> load(query: Q): Observable<DatabaseQueryResult<T>>
 }
