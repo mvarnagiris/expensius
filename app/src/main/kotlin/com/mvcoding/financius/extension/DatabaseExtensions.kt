@@ -35,6 +35,14 @@ fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
     return contentValues
 }
 
+fun Cursor.toTag(tagsTable: TagsTable): Tag {
+    val id = getString(this.getColumnIndex(tagsTable.id.name))
+    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.modelState.name)))
+    val title = getString(this.getColumnIndex(tagsTable.title.name))
+    val color = getInt(this.getColumnIndex(tagsTable.color.name))
+    return Tag(id, modelState, title, color)
+}
+
 fun <T> Cursor.map(mapper: ((Cursor) -> T)): List<T> {
     if (!moveToFirst()) {
         return emptyList()
@@ -45,12 +53,4 @@ fun <T> Cursor.map(mapper: ((Cursor) -> T)): List<T> {
         items.add(mapper.invoke(this))
     } while (moveToNext())
     return items
-}
-
-fun Cursor.toTag(tagsTable: TagsTable): Tag {
-    val id = getString(this.getColumnIndex(tagsTable.id.name))
-    val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.modelState.name)))
-    val title = getString(this.getColumnIndex(tagsTable.title.name))
-    val color = getInt(this.getColumnIndex(tagsTable.color.name))
-    return Tag(id, modelState, title, color)
 }
