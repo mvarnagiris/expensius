@@ -20,6 +20,10 @@ abstract class ModelTable(name: String) : Table(name) {
     val id = Column(this, "id", Column.Type.TextPrimaryKey);
     val modelState = Column(this, "modelState", Column.Type.Text, ModelState.None.name);
 
+    override fun idColumns(): List<Column> {
+        return listOf(id)
+    }
+
     override fun columns(): List<Column> {
         return listOf(id, modelState).plus(modelColumns())
     }

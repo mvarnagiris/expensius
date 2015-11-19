@@ -19,5 +19,6 @@ abstract class Table(val name: String) {
         return "create table $name (${columns().joinToString { it.createScript() }})"
     }
 
+    abstract fun idColumns(): List<Column>
     abstract fun columns(): List<Column>
 }
