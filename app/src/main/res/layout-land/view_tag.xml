@@ -12,11 +12,10 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.financius.feature.tag.TagView
-    android:id="@+id/tagView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.financius.feature.tag.TagView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tagView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -51,29 +50,35 @@
                 android:textAppearance="@style/Text.Title" />
         </FrameLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <com.larswerkman.lobsterpicker.LobsterPicker
-                android:id="@+id/lobsterPicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/keyline"
-                android:layout_marginRight="@dimen/keyline"
-                app:color_history_enabled="true"
-                app:color_history_radius="24dp"
-                app:color_wheel_pointer_radius="12dp"
-                app:color_wheel_radius="56dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
-                android:id="@+id/lobsterShadeSlider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical" />
+                <com.larswerkman.lobsterpicker.LobsterPicker
+                    android:id="@+id/lobsterPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/keyline"
+                    android:layout_marginRight="@dimen/keyline"
+                    app:color_history_enabled="true"
+                    app:color_history_radius="24dp"
+                    app:color_wheel_pointer_radius="12dp"
+                    app:color_wheel_radius="56dp" />
 
-        </LinearLayout>
+                <com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
+                    android:id="@+id/lobsterShadeSlider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
