@@ -27,6 +27,7 @@ import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
+import com.mvcoding.financius.feature.tag.TagsPresenter.DisplayType.VIEW
 import rx.Observable
 
 class TagsView : LinearLayout, TagsPresenter.View {
@@ -50,8 +51,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-
-        toolbar.inflateMenu(R.menu.tags)
 
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -79,7 +78,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
         adapter.displayType = displayType
-        buttonBarView.visibility = if (displayType == TagsPresenter.DisplayType.VIEW) GONE else VISIBLE
+        buttonBarView.visibility = if (displayType == VIEW) GONE else VISIBLE
     }
 
     override fun showSelectedTags(selectedTags: Set<Tag>) {

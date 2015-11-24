@@ -16,10 +16,11 @@ package com.mvcoding.financius.feature.tag
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
 import com.mvcoding.financius.R
 import com.mvcoding.financius.feature.ActivityStarter
 import com.mvcoding.financius.feature.BaseActivity
-import kotlinx.android.synthetic.view_tags.tagsView
+import kotlinx.android.synthetic.view_tags.*
 
 class TagsActivity : BaseActivity() {
     companion object {
@@ -40,5 +41,11 @@ class TagsActivity : BaseActivity() {
         val displayType = intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as TagsPresenter.DisplayType
         val selectedTags = setOf<Tag>() // TODO: Get selected tags from extras.
         tagsView.init(displayType, selectedTags)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.tags, menu)
+        return true
     }
 }
