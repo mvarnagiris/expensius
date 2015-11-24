@@ -23,4 +23,8 @@ data class Tag(
         val modelState: ModelState = ModelState.None,
         val title: String,
         val color: Int) : Serializable {
+
+    companion object {
+        val noTag = Tag("", ModelState.None, "", 0)
+    }
 }

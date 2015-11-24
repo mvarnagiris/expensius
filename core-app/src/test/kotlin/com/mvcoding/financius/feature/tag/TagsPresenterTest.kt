@@ -22,13 +22,15 @@ import rx.subjects.PublishSubject
 
 class TagsPresenterTest {
     val tagSelectedSubject = PublishSubject.create<Tag>()
+    val tagCreateSubject = PublishSubject.create<Unit>()
     val saveSubject = PublishSubject.create<Unit>()
-    private val tagsRepository = mock(TagsCache::class.java)
+    val tagsRepository = mock(TagsCache::class.java)
     val view = mock(TagsPresenter.View::class.java)
 
     @Before
     fun setUp() {
         given(view.onTagSelected()).willReturn(tagSelectedSubject)
+        given(view.onCreateTag()).willReturn(tagCreateSubject)
         given(view.onSave()).willReturn(saveSubject)
         given(tagsRepository.observeTags()).willReturn(Observable.empty())
     }
@@ -150,9 +152,23 @@ class TagsPresenterTest {
         verify(view).startResult(setOf(tag1, tag2))
     }
 
+    @Test
+    fun startsTagEditOnCreateTag() {
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+
+        createTag()
+
+        verify(view).startTagEdit(Tag.noTag)
+    }
+
     private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
 
     private fun save() = saveSubject.onNext(Unit)
+
+    private fun createTag() {
+        tagCreateSubject.onNext(Unit)
+    }
 
     private fun presenterWithDisplayTypeView() = TagsPresenter(tagsRepository, TagsPresenter.DisplayType.VIEW)
 

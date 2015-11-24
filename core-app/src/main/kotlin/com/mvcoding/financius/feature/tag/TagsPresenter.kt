@@ -15,7 +15,9 @@
 package com.mvcoding.financius.feature.tag
 
 import com.mvcoding.financius.feature.Presenter
+import com.mvcoding.financius.feature.tag.Tag.Companion.noTag
 import rx.Observable
+import rx.Observable.merge
 
 class TagsPresenter(
         private val tagsCache: TagsCache,
@@ -31,7 +33,7 @@ class TagsPresenter(
         }
 
         unsubscribeOnDetach(tagsCache.observeTags().subscribe { view.showTags(it) })
-        unsubscribeOnDetach(view.onTagSelected().subscribe { selectTag(view, it) })
+        unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { noTag }).subscribe { selectTag(view, it) })
         unsubscribeOnDetach(view.onSave().map { selectedTags }.subscribe { view.startResult(it) })
     }
 
@@ -51,6 +53,7 @@ class TagsPresenter(
 
     interface View : Presenter.View {
         fun onTagSelected(): Observable<Tag>
+        fun onCreateTag(): Observable<Unit>
         fun onSave(): Observable<Unit>
         fun setDisplayType(displayType: DisplayType)
         fun showSelectedTags(selectedTags: Set<Tag>)

@@ -32,16 +32,13 @@ import com.larswerkman.lobsterpicker.ColorAdapter
 import com.larswerkman.lobsterpicker.LobsterPicker
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
-import com.memoizrlabs.ShankModuleInitializer
+import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
 import com.mvcoding.financius.extension.showSnackbar
 import com.mvcoding.financius.extension.supportsLollipop
 import com.mvcoding.financius.extension.toActivity
-import kotlinx.android.synthetic.view_tag.view.saveButton
-import kotlinx.android.synthetic.view_tag.view.titleContainerView
-import kotlinx.android.synthetic.view_tag.view.titleEditText
-import kotlinx.android.synthetic.view_tag.view.toolbar
+import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
 
 class TagView : LinearLayout, TagPresenter.View {
@@ -61,7 +58,7 @@ class TagView : LinearLayout, TagPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(tag: Tag) {
-        ShankModuleInitializer.initializeModules(TagModule(tag))
+        initializeModules(TagModule(tag))
     }
 
     override fun onFinishInflate() {

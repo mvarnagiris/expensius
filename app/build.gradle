@@ -64,6 +64,8 @@ dependencies {
     compile 'io.reactivex:rxkotlin:0.24.100'
     compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4-kotlin:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-design-kotlin:0.3.0'
     compile 'com.squareup.sqlbrite:sqlbrite:0.4.1'
     compile 'com.larswerkman:lobsterpicker:1.0.0'
     testCompile 'junit:junit:4.12'

@@ -34,4 +34,5 @@
     <string name="title">Title</string>
     <string name="tag">Tag</string>
     <string name="error_title_empty">Title cannot be empty.</string>
+    <string name="create">Create</string>
 </resources>

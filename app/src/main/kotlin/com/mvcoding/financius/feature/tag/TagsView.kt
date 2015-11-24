@@ -18,20 +18,22 @@ import android.content.Context
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
+import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.LinearLayout.GONE
-import android.widget.LinearLayout.VISIBLE
+import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
-import com.memoizrlabs.ShankModuleInitializer
+import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
-import kotlinx.android.synthetic.view_tags.view.buttonBarView
-import kotlinx.android.synthetic.view_tags.view.saveButton
 import rx.Observable
 
 class TagsView : LinearLayout, TagsPresenter.View {
+    private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
+    private val buttonBarView by lazy { findViewById(R.id.buttonBarView) }
+    private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
 
     private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class) }
     private val adapter = TagsAdapter()
@@ -43,11 +45,14 @@ class TagsView : LinearLayout, TagsPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag>) {
-        ShankModuleInitializer.initializeModules(TagsModule(displayType, selectedTags))
+        initializeModules(TagsModule(displayType, selectedTags))
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+
+        toolbar.inflateMenu(R.menu.tags)
+
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -65,6 +70,10 @@ class TagsView : LinearLayout, TagsPresenter.View {
     }
 
     override fun onTagSelected(): Observable<Tag> = adapter.onTagSelected()
+
+    override fun onCreateTag(): Observable<Unit> {
+        return toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_create }.map { Unit }
+    }
 
     override fun onSave(): Observable<Unit> = saveButton.clicks()
 
