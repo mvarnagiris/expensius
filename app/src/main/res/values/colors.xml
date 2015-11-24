@@ -223,6 +223,10 @@
         <item>@color/blue_grey_700</item>
         <item>@color/blue_grey_800</item>
         <item>@color/blue_grey_900</item>
+        <item>@color/blue_grey_100</item>
+        <item>@color/blue_grey_200</item>
+        <item>@color/blue_grey_400</item>
+        <item>@color/blue_grey_700</item>
     </array>
 
     <color name="pink_50">#FCE4EC</color>
@@ -401,6 +405,10 @@
         <item>@color/brown_700</item>
         <item>@color/brown_800</item>
         <item>@color/brown_900</item>
+        <item>@color/brown_100</item>
+        <item>@color/brown_200</item>
+        <item>@color/brown_400</item>
+        <item>@color/brown_700</item>
     </array>
 
     <color name="purple_50">#F3E5F5</color>
@@ -579,5 +587,9 @@
         <item>@color/grey_700</item>
         <item>@color/grey_800</item>
         <item>@color/grey_900</item>
+        <item>@color/grey_100</item>
+        <item>@color/grey_200</item>
+        <item>@color/grey_400</item>
+        <item>@color/grey_700</item>
     </array>
 </resources>

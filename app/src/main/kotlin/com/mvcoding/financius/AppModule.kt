@@ -33,7 +33,7 @@ class AppModule(val context: Context) : ShankModule {
         registerFactory(Settings::class.java, { UserSettings() })
         registerFactory(Session::class.java, { UserSession() })
         database()
-        tagsRepository()
+        tagsCache()
     }
 
     private fun database() {
@@ -41,7 +41,7 @@ class AppModule(val context: Context) : ShankModule {
         registerFactory(Database::class.java, { Database(briteDatabase) })
     }
 
-    private fun tagsRepository() {
+    private fun tagsCache() {
         val database = provideSingleton(Database::class)
         registerFactory(TagsCache::class.java, { DatabaseTagsCache(database, TagsTable()) })
     }

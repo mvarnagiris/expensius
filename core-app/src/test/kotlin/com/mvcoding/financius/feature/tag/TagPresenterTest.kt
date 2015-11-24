@@ -70,6 +70,14 @@ class TagPresenterTest {
     }
 
     @Test
+    fun showsDefaultColorWhenCreatingNewTag() {
+        val presenter = TagPresenter(Tag.noTag, tagsRepository)
+        presenter.onAttachView(view)
+
+        verify(view).showColor(0x607D8B)
+    }
+
+    @Test
     fun showsUpdatedColorWhenColorIsUpdated() {
         presenter.onAttachView(view)
 

@@ -18,15 +18,17 @@ import com.mvcoding.financius.feature.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.Observable.just
+import java.util.*
 
 class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Presenter<TagPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
-        val idObservable = just(tag.id)
+        val idObservable = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(UUID.randomUUID().toString())
         val modelStateObservable = just(tag.modelState)
         val titleObservable = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }
-        val colorObservable = view.onColorChanged().startWith(tag.color).doOnNext { view.showColor(it) }
+        // TODO This is wrong color to be showing.
+        val colorObservable = view.onColorChanged().startWith(if (tag.color == 0) 0x607D8B else tag.color).doOnNext { view.showColor(it) }
 
         val tagObservable = combineLatest(idObservable, modelStateObservable, titleObservable, colorObservable,
                 { id, modelState, title, color -> Tag(id, modelState, title, color) })

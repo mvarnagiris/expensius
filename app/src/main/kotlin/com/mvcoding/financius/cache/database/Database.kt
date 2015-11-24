@@ -44,14 +44,14 @@ class Database(private val database: BriteDatabase) {
                 "FROM ${table.name} " +
                 "$where " +
                 "LIMIT 1"
-        val args = table.idColumns().map { contentValues.getAsString(it.name) }.toTypedArray()
-        database.createQuery(table.name, query, *args)
-                .mapToOneOrDefault({ true }, false)
-                .subscribe {
-                    if (it)
-                        database.update(table.name, contentValues, where, *args)
-                    else
-                        database.insert(table.name, contentValues)
-                }
+        val args = table.idColumns().map {
+            contentValues.getAsString(it.name).let { value -> if (value.isBlank()) "0" else value }
+        }.toTypedArray()
+        val cursor = database.query(table.name, query, *args)
+        if (cursor.moveToFirst()) {
+            database.update(table.name, contentValues, where, *args)
+        } else {
+            database.insert(table.name, contentValues)
+        }
     }
 }

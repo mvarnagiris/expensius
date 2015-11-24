@@ -40,6 +40,7 @@ import com.mvcoding.financius.extension.supportsLollipop
 import com.mvcoding.financius.extension.toActivity
 import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
+import rx.lang.kotlin.observable
 
 class TagView : LinearLayout, TagPresenter.View {
     private val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
@@ -49,6 +50,7 @@ class TagView : LinearLayout, TagPresenter.View {
     private val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
     private val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
     private var titleUpdatesAvailable = true
+    private var colorUpdatesAvailable = true
     private var colorAnimator: ValueAnimator? = null
 
     constructor(context: Context?) : this(context, null)
@@ -85,10 +87,16 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun showColor(color: Int) {
-        lobsterPicker.history = color;
         if (colorAnimator == null) {
             onTagColorUpdated(color, false)
+        }
 
+        if (!colorUpdatesAvailable) {
+            return
+        }
+
+        lobsterPicker.history = color;
+        if (colorAnimator == null) {
             val colorAdapter = lobsterPicker.colorAdapter
             colorAdapter.size().minus(1)
                     .downTo(0)
@@ -113,15 +121,19 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun onColorChanged(): Observable<Int> {
-        return Observable.create {
+        return observable {
             lobsterPicker.addOnColorListener(object : OnColorListener {
                 override fun onColorChanged(color: Int) {
+                    colorUpdatesAvailable = false
                     it.onNext(color)
                     onTagColorUpdated(color, true)
+                    colorUpdatesAvailable = true
                 }
 
                 override fun onColorSelected(color: Int) {
+                    colorUpdatesAvailable = false
                     it.onNext(color)
+                    colorUpdatesAvailable = true
                 }
             })
         }
@@ -147,9 +159,7 @@ class TagView : LinearLayout, TagPresenter.View {
         val animator = ValueAnimator();
         animator.setIntValues(startColor, color);
         animator.setEvaluator(ArgbEvaluator());
-        animator.addUpdateListener(ValueAnimator.AnimatorUpdateListener({
-            setColorOnViews(it.animatedValue as Int)
-        }))
+        animator.addUpdateListener { setColorOnViews(it.animatedValue as Int) }
         animator.setDuration(150);
         animator.start();
         colorAnimator = animator;
@@ -185,28 +195,28 @@ class TagView : LinearLayout, TagPresenter.View {
         val colors: Array<IntArray>
 
         init {
-            val red = context.resources.getIntArray(R.array.reds)
-            val deepPurple = context.resources.getIntArray(R.array.deep_purples)
-            val lightBlue = context.resources.getIntArray(R.array.light_blues)
-            val green = context.resources.getIntArray(R.array.greens)
-            val yellow = context.resources.getIntArray(R.array.yellows)
-            val deepOrange = context.resources.getIntArray(R.array.deep_oranges)
-            val blueGrey = context.resources.getIntArray(R.array.blue_greys)
-            val pink = context.resources.getIntArray(R.array.pinks)
-            val indigo = context.resources.getIntArray(R.array.indigos)
-            val cyan = context.resources.getIntArray(R.array.cyans)
-            val lightGreen = context.resources.getIntArray(R.array.light_greens)
-            val amber = context.resources.getIntArray(R.array.ambers)
-            val brown = context.resources.getIntArray(R.array.browns)
-            val purple = context.resources.getIntArray(R.array.purples)
-            val blue = context.resources.getIntArray(R.array.blues)
-            val teal = context.resources.getIntArray(R.array.teals)
-            val lime = context.resources.getIntArray(R.array.limes)
-            val orange = context.resources.getIntArray(R.array.oranges)
-            val grey = context.resources.getIntArray(R.array.greys)
+            val resources = context.resources
+            val red = resources.getIntArray(R.array.reds)
+            val deepPurple = resources.getIntArray(R.array.deep_purples)
+            val lightBlue = resources.getIntArray(R.array.light_blues)
+            val green = resources.getIntArray(R.array.greens)
+            val yellow = resources.getIntArray(R.array.yellows)
+            val deepOrange = resources.getIntArray(R.array.deep_oranges)
+            val blueGrey = resources.getIntArray(R.array.blue_greys)
+            val pink = resources.getIntArray(R.array.pinks)
+            val indigo = resources.getIntArray(R.array.indigos)
+            val cyan = resources.getIntArray(R.array.cyans)
+            val lightGreen = resources.getIntArray(R.array.light_greens)
+            val amber = resources.getIntArray(R.array.ambers)
+            val brown = resources.getIntArray(R.array.browns)
+            val purple = resources.getIntArray(R.array.purples)
+            val blue = resources.getIntArray(R.array.blues)
+            val teal = resources.getIntArray(R.array.teals)
+            val lime = resources.getIntArray(R.array.limes)
+            val orange = resources.getIntArray(R.array.oranges)
 
-            colors = arrayOf(red, deepPurple, lightBlue, green, yellow, deepOrange, blueGrey, pink,
-                    indigo, cyan, lightGreen, amber, brown, purple, blue, teal, lime, orange, grey)
+            colors = arrayOf(red, deepPurple, lightBlue, green, yellow, deepOrange, blueGrey, pink, indigo, cyan, lightGreen, amber, brown,
+                    purple, blue, teal, lime, orange)
         }
 
         override fun size(): Int {
