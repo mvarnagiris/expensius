@@ -37,7 +37,7 @@ class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Pre
                 .withLatestFrom(tagObservable, { action, tag -> tag })
                 .filter { validate(it, view) }
                 .doOnNext { tagsCache.save(it) }
-                .subscribe({ view.startResult(it) }, { it.printStackTrace() }))
+                .subscribe { view.startResult(it) })
     }
 
     private fun validate(tag: Tag, view: View): Boolean {

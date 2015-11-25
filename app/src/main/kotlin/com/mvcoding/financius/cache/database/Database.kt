@@ -39,15 +39,15 @@ class Database(private val database: BriteDatabase) {
     }
 
     private fun updateOrInsert(table: Table, contentValues: ContentValues) {
-        val where = "WHERE ${table.idColumns().joinToString(separator = " AND ", transform = { "${it.name}=?" })}"
+        val where = "${table.idColumns().joinToString(separator = " AND ", transform = { "${it.name}=?" })}"
         val query = "SELECT ${table.idColumns().joinToString { it.name }} " +
                 "FROM ${table.name} " +
-                "$where " +
+                "WHERE $where " +
                 "LIMIT 1"
         val args = table.idColumns().map {
             contentValues.getAsString(it.name).let { value -> if (value.isBlank()) "0" else value }
         }.toTypedArray()
-        val cursor = database.query(table.name, query, *args)
+        val cursor = database.query(query, *args)
         if (cursor.moveToFirst()) {
             database.update(table.name, contentValues, where, *args)
         } else {
