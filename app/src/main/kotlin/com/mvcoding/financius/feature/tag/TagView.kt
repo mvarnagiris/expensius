@@ -81,8 +81,10 @@ class TagView : LinearLayout, TagPresenter.View {
 
     override fun showTitle(title: String) {
         titleUpdatesAvailable = false;
-        titleEditText.setText(title)
-        titleEditText.setSelection(title.length)
+        if (!titleEditText.text.toString().equals(title)) {
+            titleEditText.setText(title)
+            titleEditText.setSelection(title.length)
+        }
         titleUpdatesAvailable = true;
     }
 

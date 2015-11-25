@@ -14,9 +14,13 @@
 
 package com.mvcoding.financius.feature.tag
 
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.nullValue
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
+import rx.Observable
 import rx.subjects.PublishSubject
 
 class TagPresenterTest {
@@ -24,9 +28,9 @@ class TagPresenterTest {
     val colorSubject = PublishSubject.create<Int>()
     val saveSubject = PublishSubject.create<Unit>()
     val tag = aTag()
-    val tagsRepository = mock(TagsCache::class.java)
+    val tagsCache = TagsCacheForTest()
     val view = mock(TagPresenter.View::class.java)
-    val presenter = TagPresenter(tag, tagsRepository)
+    val presenter = TagPresenter(tag, tagsCache)
 
     @Before
     fun setUp() {
@@ -71,7 +75,7 @@ class TagPresenterTest {
 
     @Test
     fun showsDefaultColorWhenCreatingNewTag() {
-        val presenter = TagPresenter(Tag.noTag, tagsRepository)
+        val presenter = TagPresenter(Tag.noTag, tagsCache)
         presenter.onAttachView(view)
 
         verify(view).showColor(color(0x607d8b))
@@ -104,7 +108,7 @@ class TagPresenterTest {
 
         save()
 
-        verifyZeroInteractions(tagsRepository)
+        assertThat(tagsCache.lastSavedTag, nullValue())
         verify(view).showTitleCannotBeEmptyError()
     }
 
@@ -114,7 +118,17 @@ class TagPresenterTest {
 
         save()
 
-        verify(tagsRepository).save(tag)
+        assertThat(tagsCache.lastSavedTag, equalTo(tag))
+    }
+
+    @Test
+    fun trimsTitleWhenSaving() {
+        presenter.onAttachView(view)
+        updateTitle(" title ")
+
+        save()
+
+        assertThat(tagsCache.lastSavedTag!!.title, equalTo("title"))
     }
 
     @Test
@@ -136,5 +150,17 @@ class TagPresenterTest {
 
     private fun save() {
         saveSubject.onNext(Unit)
+    }
+
+    class TagsCacheForTest : TagsCache {
+        var lastSavedTag: Tag? = null
+
+        override fun observeTags(): Observable<List<Tag>> {
+            throw UnsupportedOperationException()
+        }
+
+        override fun save(tag: Tag) {
+            lastSavedTag = tag
+        }
     }
 }
