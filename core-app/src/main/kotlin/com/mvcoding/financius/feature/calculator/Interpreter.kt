@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.feature.calculator
 
+import com.mvcoding.financius.feature.calculator.Interpreter.Operator.*
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -46,7 +47,7 @@ class Interpreter {
         }
 
         val postfix = toPostfix(tokens)
-        return calculatePostfix(postfix).stripTrailingZeros()
+        return calculatePostfix(postfix)
     }
 
     fun isEmptyOrSingleNumber(expression: String?): Boolean {
@@ -150,15 +151,14 @@ class Interpreter {
             val secondNumber = resultStack.pop()
             val firstNumber = resultStack.pop()
             when (token.operator) {
-                Interpreter.Operator.ADD -> resultStack.push(firstNumber.add(secondNumber, mathContext))
-                Interpreter.Operator.SUBTRACT -> resultStack.push(firstNumber.subtract(secondNumber, mathContext))
-                Interpreter.Operator.MULTIPLY -> resultStack.push(firstNumber.multiply(secondNumber, mathContext))
-                Interpreter.Operator.DIVIDE -> try {
+                ADD -> resultStack.push(firstNumber.add(secondNumber, mathContext))
+                SUBTRACT -> resultStack.push(firstNumber.subtract(secondNumber, mathContext))
+                MULTIPLY -> resultStack.push(firstNumber.multiply(secondNumber, mathContext))
+                DIVIDE -> try {
                     resultStack.push(firstNumber.divide(secondNumber, mathContext))
                 } catch (e: ArithmeticException) {
                     return BigDecimal.ZERO
                 }
-
                 else -> throw IllegalStateException("Operator is not supported.")
             }
         }
@@ -170,7 +170,7 @@ class Interpreter {
         return stackHeadToken is OperatorToken && stackHeadToken.operator.precedence >= token.operator.precedence
     }
 
-    private enum class Operator(val precedence: Int) {
+    internal enum class Operator(val precedence: Int) {
         ADD(1), SUBTRACT(2), MULTIPLY(3), DIVIDE(4);
 
         companion object {
@@ -194,11 +194,7 @@ class Interpreter {
 
     private class OperatorToken(val operator: Operator) : Token
 
-    /**
-     * Our expressions do not have parenthesis at the moment so this is not implemented.
-     */
     private class ParenthesisToken : Token {
-        val isOpening: Boolean
-            get() = true
+        val isOpening = true
     }
 }
