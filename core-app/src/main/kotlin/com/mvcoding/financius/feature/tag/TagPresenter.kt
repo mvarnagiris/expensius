@@ -27,7 +27,7 @@ class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Pre
         val idObservable = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(UUID.randomUUID().toString())
         val modelStateObservable = just(tag.modelState)
         val titleObservable = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }
-        val colorObservable = view.onColorChanged().startWith(if (tag.color == 0) color(0x60, 0x7d, 0x8b) else tag.color).doOnNext { view.showColor(it) }
+        val colorObservable = view.onColorChanged().startWith(if (tag.color == 0) color(0x607d8b) else tag.color).doOnNext { view.showColor(it) }
 
         val tagObservable = combineLatest(idObservable, modelStateObservable, titleObservable, colorObservable,
                 { id, modelState, title, color -> Tag(id, modelState, title, color) })
@@ -37,7 +37,7 @@ class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Pre
                 .withLatestFrom(tagObservable, { action, tag -> tag })
                 .filter { validate(it, view) }
                 .doOnNext { tagsCache.save(it) }
-                .subscribe { view.startResult(it) })
+                .subscribe({ view.startResult(it) }, { it.printStackTrace() }))
     }
 
     private fun validate(tag: Tag, view: View): Boolean {

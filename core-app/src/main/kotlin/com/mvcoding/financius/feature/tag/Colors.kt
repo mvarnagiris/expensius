@@ -14,13 +14,10 @@
 
 package com.mvcoding.financius.feature.tag
 
-fun color(red: Int, green: Int, blue: Int) = color(red, green, blue, 255)
+fun color(value: Int): Int {
+    val red = (value shr 16) and 0xFF
+    val green = (value shr 8) and 0xFF
+    val blue = (value shr 32) and 0xFF
 
-fun color(red: Int, green: Int, blue: Int, alpha: Int): Int {
-    val redMasked = (red shl 16) and 16711680
-    val greenMasked = (green shl 16) and 65280
-    val blueMasked = (blue shl 16) and 255
-    val alphaMasked = (alpha shl 16) and -16777216
-
-    return alphaMasked or redMasked or greenMasked or blueMasked
+    return (0xFF shl 24) or (red shl 16) or (green shl 8) or blue
 }

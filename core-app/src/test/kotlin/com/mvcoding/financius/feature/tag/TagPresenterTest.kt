@@ -74,7 +74,7 @@ class TagPresenterTest {
         val presenter = TagPresenter(Tag.noTag, tagsRepository)
         presenter.onAttachView(view)
 
-        verify(view).showColor(color(0x60, 0x7d, 0x8b))
+        verify(view).showColor(color(0x607d8b))
     }
 
     @Test
