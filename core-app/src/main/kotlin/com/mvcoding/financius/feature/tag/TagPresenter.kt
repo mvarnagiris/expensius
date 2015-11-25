@@ -27,8 +27,7 @@ class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Pre
         val idObservable = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(UUID.randomUUID().toString())
         val modelStateObservable = just(tag.modelState)
         val titleObservable = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }
-        // TODO This is wrong color to be showing.
-        val colorObservable = view.onColorChanged().startWith(if (tag.color == 0) 0x607D8B else tag.color).doOnNext { view.showColor(it) }
+        val colorObservable = view.onColorChanged().startWith(if (tag.color == 0) color(0x60, 0x7d, 0x8b) else tag.color).doOnNext { view.showColor(it) }
 
         val tagObservable = combineLatest(idObservable, modelStateObservable, titleObservable, colorObservable,
                 { id, modelState, title, color -> Tag(id, modelState, title, color) })
