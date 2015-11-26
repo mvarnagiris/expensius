@@ -17,6 +17,7 @@ package com.mvcoding.financius.feature.tag
 import rx.Observable
 
 interface TagsCache {
-    fun observeTags(): Observable<List<Tag>>
+    fun tags(): Observable<List<Tag>>
     fun save(tag: Tag)
+    fun archive(tags: Set<Tag>)
 }

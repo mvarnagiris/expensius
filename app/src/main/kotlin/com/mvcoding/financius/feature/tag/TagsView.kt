@@ -32,13 +32,13 @@ import rx.Observable
 
 class TagsView : LinearLayout, TagsPresenter.View {
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
+
     private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
     private val buttonBarView by lazy { findViewById(R.id.buttonBarView) }
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
-
     private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class) }
-    private val adapter = TagsAdapter()
 
+    private val adapter = TagsAdapter()
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -80,6 +80,10 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onSave(): Observable<Unit> = saveButton.clicks()
 
+    override fun onArchive(): Observable<Unit> {
+        throw UnsupportedOperationException()
+    }
+
     override fun showBatchOperationMode(batchOperationMode: TagsPresenter.BatchOperationMode) {
         throw UnsupportedOperationException()
     }
@@ -97,6 +101,10 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun showTags(tags: List<Tag>) {
         adapter.items = tags
+    }
+
+    override fun remove(tags: Set<Tag>) {
+        throw UnsupportedOperationException()
     }
 
     override fun startTagEdit(tag: Tag) {

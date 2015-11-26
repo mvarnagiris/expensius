@@ -34,14 +34,15 @@ class TagsPresenter(
 
         view.showBatchOperationMode(batchOperationMode)
         view.setDisplayType(displayType)
-        if (displayType === MULTI_CHOICE) {
+        if (displayType === MULTI_CHOICE || batchOperationMode == VISIBLE) {
             view.showSelectedTags(selectedTags.orEmpty())
         }
 
         unsubscribeOnDetach(view.onBatchOperationModeChanged().doOnNext { batchOperationMode = it }.subscribe { view.showBatchOperationMode(it) })
-        unsubscribeOnDetach(tagsCache.observeTags().subscribe { view.showTags(it) })
+        unsubscribeOnDetach(tagsCache.tags().subscribe { view.showTags(it) })
         unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { noTag }).subscribe { selectTag(view, it) })
         unsubscribeOnDetach(view.onSave().map { selectedTags }.subscribe { view.startResult(it) })
+        unsubscribeOnDetach(view.onArchive().map { selectedTags }.subscribe { archive(view, it) })
     }
 
     private fun selectTag(view: View, tag: Tag) {
@@ -59,16 +60,24 @@ class TagsPresenter(
         }
     }
 
+    private fun archive(view: View, tags: Set<Tag>) {
+        view.remove(tags)
+        view.showBatchOperationMode(HIDDEN)
+        tagsCache.archive(tags)
+    }
+
     interface View : Presenter.View {
         fun onBatchOperationModeChanged(): Observable<BatchOperationMode>
         fun onTagSelected(): Observable<Tag>
         fun onCreateTag(): Observable<Unit>
         fun onSave(): Observable<Unit>
+        fun onArchive(): Observable<Unit>
         fun showBatchOperationMode(batchOperationMode: BatchOperationMode)
         fun setDisplayType(displayType: DisplayType)
         fun showSelectedTags(selectedTags: Set<Tag>)
         fun showTagSelected(tag: Tag, selected: Boolean)
         fun showTags(tags: List<Tag>)
+        fun remove(tags: Set<Tag>)
         fun startTagEdit(tag: Tag)
         fun startResult(tag: Set<Tag>)
     }

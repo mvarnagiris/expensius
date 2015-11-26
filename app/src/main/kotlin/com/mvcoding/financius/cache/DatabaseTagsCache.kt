@@ -29,7 +29,11 @@ class DatabaseTagsCache(private val database: Database, private val tagsTable: T
         database.save(tagsTable, tag.toContentValues(tagsTable))
     }
 
-    override fun observeTags(): Observable<List<Tag>> {
+    override fun tags(): Observable<List<Tag>> {
         return database.query(selectFrom(tagsTable)).map { it.map { it.toTag(tagsTable) } }
+    }
+
+    override fun archive(tags: Set<Tag>) {
+        throw UnsupportedOperationException()
     }
 }

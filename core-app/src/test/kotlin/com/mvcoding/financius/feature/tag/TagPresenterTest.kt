@@ -155,12 +155,15 @@ class TagPresenterTest {
     class TagsCacheForTest : TagsCache {
         var lastSavedTag: Tag? = null
 
-        override fun observeTags(): Observable<List<Tag>> {
+        override fun tags(): Observable<List<Tag>> {
             throw UnsupportedOperationException()
         }
 
         override fun save(tag: Tag) {
             lastSavedTag = tag
+        }
+
+        override fun archive(tags: Set<Tag>) {
         }
     }
 }
