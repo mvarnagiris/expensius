@@ -29,7 +29,6 @@ class TagsPresenterTest {
     val saveSubject = PublishSubject.create<Unit>()
     val archiveSubject = PublishSubject.create<Unit>()
     val tagsCache = mock(TagsCache::class.java)
-
     val view = mock(TagsPresenter.View::class.java)
 
     @Before
