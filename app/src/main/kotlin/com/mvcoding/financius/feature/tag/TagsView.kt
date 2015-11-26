@@ -68,6 +68,10 @@ class TagsView : LinearLayout, TagsPresenter.View {
         presenter?.onDetachView(this)
     }
 
+    override fun onBatchOperationModeChanged(): Observable<TagsPresenter.BatchOperationMode> {
+        throw UnsupportedOperationException()
+    }
+
     override fun onTagSelected(): Observable<Tag> = adapter.onTagSelected()
 
     override fun onCreateTag(): Observable<Unit> {
@@ -75,6 +79,10 @@ class TagsView : LinearLayout, TagsPresenter.View {
     }
 
     override fun onSave(): Observable<Unit> = saveButton.clicks()
+
+    override fun showBatchOperationMode(batchOperationMode: TagsPresenter.BatchOperationMode) {
+        throw UnsupportedOperationException()
+    }
 
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
         adapter.displayType = displayType

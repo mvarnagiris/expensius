@@ -14,6 +14,8 @@
 
 package com.mvcoding.financius.feature.tag
 
+import com.mvcoding.financius.feature.tag.TagsPresenter.BatchOperationMode.HIDDEN
+import com.mvcoding.financius.feature.tag.TagsPresenter.BatchOperationMode.VISIBLE
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
@@ -21,14 +23,17 @@ import rx.Observable
 import rx.subjects.PublishSubject
 
 class TagsPresenterTest {
+    val batchOperationsSubject = PublishSubject.create<TagsPresenter.BatchOperationMode>()
     val tagSelectedSubject = PublishSubject.create<Tag>()
     val tagCreateSubject = PublishSubject.create<Unit>()
     val saveSubject = PublishSubject.create<Unit>()
     val tagsRepository = mock(TagsCache::class.java)
+
     val view = mock(TagsPresenter.View::class.java)
 
     @Before
     fun setUp() {
+        given(view.onBatchOperationModeChanged()).willReturn(batchOperationsSubject)
         given(view.onTagSelected()).willReturn(tagSelectedSubject)
         given(view.onCreateTag()).willReturn(tagCreateSubject)
         given(view.onSave()).willReturn(saveSubject)
@@ -160,6 +165,67 @@ class TagsPresenterTest {
         createTag()
 
         verify(view).startTagEdit(Tag.noTag)
+    }
+
+    @Test
+    fun initiallyDoNoShowBatchOperationMode() {
+        val presenter = presenterWithDisplayTypeView()
+
+        presenter.onAttachView(view)
+
+        verify(view).showBatchOperationMode(HIDDEN)
+    }
+
+    @Test
+    fun showsBatchOperationModeWhenStartingBatchOperations() {
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+
+        setBatchOperationMode(VISIBLE)
+
+        verify(view).showBatchOperationMode(VISIBLE)
+    }
+
+    @Test
+    fun showsBatchOperationModeAfterReattachWhenItWasAlreadyStarted() {
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+        setBatchOperationMode(VISIBLE)
+
+        presenter.onDetachView(view)
+        presenter.onAttachView(view)
+
+        verify(view, times(2)).showBatchOperationMode(VISIBLE)
+    }
+
+    @Test
+    fun hidesBatchOperationModeWhenItWasStartedAndNowIsBeingHidden() {
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+        setBatchOperationMode(VISIBLE)
+
+        setBatchOperationMode(HIDDEN)
+
+        verify(view, times(2)).showBatchOperationMode(HIDDEN)
+    }
+
+    @Test
+    fun canSelectMultipleTagsInBatchOperationMode() {
+        val tag1 = aTag();
+        val tag2 = aTag();
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+        setBatchOperationMode(VISIBLE)
+
+        selectTag(tag1)
+        selectTag(tag2)
+
+        verify(view).showTagSelected(tag1, true)
+        verify(view).showTagSelected(tag2, true)
+    }
+
+    private fun setBatchOperationMode(batchOperationMode: TagsPresenter.BatchOperationMode) {
+        batchOperationsSubject.onNext(batchOperationMode)
     }
 
     private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
