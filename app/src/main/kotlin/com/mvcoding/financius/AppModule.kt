@@ -18,7 +18,7 @@ import android.content.Context
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.financius.cache.DatabaseTagsCache
-import com.mvcoding.financius.cache.database.Database
+import com.mvcoding.financius.cache.database.SqliteDatabase
 import com.mvcoding.financius.cache.database.table.TagsTable
 import com.mvcoding.financius.extension.provideSingleton
 import com.mvcoding.financius.feature.tag.TagsCache
@@ -38,11 +38,11 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun database() {
         val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(context, TagsTable()))
-        registerFactory(Database::class.java, { Database(briteDatabase) })
+        registerFactory(SqliteDatabase::class.java, { SqliteDatabase(briteDatabase) })
     }
 
     private fun tagsCache() {
-        val database = provideSingleton(Database::class)
+        val database = provideSingleton(SqliteDatabase::class)
         registerFactory(TagsCache::class.java, { DatabaseTagsCache(database, TagsTable()) })
     }
 }

@@ -17,41 +17,9 @@ package com.mvcoding.financius.cache.database
 import android.content.ContentValues
 import android.database.Cursor
 import com.mvcoding.financius.cache.database.table.Table
-import com.squareup.sqlbrite.BriteDatabase
 import rx.Observable
 
-class Database(private val database: BriteDatabase) {
-    fun save(table: Table, contentValues: ContentValues) {
-        val transaction = database.newTransaction()
-        try {
-            updateOrInsert(table, contentValues)
-            transaction.markSuccessful()
-        } finally {
-            transaction.end()
-        }
-    }
-
-    fun query(queryRequest: QueryRequest): Observable<Cursor> {
-        val tables: Iterable<String> = queryRequest.getTables().map { it.name }
-        val sql = queryRequest.getSql()
-        val arguments = queryRequest.getArguments()
-        return database.createQuery(tables, sql, *arguments).map { it.run() }
-    }
-
-    private fun updateOrInsert(table: Table, contentValues: ContentValues) {
-        val where = "${table.idColumns().joinToString(separator = " AND ", transform = { "${it.name}=?" })}"
-        val query = "SELECT ${table.idColumns().joinToString { it.name }} " +
-                "FROM ${table.name} " +
-                "WHERE $where " +
-                "LIMIT 1"
-        val args = table.idColumns().map {
-            contentValues.getAsString(it.name).let { value -> if (value.isBlank()) "0" else value }
-        }.toTypedArray()
-        val cursor = database.query(query, *args)
-        if (cursor.moveToFirst()) {
-            database.update(table.name, contentValues, where, *args)
-        } else {
-            database.insert(table.name, contentValues)
-        }
-    }
+interface Database {
+    fun save(table: Table, contentValues: ContentValues)
+    fun query(queryRequest: QueryRequest): Observable<Cursor>
 }
