@@ -36,7 +36,7 @@ class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Pre
         unsubscribeOnDetach(view.onSave()
                 .withLatestFrom(tagObservable, { action, tag -> tag })
                 .filter { validate(it, view) }
-                .doOnNext { tagsCache.save(it) }
+                .doOnNext { tagsCache.save(setOf(it)) }
                 .subscribe { view.startResult(it) })
     }
 

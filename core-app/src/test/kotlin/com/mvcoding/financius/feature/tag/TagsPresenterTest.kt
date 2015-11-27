@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.feature.tag
 
+import com.mvcoding.financius.ModelState.ARCHIVED
 import com.mvcoding.financius.feature.tag.TagsPresenter.BatchOperationMode.HIDDEN
 import com.mvcoding.financius.feature.tag.TagsPresenter.BatchOperationMode.VISIBLE
 import org.junit.Before
@@ -245,7 +246,8 @@ class TagsPresenterTest {
     fun archivesSelectedTagsInBatchOperationMode() {
         val tag1 = aTag();
         val tag2 = aTag();
-        val archivedTags = setOf(tag1, tag2)
+        val removedTags = setOf(tag1, tag2)
+        val archivedTags = setOf(tag1.withModelState(ARCHIVED), tag2.withModelState(ARCHIVED))
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
         setBatchOperationMode(VISIBLE)
@@ -254,9 +256,25 @@ class TagsPresenterTest {
 
         archive()
 
-        verify(tagsCache).archive(archivedTags)
-        verify(view).remove(archivedTags)
+        verify(tagsCache).save(archivedTags)
+        verify(view).remove(removedTags)
         verify(view, times(2)).showBatchOperationMode(HIDDEN)
+    }
+
+    @Test
+    fun selectedTagsAreClearedAfterArchive() {
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+        setBatchOperationMode(VISIBLE)
+        selectTag(aTag())
+        selectTag(aTag())
+
+        archive()
+        setBatchOperationMode(VISIBLE)
+        presenter.onDetachView(view)
+        presenter.onAttachView(view)
+
+        verify(view).showSelectedTags(setOf())
     }
 
     private fun archive() {

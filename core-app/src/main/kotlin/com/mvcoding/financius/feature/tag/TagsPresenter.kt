@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.feature.tag
 
+import com.mvcoding.financius.ModelState
 import com.mvcoding.financius.feature.Presenter
 import com.mvcoding.financius.feature.tag.Tag.Companion.noTag
 import com.mvcoding.financius.feature.tag.TagsPresenter.BatchOperationMode.HIDDEN
@@ -42,7 +43,7 @@ class TagsPresenter(
         unsubscribeOnDetach(tagsCache.tags().subscribe { view.showTags(it) })
         unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { noTag }).subscribe { selectTag(view, it) })
         unsubscribeOnDetach(view.onSave().map { selectedTags }.subscribe { view.startResult(it) })
-        unsubscribeOnDetach(view.onArchive().map { selectedTags }.subscribe { archive(view, it) })
+        unsubscribeOnDetach(view.onArchive().map { selectedTags }.doOnNext { archive(view, it) }.subscribe { selectedTags = setOf() })
     }
 
     private fun selectTag(view: View, tag: Tag) {
@@ -63,7 +64,7 @@ class TagsPresenter(
     private fun archive(view: View, tags: Set<Tag>) {
         view.remove(tags)
         view.showBatchOperationMode(HIDDEN)
-        tagsCache.archive(tags)
+        tagsCache.save(tags.map { it.withModelState(ModelState.ARCHIVED) }.toSet())
     }
 
     interface View : Presenter.View {

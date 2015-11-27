@@ -20,11 +20,13 @@ import java.util.*
 
 data class Tag(
         val id: String = UUID.randomUUID().toString(),
-        val modelState: ModelState = ModelState.None,
+        val modelState: ModelState = ModelState.NONE,
         val title: String,
         val color: Int) : Serializable {
 
     companion object {
-        val noTag = Tag("", ModelState.None, "", 0)
+        val noTag = Tag("", ModelState.NONE, "", 0)
     }
+
+    fun withModelState(modelState: ModelState) = Tag(id, modelState, title, color)
 }

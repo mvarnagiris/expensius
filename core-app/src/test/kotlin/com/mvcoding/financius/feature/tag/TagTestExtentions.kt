@@ -14,6 +14,10 @@
 
 package com.mvcoding.financius.feature.tag
 
+import com.mvcoding.financius.ModelState
+
 fun aTag(): Tag {
     return Tag(title = "title", color = 1)
 }
+
+fun Tag.withModelState(modelState: ModelState): Tag = Tag(id, modelState, title, color)

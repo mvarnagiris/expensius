@@ -15,5 +15,5 @@
 package com.mvcoding.financius
 
 enum class ModelState {
-    None, Deleted
+    NONE, ARCHIVED
 }

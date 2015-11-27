@@ -18,6 +18,5 @@ import rx.Observable
 
 interface TagsCache {
     fun tags(): Observable<List<Tag>>
-    fun save(tag: Tag)
-    fun archive(tags: Set<Tag>)
+    fun save(tag: Set<Tag>)
 }

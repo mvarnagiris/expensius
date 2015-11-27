@@ -18,7 +18,7 @@ import com.mvcoding.financius.ModelState
 
 abstract class ModelTable(name: String) : Table(name) {
     val id = Column(this, "id", Column.Type.TextPrimaryKey);
-    val modelState = Column(this, "modelState", Column.Type.Text, ModelState.None.name);
+    val modelState = Column(this, "modelState", Column.Type.Text, ModelState.NONE.name);
 
     override fun idColumns(): List<Column> {
         return listOf(id)

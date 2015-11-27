@@ -108,7 +108,7 @@ class TagPresenterTest {
 
         save()
 
-        assertThat(tagsCache.lastSavedTag, nullValue())
+        assertThat(tagsCache.lastSavedTags, nullValue())
         verify(view).showTitleCannotBeEmptyError()
     }
 
@@ -118,7 +118,7 @@ class TagPresenterTest {
 
         save()
 
-        assertThat(tagsCache.lastSavedTag, equalTo(tag))
+        assertThat(tagsCache.lastSavedTags!!.first(), equalTo(tag))
     }
 
     @Test
@@ -128,7 +128,7 @@ class TagPresenterTest {
 
         save()
 
-        assertThat(tagsCache.lastSavedTag!!.title, equalTo("title"))
+        assertThat(tagsCache.lastSavedTags!!.first().title, equalTo("title"))
     }
 
     @Test
@@ -153,17 +153,14 @@ class TagPresenterTest {
     }
 
     class TagsCacheForTest : TagsCache {
-        var lastSavedTag: Tag? = null
+        var lastSavedTags: Set<Tag>? = null
 
         override fun tags(): Observable<List<Tag>> {
             throw UnsupportedOperationException()
         }
 
-        override fun save(tag: Tag) {
-            lastSavedTag = tag
-        }
-
-        override fun archive(tags: Set<Tag>) {
+        override fun save(tags: Set<Tag>) {
+            lastSavedTags = tags
         }
     }
 }
