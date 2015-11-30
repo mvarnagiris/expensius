@@ -93,17 +93,17 @@ class TagsView : LinearLayout, TagsPresenter.View {
         buttonBarView.visibility = if (displayType == VIEW) GONE else VISIBLE
     }
 
-    override fun showSelectedTags(selectedTags: Set<Tag>) {
+    override fun setSelectedTags(selectedTags: Set<Tag>) {
         adapter.selectedTags = selectedTags
     }
 
-    override fun showTagSelected(tag: Tag, selected: Boolean) = adapter.setTagSelected(tag, selected)
+    override fun setTagSelected(tag: Tag, selected: Boolean) = adapter.setTagSelected(tag, selected)
 
-    override fun showTags(tags: List<Tag>) {
+    override fun setTags(tags: List<Tag>) {
         adapter.items = tags
     }
 
-    override fun remove(tags: Set<Tag>) {
+    override fun removeTags(tags: Set<Tag>) {
         throw UnsupportedOperationException()
     }
 

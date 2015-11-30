@@ -14,9 +14,6 @@
 
 package com.mvcoding.financius.feature.tag
 
-import com.mvcoding.financius.ModelState.ARCHIVED
-import com.mvcoding.financius.feature.tag.TagsPresenter.BatchOperationMode.HIDDEN
-import com.mvcoding.financius.feature.tag.TagsPresenter.BatchOperationMode.VISIBLE
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
@@ -24,21 +21,19 @@ import rx.Observable
 import rx.subjects.PublishSubject
 
 class TagsPresenterTest {
-    val batchOperationsSubject = PublishSubject.create<TagsPresenter.BatchOperationMode>()
     val tagSelectedSubject = PublishSubject.create<Tag>()
     val tagCreateSubject = PublishSubject.create<Unit>()
     val saveSubject = PublishSubject.create<Unit>()
-    val archiveSubject = PublishSubject.create<Unit>()
+    val archiveSubject = PublishSubject.create<Tag>()
     val tagsCache = mock(TagsCache::class.java)
     val view = mock(TagsPresenter.View::class.java)
 
     @Before
     fun setUp() {
-        given(view.onBatchOperationModeChanged()).willReturn(batchOperationsSubject)
         given(view.onTagSelected()).willReturn(tagSelectedSubject)
         given(view.onCreateTag()).willReturn(tagCreateSubject)
         given(view.onSave()).willReturn(saveSubject)
-        given(view.onArchive()).willReturn(archiveSubject)
+        given(view.onArchiveTag()).willReturn(archiveSubject)
         given(tagsCache.tags()).willReturn(Observable.empty())
     }
 
@@ -52,21 +47,21 @@ class TagsPresenterTest {
     }
 
     @Test
-    fun doesNotShowSelectedTagsWhenDisplayTypeIsView() {
+    fun doesNotSetSelectedTagsWhenDisplayTypeIsView() {
         val presenter = presenterWithDisplayTypeView()
 
         presenter.onAttachView(view)
 
-        verify(view, never()).showSelectedTags(anySetOf(Tag::class.java))
+        verify(view, never()).setSelectedTags(anySetOf(Tag::class.java))
     }
 
     @Test
-    fun showsSelectedTagsWhenDisplayTypeIsMultiChoice() {
+    fun setsSelectedTagsWhenDisplayTypeIsMultiChoice() {
         val selectedTags = setOf(aTag(), aTag())
         val presenter = TagsPresenter(tagsCache, TagsPresenter.DisplayType.MULTI_CHOICE, selectedTags)
         presenter.onAttachView(view)
 
-        verify(view).showSelectedTags(selectedTags)
+        verify(view).setSelectedTags(selectedTags)
     }
 
     @Test
@@ -77,7 +72,7 @@ class TagsPresenterTest {
 
         selectTag(tag)
 
-        verify(view).showTagSelected(tag, true)
+        verify(view).setTagSelected(tag, true)
     }
 
     @Test
@@ -89,7 +84,7 @@ class TagsPresenterTest {
         selectTag(tag)
         selectTag(tag)
 
-        verify(view).showTagSelected(tag, false)
+        verify(view).setTagSelected(tag, false)
     }
 
     @Test
@@ -100,7 +95,7 @@ class TagsPresenterTest {
 
         presenter.onAttachView(view)
 
-        verify(view).showTags(tags)
+        verify(view).setTags(tags)
     }
 
     @Test
@@ -126,7 +121,7 @@ class TagsPresenterTest {
 
         presenter.onDetachView(view)
         presenter.onAttachView(view)
-        verify(view).showSelectedTags(setOf(tag1, tag2))
+        verify(view).setSelectedTags(setOf(tag1, tag2))
     }
 
     @Test
@@ -142,7 +137,7 @@ class TagsPresenterTest {
 
         presenter.onDetachView(view)
         presenter.onAttachView(view)
-        verify(view).showSelectedTags(setOf(tag1))
+        verify(view).setSelectedTags(setOf(tag1))
     }
 
     @Test
@@ -170,124 +165,46 @@ class TagsPresenterTest {
     }
 
     @Test
-    fun initiallyDoNoShowBatchOperationMode() {
+    fun removesAndShowsUndoForArchivedTagWhenArchivingATag() {
+        val tag = aTag()
         val presenter = presenterWithDisplayTypeView()
-
         presenter.onAttachView(view)
 
-        verify(view).showBatchOperationMode(HIDDEN)
+        archive(tag)
+
+        verify(view).removeTag(tag)
+        verify(view).showUndoForArchivedTag()
     }
 
     @Test
-    fun showsBatchOperationModeWhenStartingBatchOperations() {
+    fun showsUndoForArchivedTagAfterReattach() {
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
 
-        setBatchOperationMode(VISIBLE)
-
-        verify(view).showBatchOperationMode(VISIBLE)
-    }
-
-    @Test
-    fun showsBatchOperationModeAfterReattachWhenItWasAlreadyStarted() {
-        val presenter = presenterWithDisplayTypeView()
-        presenter.onAttachView(view)
-        setBatchOperationMode(VISIBLE)
-
+        archive(aTag())
         presenter.onDetachView(view)
         presenter.onAttachView(view)
 
-        verify(view, times(2)).showBatchOperationMode(VISIBLE)
+        verify(view, times(2)).showUndoForArchivedTag()
     }
 
     @Test
-    fun hidesBatchOperationModeWhenItWasStartedAndNowIsBeingHidden() {
-        val presenter = presenterWithDisplayTypeView()
-        presenter.onAttachView(view)
-        setBatchOperationMode(VISIBLE)
-
-        setBatchOperationMode(HIDDEN)
-
-        verify(view, times(2)).showBatchOperationMode(HIDDEN)
+    fun archivesATagOnArchiveCommit() {
+        throw UnsupportedOperationException()
     }
 
     @Test
-    fun canSelectMultipleTagsInBatchOperationMode() {
-        val tag1 = aTag();
-        val tag2 = aTag();
-        val presenter = presenterWithDisplayTypeView()
-        presenter.onAttachView(view)
-        setBatchOperationMode(VISIBLE)
-
-        selectTag(tag1)
-        selectTag(tag2)
-
-        verify(view).showTagSelected(tag1, true)
-        verify(view).showTagSelected(tag2, true)
-    }
-
-    @Test
-    fun showsSelectedTagsInBatchOperationModeAfterReattach() {
-        val tag1 = aTag();
-        val tag2 = aTag();
-        val presenter = presenterWithDisplayTypeView()
-        presenter.onAttachView(view)
-        setBatchOperationMode(VISIBLE)
-        selectTag(tag1)
-        selectTag(tag2)
-
-        presenter.onDetachView(view)
-        presenter.onAttachView(view)
-
-        verify(view).showSelectedTags(setOf(tag1, tag2))
-    }
-
-    @Test
-    fun archivesSelectedTagsInBatchOperationMode() {
-        val tag1 = aTag();
-        val tag2 = aTag();
-        val removedTags = setOf(tag1, tag2)
-        val archivedTags = setOf(tag1.withModelState(ARCHIVED), tag2.withModelState(ARCHIVED))
-        val presenter = presenterWithDisplayTypeView()
-        presenter.onAttachView(view)
-        setBatchOperationMode(VISIBLE)
-        selectTag(tag1)
-        selectTag(tag2)
-
-        archive()
-
-        verify(tagsCache).save(archivedTags)
-        verify(view).remove(removedTags)
-        verify(view, times(2)).showBatchOperationMode(HIDDEN)
-    }
-
-    @Test
-    fun selectedTagsAreClearedAfterArchive() {
-        val presenter = presenterWithDisplayTypeView()
-        presenter.onAttachView(view)
-        setBatchOperationMode(VISIBLE)
-        selectTag(aTag())
-        selectTag(aTag())
-
-        archive()
-        setBatchOperationMode(VISIBLE)
-        presenter.onDetachView(view)
-        presenter.onAttachView(view)
-
-        verify(view).showSelectedTags(setOf())
-    }
-
-    private fun archive() {
-        archiveSubject.onNext(Unit)
-    }
-
-    private fun setBatchOperationMode(batchOperationMode: TagsPresenter.BatchOperationMode) {
-        batchOperationsSubject.onNext(batchOperationMode)
+    fun insertsTagBackOnUndoArchive() {
+        throw UnsupportedOperationException()
     }
 
     private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
 
     private fun save() = saveSubject.onNext(Unit)
+
+    private fun archive(tag: Tag) {
+        archiveSubject.onNext(tag)
+    }
 
     private fun createTag() {
         tagCreateSubject.onNext(Unit)
