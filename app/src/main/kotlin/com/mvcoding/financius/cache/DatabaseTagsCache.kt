@@ -25,15 +25,11 @@ import com.mvcoding.financius.feature.tag.TagsCache
 import rx.Observable
 
 class DatabaseTagsCache(private val database: Database, private val tagsTable: TagsTable) : TagsCache {
-    override fun save(tag: Tag) {
-        database.save(tagsTable, tag.toContentValues(tagsTable))
+    override fun save(tags: Set<Tag>) {
+        database.save(tagsTable, tags.map { it.toContentValues(tagsTable) })
     }
 
     override fun tags(): Observable<List<Tag>> {
         return database.query(selectFrom(tagsTable)).map { it.map { it.toTag(tagsTable) } }
-    }
-
-    override fun archive(tags: Set<Tag>) {
-        throw UnsupportedOperationException()
     }
 }

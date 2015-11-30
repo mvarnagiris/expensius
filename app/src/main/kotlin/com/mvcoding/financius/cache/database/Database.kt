@@ -20,6 +20,6 @@ import com.mvcoding.financius.cache.database.table.Table
 import rx.Observable
 
 interface Database {
-    fun save(table: Table, contentValues: ContentValues)
+    fun save(table: Table, contentValues: List<ContentValues>)
     fun query(queryRequest: QueryRequest): Observable<Cursor>
 }

@@ -68,10 +68,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
         presenter?.onDetachView(this)
     }
 
-    override fun onBatchOperationModeChanged(): Observable<TagsPresenter.BatchOperationMode> {
-        throw UnsupportedOperationException()
-    }
-
     override fun onTagSelected(): Observable<Tag> = adapter.onTagSelected()
 
     override fun onCreateTag(): Observable<Unit> {
@@ -79,14 +75,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
     }
 
     override fun onSave(): Observable<Unit> = saveButton.clicks()
-
-    override fun onArchive(): Observable<Unit> {
-        throw UnsupportedOperationException()
-    }
-
-    override fun showBatchOperationMode(batchOperationMode: TagsPresenter.BatchOperationMode) {
-        throw UnsupportedOperationException()
-    }
 
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
         adapter.displayType = displayType
@@ -103,15 +91,39 @@ class TagsView : LinearLayout, TagsPresenter.View {
         adapter.items = tags
     }
 
-    override fun removeTags(tags: Set<Tag>) {
-        throw UnsupportedOperationException()
-    }
-
     override fun startTagEdit(tag: Tag) {
         TagActivity.start(context, tag)
     }
 
-    override fun startResult(tag: Set<Tag>) {
+    override fun startResult(tags: Set<Tag>) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun removeTag(tag: Tag) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun showUndoForArchivedTag() {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onArchiveTag(): Observable<Tag> {
+        throw UnsupportedOperationException()
+    }
+
+    override fun insertTag(tag: Tag, position: Int) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun hideUndoForArchivedTag() {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onCommitArchive(): Observable<Unit> {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onUndoArchive(): Observable<Unit> {
         throw UnsupportedOperationException()
     }
 }
