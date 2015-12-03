@@ -17,17 +17,30 @@ package com.mvcoding.financius.feature
 import android.support.v7.widget.RecyclerView
 
 abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Adapter<VH>() {
-    var items: List<T> = listOf()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+    val items = arrayListOf<T>()
 
     override fun getItemCount(): Int {
         return items.size
     }
 
+    fun setItems(items: List<T>) {
+        this.items.clear()
+        this.items.addAll(items)
+        notifyDataSetChanged()
+    }
+
     fun getItem(position: Int): T {
         return items[position]
+    }
+
+    fun insert(item: T, position: Int) {
+        items.add(position, item)
+        notifyItemInserted(position)
+    }
+
+    fun remove(item: T) {
+        val removedItemPosition = items.indexOf(item)
+        items.remove(item)
+        notifyItemRemoved(removedItemPosition)
     }
 }

@@ -15,6 +15,7 @@
 package com.mvcoding.financius.feature.tag
 
 import android.content.Context
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -27,18 +28,24 @@ import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
+import com.mvcoding.financius.extension.snackbar
 import com.mvcoding.financius.feature.tag.TagsPresenter.DisplayType.VIEW
-import rx.Observable
+import rx.lang.kotlin.PublishSubject
 
 class TagsView : LinearLayout, TagsPresenter.View {
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
-
     private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
     private val buttonBarView by lazy { findViewById(R.id.buttonBarView) }
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
-    private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class) }
+    private var snackbar: Snackbar? = null
 
+    private val archiveTagObservable = PublishSubject<Tag>()
+    private val commitArchiveObservable = PublishSubject<Unit>()
+    private val undoArchiveObservable = PublishSubject<Unit>()
+
+    private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class) }
     private val adapter = TagsAdapter()
+
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -51,7 +58,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.itemAnimator = DefaultItemAnimator()
@@ -68,14 +74,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
         presenter?.onDetachView(this)
     }
 
-    override fun onTagSelected(): Observable<Tag> = adapter.onTagSelected()
-
-    override fun onCreateTag(): Observable<Unit> {
-        return toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_create }.map { Unit }
-    }
-
-    override fun onSave(): Observable<Unit> = saveButton.clicks()
-
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
         adapter.displayType = displayType
         buttonBarView.visibility = if (displayType == VIEW) GONE else VISIBLE
@@ -88,8 +86,40 @@ class TagsView : LinearLayout, TagsPresenter.View {
     override fun setTagSelected(tag: Tag, selected: Boolean) = adapter.setTagSelected(tag, selected)
 
     override fun setTags(tags: List<Tag>) {
-        adapter.items = tags
+        adapter.setItems(tags)
     }
+
+    override fun removeTag(tag: Tag) {
+        adapter.remove(tag)
+    }
+
+    override fun insertTag(tag: Tag, position: Int) {
+        adapter.insert(tag, position)
+    }
+
+    override fun showUndoForArchivedTag() {
+        dismissSnackbarIfVisible()
+        snackbar = snackbar(R.string.tag_archived, Snackbar.LENGTH_LONG)
+                .action(R.string.undo, Runnable { undoArchiveObservable.onNext(Unit) })
+                .onDismiss(Runnable { commitArchiveObservable.onNext(Unit) })
+                .show()
+    }
+
+    override fun hideUndoForArchivedTag() {
+        dismissSnackbarIfVisible()
+    }
+
+    override fun onTagSelected() = adapter.onTagSelected()
+
+    override fun onCreateTag() = toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_create }.map { Unit }
+
+    override fun onSave() = saveButton.clicks()
+
+    override fun onArchiveTag() = archiveTagObservable
+
+    override fun onCommitArchive() = commitArchiveObservable
+
+    override fun onUndoArchive() = undoArchiveObservable
 
     override fun startTagEdit(tag: Tag) {
         TagActivity.start(context, tag)
@@ -99,31 +129,8 @@ class TagsView : LinearLayout, TagsPresenter.View {
         throw UnsupportedOperationException()
     }
 
-    override fun removeTag(tag: Tag) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun showUndoForArchivedTag() {
-        throw UnsupportedOperationException()
-    }
-
-    override fun onArchiveTag(): Observable<Tag> {
-        throw UnsupportedOperationException()
-    }
-
-    override fun insertTag(tag: Tag, position: Int) {
-        throw UnsupportedOperationException()
-    }
-
-    override fun hideUndoForArchivedTag() {
-        throw UnsupportedOperationException()
-    }
-
-    override fun onCommitArchive(): Observable<Unit> {
-        throw UnsupportedOperationException()
-    }
-
-    override fun onUndoArchive(): Observable<Unit> {
-        throw UnsupportedOperationException()
+    private fun dismissSnackbarIfVisible() {
+        snackbar?.dismiss()
+        snackbar = null
     }
 }

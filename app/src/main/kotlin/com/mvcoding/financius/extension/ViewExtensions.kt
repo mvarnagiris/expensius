@@ -19,6 +19,7 @@ import android.support.design.widget.Snackbar
 import android.view.View
 import android.view.ViewOutlineProvider
 import com.memoizrlabs.Shank
+import com.mvcoding.financius.feature.SnackbarBuilder.Companion.snackbar
 import kotlin.reflect.KClass
 
 fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>): T? {
@@ -40,6 +41,6 @@ fun View.makeOutlineProviderOval() {
     }
 }
 
-fun View.showSnackbar(resId: Int, duration: Int) {
-    Snackbar.make(this, resId, duration).show()
-}
+fun View.createSnackbar(resId: Int, duration: Int) = Snackbar.make(this, resId, duration)
+
+fun View.snackbar(resId: Int, duration: Int) = snackbar(this, resId, duration)
