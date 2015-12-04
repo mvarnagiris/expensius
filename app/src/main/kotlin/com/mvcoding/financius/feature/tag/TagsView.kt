@@ -72,7 +72,6 @@ class TagsView : LinearLayout, TagsPresenter.View {
                 archiveTagObservable.onNext(adapter.getItem(viewHolder.adapterPosition))
             }
         }
-
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
