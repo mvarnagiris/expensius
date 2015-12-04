@@ -20,6 +20,5 @@ class UserSettings : Settings {
     }
 
     override fun setIsIntroductionSeen(isIntroductionSeen: Boolean) {
-
     }
 }

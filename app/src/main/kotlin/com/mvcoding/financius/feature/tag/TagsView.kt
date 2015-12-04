@@ -83,6 +83,11 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
+
+        if (snackbar?.isShown ?: false) {
+            commitArchiveObservable.onNext(Unit)
+        }
+
         presenter?.onDetachView(this)
     }
 
@@ -112,12 +117,8 @@ class TagsView : LinearLayout, TagsPresenter.View {
     override fun showUndoForArchivedTag() {
         dismissSnackbarIfVisible()
         snackbar = snackbar(R.string.tag_archived, LENGTH_LONG)
-                .action(R.string.undo, Runnable {
-                    undoArchiveObservable.onNext(Unit)
-                })
-                .onDismiss(Runnable {
-                    commitArchiveObservable.onNext(Unit)
-                })
+                .action(R.string.undo, Runnable { undoArchiveObservable.onNext(Unit) })
+                .onDismiss(Runnable { commitArchiveObservable.onNext(Unit) })
                 .show()
     }
 
