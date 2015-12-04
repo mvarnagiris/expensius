@@ -19,6 +19,10 @@ class Column(val name: String, private val type: Column.Type, private val defaul
 
     fun createScript() = "$name $type ${if (defaultValue.isBlank()) "" else "default $defaultValue"}"
 
+    override fun toString(): String {
+        return name
+    }
+
     enum class Type(val dataType: String) {
         Text("text"),
         TextPrimaryKey("text primary key"),

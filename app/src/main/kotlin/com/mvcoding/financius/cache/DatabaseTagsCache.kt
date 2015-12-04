@@ -14,6 +14,7 @@
 
 package com.mvcoding.financius.cache
 
+import com.mvcoding.financius.ModelState.NONE
 import com.mvcoding.financius.cache.database.Database
 import com.mvcoding.financius.cache.database.table.TagsTable
 import com.mvcoding.financius.extension.map
@@ -30,6 +31,6 @@ class DatabaseTagsCache(private val database: Database, private val tagsTable: T
     }
 
     override fun tags(): Observable<List<Tag>> {
-        return database.query(selectFrom(tagsTable)).map { it.map { it.toTag(tagsTable) } }
+        return database.query(selectFrom(tagsTable).where("${tagsTable.modelState}=?", arrayOf(NONE.name))).map { it.map { it.toTag(tagsTable) } }
     }
 }

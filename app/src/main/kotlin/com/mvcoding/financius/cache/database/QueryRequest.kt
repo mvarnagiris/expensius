@@ -20,13 +20,24 @@ import com.mvcoding.financius.cache.database.table.Table
 abstract class QueryRequest {
     protected abstract val tables: List<Table>
     protected abstract val columns: List<Column>
+    protected abstract val whereClause: String
+    protected abstract val whereArgs: Array<String>
 
     class Select(private val columns: List<Column>) {
-        fun from(table: Table): From = From(columns, table)
+        fun from(table: Table) = From(columns, table)
     }
 
     class From(override val columns: List<Column>, table: Table) : QueryRequest() {
         override val tables = listOf(table)
+        override val whereClause = ""
+        override val whereArgs = emptyArray<String>()
+
+        fun where(whereClause: String, whereArgs: Array<String> = emptyArray()) = Where(this, whereClause, whereArgs)
+
+        class Where(from: From, override var whereClause: String, override val whereArgs: Array<String>) : QueryRequest() {
+            override val tables = from.tables
+            override val columns = from.columns
+        }
     }
 
     fun getTables(): Iterable<Table> {
@@ -34,10 +45,12 @@ abstract class QueryRequest {
     }
 
     fun getSql(): String {
-        return "SELECT ${columns.joinToString { it.name }} FROM ${tables.first().name}"
+        return "SELECT ${columns.joinToString { it.name }} FROM ${tables.first().name}${where()}"
     }
 
     fun getArguments(): Array<String> {
-        return emptyArray()
+        return whereArgs
     }
+
+    private fun where() = if (whereClause.isBlank()) "" else " WHERE $whereClause"
 }
