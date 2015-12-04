@@ -50,6 +50,7 @@ class SnackbarBuilder(private val view: View, private val resId: Int, private va
             snackbar.dismisses().subscribe { onDismiss.run() }
         }
 
+        snackbar.show();
         return snackbar
     }
 }

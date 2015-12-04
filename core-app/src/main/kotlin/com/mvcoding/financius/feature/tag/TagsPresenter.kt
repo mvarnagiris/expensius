@@ -72,15 +72,17 @@ class TagsPresenter(
     }
 
     private fun commitArchive(view: View) {
-        view.hideUndoForArchivedTag()
+        if (archivedTag.equals(noTag)) return
         tagsCache.save(setOf(archivedTag.withModelState(ARCHIVED)))
         archivedTag = noTag
+        view.hideUndoForArchivedTag()
     }
 
     private fun undoArchive(view: View) {
+        if (archivedTag.equals(noTag)) return
         view.insertTag(archivedTag, archivedTagPosition)
-        view.hideUndoForArchivedTag()
         archivedTag = noTag
+        view.hideUndoForArchivedTag()
     }
 
     interface View : Presenter.View {
