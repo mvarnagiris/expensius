@@ -35,7 +35,7 @@ import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.financius.R
 import com.mvcoding.financius.extension.provideActivityScopedSingleton
-import com.mvcoding.financius.extension.showSnackbar
+import com.mvcoding.financius.extension.snackbar
 import com.mvcoding.financius.extension.supportsLollipop
 import com.mvcoding.financius.extension.toActivity
 import kotlinx.android.synthetic.view_tag.view.*
@@ -115,7 +115,7 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun showTitleCannotBeEmptyError() {
-        showSnackbar(R.string.error_title_empty, Snackbar.LENGTH_LONG)
+        snackbar(R.string.error_title_empty, Snackbar.LENGTH_LONG).show()
     }
 
     override fun onTitleChanged(): Observable<String> {
