@@ -16,10 +16,12 @@ package com.mvcoding.financius.feature.tag
 
 import android.content.Context
 import android.support.design.widget.Snackbar
+import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.AttributeSet
 import android.widget.Button
 import android.widget.LinearLayout
@@ -62,6 +64,17 @@ class TagsView : LinearLayout, TagsPresenter.View {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = adapter
+
+        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?) = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                archiveTagObservable.onNext(adapter.getItem(viewHolder.adapterPosition))
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onAttachedToWindow() {
@@ -99,7 +112,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun showUndoForArchivedTag() {
         dismissSnackbarIfVisible()
-        snackbar = snackbar(R.string.tag_archived, Snackbar.LENGTH_LONG)
+        snackbar = snackbar(R.string.tag_archived, LENGTH_LONG)
                 .action(R.string.undo, Runnable { undoArchiveObservable.onNext(Unit) })
                 .onDismiss(Runnable { commitArchiveObservable.onNext(Unit) })
                 .show()
