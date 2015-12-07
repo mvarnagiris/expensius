@@ -20,6 +20,8 @@
         <item name="colorPrimary">#3F51B5</item>
         <item name="colorPrimaryDark">#303F9F</item>
         <item name="colorAccent">#FF4081</item>
+        <item name="colorAccentDark">#EF3071</item>
+        <item name="colorActionIcon">#333333</item>
         <item name="colorBackgroundPrimary">#FFFFFF</item>
         <item name="colorBackgroundSecondary">#AAAAAA</item>
 
@@ -36,6 +38,7 @@
     <style name="AppTheme.Inverse">
         <item name="themeInverse">@style/AppTheme</item>
 
+        <item name="colorActionIcon">#EEEEEE</item>
         <item name="colorBackgroundPrimary">#333333</item>
         <item name="colorBackgroundSecondary">#666666</item>
 
