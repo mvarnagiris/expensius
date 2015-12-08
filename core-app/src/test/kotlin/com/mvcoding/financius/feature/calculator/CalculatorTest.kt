@@ -14,171 +14,484 @@
 
 package com.mvcoding.financius.feature.calculator
 
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert.assertThat
 import org.junit.Test
+import java.math.BigDecimal.ONE
+import java.math.BigDecimal.TEN
 
 class CalculatorTest {
+    val calculator = Calculator(Interpreter())
+
     @Test
-    fun setsExpressionToANumber() {
-        throw UnsupportedOperationException()
+    fun setsExpressionToANumberWhenItIsEmpty() {
+        calculator.setNumber(TEN)
+
+        assertThat(calculator.getExpression(), equalTo("10"))
+    }
+
+    @Test
+    fun setsExpressionToANumberWhenThereAlreadyIsAnExpression() {
+        calculator.setNumber(TEN)
+
+        calculator.setNumber(ONE)
+
+        assertThat(calculator.getExpression(), equalTo("1"))
     }
 
     @Test
     fun clearsExpression() {
-        throw UnsupportedOperationException()
+        calculator.setNumber(TEN)
+
+        calculator.clear()
+
+        assertThat(calculator.getExpression(), equalTo(""))
     }
 
     @Test
     fun deletesLastSymbolFromExpression() {
-        throw UnsupportedOperationException()
+        calculator.setNumber(TEN)
+
+        calculator.delete()
+
+        assertThat(calculator.getExpression(), equalTo("1"))
     }
 
     @Test
     fun addsDigitWhenExpressionIsEmpty() {
-        throw UnsupportedOperationException()
+        calculator.clear()
+        calculator.digit0()
+        assertThat(calculator.getExpression(), equalTo("0"))
+
+        calculator.clear()
+        calculator.digit1()
+        assertThat(calculator.getExpression(), equalTo("1"))
+
+        calculator.clear()
+        calculator.digit2()
+        assertThat(calculator.getExpression(), equalTo("2"))
+
+        calculator.clear()
+        calculator.digit3()
+        assertThat(calculator.getExpression(), equalTo("3"))
+
+        calculator.clear()
+        calculator.digit4()
+        assertThat(calculator.getExpression(), equalTo("4"))
+
+        calculator.clear()
+        calculator.digit5()
+        assertThat(calculator.getExpression(), equalTo("5"))
+
+        calculator.clear()
+        calculator.digit6()
+        assertThat(calculator.getExpression(), equalTo("6"))
+
+        calculator.clear()
+        calculator.digit7()
+        assertThat(calculator.getExpression(), equalTo("7"))
+
+        calculator.clear()
+        calculator.digit8()
+        assertThat(calculator.getExpression(), equalTo("8"))
+
+        calculator.clear()
+        calculator.digit9()
+        assertThat(calculator.getExpression(), equalTo("9"))
     }
 
     @Test
     fun addsDigitWhenExpressionEndsWithNumber() {
-        throw UnsupportedOperationException()
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit0()
+        assertThat(calculator.getExpression(), equalTo("00"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit1()
+        assertThat(calculator.getExpression(), equalTo("01"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit2()
+        assertThat(calculator.getExpression(), equalTo("02"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit3()
+        assertThat(calculator.getExpression(), equalTo("03"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit4()
+        assertThat(calculator.getExpression(), equalTo("04"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit5()
+        assertThat(calculator.getExpression(), equalTo("05"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit6()
+        assertThat(calculator.getExpression(), equalTo("06"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit7()
+        assertThat(calculator.getExpression(), equalTo("07"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit8()
+        assertThat(calculator.getExpression(), equalTo("08"))
+
+        calculator.clear()
+        calculator.digit0()
+        calculator.digit9()
+        assertThat(calculator.getExpression(), equalTo("09"))
     }
 
     @Test
     fun addsDigitWhenExpressionEndsWithDecimal() {
-        throw UnsupportedOperationException()
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit0()
+        assertThat(calculator.getExpression(), equalTo(".0"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit1()
+        assertThat(calculator.getExpression(), equalTo(".1"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit2()
+        assertThat(calculator.getExpression(), equalTo(".2"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit3()
+        assertThat(calculator.getExpression(), equalTo(".3"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit4()
+        assertThat(calculator.getExpression(), equalTo(".4"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit5()
+        assertThat(calculator.getExpression(), equalTo(".5"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit6()
+        assertThat(calculator.getExpression(), equalTo(".6"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit7()
+        assertThat(calculator.getExpression(), equalTo(".7"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit8()
+        assertThat(calculator.getExpression(), equalTo(".8"))
+
+        calculator.clear()
+        calculator.decimal()
+        calculator.digit9()
+        assertThat(calculator.getExpression(), equalTo(".9"))
     }
 
     @Test
     fun addsDigitWhenExpressionEndsWithOperator() {
-        throw UnsupportedOperationException()
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit0()
+        assertThat(calculator.getExpression(), equalTo("-0"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit1()
+        assertThat(calculator.getExpression(), equalTo("-1"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit2()
+        assertThat(calculator.getExpression(), equalTo("-2"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit3()
+        assertThat(calculator.getExpression(), equalTo("-3"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit4()
+        assertThat(calculator.getExpression(), equalTo("-4"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit5()
+        assertThat(calculator.getExpression(), equalTo("-5"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit6()
+        assertThat(calculator.getExpression(), equalTo("-6"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit7()
+        assertThat(calculator.getExpression(), equalTo("-7"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit8()
+        assertThat(calculator.getExpression(), equalTo("-8"))
+
+        calculator.clear()
+        calculator.subtract()
+        calculator.digit9()
+        assertThat(calculator.getExpression(), equalTo("-9"))
     }
 
     @Test
     fun divideIsIgnoredWhenExpressionIsEmpty() {
-        throw UnsupportedOperationException()
+        calculator.divide()
+
+        assertThat(calculator.getExpression(), equalTo(""))
     }
 
     @Test
     fun divideIsIgnoredWhenExpressionIsOnlyAMinusOperator() {
-        throw UnsupportedOperationException()
+        calculator.subtract()
+
+        calculator.divide()
+
+        assertThat(calculator.getExpression(), equalTo("-"))
     }
 
     @Test
     fun divideReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+        calculator.subtract()
+
+        calculator.divide()
+
+        assertThat(calculator.getExpression(), equalTo("1/"))
     }
 
     @Test
     fun addsDivideOperatorWhenExpressionEndsWithNumber() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+
+        calculator.divide()
+
+        assertThat(calculator.getExpression(), equalTo("1/"))
     }
 
     @Test
     fun addsDivideOperatorWhenExpressionEndsWithDecimal() {
-        throw UnsupportedOperationException()
+        calculator.decimal()
+
+        calculator.divide()
+
+        assertThat(calculator.getExpression(), equalTo("./"))
     }
 
     @Test
     fun multiplyIsIgnoredWhenExpressionIsEmpty() {
-        throw UnsupportedOperationException()
+        calculator.multiply()
+
+        assertThat(calculator.getExpression(), equalTo(""))
     }
 
     @Test
     fun multiplyIsIgnoredWhenExpressionIsOnlyAMinusOperator() {
-        throw UnsupportedOperationException()
+        calculator.subtract()
+
+        calculator.multiply()
+
+        assertThat(calculator.getExpression(), equalTo("-"))
     }
 
     @Test
     fun multiplyReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+        calculator.subtract()
+
+        calculator.multiply()
+
+        assertThat(calculator.getExpression(), equalTo("1*"))
     }
 
     @Test
     fun addsMultiplyOperatorWhenExpressionEndsWithNumber() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+
+        calculator.multiply()
+
+        assertThat(calculator.getExpression(), equalTo("1*"))
     }
 
     @Test
     fun addsMultiplyOperatorWhenExpressionEndsWithDecimal() {
-        throw UnsupportedOperationException()
+        calculator.decimal()
+
+        calculator.multiply()
+
+        assertThat(calculator.getExpression(), equalTo(".*"))
     }
 
     @Test
     fun addsSubtractOperatorWhenExpressionIsEmpty() {
-        throw UnsupportedOperationException()
+        calculator.subtract()
+
+        assertThat(calculator.getExpression(), equalTo("-"))
     }
 
     @Test
     fun subtractReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+        calculator.add()
+
+        calculator.subtract()
+
+        assertThat(calculator.getExpression(), equalTo("1-"))
     }
 
     @Test
     fun addsSubtractOperatorWhenExpressionEndsWithNumber() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+
+        calculator.subtract()
+
+        assertThat(calculator.getExpression(), equalTo("1-"))
     }
 
     @Test
     fun addsSubtractOperatorWhenExpressionEndsWithDecimal() {
-        throw UnsupportedOperationException()
+        calculator.decimal()
+
+        calculator.subtract()
+
+        assertThat(calculator.getExpression(), equalTo(".-"))
     }
 
     @Test
     fun addIsIgnoredWhenExpressionIsEmpty() {
-        throw UnsupportedOperationException()
+        calculator.add()
+
+        assertThat(calculator.getExpression(), equalTo(""))
     }
 
     @Test
     fun addIsIgnoredWhenExpressionIsOnlyAMinusOperator() {
-        throw UnsupportedOperationException()
+        calculator.subtract()
+
+        calculator.add()
+
+        assertThat(calculator.getExpression(), equalTo("-"))
     }
 
     @Test
     fun addReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+        calculator.subtract()
+
+        calculator.add()
+
+        assertThat(calculator.getExpression(), equalTo("1+"))
     }
 
     @Test
     fun addsAddOperatorWhenExpressionEndsWithNumber() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+
+        calculator.add()
+
+        assertThat(calculator.getExpression(), equalTo("1+"))
     }
 
     @Test
     fun addsAddOperatorWhenExpressionEndsWithDecimal() {
-        throw UnsupportedOperationException()
+        calculator.decimal()
+
+        calculator.add()
+
+        assertThat(calculator.getExpression(), equalTo(".+"))
     }
 
     @Test
     fun decimalIsIgnoredWhenExpressionHasOneNumberThatAlreadyHasDecimal() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+        calculator.decimal()
+        calculator.digit2()
+
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("1.2"))
     }
 
     @Test
     fun decimalIsIgnoredWhenExpressionHasMoreThanOneNumberAndLastNumberAlreadyHasDecimal() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+        calculator.decimal()
+        calculator.digit2()
+        calculator.add()
+        calculator.digit1()
+        calculator.decimal()
+        calculator.digit2()
+
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("1.2+1.2"))
     }
 
     @Test
     fun addsDecimalWhenExpressionIsEmpty() {
-        throw UnsupportedOperationException()
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("."))
     }
 
     @Test
     fun addsDecimalWhenExpressionHasOneNumberWithoutDecimal() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("1."))
     }
 
     @Test
     fun addsDecimalWhenExpressionHasMoreThanOneNumberAndLastOneIsWithoutDecimal() {
-        throw UnsupportedOperationException()
+        calculator.digit1()
+        calculator.decimal()
+        calculator.digit2()
+        calculator.add()
+        calculator.digit1()
+
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("1.2+1."))
     }
 
     @Test
     fun addsDecimalWhenExpressionEndsWithAnOperator() {
-        throw UnsupportedOperationException()
+        calculator.subtract()
+
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("-."))
     }
 
-    @Test
-    fun calculateEvaluatesExpression() {
-        throw UnsupportedOperationException()
-    }
+    //    @Test
+    //    fun calculateEvaluatesExpression() {
+    //        throw UnsupportedOperationException()
+    //    }
 }
