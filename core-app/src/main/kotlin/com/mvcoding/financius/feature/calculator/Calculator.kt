@@ -105,6 +105,8 @@ class Calculator(private val interpreter: Interpreter) {
         operator("/")
     }
 
+    fun calculate() = interpreter.evaluate(expression)
+
     private fun operator(operator: String) {
         if (expressionIsEmpty() || (expressionLengthIsOne() && expressionEndsWithOperator())) {
             return

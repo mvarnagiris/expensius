@@ -14,9 +14,11 @@
 
 package com.mvcoding.financius.feature.calculator
 
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Test
+import java.math.BigDecimal
 import java.math.BigDecimal.ONE
 import java.math.BigDecimal.TEN
 
@@ -154,6 +156,13 @@ class CalculatorTest {
     }
 
     @Test
+    fun addsDecimalWhenExpressionIsEmpty() {
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("."))
+    }
+
+    @Test
     fun addsDigitWhenExpressionEndsWithDecimal() {
         calculator.clear()
         calculator.decimal()
@@ -204,6 +213,13 @@ class CalculatorTest {
         calculator.decimal()
         calculator.digit9()
         assertThat(calculator.getExpression(), equalTo(".9"))
+    }
+
+    @Test
+    fun addsSubtractOperatorWhenExpressionIsEmpty() {
+        calculator.subtract()
+
+        assertThat(calculator.getExpression(), equalTo("-"))
     }
 
     @Test
@@ -267,7 +283,7 @@ class CalculatorTest {
     }
 
     @Test
-    fun divideIsIgnoredWhenExpressionIsOnlyAMinusOperator() {
+    fun divideIsIgnoredWhenExpressionIsOnlySubtractOperator() {
         calculator.subtract()
 
         calculator.divide()
@@ -276,9 +292,17 @@ class CalculatorTest {
     }
 
     @Test
-    fun divideReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
+    fun addsSubtractOperatorWhenExpressionEndsWithNumber() {
         calculator.digit1()
+
         calculator.subtract()
+
+        assertThat(calculator.getExpression(), equalTo("1-"))
+    }
+
+    @Test
+    fun addsDivideOperatorWhenExpressionEndsWithNumber() {
+        calculator.digit1()
 
         calculator.divide()
 
@@ -286,8 +310,9 @@ class CalculatorTest {
     }
 
     @Test
-    fun addsDivideOperatorWhenExpressionEndsWithNumber() {
+    fun divideReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
         calculator.digit1()
+        calculator.subtract()
 
         calculator.divide()
 
@@ -311,7 +336,7 @@ class CalculatorTest {
     }
 
     @Test
-    fun multiplyIsIgnoredWhenExpressionIsOnlyAMinusOperator() {
+    fun multiplyIsIgnoredWhenExpressionIsOnlySubtractOperator() {
         calculator.subtract()
 
         calculator.multiply()
@@ -348,25 +373,9 @@ class CalculatorTest {
     }
 
     @Test
-    fun addsSubtractOperatorWhenExpressionIsEmpty() {
-        calculator.subtract()
-
-        assertThat(calculator.getExpression(), equalTo("-"))
-    }
-
-    @Test
     fun subtractReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
         calculator.digit1()
-        calculator.add()
-
-        calculator.subtract()
-
-        assertThat(calculator.getExpression(), equalTo("1-"))
-    }
-
-    @Test
-    fun addsSubtractOperatorWhenExpressionEndsWithNumber() {
-        calculator.digit1()
+        calculator.multiply()
 
         calculator.subtract()
 
@@ -390,7 +399,7 @@ class CalculatorTest {
     }
 
     @Test
-    fun addIsIgnoredWhenExpressionIsOnlyAMinusOperator() {
+    fun addIsIgnoredWhenExpressionIsOnlySubtractOperator() {
         calculator.subtract()
 
         calculator.add()
@@ -427,6 +436,15 @@ class CalculatorTest {
     }
 
     @Test
+    fun addsDecimalWhenExpressionHasOneNumberWithoutDecimal() {
+        calculator.digit1()
+
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("1."))
+    }
+
+    @Test
     fun decimalIsIgnoredWhenExpressionHasOneNumberThatAlreadyHasDecimal() {
         calculator.digit1()
         calculator.decimal()
@@ -435,6 +453,19 @@ class CalculatorTest {
         calculator.decimal()
 
         assertThat(calculator.getExpression(), equalTo("1.2"))
+    }
+
+    @Test
+    fun addsDecimalWhenExpressionHasMoreThanOneNumberAndLastOneIsWithoutDecimal() {
+        calculator.digit1()
+        calculator.decimal()
+        calculator.digit2()
+        calculator.add()
+        calculator.digit1()
+
+        calculator.decimal()
+
+        assertThat(calculator.getExpression(), equalTo("1.2+1."))
     }
 
     @Test
@@ -453,35 +484,6 @@ class CalculatorTest {
     }
 
     @Test
-    fun addsDecimalWhenExpressionIsEmpty() {
-        calculator.decimal()
-
-        assertThat(calculator.getExpression(), equalTo("."))
-    }
-
-    @Test
-    fun addsDecimalWhenExpressionHasOneNumberWithoutDecimal() {
-        calculator.digit1()
-
-        calculator.decimal()
-
-        assertThat(calculator.getExpression(), equalTo("1."))
-    }
-
-    @Test
-    fun addsDecimalWhenExpressionHasMoreThanOneNumberAndLastOneIsWithoutDecimal() {
-        calculator.digit1()
-        calculator.decimal()
-        calculator.digit2()
-        calculator.add()
-        calculator.digit1()
-
-        calculator.decimal()
-
-        assertThat(calculator.getExpression(), equalTo("1.2+1."))
-    }
-
-    @Test
     fun addsDecimalWhenExpressionEndsWithAnOperator() {
         calculator.subtract()
 
@@ -490,8 +492,18 @@ class CalculatorTest {
         assertThat(calculator.getExpression(), equalTo("-."))
     }
 
-    //    @Test
-    //    fun calculateEvaluatesExpression() {
-    //        throw UnsupportedOperationException()
-    //    }
+    @Test
+    fun calculateEvaluatesExpression() {
+        calculator.digit1()
+        calculator.decimal()
+        calculator.digit2()
+        calculator.add()
+        calculator.digit3()
+        calculator.decimal()
+        calculator.digit4()
+
+        val result = calculator.calculate()
+
+        assertThat(result, `is`(BigDecimal("4.6")))
+    }
 }
