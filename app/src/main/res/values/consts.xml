@@ -1,0 +1,33 @@
+<!--
+  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<resources>
+    <string name="calculator_0">0</string>
+    <string name="calculator_1">1</string>
+    <string name="calculator_2">2</string>
+    <string name="calculator_3">3</string>
+    <string name="calculator_4">4</string>
+    <string name="calculator_5">5</string>
+    <string name="calculator_6">6</string>
+    <string name="calculator_7">7</string>
+    <string name="calculator_8">8</string>
+    <string name="calculator_9">9</string>
+    <string name="calculator_decimal">.</string>
+    <string name="calculator_equals">=</string>
+    <string name="calculator_plus">+</string>
+    <string name="calculator_minus">-</string>
+    <string name="calculator_divide">÷</string>
+    <string name="calculator_multiply">×</string>
+    <string name="calculator_delete">␡</string>
+</resources>

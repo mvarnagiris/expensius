@@ -12,12 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<resources>
-    <declare-styleable name="Theme">
-        <attr name="themeInverse" format="reference" />
-        <attr name="colorAccentDark" format="color" />
-        <attr name="colorActionIcon" format="color" />
-        <attr name="colorBackgroundPrimary" format="color" />
-        <attr name="colorBackgroundSecondary" format="color" />
-    </declare-styleable>
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_action_equals" android:state_selected="true" />
+    <item android:drawable="@drawable/ic_action_done" />
+</selector>
