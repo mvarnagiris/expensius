@@ -1,6 +1,6 @@
 .gradle
 /local.properties
-/financius.properties
+/expensius.properties
 /.idea/*
 !/.idea/copyright
 !/.idea/codeStyleSettings.xml

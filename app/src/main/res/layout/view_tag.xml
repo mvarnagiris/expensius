@@ -12,11 +12,11 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.financius.feature.tag.TagView
-    android:id="@+id/tagView"
+<com.mvcoding.expensius.feature.tag.TagView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tagView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -81,4 +81,4 @@
             android:text="@string/save" />
     </FrameLayout>
 
-</com.mvcoding.financius.feature.tag.TagView>
+</com.mvcoding.expensius.feature.tag.TagView>

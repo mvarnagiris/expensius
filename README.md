@@ -1,6 +1,6 @@
-# Financius
+# Expensius
 # Project setup
-- Create a file `financius.properties` in root directory.
+- Create a file `expensius.properties` in root directory.
 
 ```
 endpoint_web_client_id=your_id_goes_here

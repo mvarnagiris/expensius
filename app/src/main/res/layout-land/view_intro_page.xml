@@ -12,7 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.financius.feature.intro.IntroPageView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.expensius.feature.intro.IntroPageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -62,4 +62,4 @@
 
     </LinearLayout>
 
-</com.mvcoding.financius.feature.intro.IntroPageView>
+</com.mvcoding.expensius.feature.intro.IntroPageView>

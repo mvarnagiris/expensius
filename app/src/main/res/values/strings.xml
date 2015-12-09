@@ -13,7 +13,7 @@
   -->
 
 <resources>
-    <string name="app_name">Financius</string>
+    <string name="app_name">Expensius</string>
     <string name="skip">Skip</string>
     <string name="login">Login</string>
     <string name="fixed">Fixed</string>

@@ -13,7 +13,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mvcoding.financius">
+    package="com.mvcoding.expensius">
 
     <application
         android:name=".App"
