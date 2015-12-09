@@ -1,0 +1,108 @@
+/*
+ * Copyright (C) 2015 Mantas Varnagiris.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+package com.mvcoding.financius.feature.calculator
+
+import android.content.Context
+import android.support.design.widget.FloatingActionButton
+import android.util.AttributeSet
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding.view.longClicks
+import com.mvcoding.financius.R
+import com.mvcoding.financius.feature.calculator.CalculatorPresenter.State.CALCULATE
+import com.mvcoding.financius.feature.calculator.CalculatorPresenter.State.SAVE
+import java.math.BigDecimal
+
+class CalculatorView : LinearLayout, CalculatorPresenter.View {
+    private val resultTextView by lazy { findViewById(R.id.resultTextView) as TextView }
+    private val number0Button by lazy { findViewById(R.id.number0Button) as Button }
+    private val number1Button by lazy { findViewById(R.id.number1Button) as Button }
+    private val number2Button by lazy { findViewById(R.id.number2Button) as Button }
+    private val number3Button by lazy { findViewById(R.id.number3Button) as Button }
+    private val number4Button by lazy { findViewById(R.id.number4Button) as Button }
+    private val number5Button by lazy { findViewById(R.id.number5Button) as Button }
+    private val number6Button by lazy { findViewById(R.id.number6Button) as Button }
+    private val number7Button by lazy { findViewById(R.id.number7Button) as Button }
+    private val number8Button by lazy { findViewById(R.id.number8Button) as Button }
+    private val number9Button by lazy { findViewById(R.id.number9Button) as Button }
+    private val decimalButton by lazy { findViewById(R.id.decimalButton) as Button }
+    private val deleteButton by lazy { findViewById(R.id.deleteButton) as Button }
+    private val addButton by lazy { findViewById(R.id.addButton) as Button }
+    private val subtractButton by lazy { findViewById(R.id.subtractButton) as Button }
+    private val multiplyButton by lazy { findViewById(R.id.multiplyButton) as Button }
+    private val divideButton by lazy { findViewById(R.id.divideButton) as Button }
+    private val equalsFloatingActionButton by lazy { findViewById(R.id.divideButton) as FloatingActionButton }
+
+    private var state = SAVE
+
+    constructor(context: Context?) : this(context, null)
+
+    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
+
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    override fun onDigit0() = number0Button.clicks()
+
+    override fun onDigit1() = number1Button.clicks()
+
+    override fun onDigit2() = number2Button.clicks()
+
+    override fun onDigit3() = number3Button.clicks()
+
+    override fun onDigit4() = number4Button.clicks()
+
+    override fun onDigit5() = number5Button.clicks()
+
+    override fun onDigit6() = number6Button.clicks()
+
+    override fun onDigit7() = number7Button.clicks()
+
+    override fun onDigit8() = number8Button.clicks()
+
+    override fun onDigit9() = number9Button.clicks()
+
+    override fun onDecimal() = decimalButton.clicks()
+
+    override fun onAdd() = addButton.clicks()
+
+    override fun onSubtract() = subtractButton.clicks()
+
+    override fun onMultiply() = multiplyButton.clicks()
+
+    override fun onDivide() = divideButton.clicks()
+
+    override fun onDelete() = deleteButton.clicks()
+
+    override fun onClear() = deleteButton.longClicks()
+
+    override fun onCalculate() = equalsFloatingActionButton.clicks().filter { state == CALCULATE }
+
+    override fun onSave() = equalsFloatingActionButton.clicks().filter { state == SAVE }
+
+    override fun showExpression(expression: String) {
+        resultTextView.text = expression
+    }
+
+    override fun showState(state: CalculatorPresenter.State) {
+        this.state = state
+        equalsFloatingActionButton.isSelected = state == CALCULATE
+    }
+
+    override fun startResult(number: BigDecimal) {
+        throw UnsupportedOperationException()
+    }
+}
