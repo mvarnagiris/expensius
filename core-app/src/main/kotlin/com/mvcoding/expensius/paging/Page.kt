@@ -12,14 +12,22 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: 'java'
-apply plugin: "kotlin"
+package com.mvcoding.expensius.paging
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'io.reactivex:rxjava:1.0.14'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.0.31-beta'
-    testCompile 'com.natpryce:hamkrest:0.0.7.0'
+import java.lang.Math.*
+
+data class Page(
+        val first: Int,
+        val size: Int,
+        private val preferredSize: Int = size) {
+    val last = max(first + size - 1, 0)
+
+    fun previousPage() = Page(
+            max(first - size, 0),
+            if (first - size < 0) size - abs(first - size) else size,
+            preferredSize)
+
+    fun nextPage() = Page(first + size, max(size, preferredSize), preferredSize)
+
+    fun rangeTo(dataSetSize: Int) = first.rangeTo(min(last, dataSetSize - 1))
 }

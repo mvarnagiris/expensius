@@ -12,14 +12,13 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: 'java'
-apply plugin: "kotlin"
+package com.mvcoding.expensius.paging
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'io.reactivex:rxjava:1.0.14'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.0.31-beta'
-    testCompile 'com.natpryce:hamkrest:0.0.7.0'
+data class PageResult<T>(
+        private val page: Page,
+        private val items: List<T>) {
+
+    fun hasPreviousPage() = page.first > 0
+
+    fun hasNextPage() = page.size <= items.size
 }
