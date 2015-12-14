@@ -16,10 +16,10 @@ package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.ModelState
 import java.io.Serializable
-import java.util.*
+import java.util.UUID.randomUUID
 
 data class Tag(
-        val id: String = UUID.randomUUID().toString(),
+        val id: String = randomUUID().toString(),
         val modelState: ModelState = ModelState.NONE,
         val title: String,
         val color: Int) : Serializable {

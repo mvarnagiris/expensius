@@ -93,7 +93,7 @@ class TagsPresenterTest {
     }
 
     @Test
-    fun showsTagsFromTagsRepository() {
+    fun showsTagsFromTagsCache() {
         val presenter = presenterWithDisplayTypeView()
         val tags = listOf(aTag(), aTag(), aTag())
         given(tagsCache.tags()).willReturn(Observable.just(tags))
