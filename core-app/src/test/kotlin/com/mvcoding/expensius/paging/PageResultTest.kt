@@ -14,8 +14,8 @@
 
 package com.mvcoding.expensius.paging
 
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.assertThat
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
 import org.junit.Test
 
 class PageResultTest {
@@ -23,27 +23,27 @@ class PageResultTest {
     fun doesNotHavePreviousPageWhenPageStartsAt0() {
         val pageResult = PageResult<Unit>(Page(0, 5), listOf())
 
-        assertThat(pageResult.hasPreviousPage(), `is`(false))
+        assertThat(pageResult.hasPreviousPage(), equalTo(false))
     }
 
     @Test
     fun hasPreviousPageWhenPageStartsAtMoreThan0() {
         val pageResult = PageResult<Unit>(Page(5, 5), listOf())
 
-        assertThat(pageResult.hasPreviousPage(), `is`(true))
+        assertThat(pageResult.hasPreviousPage(), equalTo(true))
     }
 
     @Test
     fun doesNotHaveNextPageWhenItemsSizeIsLessThanPageSize() {
         val pageResult = PageResult<Unit>(Page(0, 5), listOf())
 
-        assertThat(pageResult.hasNextPage(), `is`(false))
+        assertThat(pageResult.hasNextPage(), equalTo(false))
     }
 
     @Test
     fun hasNextPageWhenItemsSizeIsSameAsPageSize() {
         val pageResult = PageResult(Page(0, 2), listOf(Unit, Unit))
 
-        assertThat(pageResult.hasNextPage(), `is`(true))
+        assertThat(pageResult.hasNextPage(), equalTo(true))
     }
 }
