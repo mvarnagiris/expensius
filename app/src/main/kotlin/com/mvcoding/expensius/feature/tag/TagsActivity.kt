@@ -20,6 +20,8 @@ import android.view.Menu
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.ARCHIVED
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import kotlinx.android.synthetic.view_tags.*
 
 class TagsActivity : BaseActivity() {
@@ -29,7 +31,13 @@ class TagsActivity : BaseActivity() {
 
         fun startView(context: Context) {
             ActivityStarter(context, TagsActivity::class)
-                    .extra(EXTRA_DISPLAY_TYPE, TagsPresenter.DisplayType.VIEW)
+                    .extra(EXTRA_DISPLAY_TYPE, VIEW)
+                    .start()
+        }
+
+        fun startArchived(context: Context) {
+            ActivityStarter(context, TagsActivity::class)
+                    .extra(EXTRA_DISPLAY_TYPE, ARCHIVED)
                     .start()
         }
     }

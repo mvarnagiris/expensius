@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.cache
 
+import com.mvcoding.expensius.ModelState
+import com.mvcoding.expensius.ModelState.ARCHIVED
 import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.cache.database.Database
 import com.mvcoding.expensius.cache.database.table.TagsTable
@@ -31,6 +33,14 @@ class DatabaseTagsCache(private val database: Database, private val tagsTable: T
     }
 
     override fun tags(): Observable<List<Tag>> {
-        return database.query(selectFrom(tagsTable).where("${tagsTable.modelState}=?", arrayOf(NONE.name))).map { it.map { it.toTag(tagsTable) } }
+        return queryTags(NONE)
     }
+
+    override fun archivedTags(): Observable<List<Tag>> {
+        return queryTags(ARCHIVED)
+    }
+
+    private fun queryTags(modelState: ModelState) =
+            database.query(selectFrom(tagsTable).where("${tagsTable.modelState}=?", arrayOf(modelState.name)))
+                    .map { it.map { it.toTag(tagsTable) } }
 }

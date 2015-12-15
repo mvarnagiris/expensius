@@ -159,6 +159,10 @@ class TagPresenterTest {
             throw UnsupportedOperationException()
         }
 
+        override fun archivedTags(): Observable<List<Tag>> {
+            throw UnsupportedOperationException()
+        }
+
         override fun save(tags: Set<Tag>) {
             lastSavedTags = tags
         }

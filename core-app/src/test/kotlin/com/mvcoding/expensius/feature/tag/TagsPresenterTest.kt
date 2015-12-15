@@ -15,17 +15,23 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.ModelState.ARCHIVED
+import com.mvcoding.expensius.ModelState.NONE
+import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.MULTI_CHOICE
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
 import rx.Observable
+import rx.Observable.empty
 import rx.subjects.PublishSubject
 
 class TagsPresenterTest {
     val tagSelectedSubject = PublishSubject.create<Tag>()
     val tagCreateSubject = PublishSubject.create<Unit>()
     val saveSubject = PublishSubject.create<Unit>()
-    val archiveSubject = PublishSubject.create<Tag>()
+    val archivedTagsSubject = PublishSubject.create<Unit>()
+    val removeSubject = PublishSubject.create<Tag>()
     val commitSubject = PublishSubject.create<Unit>()
     val undoSubject = PublishSubject.create<Unit>()
     val tagsCache = mock(TagsCache::class.java)
@@ -36,10 +42,12 @@ class TagsPresenterTest {
         given(view.onTagSelected()).willReturn(tagSelectedSubject)
         given(view.onCreateTag()).willReturn(tagCreateSubject)
         given(view.onSave()).willReturn(saveSubject)
-        given(view.onArchiveTag()).willReturn(archiveSubject)
-        given(view.onCommitArchive()).willReturn(commitSubject)
-        given(view.onUndoArchive()).willReturn(undoSubject)
-        given(tagsCache.tags()).willReturn(Observable.empty())
+        given(view.onArchivedTags()).willReturn(archivedTagsSubject)
+        given(view.onRemoveTag()).willReturn(removeSubject)
+        given(view.onCommitRemove()).willReturn(commitSubject)
+        given(view.onUndoRemove()).willReturn(undoSubject)
+        given(tagsCache.tags()).willReturn(empty())
+        given(tagsCache.archivedTags()).willReturn(empty())
     }
 
     @Test
@@ -48,7 +56,7 @@ class TagsPresenterTest {
 
         presenter.onAttachView(view)
 
-        verify(view).setDisplayType(TagsPresenter.DisplayType.VIEW)
+        verify(view).setDisplayType(VIEW)
     }
 
     @Test
@@ -63,7 +71,8 @@ class TagsPresenterTest {
     @Test
     fun setsSelectedTagsWhenDisplayTypeIsMultiChoice() {
         val selectedTags = setOf(aTag(), aTag())
-        val presenter = TagsPresenter(tagsCache, TagsPresenter.DisplayType.MULTI_CHOICE, selectedTags)
+        val presenter = TagsPresenter(tagsCache, MULTI_CHOICE, selectedTags)
+
         presenter.onAttachView(view)
 
         verify(view).setSelectedTags(selectedTags)
@@ -166,70 +175,93 @@ class TagsPresenterTest {
 
         createTag()
 
-        verify(view).startTagEdit(Tag.noTag)
+        verify(view).startTagEdit(noTag)
     }
 
     @Test
-    fun removesTagAndShowsUndoForArchivedTagWhenArchivingATag() {
+    fun startsArchivedTagsOnArchivedTags() {
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+
+        archivedTags()
+
+        verify(view).startArchivedTags()
+    }
+
+    @Test
+    fun removesTagAndShowsUndoForRemovedTagWhenRemovingATag() {
         val tag = aTag()
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
 
-        archive(tag)
+        remove(tag)
 
         verify(view).removeTag(tag)
-        verify(view).showUndoForArchivedTag()
+        verify(view).showUndoForRemovedTag()
     }
 
     @Test
-    fun showsUndoForArchivedTagAfterReattach() {
+    fun showsUndoForRemovedTagAfterReattach() {
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
 
-        archive(aTag())
+        remove(aTag())
         presenter.onDetachView(view)
         presenter.onAttachView(view)
 
-        verify(view, times(2)).showUndoForArchivedTag()
+        verify(view, times(2)).showUndoForRemovedTag()
     }
 
     @Test
-    fun doesNotShowUndoForArchivedTagAfterReattachWhenItWasCommitted() {
+    fun doesNotShowUndoForRemovedTagAfterReattachWhenItWasCommitted() {
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
-        archive(aTag())
+        remove(aTag())
         commit()
 
         presenter.onDetachView(view)
         presenter.onAttachView(view)
 
-        verify(view, times(1)).showUndoForArchivedTag()
+        verify(view, times(1)).showUndoForRemovedTag()
     }
 
     @Test
-    fun doesNotShowUndoForArchivedTagAfterReattachWhenItWasUndone() {
+    fun doesNotShowUndoForRemovedTagAfterReattachWhenItWasUndone() {
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
-        archive(aTag())
+        remove(aTag())
         undo()
 
         presenter.onDetachView(view)
         presenter.onAttachView(view)
 
-        verify(view, times(1)).showUndoForArchivedTag()
+        verify(view, times(1)).showUndoForRemovedTag()
     }
 
     @Test
-    fun archivesATagOnArchiveCommit() {
+    fun archivesATagOnRemoveCommitWhenDisplayTypeIsNotArchived() {
         val tag = aTag()
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
-        archive(tag)
+        remove(tag)
 
         commit()
 
-        verify(view).hideUndoForArchivedTag()
+        verify(view).hideUndoForRemovedTag()
         verify(tagsCache).save(setOf(tag.withModelState(ARCHIVED)))
+    }
+
+    @Test
+    fun unArchivesATagOnRemoveCommitWhenDisplayTypeIsArchived() {
+        val tag = aTag().withModelState(ARCHIVED)
+        val presenter = presenterWithDisplayTypeArchived()
+        presenter.onAttachView(view)
+        remove(tag)
+
+        commit()
+
+        verify(view).hideUndoForRemovedTag()
+        verify(tagsCache).save(setOf(tag.withModelState(NONE)))
     }
 
     @Test
@@ -239,20 +271,33 @@ class TagsPresenterTest {
         given(tagsCache.tags()).willReturn(Observable.just(tags))
         val presenter = presenterWithDisplayTypeView()
         presenter.onAttachView(view)
-        archive(tag)
+        remove(tag)
 
         undo()
 
-        verify(view).hideUndoForArchivedTag()
+        verify(view).hideUndoForRemovedTag()
         verify(view).insertTag(tag, 1)
+    }
+
+    @Test
+    fun showsArchivedTagsFromTagsCache() {
+        val presenter = presenterWithDisplayTypeArchived()
+        val tags = listOf(aTag(), aTag(), aTag())
+        given(tagsCache.archivedTags()).willReturn(Observable.just(tags))
+
+        presenter.onAttachView(view)
+
+        verify(view).setTags(tags)
     }
 
     private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
 
     private fun save() = saveSubject.onNext(Unit)
 
-    private fun archive(tag: Tag) {
-        archiveSubject.onNext(tag)
+    private fun archivedTags() = archivedTagsSubject.onNext(Unit)
+
+    private fun remove(tag: Tag) {
+        removeSubject.onNext(tag)
     }
 
     private fun commit() {
@@ -267,8 +312,10 @@ class TagsPresenterTest {
         tagCreateSubject.onNext(Unit)
     }
 
-    private fun presenterWithDisplayTypeView() = TagsPresenter(tagsCache, TagsPresenter.DisplayType.VIEW)
+    private fun presenterWithDisplayTypeView() = TagsPresenter(tagsCache, VIEW)
 
-    private fun presenterWithDisplayTypeMultiChoice() = TagsPresenter(tagsCache, TagsPresenter.DisplayType.MULTI_CHOICE)
+    private fun presenterWithDisplayTypeMultiChoice() = TagsPresenter(tagsCache, MULTI_CHOICE)
+
+    private fun presenterWithDisplayTypeArchived() = TagsPresenter(tagsCache, TagsPresenter.DisplayType.ARCHIVED)
 }
 

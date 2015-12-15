@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.ModelState.ARCHIVED
+import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.MULTI_CHOICE
@@ -27,8 +28,8 @@ class TagsPresenter(
         private val displayType: TagsPresenter.DisplayType = VIEW,
         private var selectedTags: Set<Tag> = setOf()) : Presenter<TagsPresenter.View>() {
     private var tags = listOf<Tag>()
-    private var archivedTag = noTag
-    private var archivedTagPosition = 0
+    private var removedTag = noTag
+    private var removedTagPosition = 0
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
@@ -38,17 +39,20 @@ class TagsPresenter(
             view.setSelectedTags(selectedTags.orEmpty())
         }
 
-        if (!archivedTag.equals(noTag)) {
-            view.showUndoForArchivedTag()
+        if (!removedTag.equals(noTag)) {
+            view.showUndoForRemovedTag()
         }
 
-        unsubscribeOnDetach(tagsCache.tags().doOnNext { tags = it }.subscribe { view.setTags(it) })
+        unsubscribeOnDetach(tags().doOnNext { tags = it }.subscribe { view.setTags(it) })
         unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { noTag }).subscribe { selectTag(view, it) })
         unsubscribeOnDetach(view.onSave().map { selectedTags }.subscribe { view.startResult(it) })
-        unsubscribeOnDetach(view.onArchiveTag().subscribe { archive(view, it) })
-        unsubscribeOnDetach(view.onCommitArchive().subscribe { commitArchive(view) })
-        unsubscribeOnDetach(view.onUndoArchive().subscribe { undoArchive(view) })
+        unsubscribeOnDetach(view.onArchivedTags().subscribe { view.startArchivedTags() })
+        unsubscribeOnDetach(view.onRemoveTag().subscribe { remove(view, it) })
+        unsubscribeOnDetach(view.onCommitRemove().subscribe { commitArchive(view) })
+        unsubscribeOnDetach(view.onUndoRemove().subscribe { undoArchive(view) })
     }
+
+    private fun tags() = if (displayType == DisplayType.ARCHIVED) tagsCache.archivedTags() else tagsCache.tags()
 
     private fun selectTag(view: View, tag: Tag) {
         when (displayType) {
@@ -64,25 +68,25 @@ class TagsPresenter(
         }
     }
 
-    private fun archive(view: View, tag: Tag) {
+    private fun remove(view: View, tag: Tag) {
         view.removeTag(tag)
-        view.showUndoForArchivedTag()
-        archivedTag = tag;
-        archivedTagPosition = tags.indexOf(tag)
+        view.showUndoForRemovedTag()
+        removedTag = tag;
+        removedTagPosition = tags.indexOf(tag)
     }
 
     private fun commitArchive(view: View) {
-        if (archivedTag.equals(noTag)) return
-        tagsCache.save(setOf(archivedTag.withModelState(ARCHIVED)))
-        archivedTag = noTag
-        view.hideUndoForArchivedTag()
+        if (removedTag.equals(noTag)) return
+        tagsCache.save(setOf(removedTag.withModelState(if (displayType == DisplayType.ARCHIVED) NONE else ARCHIVED)))
+        removedTag = noTag
+        view.hideUndoForRemovedTag()
     }
 
     private fun undoArchive(view: View) {
-        if (archivedTag.equals(noTag)) return
-        view.insertTag(archivedTag, archivedTagPosition)
-        archivedTag = noTag
-        view.hideUndoForArchivedTag()
+        if (removedTag.equals(noTag)) return
+        view.insertTag(removedTag, removedTagPosition)
+        removedTag = noTag
+        view.hideUndoForRemovedTag()
     }
 
     interface View : Presenter.View {
@@ -92,21 +96,23 @@ class TagsPresenter(
         fun setTags(tags: List<Tag>)
         fun removeTag(tag: Tag)
         fun insertTag(tag: Tag, position: Int)
-        fun showUndoForArchivedTag()
-        fun hideUndoForArchivedTag()
+        fun showUndoForRemovedTag()
+        fun hideUndoForRemovedTag()
 
         fun onTagSelected(): Observable<Tag>
         fun onCreateTag(): Observable<Unit>
         fun onSave(): Observable<Unit>
-        fun onArchiveTag(): Observable<Tag>
-        fun onCommitArchive(): Observable<Unit>
-        fun onUndoArchive(): Observable<Unit>
+        fun onArchivedTags(): Observable<Unit>
+        fun onRemoveTag(): Observable<Tag>
+        fun onCommitRemove(): Observable<Unit>
+        fun onUndoRemove(): Observable<Unit>
 
         fun startTagEdit(tag: Tag)
         fun startResult(tags: Set<Tag>)
+        fun startArchivedTags()
     }
 
     enum class DisplayType {
-        VIEW, MULTI_CHOICE
+        VIEW, MULTI_CHOICE, ARCHIVED
     }
 }

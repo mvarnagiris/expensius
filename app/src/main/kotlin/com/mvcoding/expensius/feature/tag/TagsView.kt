@@ -29,8 +29,9 @@ import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.extension.provideActivityScopedNamedSingleton
 import com.mvcoding.expensius.extension.snackbar
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import rx.lang.kotlin.PublishSubject
 
@@ -45,7 +46,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
     private val commitArchiveObservable = PublishSubject<Unit>()
     private val undoArchiveObservable = PublishSubject<Unit>()
 
-    private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class) }
+    private val presenter by lazy { provideActivityScopedNamedSingleton(TagsPresenter::class, adapter.displayType.name) }
     private val adapter = TagsAdapter()
 
     constructor(context: Context?) : super(context)
@@ -114,15 +115,15 @@ class TagsView : LinearLayout, TagsPresenter.View {
         adapter.insert(tag, position)
     }
 
-    override fun showUndoForArchivedTag() {
+    override fun showUndoForRemovedTag() {
         dismissSnackbarIfVisible()
-        snackbar = snackbar(R.string.tag_archived, LENGTH_LONG)
+        snackbar = snackbar(if (adapter.displayType == ARCHIVED) R.string.tag_restored else R.string.tag_archived, LENGTH_LONG)
                 .action(R.string.undo, Runnable { undoArchiveObservable.onNext(Unit) })
                 .onDismiss(Runnable { commitArchiveObservable.onNext(Unit) })
                 .show()
     }
 
-    override fun hideUndoForArchivedTag() {
+    override fun hideUndoForRemovedTag() {
         dismissSnackbarIfVisible()
     }
 
@@ -132,11 +133,13 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onSave() = saveButton.clicks()
 
-    override fun onArchiveTag() = archiveTagObservable
+    override fun onArchivedTags() = toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_archived }.map { Unit }
 
-    override fun onCommitArchive() = commitArchiveObservable
+    override fun onRemoveTag() = archiveTagObservable
 
-    override fun onUndoArchive() = undoArchiveObservable
+    override fun onCommitRemove() = commitArchiveObservable
+
+    override fun onUndoRemove() = undoArchiveObservable
 
     override fun startTagEdit(tag: Tag) {
         TagActivity.start(context, tag)
@@ -144,6 +147,10 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun startResult(tags: Set<Tag>) {
         throw UnsupportedOperationException()
+    }
+
+    override fun startArchivedTags() {
+        TagsActivity.startArchived(context)
     }
 
     private fun dismissSnackbarIfVisible() {

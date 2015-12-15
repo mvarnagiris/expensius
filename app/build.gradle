@@ -61,7 +61,7 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:percent:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
-    compile 'com.github.memoizr:shank:v0.2.2'
+    compile 'com.github.memoizr:shank:v0.3.0-beta'
     compile 'io.reactivex:rxkotlin:0.24.100'
     compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.3.0'
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4-kotlin:0.3.0'
