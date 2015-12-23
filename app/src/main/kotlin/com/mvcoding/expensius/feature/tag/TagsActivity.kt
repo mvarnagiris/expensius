@@ -42,18 +42,24 @@ class TagsActivity : BaseActivity() {
         }
     }
 
+    private val displayType by lazy { intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as TagsPresenter.DisplayType }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_tags)
 
-        val displayType = intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as TagsPresenter.DisplayType
+        val displayType = displayType
         val selectedTags = setOf<Tag>() // TODO: Get selected tags from extras.
         tagsView.init(displayType, selectedTags)
+        supportActionBar.title = if (displayType == ARCHIVED) getString(R.string.archived_tags) else getString(R.string.tags)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        super.onCreateOptionsMenu(menu)
-        menuInflater.inflate(R.menu.tags, menu)
-        return true
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val result = super.onCreateOptionsMenu(menu)
+        if (displayType != ARCHIVED) {
+            menuInflater.inflate(R.menu.tags, menu)
+            return true
+        }
+        return result
     }
 }

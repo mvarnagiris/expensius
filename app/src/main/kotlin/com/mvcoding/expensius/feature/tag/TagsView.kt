@@ -32,7 +32,7 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedNamedSingleton
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.ARCHIVED
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.MULTI_CHOICE
 import rx.lang.kotlin.PublishSubject
 
 class TagsView : LinearLayout, TagsPresenter.View {
@@ -57,6 +57,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     fun init(displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag>) {
         initializeModules(TagsModule(displayType, selectedTags))
+        adapter.displayType = displayType
     }
 
     override fun onFinishInflate() {
@@ -94,7 +95,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
         adapter.displayType = displayType
-        buttonBarView.visibility = if (displayType == VIEW) GONE else VISIBLE
+        buttonBarView.visibility = if (displayType == MULTI_CHOICE) VISIBLE else GONE
     }
 
     override fun setSelectedTags(selectedTags: Set<Tag>) {

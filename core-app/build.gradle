@@ -18,7 +18,8 @@ apply plugin: "kotlin"
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'io.reactivex:rxkotlin:0.30.1'
+    compile 'io.reactivex:rxjava:1.1.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.0.31-beta'
     testCompile 'com.natpryce:hamkrest:0.0.7.0'

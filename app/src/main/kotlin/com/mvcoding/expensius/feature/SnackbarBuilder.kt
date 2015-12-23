@@ -46,8 +46,7 @@ class SnackbarBuilder(private val view: View, private val resId: Int, private va
         }
 
         if (onDismiss != null) {
-            val onDismiss = this.onDismiss
-            snackbar.dismisses().subscribe { onDismiss.run() }
+            snackbar.dismisses().subscribe { onDismiss!!.run() }
         }
 
         snackbar.show();
