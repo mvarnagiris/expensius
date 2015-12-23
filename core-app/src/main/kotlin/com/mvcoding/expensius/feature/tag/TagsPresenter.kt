@@ -47,9 +47,9 @@ class TagsPresenter(
         unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { noTag }).subscribe { selectTag(view, it) })
         unsubscribeOnDetach(view.onSave().map { selectedTags }.subscribe { view.startResult(it) })
         unsubscribeOnDetach(view.onArchivedTags().subscribe { view.startArchivedTags() })
-        unsubscribeOnDetach(view.onRemoveTag().subscribe { remove(view, it) })
-        unsubscribeOnDetach(view.onCommitRemove().subscribe { commitArchive(view) })
-        unsubscribeOnDetach(view.onUndoRemove().subscribe { undoArchive(view) })
+        unsubscribeOnDetach(view.onRemoveTag().doOnNext { commitRemove(view) }.subscribe { remove(view, it) })
+        unsubscribeOnDetach(view.onCommitRemove().subscribe { commitRemove(view) })
+        unsubscribeOnDetach(view.onUndoRemove().subscribe { undoRemove(view) })
     }
 
     private fun tags() = if (displayType == DisplayType.ARCHIVED) tagsCache.archivedTags() else tagsCache.tags()
@@ -75,14 +75,14 @@ class TagsPresenter(
         removedTagPosition = tags.indexOf(tag)
     }
 
-    private fun commitArchive(view: View) {
+    private fun commitRemove(view: View) {
         if (removedTag.equals(noTag)) return
         tagsCache.save(setOf(removedTag.withModelState(if (displayType == DisplayType.ARCHIVED) NONE else ARCHIVED)))
         removedTag = noTag
         view.hideUndoForRemovedTag()
     }
 
-    private fun undoArchive(view: View) {
+    private fun undoRemove(view: View) {
         if (removedTag.equals(noTag)) return
         view.insertTag(removedTag, removedTagPosition)
         removedTag = noTag

@@ -42,6 +42,11 @@ class TagsView : LinearLayout, TagsPresenter.View {
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
     private var snackbar: Snackbar? = null
 
+    private val toolbarItemClicks by lazy {
+        val itemClicks = PublishSubject<Int>()
+        toolbar.itemClicks().map { it.itemId }.subscribe { itemClicks.onNext(it) }
+        itemClicks
+    }
     private val archiveTagObservable = PublishSubject<Tag>()
     private val commitArchiveObservable = PublishSubject<Unit>()
     private val undoArchiveObservable = PublishSubject<Unit>()
@@ -130,11 +135,11 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onTagSelected() = adapter.onTagSelected()
 
-    override fun onCreateTag() = toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_create }.map { Unit }
+    override fun onCreateTag() = toolbarItemClicks.filter { it == R.id.action_create }.map { Unit }
 
     override fun onSave() = saveButton.clicks()
 
-    override fun onArchivedTags() = toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_archived }.map { Unit }
+    override fun onArchivedTags() = toolbarItemClicks.filter { it == R.id.action_archived }.map { Unit }
 
     override fun onRemoveTag() = archiveTagObservable
 

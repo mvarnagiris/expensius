@@ -252,6 +252,20 @@ class TagsPresenterTest {
     }
 
     @Test
+    fun archivesATagOnArchivingAnotherTagWhenDisplayTypeIsNotArchived() {
+        val firstTag = aTag()
+        val secondTag = aTag()
+        val presenter = presenterWithDisplayTypeView()
+        presenter.onAttachView(view)
+        remove(firstTag)
+
+        remove(secondTag)
+
+        verify(view).hideUndoForRemovedTag()
+        verify(tagsCache).save(setOf(firstTag.withModelState(ARCHIVED)))
+    }
+
+    @Test
     fun unArchivesATagOnRemoveCommitWhenDisplayTypeIsArchived() {
         val tag = aTag().withModelState(ARCHIVED)
         val presenter = presenterWithDisplayTypeArchived()
