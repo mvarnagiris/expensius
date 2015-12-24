@@ -39,4 +39,5 @@
     <string name="intro_message_2">Intro message 2 that can be long and describe some interesting functionality</string>
     <string name="intro_message_3">Intro message 3 that can be long and describe some interesting functionality</string>
     <string name="intro_message_4">Intro message 4 that can be long and describe some interesting functionality</string>
+    <string name="currencies">Currencies</string>
 </resources>

@@ -19,4 +19,9 @@
         android:icon="@drawable/ic_action_tag"
         android:title="@string/tags"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_currencies"
+        android:icon="@drawable/ic_action_currency"
+        android:title="@string/currencies"
+        app:showAsAction="ifRoom" />
 </menu>
