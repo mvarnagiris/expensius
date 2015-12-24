@@ -18,12 +18,21 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
+import com.mvcoding.expensius.ModelState.ARCHIVED
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.makeOutlineProviderOval
-import kotlinx.android.synthetic.item_view_tag.view.*
 
 class TagItemView : LinearLayout {
+    private val colorImageView by lazy { findViewById(R.id.colorImageView) as ImageView }
+    private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
+
+    private val textColorPrimary by lazy { getColorFromTheme(context, android.R.attr.textColorPrimary) }
+    private val textColorSecondary by lazy { getColorFromTheme(context, android.R.attr.textColorSecondary) }
+
     constructor(context: Context?) : super(context)
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -42,7 +51,12 @@ class TagItemView : LinearLayout {
     }
 
     fun setTag(tag: Tag) {
-        colorImageView.setColorFilter(tag.color)
+        colorImageView.setColorFilter(getIconColor(tag))
+        titleTextView.setTextColor(getTextColor(tag))
         titleTextView.text = tag.title
     }
+
+    private fun getIconColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else tag.color
+
+    private fun getTextColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else textColorPrimary
 }

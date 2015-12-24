@@ -30,10 +30,6 @@ class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    init {
-
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tagItemView.setTag(getItem(position))
     }
@@ -44,8 +40,9 @@ class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
 
     class ViewHolder(
             itemView: TagItemView,
-            tagSelectedSubject: PublishSubject<Int>,
-            val tagItemView: TagItemView = itemView) : RecyclerView.ViewHolder(itemView) {
+            tagSelectedSubject: PublishSubject<Int>) : RecyclerView.ViewHolder(itemView) {
+        val tagItemView: TagItemView = itemView
+
         init {
             tagItemView.setOnClickListener({ tagSelectedSubject.onNext(adapterPosition) })
         }

@@ -25,7 +25,7 @@ data class Transaction(
         val modelState: ModelState = ModelState.NONE,
         val transactionType: TransactionType,
         val timestamp: Long,
+        val currencyCode: String,
         val amount: BigDecimal,
         val tags: Set<Tag>,
-        val note: String) : Serializable {
-}
+        val note: String) : Serializable
