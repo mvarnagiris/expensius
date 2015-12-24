@@ -14,21 +14,11 @@
 
 package com.mvcoding.expensius.feature.overview
 
-import com.mvcoding.expensius.feature.Presenter
-import rx.Observable
+import com.memoizrlabs.Shank.registerFactory
+import com.memoizrlabs.ShankModule
 
-class OverviewPresenter : Presenter<OverviewPresenter.View>() {
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
-
-        unsubscribeOnDetach(view.onAddNewTransaction().subscribe { view.startTransactionEdit() })
-        unsubscribeOnDetach(view.onStartTags().subscribe { view.startTags() })
-    }
-
-    interface View : Presenter.View {
-        fun onAddNewTransaction(): Observable<Unit>
-        fun onStartTags(): Observable<Unit>
-        fun startTags()
-        fun startTransactionEdit()
+class OverviewModule() : ShankModule {
+    override fun registerFactories() {
+        registerFactory(OverviewPresenter::class.java, { OverviewPresenter() })
     }
 }

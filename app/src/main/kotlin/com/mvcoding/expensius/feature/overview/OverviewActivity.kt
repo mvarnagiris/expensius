@@ -16,10 +16,11 @@ package com.mvcoding.expensius.feature.overview
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.Button
+import android.support.v7.widget.Toolbar
+import android.view.Menu
+import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.tag.TagsActivity
 
 class OverviewActivity : BaseActivity() {
     companion object {
@@ -30,9 +31,20 @@ class OverviewActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.view_overview)
+        removeUpArrowFromToolbar()
+    }
 
-        val button = Button(this)
-        setContentView(button)
-        button.setOnClickListener { TagsActivity.startView(this) }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.overview, menu)
+        return true;
+    }
+
+    private fun removeUpArrowFromToolbar() {
+        supportActionBar.setDisplayHomeAsUpEnabled(false)
+        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
+        toolbar.setContentInsetsRelative(keyline, keyline)
     }
 }

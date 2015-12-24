@@ -17,11 +17,12 @@ package com.mvcoding.expensius
 import android.app.Application
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.intro.IntroModule
+import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.splash.SplashModule
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        initializeModules(AppModule(this), SplashModule(), IntroModule())
+        initializeModules(AppModule(this), SplashModule(), IntroModule(), OverviewModule())
     }
 }

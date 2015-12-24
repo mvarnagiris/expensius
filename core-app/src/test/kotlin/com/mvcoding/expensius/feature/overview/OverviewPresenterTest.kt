@@ -17,16 +17,18 @@ package com.mvcoding.expensius.feature.overview
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
-import rx.subjects.PublishSubject
+import rx.lang.kotlin.PublishSubject
 
 class OverviewPresenterTest {
-    val addNewTransactionSubject = PublishSubject.create<Unit>()
+    val addNewTransactionSubject = PublishSubject<Unit>()
+    val startTagsSubject = PublishSubject<Unit>()
     val view = mock(OverviewPresenter.View::class.java)
     val presenter = OverviewPresenter()
 
     @Before
     fun setUp() {
         given(view.onAddNewTransaction()).willReturn(addNewTransactionSubject)
+        given(view.onStartTags()).willReturn(startTagsSubject)
     }
 
     @Test
@@ -38,7 +40,20 @@ class OverviewPresenterTest {
         verify(view).startTransactionEdit()
     }
 
+    @Test
+    fun startsTagsOnStartTags() {
+        presenter.onAttachView(view)
+
+        startTags()
+
+        verify(view).startTags()
+    }
+
     private fun addNewTransaction() {
         addNewTransactionSubject.onNext(Unit)
+    }
+
+    private fun startTags() {
+        startTagsSubject.onNext(Unit)
     }
 }
