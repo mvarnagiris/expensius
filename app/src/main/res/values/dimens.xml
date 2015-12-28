@@ -20,6 +20,7 @@
     <dimen name="keyline_content_minus_keyline">56dp</dimen>
     <dimen name="keyline_content_minus_keyline_2x">40dp</dimen>
     <dimen name="keyline_content_minus_keyline_3x">24dp</dimen>
+    <dimen name="keyline_plus_view_padding">20dp</dimen>
 
     <dimen name="space_normal">8dp</dimen>
     <dimen name="space_large">16dp</dimen>
@@ -35,6 +36,7 @@
 
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_size_half_negative">-28dp</dimen>
+    <dimen name="fab_mini_size_half_negative">-20dp</dimen>
 
     <dimen name="recycler_card_space">@dimen/keyline_half</dimen>
 </resources>
