@@ -40,37 +40,35 @@ class TagPresenterTest {
     }
 
     @Test
-    fun showsTitle() {
+    fun showsInitialValues() {
         presenter.onAttachView(view)
 
         verify(view).showTitle(tag.title)
+        verify(view).showColor(tag.color)
     }
 
     @Test
-    fun showsUpdatedTitleWhenTitleIsUpdated() {
+    fun showsUpdateValuesWhenValuesAreUpdated() {
         presenter.onAttachView(view)
 
         updateTitle("updatedTitle")
+        updateColor(10)
 
         verify(view).showTitle("updatedTitle")
+        verify(view).showColor(10)
     }
 
     @Test
-    fun showsUpdatedTitleAfterReattach() {
+    fun showsUpdatedValuesAfterReattach() {
         presenter.onAttachView(view)
 
         updateTitle("updatedTitle")
+        updateColor(10)
         presenter.onDetachView(view)
         presenter.onAttachView(view)
 
         verify(view, times(2)).showTitle("updatedTitle")
-    }
-
-    @Test
-    fun showsColor() {
-        presenter.onAttachView(view)
-
-        verify(view).showColor(tag.color)
+        verify(view, times(2)).showColor(10)
     }
 
     @Test
@@ -79,26 +77,6 @@ class TagPresenterTest {
         presenter.onAttachView(view)
 
         verify(view).showColor(color(0x607d8b))
-    }
-
-    @Test
-    fun showsUpdatedColorWhenColorIsUpdated() {
-        presenter.onAttachView(view)
-
-        updateColor(10)
-
-        verify(view).showColor(10)
-    }
-
-    @Test
-    fun showsUpdatedColorAfterReattach() {
-        presenter.onAttachView(view)
-
-        updateColor(10)
-        presenter.onDetachView(view)
-        presenter.onAttachView(view)
-
-        verify(view, times(2)).showColor(10)
     }
 
     @Test
