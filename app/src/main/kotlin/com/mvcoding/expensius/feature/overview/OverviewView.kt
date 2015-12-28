@@ -15,17 +15,21 @@
 package com.mvcoding.expensius.feature.overview
 
 import android.content.Context
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import com.jakewharton.rxbinding.support.v7.widget.itemClicks
+import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
-import rx.Observable.never
 
-class OverviewView : LinearLayout, OverviewPresenter.View {
+class OverviewView : FrameLayout, OverviewPresenter.View {
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
+    private val floatingActionButton by lazy { findViewById(R.id.floatingActionButton) as FloatingActionButton }
+
     private val presenter by lazy { provideActivityScopedSingleton(OverviewPresenter::class) }
 
     constructor(context: Context?) : this(context, null)
@@ -44,7 +48,7 @@ class OverviewView : LinearLayout, OverviewPresenter.View {
         presenter?.onDetachView(this)
     }
 
-    override fun onAddNewTransaction() = never<Unit>()
+    override fun onAddNewTransaction() = floatingActionButton.clicks()
 
     override fun onStartTags() = toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_tags }.map { Unit }
 
@@ -53,6 +57,6 @@ class OverviewView : LinearLayout, OverviewPresenter.View {
     }
 
     override fun startTransactionEdit() {
-        throw UnsupportedOperationException()
+        CalculatorActivity.start(context)
     }
 }

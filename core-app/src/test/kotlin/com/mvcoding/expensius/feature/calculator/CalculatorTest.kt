@@ -60,6 +60,15 @@ class CalculatorTest {
     }
 
     @Test
+    fun deletesLastSymbol() {
+        calculator.setNumber(ONE)
+
+        calculator.delete()
+
+        assertThat(calculator.getExpression(), equalTo(""))
+    }
+
+    @Test
     fun addsDigitWhenExpressionIsEmpty() {
         calculator.clear()
         calculator.digit0()

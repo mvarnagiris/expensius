@@ -22,9 +22,10 @@ import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
-import kotlinx.android.synthetic.view_tags.*
 
 class TagsActivity : BaseActivity() {
+    private val tagsView by lazy { findViewById(R.id.tagsView) as TagsView }
+
     companion object {
         private const val EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE"
         private const val EXTRA_SELECTED_TAGS = "EXTRA_SELECTED_TAGS"

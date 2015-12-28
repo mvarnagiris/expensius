@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.calculator
 
 import java.math.BigDecimal
-import kotlin.text.Regex
 
 class Calculator(private val interpreter: Interpreter) {
     private val operatorRegex = Regex("[+\\-*/]")
@@ -30,7 +29,7 @@ class Calculator(private val interpreter: Interpreter) {
     }
 
     fun delete() {
-        if (expression.length > 1) {
+        if (expression.length >= 1) {
             expression = expression.substring(0, expression.length - 1)
         }
     }

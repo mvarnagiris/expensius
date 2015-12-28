@@ -12,16 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.feature.calculator
 
-import com.mvcoding.expensius.feature.tag.aTag
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import com.memoizrlabs.Shank.registerFactory
+import com.memoizrlabs.ShankModule
 import java.math.BigDecimal
 
-fun aTransaction(): Transaction = Transaction(
-        transactionType = EXPENSE,
-        timestamp = System.currentTimeMillis(),
-        currencyCode = "GBP",
-        amount = BigDecimal.ZERO,
-        tags = setOf(aTag()),
-        note = "note")
+class CalculatorModule(private val initialNumber: BigDecimal?) : ShankModule {
+    override fun registerFactories() {
+        registerFactory(CalculatorPresenter::class.java, { CalculatorPresenter(Calculator(Interpreter()), initialNumber) })
+    }
+}

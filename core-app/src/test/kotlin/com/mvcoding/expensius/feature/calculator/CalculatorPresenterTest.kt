@@ -136,6 +136,16 @@ class CalculatorPresenterTest {
     }
 
     @Test
+    fun deletesLastSymbol() {
+        val presenter = CalculatorPresenter(calculator, BigDecimal.ONE)
+        presenter.onAttachView(view)
+
+        delete()
+
+        verify(view).showExpression("")
+    }
+
+    @Test
     fun addsDigitWhenExpressionIsEmpty() {
         presenter.onAttachView(view)
 
@@ -391,7 +401,7 @@ class CalculatorPresenterTest {
     fun multiplyIsIgnoredWhenExpressionIsEmpty() {
         presenter.onAttachView(view)
 
-        multply()
+        multiply()
 
         verify(view, times(2)).showExpression("")
     }
@@ -401,7 +411,7 @@ class CalculatorPresenterTest {
         presenter.onAttachView(view)
         subtract()
 
-        multply()
+        multiply()
 
         verify(view, times(2)).showExpression("-")
     }
@@ -412,7 +422,7 @@ class CalculatorPresenterTest {
         digit1()
         subtract()
 
-        multply()
+        multiply()
 
         verify(view).showExpression("1*")
     }
@@ -422,7 +432,7 @@ class CalculatorPresenterTest {
         presenter.onAttachView(view)
         digit1()
 
-        multply()
+        multiply()
 
         verify(view).showExpression("1*")
     }
@@ -432,7 +442,7 @@ class CalculatorPresenterTest {
         presenter.onAttachView(view)
         decimal()
 
-        multply()
+        multiply()
 
         verify(view).showExpression(".*")
     }
@@ -441,7 +451,7 @@ class CalculatorPresenterTest {
     fun subtractReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
         presenter.onAttachView(view)
         digit1()
-        multply()
+        multiply()
 
         subtract()
 
@@ -670,7 +680,7 @@ class CalculatorPresenterTest {
         subtractObservable.onNext(Unit)
     }
 
-    fun multply() {
+    fun multiply() {
         multiplyObservable.onNext(Unit)
     }
 

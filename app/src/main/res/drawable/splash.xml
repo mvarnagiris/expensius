@@ -12,18 +12,14 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.overview.OverviewView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <include layout="@layout/toolbar" />
+    <item android:drawable="@color/backgroundWindow" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        style="@style/Button.Fab"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/keyline"
-        android:src="@drawable/ic_action_add" />
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher" />
+    </item>
 
-</com.mvcoding.expensius.feature.overview.OverviewView>
+</layer-list>

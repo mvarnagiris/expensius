@@ -22,9 +22,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.view.longClicks
+import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
+import rx.Observable.just
+import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorView : LinearLayout, CalculatorPresenter.View {
@@ -45,8 +49,17 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
     private val subtractButton by lazy { findViewById(R.id.subtractButton) as Button }
     private val multiplyButton by lazy { findViewById(R.id.multiplyButton) as Button }
     private val divideButton by lazy { findViewById(R.id.divideButton) as Button }
-    private val equalsFloatingActionButton by lazy { findViewById(R.id.divideButton) as FloatingActionButton }
+    private val equalsFloatingActionButton by lazy { findViewById(R.id.equalsFloatingActionButton) as FloatingActionButton }
 
+    private val floatingActionButtonClicks by lazy {
+        val clicks = PublishSubject<Unit>()
+        equalsFloatingActionButton.clicks()
+                .doOnNext { isFloatingActionButtonClickConsumed = false }
+                .subscribe { clicks.onNext(it) }
+        clicks
+    }
+    private val presenter by lazy { provideActivityScopedSingleton(CalculatorPresenter::class) }
+    private var isFloatingActionButtonClickConsumed = false
     private var state = SAVE
 
     constructor(context: Context?) : this(context, null)
@@ -54,6 +67,20 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    fun init(initialNumber: BigDecimal?) {
+        initializeModules(CalculatorModule(initialNumber))
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        presenter?.onAttachView(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        presenter?.onDetachView(this)
+    }
 
     override fun onDigit0() = number0Button.clicks()
 
@@ -89,9 +116,17 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
 
     override fun onClear() = deleteButton.longClicks()
 
-    override fun onCalculate() = equalsFloatingActionButton.clicks().filter { state == CALCULATE }
+    override fun onCalculate() = floatingActionButtonClicks.flatMap {
+        just(state)
+                .filter { it == CALCULATE && !isFloatingActionButtonClickConsumed }
+                .doOnNext { isFloatingActionButtonClickConsumed = true }
+    }.map { Unit }
 
-    override fun onSave() = equalsFloatingActionButton.clicks().filter { state == SAVE }
+    override fun onSave() = floatingActionButtonClicks.flatMap {
+        just(state)
+                .filter { it == SAVE && !isFloatingActionButtonClickConsumed }
+                .doOnNext { isFloatingActionButtonClickConsumed = true }
+    }.map { Unit }
 
     override fun showExpression(expression: String) {
         resultTextView.text = expression
