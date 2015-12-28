@@ -53,6 +53,7 @@
             </LinearLayout>
 
             <android.support.design.widget.FloatingActionButton
+                android:id="@+id/transactionTypeFloatingActionButton"
                 style="@style/Button.Fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,6 +163,7 @@
             </LinearLayout>
 
             <CheckBox
+                android:id="@+id/transactionStateCheckBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/keyline_plus_view_padding"
