@@ -15,8 +15,31 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.paging.Page
+import rx.Observable
+import rx.Observable.just
 
 class TransactionsPresenter(
         private val transactionsCache: TransactionsCache) : Presenter<TransactionsPresenter.View>() {
-    interface View : Presenter.View
+
+    internal companion object {
+        const val PAGE_SIZE = 50
+    }
+
+    internal val pageObservable = just(Page(0, PAGE_SIZE))
+
+    override fun onAttachView(view: View) {
+        super.onAttachView(view)
+
+        unsubscribeOnDetach(transactionsCache.transactions(pageObservable).subscribe { view.showTransactions(it.items) })
+    }
+
+    enum class PagingEdge {
+        START, END
+    }
+
+    interface View : Presenter.View {
+        fun onPagingEdgeReached(): Observable<PagingEdge>
+        fun showTransactions(transactions: List<Transaction>)
+    }
 }

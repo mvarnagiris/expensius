@@ -14,11 +14,5 @@
 
 package com.mvcoding.expensius.paging
 
-data class PageResult<T>(
-        private val page: Page,
-        val items: List<T>) {
-
-    fun hasPreviousPage() = page.first > 0
-
-    fun hasNextPage() = page.size <= items.size
-}
+fun <T> pageResult(page: Page, itemsCount: Int, itemFactory: () -> T) =
+        PageResult(page, itemsCount.downTo(1).map { itemFactory.invoke() }.toList())

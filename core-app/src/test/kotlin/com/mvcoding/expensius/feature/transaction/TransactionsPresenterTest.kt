@@ -14,20 +14,36 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.Companion.PAGE_SIZE
+import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.START
+import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.pageResult
+import org.junit.Before
+import org.junit.Test
+import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.verify
 import org.mockito.Mockito.mock
+import rx.Observable.just
+import rx.lang.kotlin.BehaviourSubject
 
 class TransactionsPresenterTest {
+    val defaultFirstPage = Page(0, PAGE_SIZE)
+    val defaultFirstPageResult = pageResult(defaultFirstPage, PAGE_SIZE, { aTransaction() })
+    val pagingEdgeSubject = BehaviourSubject(START)
     val transactionsCache = mock(TransactionsCache::class.java)
     val view = mock(TransactionsPresenter.View::class.java)
     val presenter = TransactionsPresenter(transactionsCache)
 
-    //    @Test
-    //    fun showsTransactionsFromTransactionsCache() {
-    //        val transactions = listOf(aTransaction(), aTransaction(), aTransaction())
-    //        given(transactionsCache.transactions()).willReturn(Observable.just(transactions))
-    //
-    //        presenter.onAttachView(view)
-    //
-    //        verify(view).setTags(tags)
-    //    }
+    @Before
+    fun setUp() {
+        given(view.onPagingEdgeReached()).willReturn(pagingEdgeSubject)
+        given(transactionsCache.transactions(presenter.pageObservable)).willReturn(just(defaultFirstPageResult))
+    }
+
+    @Test
+    fun initiallyLoadsFirstPage() {
+        presenter.onAttachView(view)
+
+        verify(view).showTransactions(defaultFirstPageResult.items)
+    }
 }

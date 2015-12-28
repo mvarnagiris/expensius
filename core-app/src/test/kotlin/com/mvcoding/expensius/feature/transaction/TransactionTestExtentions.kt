@@ -16,12 +16,12 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
-import java.math.BigDecimal
+import java.math.BigDecimal.ZERO
 
 fun aTransaction(): Transaction = Transaction(
         transactionType = EXPENSE,
         timestamp = System.currentTimeMillis(),
         currencyCode = "GBP",
-        amount = BigDecimal.ZERO,
+        amount = ZERO,
         tags = setOf(aTag()),
         note = "note")

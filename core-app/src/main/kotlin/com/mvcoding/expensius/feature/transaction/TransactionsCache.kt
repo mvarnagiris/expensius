@@ -14,8 +14,10 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
 
 interface TransactionsCache {
-    fun transactions(): Observable<List<Transaction>>
+    fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>>
 }

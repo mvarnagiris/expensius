@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.ModelState
+import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.tag.Tag
 import java.io.Serializable
 import java.math.BigDecimal
@@ -22,7 +23,7 @@ import java.util.UUID.randomUUID
 
 data class Transaction(
         val id: String = randomUUID().toString(),
-        val modelState: ModelState = ModelState.NONE,
+        val modelState: ModelState = NONE,
         val transactionType: TransactionType,
         val timestamp: Long,
         val currencyCode: String,
