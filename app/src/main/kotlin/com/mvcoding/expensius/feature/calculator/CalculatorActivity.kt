@@ -19,6 +19,8 @@ import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.BACK
+import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.tag.TagsActivity
 import java.math.BigDecimal
 
@@ -27,14 +29,18 @@ class CalculatorActivity : BaseActivity() {
 
     companion object {
         private const val EXTRA_INITIAL_NUMBER = "EXTRA_INITIAL_NUMBER"
+        private const val EXTRA_RESULT_DESTINATION = "EXTRA_RESULT_DESTINATION"
 
         fun start(context: Context) {
-            ActivityStarter(context, CalculatorActivity::class).start()
+            ActivityStarter(context, CalculatorActivity::class)
+                    .extra(EXTRA_RESULT_DESTINATION, TRANSACTION)
+                    .start()
         }
 
         fun startWithInitialNumber(context: Context, initialNumber: BigDecimal) {
             ActivityStarter(context, TagsActivity::class)
                     .extra(EXTRA_INITIAL_NUMBER, initialNumber)
+                    .extra(EXTRA_RESULT_DESTINATION, BACK)
                     .start()
         }
     }
@@ -44,6 +50,7 @@ class CalculatorActivity : BaseActivity() {
         setContentView(R.layout.view_calculator)
 
         val initialNumber = intent.getSerializableExtra(EXTRA_INITIAL_NUMBER) as BigDecimal?
-        calculatorView.init(initialNumber)
+        val resultDestination = intent.getSerializableExtra(EXTRA_RESULT_DESTINATION) as CalculatorPresenter.ResultDestination
+        calculatorView.init(initialNumber, resultDestination)
     }
 }

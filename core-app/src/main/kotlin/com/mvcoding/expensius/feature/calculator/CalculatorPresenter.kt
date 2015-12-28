@@ -23,6 +23,7 @@ import java.math.BigDecimal
 
 class CalculatorPresenter(
         private val calculator: Calculator,
+        private val resultDestination: ResultDestination,
         private val initialNumber: BigDecimal? = null) : Presenter<CalculatorPresenter.View>() {
 
     init {
@@ -61,10 +62,12 @@ class CalculatorPresenter(
 
         unsubscribeOnDetach(view.onSave()
                 .withLatestFrom(expressionAlteringObservable, { unit, number -> number })
-                .subscribe { view.startResult(it) })
+                .subscribe { view.startResult(it, resultDestination) })
     }
 
     enum class State { SAVE, CALCULATE }
+
+    enum class ResultDestination { BACK, TRANSACTION }
 
     interface View : Presenter.View {
         fun onDigit0(): Observable<Unit>
@@ -88,6 +91,6 @@ class CalculatorPresenter(
         fun onSave(): Observable<Unit>
         fun showExpression(expression: String)
         fun showState(state: State)
-        fun startResult(number: BigDecimal)
+        fun startResult(number: BigDecimal, resultDestination: ResultDestination)
     }
 }

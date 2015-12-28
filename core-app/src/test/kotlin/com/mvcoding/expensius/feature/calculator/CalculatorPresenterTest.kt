@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.calculator
 
+import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import org.junit.Before
@@ -23,6 +24,7 @@ import rx.subjects.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorPresenterTest {
+    val resultDestination = TRANSACTION
     val digit0Observable = PublishSubject.create<Unit>()
     val digit1Observable = PublishSubject.create<Unit>()
     val digit2Observable = PublishSubject.create<Unit>()
@@ -44,7 +46,7 @@ class CalculatorPresenterTest {
     val saveObservable = PublishSubject.create<Unit>()
     val view = mock(CalculatorPresenter.View::class.java)
     val calculator = Calculator(Interpreter())
-    val presenter = CalculatorPresenter(calculator)
+    val presenter = CalculatorPresenter(calculator, resultDestination)
 
     @Before
     fun setUp() {
@@ -85,7 +87,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsInitialNumberWhenThereIsInitialNumber() {
-        val presenter = CalculatorPresenter(calculator, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, BigDecimal.TEN)
 
         presenter.onAttachView(view)
 
@@ -94,7 +96,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsInitialNumberAfterReattach() {
-        val presenter = CalculatorPresenter(calculator, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, BigDecimal.TEN)
         presenter.onAttachView(view)
 
         presenter.onDetachView(view)
@@ -105,7 +107,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun clearsExpression() {
-        val presenter = CalculatorPresenter(calculator, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, BigDecimal.TEN)
         presenter.onAttachView(view)
 
         clear()
@@ -115,7 +117,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsUpdatedExpressionAfterReattach() {
-        val presenter = CalculatorPresenter(calculator, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, BigDecimal.TEN)
         presenter.onAttachView(view)
         clear()
 
@@ -127,7 +129,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun deletesLastSymbolFromExpression() {
-        val presenter = CalculatorPresenter(calculator, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, BigDecimal.TEN)
         presenter.onAttachView(view)
 
         delete()
@@ -137,7 +139,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun deletesLastSymbol() {
-        val presenter = CalculatorPresenter(calculator, BigDecimal.ONE)
+        val presenter = CalculatorPresenter(calculator, resultDestination, BigDecimal.ONE)
         presenter.onAttachView(view)
 
         delete()
@@ -625,7 +627,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        verify(view).startResult(BigDecimal(2))
+        verify(view).startResult(BigDecimal(2), resultDestination)
     }
 
     fun digit0() {

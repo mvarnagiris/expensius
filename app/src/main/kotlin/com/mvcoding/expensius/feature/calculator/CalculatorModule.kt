@@ -18,8 +18,8 @@ import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import java.math.BigDecimal
 
-class CalculatorModule(private val initialNumber: BigDecimal?) : ShankModule {
+class CalculatorModule(private val initialNumber: BigDecimal?, private val resultDestination: CalculatorPresenter.ResultDestination) : ShankModule {
     override fun registerFactories() {
-        registerFactory(CalculatorPresenter::class.java, { CalculatorPresenter(Calculator(Interpreter()), initialNumber) })
+        registerFactory(CalculatorPresenter::class.java, { CalculatorPresenter(Calculator(Interpreter()), resultDestination, initialNumber) })
     }
 }

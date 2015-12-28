@@ -27,6 +27,7 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
+import com.mvcoding.expensius.feature.transaction.TransactionActivity
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
@@ -68,8 +69,8 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    fun init(initialNumber: BigDecimal?) {
-        initializeModules(CalculatorModule(initialNumber))
+    fun init(initialNumber: BigDecimal?, resultDestination: CalculatorPresenter.ResultDestination) {
+        initializeModules(CalculatorModule(initialNumber, resultDestination))
     }
 
     override fun onAttachedToWindow() {
@@ -137,7 +138,7 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
         equalsFloatingActionButton.isSelected = state == CALCULATE
     }
 
-    override fun startResult(number: BigDecimal) {
-        throw UnsupportedOperationException()
+    override fun startResult(number: BigDecimal, resultDestination: CalculatorPresenter.ResultDestination) {
+        TransactionActivity.start(context, number)
     }
 }
