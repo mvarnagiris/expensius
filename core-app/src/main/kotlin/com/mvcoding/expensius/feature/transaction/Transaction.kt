@@ -25,8 +25,10 @@ data class Transaction(
         val id: String = randomUUID().toString(),
         val modelState: ModelState = NONE,
         val transactionType: TransactionType,
+        val transactionState: TransactionState,
         val timestamp: Long,
-        val currencyCode: String,
+        val currency: Currency,
         val amount: BigDecimal,
         val tags: Set<Tag>,
         val note: String) : Serializable
+

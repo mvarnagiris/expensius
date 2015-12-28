@@ -14,16 +14,6 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.feature.tag.aTag
-import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
-import java.math.BigDecimal.ZERO
+import java.io.Serializable
 
-fun aTransaction(): Transaction = Transaction(
-        transactionType = EXPENSE,
-        transactionState = CONFIRMED,
-        timestamp = System.currentTimeMillis(),
-        currency = Currency("GBP"),
-        amount = ZERO,
-        tags = setOf(aTag()),
-        note = "note")
+data class Currency(val code: String) : Serializable
