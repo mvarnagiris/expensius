@@ -22,7 +22,14 @@ import com.mvcoding.expensius.cache.database.Database
 import com.mvcoding.expensius.cache.database.SqliteDatabase
 import com.mvcoding.expensius.cache.database.table.TagsTable
 import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.feature.AmountFormatter
+import com.mvcoding.expensius.feature.CurrencyFormat
+import com.mvcoding.expensius.feature.CurrencyFormat.DecimalSeparator.DOT
+import com.mvcoding.expensius.feature.CurrencyFormat.GroupSeparator.COMMA
+import com.mvcoding.expensius.feature.CurrencyFormat.SymbolDistance.CLOSE
+import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.START
 import com.mvcoding.expensius.feature.tag.TagsCache
+import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsCache
 import com.mvcoding.expensius.paging.Page
@@ -30,6 +37,7 @@ import com.mvcoding.expensius.paging.PageResult
 import com.squareup.sqlbrite.SqlBrite
 import rx.Observable
 import rx.Observable.empty
+import java.math.BigDecimal
 
 class AppModule(val context: Context) : ShankModule {
     init {
@@ -42,6 +50,7 @@ class AppModule(val context: Context) : ShankModule {
         database()
         tagsCache()
         transactionsCache()
+        amountFormatter()
     }
 
     private fun database() {
@@ -55,6 +64,7 @@ class AppModule(val context: Context) : ShankModule {
     }
 
     private fun transactionsCache() {
+        // TODO: This is temporary
         registerFactory(TransactionsCache::class.java, {
             object : TransactionsCache {
                 override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
@@ -63,6 +73,17 @@ class AppModule(val context: Context) : ShankModule {
 
                 override fun save(transactions: Set<Transaction>) {
                 }
+            }
+        })
+    }
+
+    private fun amountFormatter() {
+        // TODO: This is temporary
+        registerFactory(AmountFormatter::class.java, {
+            object : AmountFormatter {
+                private val currencyFormat = CurrencyFormat("£", START, CLOSE, DOT, COMMA, 2, 2)
+
+                override fun format(amount: BigDecimal, currency: Currency) = currencyFormat.format(amount)
             }
         })
     }

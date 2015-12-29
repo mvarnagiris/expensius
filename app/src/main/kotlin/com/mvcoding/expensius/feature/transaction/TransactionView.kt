@@ -21,14 +21,22 @@ import android.widget.TextView
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
 import rx.Observable
 import rx.Observable.empty
 import java.math.BigDecimal
+import java.math.BigDecimal.ZERO
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
+    private val amountFormatter = provideSingleton(AmountFormatter::class)
     private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
     private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
+
+    private var currency: Currency = noCurrency
+    private var amount = ZERO
 
     constructor(context: Context?) : this(context, null)
 
@@ -92,10 +100,13 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showCurrency(currency: Currency) {
+        this.currency = currency;
+        amountTextView.text = amountFormatter.format(amount, currency)
     }
 
     override fun showAmount(amount: BigDecimal) {
-        amountTextView.text = amount.toPlainString()
+        this.amount = amount
+        amountTextView.text = amountFormatter.format(amount, currency)
     }
 
     override fun showTags(tags: Set<Tag>) {

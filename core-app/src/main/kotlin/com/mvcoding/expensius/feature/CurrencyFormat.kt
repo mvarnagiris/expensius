@@ -14,26 +14,54 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.feature.CurrencyFormat.SymbolDistance.FAR
+import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.END
+import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.START
 import java.math.BigDecimal
+import java.text.DecimalFormat
 
 data class CurrencyFormat(
         private val symbol: String,
         private val symbolPosition: SymbolPosition,
+        private val symbolDistance: SymbolDistance,
         private val decimalSeparator: DecimalSeparator,
         private val groupSeparator: GroupSeparator,
-        private val decimalCount: Int) {
+        private val minFractionDigits: Int,
+        private val maxFractionDigits: Int) {
+    private val decimalFormat: DecimalFormat;
 
-    fun format(amount: BigDecimal) = amount.toPlainString()
+    init {
+        decimalFormat = DecimalFormat.getInstance() as DecimalFormat
 
-    enum class SymbolPosition {
-        CLOSE_END, FAR_END, CLOSE_START, FAR_START
+        val decimalFormatSymbols = decimalFormat.decimalFormatSymbols;
+        decimalFormatSymbols.groupingSeparator = groupSeparator.symbol
+        decimalFormatSymbols.decimalSeparator = decimalSeparator.symbol
+
+        decimalFormat.minimumFractionDigits = minFractionDigits
+        decimalFormat.maximumFractionDigits = maxFractionDigits
+        decimalFormat.positivePrefix = if (symbolPosition == START) symbol + (if (symbolDistance == FAR) " " else "") else ""
+        decimalFormat.negativePrefix = if (symbolPosition == START) symbol + (if (symbolDistance == FAR) " -" else "-") else ""
+        decimalFormat.positiveSuffix = if (symbolPosition == END) (if (symbolDistance == FAR) " " else "") + symbol else ""
+        decimalFormat.negativeSuffix = if (symbolPosition == END) (if (symbolDistance == FAR) " " else "") + symbol else ""
     }
 
-    enum class DecimalSeparator(val separator: Char) {
+    fun format(amount: BigDecimal): String {
+        return decimalFormat.format(amount);
+    }
+
+    enum class SymbolPosition {
+        START, END
+    }
+
+    enum class SymbolDistance {
+        CLOSE, FAR
+    }
+
+    enum class DecimalSeparator(val symbol: Char) {
         DOT('.'), COMMA(','), SPACE(' ')
     }
 
-    enum class GroupSeparator(val separator: Char) {
+    enum class GroupSeparator(val symbol: Char) {
         NONE('\u0000'), DOT('.'), COMMA(','), SPACE(' ')
     }
 }

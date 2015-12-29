@@ -12,12 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.feature
 
-import java.io.Serializable
+import com.mvcoding.expensius.feature.transaction.Currency
+import java.math.BigDecimal
 
-data class Currency(val code: String) : Serializable {
-    companion object {
-        val noCurrency = Currency("")
-    }
+interface AmountFormatter {
+    fun format(amount: BigDecimal, currency: Currency): String
 }
