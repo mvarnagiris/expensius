@@ -12,11 +12,14 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.transaction.TransactionView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.expensius.feature.transaction.TransactionView android:id="@+id/transactionView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <ScrollView

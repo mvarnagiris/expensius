@@ -12,12 +12,15 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.feature.transaction.Currency
+import com.memoizrlabs.Shank.registerFactory
+import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.extension.provideSingleton
 
-interface Settings {
-    fun isIntroductionSeen(): Boolean
-    fun setIsIntroductionSeen(isIntroductionSeen: Boolean)
-    fun getMainCurrency(): Currency
+class TransactionModule(private val transaction: Transaction) : ShankModule {
+    override fun registerFactories() {
+        val transactionsCache = provideSingleton(TransactionsCache::class)
+        registerFactory(TransactionPresenter::class.java, { TransactionPresenter(transaction, transactionsCache) })
+    }
 }

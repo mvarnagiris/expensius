@@ -14,7 +14,9 @@
 
 package com.mvcoding.expensius.feature.calculator
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import android.widget.Button
@@ -25,8 +27,10 @@ import com.jakewharton.rxbinding.view.longClicks
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.extension.toActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
+import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionActivity
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
@@ -62,6 +66,10 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
     private val presenter by lazy { provideActivityScopedSingleton(CalculatorPresenter::class) }
     private var isFloatingActionButtonClickConsumed = false
     private var state = SAVE
+
+    companion object {
+        const val RESULT_EXTRA_AMOUNT = "RESULT_EXTRA_AMOUNT"
+    }
 
     constructor(context: Context?) : this(context, null)
 
@@ -138,7 +146,16 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
         equalsFloatingActionButton.isSelected = state == CALCULATE
     }
 
-    override fun startResult(number: BigDecimal, resultDestination: CalculatorPresenter.ResultDestination) {
-        TransactionActivity.start(context, number)
+    override fun startResult(number: BigDecimal) {
+        val activity = context.toActivity()
+        val data = Intent();
+        data.putExtra(RESULT_EXTRA_AMOUNT, number)
+        activity.setResult(RESULT_OK, data)
+        context.toActivity().finish()
+    }
+
+    override fun startTransaction(transaction: Transaction) {
+        TransactionActivity.start(context, transaction)
+        context.toActivity().finish()
     }
 }

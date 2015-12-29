@@ -17,16 +17,24 @@ package com.mvcoding.expensius.feature.transaction
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import com.memoizrlabs.ShankModuleInitializer.initializeModules
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.Tag
 import rx.Observable
 import java.math.BigDecimal
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
+    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
+
     constructor(context: Context?) : this(context, null)
 
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    fun init(transaction: Transaction) {
+        initializeModules(TransactionModule(transaction))
+    }
 
     override fun onTransactionStateChanged(): Observable<TransactionState> {
         throw UnsupportedOperationException()

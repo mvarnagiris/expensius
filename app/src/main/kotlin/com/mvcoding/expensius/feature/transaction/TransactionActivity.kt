@@ -19,15 +19,14 @@ import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
-import java.math.BigDecimal
 
 class TransactionActivity : BaseActivity() {
     companion object {
-        private const val EXTRA_AMOUNT = "EXTRA_AMOUNT"
+        private const val EXTRA_TRANSACTION = "EXTRA_TRANSACTION"
 
-        fun start(context: Context, amount: BigDecimal) {
+        fun start(context: Context, transaction: Transaction) {
             ActivityStarter(context, TransactionActivity::class)
-                    .extra(EXTRA_AMOUNT, amount)
+                    .extra(EXTRA_TRANSACTION, transaction)
                     .start()
         }
     }
@@ -35,5 +34,9 @@ class TransactionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_transaction)
+
+        val transaction = intent.getSerializableExtra(EXTRA_TRANSACTION) as Transaction
+        val transactionView = findViewById(R.id.transactionView) as TransactionView
+        transactionView.init(transaction)
     }
 }

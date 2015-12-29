@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius
 
+import com.mvcoding.expensius.feature.transaction.Currency
+
 class UserSettings : Settings {
     override fun isIntroductionSeen(): Boolean {
         return false
@@ -21,4 +23,6 @@ class UserSettings : Settings {
 
     override fun setIsIntroductionSeen(isIntroductionSeen: Boolean) {
     }
+
+    override fun getMainCurrency() = Currency("GBP")
 }

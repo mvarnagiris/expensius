@@ -14,9 +14,13 @@
 
 package com.mvcoding.expensius.feature.calculator
 
+import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
+import com.mvcoding.expensius.feature.transaction.Transaction
+import com.mvcoding.expensius.feature.transaction.Transaction.Companion.transaction
 import rx.Observable
 import rx.Observable.merge
 import java.math.BigDecimal
@@ -24,6 +28,7 @@ import java.math.BigDecimal
 class CalculatorPresenter(
         private val calculator: Calculator,
         private val resultDestination: ResultDestination,
+        private val settings: Settings,
         private val initialNumber: BigDecimal? = null) : Presenter<CalculatorPresenter.View>() {
 
     init {
@@ -62,7 +67,13 @@ class CalculatorPresenter(
 
         unsubscribeOnDetach(view.onSave()
                 .withLatestFrom(expressionAlteringObservable, { unit, number -> number })
-                .subscribe { view.startResult(it, resultDestination) })
+                .subscribe {
+                    if (resultDestination == TRANSACTION) {
+                        view.startTransaction(transaction(settings.getMainCurrency(), it))
+                    } else {
+                        view.startResult(it)
+                    }
+                })
     }
 
     enum class State { SAVE, CALCULATE }
@@ -91,6 +102,7 @@ class CalculatorPresenter(
         fun onSave(): Observable<Unit>
         fun showExpression(expression: String)
         fun showState(state: State)
-        fun startResult(number: BigDecimal, resultDestination: ResultDestination)
+        fun startResult(number: BigDecimal)
+        fun startTransaction(transaction: Transaction)
     }
 }
