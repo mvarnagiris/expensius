@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature.transaction
 
 import android.content.Context
 import android.util.AttributeSet
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
@@ -25,13 +26,17 @@ import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
+import net.danlew.android.joda.DateUtils.*
+import org.joda.time.DateTime
 import rx.Observable
 import rx.Observable.empty
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
-    private val amountFormatter = provideSingleton(AmountFormatter::class)
+    private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
+    private val dateButton by lazy { findViewById(R.id.dateButton) as Button }
+    private val timeButton by lazy { findViewById(R.id.timeButton) as Button }
     private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
     private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
 
@@ -97,6 +102,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showTimestamp(timestamp: Long) {
+        val dateTime = DateTime(timestamp)
+        dateButton.text = formatDateTime(context, dateTime, FORMAT_SHOW_DATE)
+        timeButton.text = formatDateTime(context, dateTime, FORMAT_SHOW_TIME)
     }
 
     override fun showCurrency(currency: Currency) {

@@ -31,6 +31,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:orientation="vertical">
 
             <LinearLayout
@@ -69,6 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/keyline"
+                android:clipToPadding="false"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingLeft="@dimen/keyline"
@@ -88,10 +90,9 @@
                     style="@style/Button.Flat"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="-12dp"
                     android:layout_weight="1"
                     android:gravity="start|center_vertical"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
                     tools:text="December 28" />
 
                 <Button
@@ -99,9 +100,8 @@
                     style="@style/Button.Flat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="-12dp"
                     android:gravity="end|center_vertical"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
                     tools:text="16:13" />
 
             </LinearLayout>
