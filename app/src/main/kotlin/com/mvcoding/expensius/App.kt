@@ -19,10 +19,12 @@ import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.intro.IntroModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.splash.SplashModule
+import net.danlew.android.joda.JodaTimeAndroid
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        JodaTimeAndroid.init(this);
         initializeModules(AppModule(this), SplashModule(), IntroModule(), OverviewModule())
     }
 }

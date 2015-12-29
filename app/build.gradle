@@ -69,5 +69,6 @@ dependencies {
     compile 'com.squareup.sqlbrite:sqlbrite:0.4.1'
     compile 'com.larswerkman:lobsterpicker:1.0.0'
     compile 'me.grantland:autofittextview:0.2.1'
+    compile 'net.danlew:android.joda:2.9.1'
     testCompile 'junit:junit:4.12'
 }
