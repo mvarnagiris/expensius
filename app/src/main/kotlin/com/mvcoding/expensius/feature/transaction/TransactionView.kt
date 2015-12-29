@@ -17,13 +17,17 @@ package com.mvcoding.expensius.feature.transaction
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
+import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.Tag
 import rx.Observable
+import rx.Observable.empty
 import java.math.BigDecimal
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
+    private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
     private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
 
     constructor(context: Context?) : this(context, null)
@@ -36,67 +40,70 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         initializeModules(TransactionModule(transaction))
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        presenter?.onAttachView(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        presenter?.onDetachView(this)
+    }
+
     override fun onTransactionStateChanged(): Observable<TransactionState> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun onTransactionTypeChanged(): Observable<TransactionType> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun onTimestampChanged(): Observable<Long> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun onCurrencyChanged(): Observable<Currency> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun onAmountChanged(): Observable<BigDecimal> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun onTagsChanged(): Observable<Set<Tag>> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun onNoteChanged(): Observable<String> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun onSave(): Observable<Unit> {
-        throw UnsupportedOperationException()
+        return empty()
     }
 
     override fun showTransactionState(transactionState: TransactionState) {
-        throw UnsupportedOperationException()
     }
 
     override fun showTransactionType(transactionType: TransactionType) {
-        throw UnsupportedOperationException()
     }
 
     override fun showTimestamp(timestamp: Long) {
-        throw UnsupportedOperationException()
     }
 
     override fun showCurrency(currency: Currency) {
-        throw UnsupportedOperationException()
     }
 
     override fun showAmount(amount: BigDecimal) {
-        throw UnsupportedOperationException()
+        amountTextView.text = amount.toPlainString()
     }
 
     override fun showTags(tags: Set<Tag>) {
-        throw UnsupportedOperationException()
     }
 
     override fun showNote(note: String) {
-        throw UnsupportedOperationException()
     }
 
     override fun startResult(transaction: Transaction) {
-        throw UnsupportedOperationException()
     }
 }

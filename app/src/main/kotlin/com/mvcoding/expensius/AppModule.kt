@@ -23,7 +23,13 @@ import com.mvcoding.expensius.cache.database.SqliteDatabase
 import com.mvcoding.expensius.cache.database.table.TagsTable
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.tag.TagsCache
+import com.mvcoding.expensius.feature.transaction.Transaction
+import com.mvcoding.expensius.feature.transaction.TransactionsCache
+import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.PageResult
 import com.squareup.sqlbrite.SqlBrite
+import rx.Observable
+import rx.Observable.empty
 
 class AppModule(val context: Context) : ShankModule {
     init {
@@ -35,6 +41,7 @@ class AppModule(val context: Context) : ShankModule {
         registerFactory(Session::class.java, { UserSession() })
         database()
         tagsCache()
+        transactionsCache()
     }
 
     private fun database() {
@@ -45,5 +52,18 @@ class AppModule(val context: Context) : ShankModule {
     private fun tagsCache() {
         val database = provideSingleton(Database::class)
         registerFactory(TagsCache::class.java, { DatabaseTagsCache(database, TagsTable()) })
+    }
+
+    private fun transactionsCache() {
+        registerFactory(TransactionsCache::class.java, {
+            object : TransactionsCache {
+                override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
+                    return empty()
+                }
+
+                override fun save(transactions: Set<Transaction>) {
+                }
+            }
+        })
     }
 }

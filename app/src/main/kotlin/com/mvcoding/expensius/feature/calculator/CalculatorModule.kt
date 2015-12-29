@@ -16,10 +16,13 @@ package com.mvcoding.expensius.feature.calculator
 
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.extension.provideSingleton
 import java.math.BigDecimal
 
 class CalculatorModule(private val initialNumber: BigDecimal?, private val resultDestination: CalculatorPresenter.ResultDestination) : ShankModule {
     override fun registerFactories() {
-        registerFactory(CalculatorPresenter::class.java, { CalculatorPresenter(Calculator(Interpreter()), resultDestination, initialNumber) })
+        val settings = provideSingleton(Settings::class)
+        registerFactory(CalculatorPresenter::class.java, { CalculatorPresenter(Calculator(Interpreter()), resultDestination, settings, initialNumber) })
     }
 }
