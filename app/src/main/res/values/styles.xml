@@ -111,7 +111,7 @@
         <item name="elevation">@dimen/elevation_fab</item>
         <item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>
         <item name="rippleColor">?colorAccentDark</item>
-        <item name="borderWidth">0dp</item>
+        <item name="borderWidth">1dp</item>
         <item name="android:theme">@style/AppTheme.Inverse</item>
     </style>
 

@@ -15,17 +15,19 @@
 package com.mvcoding.expensius.feature.transaction
 
 import android.content.Context
+import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.extension.toActivity
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
+import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
+import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
 import net.danlew.android.joda.DateUtils.*
 import org.joda.time.DateTime
 import rx.Observable
@@ -35,10 +37,16 @@ import java.math.BigDecimal.ZERO
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
+    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
+
+    private val transactionTypeFloatingActionButton by lazy { findViewById(R.id.transactionTypeFloatingActionButton) as FloatingActionButton }
+    private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
     private val dateButton by lazy { findViewById(R.id.dateButton) as Button }
     private val timeButton by lazy { findViewById(R.id.timeButton) as Button }
-    private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
-    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
+    private val tagsButton by lazy { findViewById(R.id.tagsButton) as Button }
+    private val noteEditText by lazy { findViewById(R.id.noteEditText) as EditText }
+    private val transactionStateCheckBox by lazy { findViewById(R.id.transactionStateCheckBox) as CheckBox }
+    private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
 
     private var currency: Currency = noCurrency
     private var amount = ZERO
@@ -96,9 +104,11 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showTransactionState(transactionState: TransactionState) {
+        transactionStateCheckBox.isChecked = transactionState == CONFIRMED
     }
 
     override fun showTransactionType(transactionType: TransactionType) {
+        transactionTypeFloatingActionButton.isSelected = transactionType == INCOME
     }
 
     override fun showTimestamp(timestamp: Long) {
@@ -109,20 +119,28 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun showCurrency(currency: Currency) {
         this.currency = currency;
-        amountTextView.text = amountFormatter.format(amount, currency)
+        currencyButton.text = currency.code
+        updateAmount()
     }
 
     override fun showAmount(amount: BigDecimal) {
         this.amount = amount
-        amountTextView.text = amountFormatter.format(amount, currency)
+        updateAmount()
     }
 
     override fun showTags(tags: Set<Tag>) {
+        tagsButton.text = tags.joinToString(separator = ", ", transform = { it.title })
     }
 
     override fun showNote(note: String) {
+        noteEditText.setText(note)
     }
 
     override fun startResult(transaction: Transaction) {
+        context.toActivity().finish()
+    }
+
+    private fun updateAmount() {
+        amountTextView.text = amountFormatter.format(amount, currency)
     }
 }

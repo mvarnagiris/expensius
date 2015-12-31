@@ -37,6 +37,7 @@
     <string name="date">Date</string>
     <string name="confirmed">Confirmed</string>
     <string name="transaction">Transaction</string>
+    <string name="select_tags">Select tags</string>
 
     <string name="intro_title_1">Intro title 1</string>
     <string name="intro_title_2">Intro title 2</string>

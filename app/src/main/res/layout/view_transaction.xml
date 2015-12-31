@@ -64,6 +64,7 @@
                 android:layout_marginStart="@dimen/keyline"
                 android:layout_marginTop="@dimen/fab_mini_size_half_negative"
                 android:src="@drawable/ic_action_transaction_type"
+                app:backgroundTint="@color/transaction_type"
                 app:fabSize="mini" />
 
             <LinearLayout
@@ -93,6 +94,7 @@
                     android:layout_marginStart="-12dp"
                     android:layout_weight="1"
                     android:gravity="start|center_vertical"
+                    android:textAllCaps="false"
                     tools:text="December 28" />
 
                 <Button
@@ -102,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="-12dp"
                     android:gravity="end|center_vertical"
+                    android:textAllCaps="false"
                     tools:text="16:13" />
 
             </LinearLayout>
@@ -129,9 +132,10 @@
                     style="@style/Button.Flat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="-12dp"
+                    android:layout_marginStart="-12dp"
                     android:gravity="start|center_vertical"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
+                    android:hint="@string/select_tags"
                     android:textAllCaps="false"
                     tools:text="Essential, Food" />
 
@@ -162,7 +166,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="-4dp"
                     android:layout_marginRight="-4dp"
-                    android:hint="@string/note" />
+                    android:hint="@string/note"
+                    android:textAppearance="@style/Text.Body2" />
             </LinearLayout>
 
             <CheckBox
@@ -176,9 +181,39 @@
                 android:paddingEnd="@dimen/keyline"
                 android:paddingStart="@dimen/keyline_plus_view_padding"
                 android:text="@string/confirmed"
-                android:textAppearance="@style/Text.Subhead"
+                android:textAppearance="@style/Text.Body2"
                 tools:ignore="RtlSymmetry" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/keyline"
+                android:gravity="center_vertical"
+                android:minHeight="?actionBarSize"
+                android:paddingLeft="@dimen/keyline"
+                android:paddingRight="@dimen/keyline">
+
+                <ImageView
+                    android:layout_width="@dimen/keyline_content_minus_keyline_2x"
+                    android:layout_height="@dimen/keyline_content_minus_keyline_2x"
+                    android:layout_marginEnd="@dimen/keyline"
+                    android:contentDescription="@string/tags"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_action_currency"
+                    android:tint="?colorActionIcon" />
+
+                <Button
+                    android:id="@+id/currencyButton"
+                    style="@style/Button.Flat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-12dp"
+                    android:layout_marginStart="-12dp"
+                    android:gravity="start|center_vertical"
+                    android:textAllCaps="false"
+                    tools:text="USD ($)" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
