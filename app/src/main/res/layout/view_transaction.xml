@@ -89,23 +89,13 @@
                 <Button
                     android:id="@+id/dateButton"
                     style="@style/Button.Flat"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="-12dp"
-                    android:layout_weight="1"
-                    android:gravity="start|center_vertical"
-                    android:textAllCaps="false"
-                    tools:text="December 28" />
-
-                <Button
-                    android:id="@+id/timeButton"
-                    style="@style/Button.Flat"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="-12dp"
-                    android:gravity="end|center_vertical"
+                    android:layout_marginStart="-12dp"
+                    android:gravity="start|center_vertical"
                     android:textAllCaps="false"
-                    tools:text="16:13" />
+                    tools:text="Today" />
 
             </LinearLayout>
 

@@ -18,38 +18,50 @@ import android.content.Context
 import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import android.widget.*
+import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding.widget.checkedChanges
+import com.jakewharton.rxbinding.widget.textChanges
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.extension.toActivity
 import com.mvcoding.expensius.feature.AmountFormatter
+import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
+import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
+import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
-import net.danlew.android.joda.DateUtils.*
-import org.joda.time.DateTime
+import kotlinx.android.synthetic.main.view_tag.view.*
 import rx.Observable
-import rx.Observable.empty
+import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
+    private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
     private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
+    private val timestampSubject by lazy { PublishSubject<Long>() }
+    private val currencySubject by lazy { PublishSubject<Currency>() }
+    private val amountSubject by lazy { PublishSubject<BigDecimal>() }
+    private val tagsSubject by lazy { PublishSubject<Set<Tag>>() }
 
     private val transactionTypeFloatingActionButton by lazy { findViewById(R.id.transactionTypeFloatingActionButton) as FloatingActionButton }
     private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
     private val dateButton by lazy { findViewById(R.id.dateButton) as Button }
-    private val timeButton by lazy { findViewById(R.id.timeButton) as Button }
     private val tagsButton by lazy { findViewById(R.id.tagsButton) as Button }
     private val noteEditText by lazy { findViewById(R.id.noteEditText) as EditText }
     private val transactionStateCheckBox by lazy { findViewById(R.id.transactionStateCheckBox) as CheckBox }
     private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
 
-    private var currency: Currency = noCurrency
+    private var transactionState = CONFIRMED
+    private var transactionType = EXPENSE
+    private var currency = noCurrency
     private var amount = ZERO
+    private var allowTransactionStateChanges = false
 
     constructor(context: Context?) : this(context, null)
 
@@ -72,38 +84,36 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun onTransactionStateChanged(): Observable<TransactionState> {
-        return empty()
+        return transactionStateCheckBox
+                .checkedChanges()
+                .filter {
+                    if (allowTransactionStateChanges) {
+                        true
+                    } else {
+                        allowTransactionStateChanges = true
+                        false
+                    }
+                }
+                .map { if (transactionState == CONFIRMED) PENDING else CONFIRMED }
     }
 
-    override fun onTransactionTypeChanged(): Observable<TransactionType> {
-        return empty()
-    }
+    override fun onTransactionTypeChanged() = transactionTypeFloatingActionButton.clicks().map { if (transactionType == EXPENSE) INCOME else EXPENSE }
 
-    override fun onTimestampChanged(): Observable<Long> {
-        return empty()
-    }
+    override fun onTimestampChanged() = timestampSubject.asObservable()
 
-    override fun onCurrencyChanged(): Observable<Currency> {
-        return empty()
-    }
+    override fun onCurrencyChanged() = currencySubject.asObservable()
 
-    override fun onAmountChanged(): Observable<BigDecimal> {
-        return empty()
-    }
+    override fun onAmountChanged() = amountSubject.asObservable()
 
-    override fun onTagsChanged(): Observable<Set<Tag>> {
-        return empty()
-    }
+    override fun onTagsChanged() = tagsSubject.asObservable()
 
-    override fun onNoteChanged(): Observable<String> {
-        return empty()
-    }
+    override fun onNoteChanged() = noteEditText.textChanges().map { it.toString() }
 
-    override fun onSave(): Observable<Unit> {
-        return empty()
-    }
+    override fun onSave() = saveButton.clicks()
 
     override fun showTransactionState(transactionState: TransactionState) {
+        this.transactionState = transactionState;
+        allowTransactionStateChanges = false
         transactionStateCheckBox.isChecked = transactionState == CONFIRMED
     }
 
@@ -112,9 +122,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showTimestamp(timestamp: Long) {
-        val dateTime = DateTime(timestamp)
-        dateButton.text = formatDateTime(context, dateTime, FORMAT_SHOW_DATE)
-        timeButton.text = formatDateTime(context, dateTime, FORMAT_SHOW_TIME)
+        dateButton.text = dateFormatter.formatDateRelativeToToday(timestamp)
     }
 
     override fun showCurrency(currency: Currency) {

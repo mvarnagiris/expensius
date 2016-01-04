@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,8 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.extension
 
-enum class TransactionState {
-    CONFIRMED, PENDING;
+import org.joda.time.ReadableInstant
+
+fun isYesterday(readableInstant: ReadableInstant): Boolean {
+    return false
+}
+
+fun isTomorrow(readableInstant: ReadableInstant): Boolean {
+    return false
 }

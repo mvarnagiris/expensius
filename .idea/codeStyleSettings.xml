@@ -30,7 +30,7 @@
             <emptyLine />
           </value>
         </option>
-        <option name="RIGHT_MARGIN" value="100" />
+        <option name="RIGHT_MARGIN" value="140" />
         <AndroidXmlCodeStyleSettings>
           <option name="USE_CUSTOM_SETTINGS" value="true" />
         </AndroidXmlCodeStyleSettings>
@@ -62,6 +62,30 @@
             <pair source="c" header="h" />
           </extensions>
         </Objective-C-extensions>
+        <DBN-PSQL>
+          <case-options enabled="false">
+            <option name="KEYWORD_CASE" value="lower" />
+            <option name="FUNCTION_CASE" value="lower" />
+            <option name="PARAMETER_CASE" value="lower" />
+            <option name="DATATYPE_CASE" value="lower" />
+            <option name="OBJECT_CASE" value="preserve" />
+          </case-options>
+          <formatting-settings enabled="false" />
+        </DBN-PSQL>
+        <DBN-SQL>
+          <case-options enabled="false">
+            <option name="KEYWORD_CASE" value="lower" />
+            <option name="FUNCTION_CASE" value="lower" />
+            <option name="PARAMETER_CASE" value="lower" />
+            <option name="DATATYPE_CASE" value="lower" />
+            <option name="OBJECT_CASE" value="preserve" />
+          </case-options>
+          <formatting-settings enabled="false">
+            <option name="STATEMENT_SPACING" value="one_line" />
+            <option name="CLAUSE_CHOP_DOWN" value="chop_down_if_statement_long" />
+            <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
+          </formatting-settings>
+        </DBN-SQL>
         <XML>
           <option name="XML_KEEP_LINE_BREAKS" value="false" />
           <option name="XML_ALIGN_ATTRIBUTES" value="false" />
@@ -225,9 +249,15 @@
             </rules>
           </arrangement>
         </codeStyleSettings>
+        <codeStyleSettings language="kotlin">
+          <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+          <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
+          <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
+          <option name="CALL_PARAMETERS_WRAP" value="5" />
+          <option name="METHOD_PARAMETERS_WRAP" value="5" />
+        </codeStyleSettings>
       </value>
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
-    <option name="PREFERRED_PROJECT_CODE_STYLE" value="Default (1)" />
   </component>
 </project>
