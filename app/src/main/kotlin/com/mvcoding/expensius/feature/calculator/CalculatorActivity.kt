@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,13 +15,13 @@
 package com.mvcoding.expensius.feature.calculator
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.BACK
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
-import com.mvcoding.expensius.feature.tag.TagsActivity
 import java.math.BigDecimal
 
 class CalculatorActivity : BaseActivity() {
@@ -37,12 +37,14 @@ class CalculatorActivity : BaseActivity() {
                     .start()
         }
 
-        fun startWithInitialNumber(context: Context, initialNumber: BigDecimal) {
-            ActivityStarter(context, TagsActivity::class)
+        fun startWithInitialNumberForResult(context: Context, requestCode: Int, initialNumber: BigDecimal) {
+            ActivityStarter(context, CalculatorActivity::class)
                     .extra(EXTRA_INITIAL_NUMBER, initialNumber)
                     .extra(EXTRA_RESULT_DESTINATION, BACK)
-                    .start()
+                    .startForResult(requestCode)
         }
+
+        fun resultExtraAmount(data: Intent) = data.getSerializableExtra(CalculatorView.RESULT_EXTRA_AMOUNT) as BigDecimal
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.transaction
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
@@ -31,12 +32,18 @@ class TransactionActivity : BaseActivity() {
         }
     }
 
+    private val transactionView by lazy { findViewById(R.id.transactionView) as TransactionView }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_transaction)
 
         val transaction = intent.getSerializableExtra(EXTRA_TRANSACTION) as Transaction
-        val transactionView = findViewById(R.id.transactionView) as TransactionView
         transactionView.init(transaction)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        transactionView.onActivityResult(requestCode, resultCode, data)
     }
 }

@@ -14,7 +14,9 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import android.widget.*
@@ -28,6 +30,7 @@ import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.extension.toActivity
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
+import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
@@ -41,6 +44,10 @@ import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
+    companion object {
+        private const val REQUEST_AMOUNT = 1
+    }
+
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
     private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
     private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
@@ -70,8 +77,21 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
+    }
+
     fun init(transaction: Transaction) {
         initializeModules(TransactionModule(transaction))
+    }
+
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode != REQUEST_AMOUNT || resultCode != RESULT_OK) {
+            return
+        }
+
+        amountSubject.onNext(CalculatorActivity.resultExtraAmount(data!!))
     }
 
     override fun onAttachedToWindow() {
