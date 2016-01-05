@@ -193,4 +193,13 @@
     <!--<item name="android:fillViewport">true</item>-->
     <!--<item name="android:clipToPadding">false</item>-->
     <!--</style>-->
+
+    <!-- QuickTagsView -->
+    <!-- =============================================================================================================================== -->
+
+    <style name="QuickTagsView">
+        <item name="tagPaddingHorizontal">6dp</item>
+        <item name="tagPaddingVertical">3dp</item>
+        <item name="tagCornerRadius">10dp</item>
+    </style>
 </resources>

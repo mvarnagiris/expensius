@@ -59,7 +59,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private val transactionTypeFloatingActionButton by lazy { findViewById(R.id.transactionTypeFloatingActionButton) as FloatingActionButton }
     private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
     private val dateButton by lazy { findViewById(R.id.dateButton) as Button }
-    private val tagsButton by lazy { findViewById(R.id.tagsButton) as Button }
+    //    private val tagsButton by lazy { findViewById(R.id.tagsButton) as Button }
     private val noteEditText by lazy { findViewById(R.id.noteEditText) as EditText }
     private val transactionStateCheckBox by lazy { findViewById(R.id.transactionStateCheckBox) as CheckBox }
     private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
@@ -79,7 +79,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
+        //        amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
     }
 
     fun init(transaction: Transaction) {
@@ -159,7 +159,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showTags(tags: Set<Tag>) {
-        tagsButton.text = tags.joinToString(separator = ", ", transform = { it.title })
+        //        tagsButton.text = tags.joinToString(separator = ", ", transform = { it.title })
     }
 
     override fun showNote(note: String) {

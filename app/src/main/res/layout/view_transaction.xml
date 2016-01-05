@@ -117,17 +117,22 @@
                     android:src="@drawable/ic_action_tag"
                     android:tint="?colorActionIcon" />
 
-                <Button
-                    android:id="@+id/tagsButton"
-                    style="@style/Button.Flat"
+                <com.mvcoding.expensius.feature.tag.QuickTagsView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="-12dp"
-                    android:layout_marginStart="-12dp"
-                    android:gravity="start|center_vertical"
-                    android:hint="@string/select_tags"
-                    android:textAllCaps="false"
-                    tools:text="Essential, Food" />
+                    android:textAppearance="@style/Text.Body2" />
+
+                <!--<Button-->
+                <!--android:id="@+id/tagsButton"-->
+                <!--style="@style/Button.Flat"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginEnd="-12dp"-->
+                <!--android:layout_marginStart="-12dp"-->
+                <!--android:gravity="start|center_vertical"-->
+                <!--android:hint="@string/select_tags"-->
+                <!--android:textAllCaps="false"-->
+                <!--tools:text="Essential, Food" />-->
 
             </LinearLayout>
 

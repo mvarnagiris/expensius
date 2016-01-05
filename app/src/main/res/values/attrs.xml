@@ -21,4 +21,10 @@
         <attr name="colorBackgroundPrimary" format="color" />
         <attr name="colorBackgroundSecondary" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="QuickTagsView">
+        <attr name="tagCornerRadius" format="dimension" />
+        <attr name="tagPaddingHorizontal" format="dimension" />
+        <attr name="tagPaddingVertical" format="dimension" />
+    </declare-styleable>
 </resources>
