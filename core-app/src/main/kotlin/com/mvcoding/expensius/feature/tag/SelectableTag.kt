@@ -14,11 +14,6 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import rx.Observable
-
-// TODO Rename to Provider
-interface TagsCache {
-    fun tags(): Observable<List<Tag>>
-    fun archivedTags(): Observable<List<Tag>>
-    fun save(tags: Set<Tag>)
+data class SelectableTag(val tag: Tag, val isSelected: Boolean) {
+    fun toggled() = copy(isSelected = isSelected.not())
 }
