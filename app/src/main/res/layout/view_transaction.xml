@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2016 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -160,6 +160,19 @@
                     android:textAppearance="@style/Text.Body2" />
             </LinearLayout>
 
+            <View
+                style="@style/Divider"
+                android:layout_marginTop="@dimen/space_large" />
+
+            <ImageButton
+                android:id="@+id/moreButton"
+                style="@style/Button.Flat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/more_options"
+                android:src="@drawable/ic_action_more_horizontal"
+                android:tint="?colorActionIcon" />
+
             <CheckBox
                 android:id="@+id/transactionStateCheckBox"
                 android:layout_width="match_parent"
@@ -172,6 +185,7 @@
                 android:paddingStart="@dimen/keyline_plus_view_padding"
                 android:text="@string/confirmed"
                 android:textAppearance="@style/Text.Body2"
+                android:visibility="gone"
                 tools:ignore="RtlSymmetry" />
 
             <LinearLayout
@@ -181,7 +195,8 @@
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingLeft="@dimen/keyline"
-                android:paddingRight="@dimen/keyline">
+                android:paddingRight="@dimen/keyline"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="@dimen/keyline_content_minus_keyline_2x"

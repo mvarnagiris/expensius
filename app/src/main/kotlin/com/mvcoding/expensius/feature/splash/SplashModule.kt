@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import com.memoizrlabs.Shank
+import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.Session
 import com.mvcoding.expensius.Settings
@@ -24,6 +24,6 @@ class SplashModule : ShankModule {
     override fun registerFactories() {
         val userSettings = provideSingleton(Settings::class)
         val session = provideSingleton(Session::class)
-        Shank.registerFactory(SplashPresenter::class.java, { SplashPresenter(userSettings, session) })
+        registerFactory(SplashPresenter::class.java, { SplashPresenter(userSettings, session) })
     }
 }

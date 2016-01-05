@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private var currency = noCurrency
     private var amount = ZERO
     private var allowTransactionStateChanges = false
+    private var allowNoteChanges = true
 
     constructor(context: Context?) : this(context, null)
 
@@ -107,7 +108,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onTagsChanged() = tagsSubject.asObservable()
 
-    override fun onNoteChanged() = noteEditText.textChanges().map { it.toString() }
+    override fun onNoteChanged() = noteEditText.textChanges().filter { allowNoteChanges }.map { it.toString() }
 
     override fun onSave() = saveButton.clicks()
 
@@ -118,6 +119,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showTransactionType(transactionType: TransactionType) {
+        this.transactionType = transactionType
         transactionTypeFloatingActionButton.isSelected = transactionType == INCOME
     }
 
@@ -141,7 +143,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showNote(note: String) {
+        allowNoteChanges = false
         noteEditText.setText(note)
+        allowNoteChanges = true
     }
 
     override fun startResult(transaction: Transaction) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import com.mvcoding.expensius.feature.CurrencyFormat.DecimalSeparator.DOT
 import com.mvcoding.expensius.feature.CurrencyFormat.GroupSeparator.COMMA
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolDistance.CLOSE
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.START
+import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.tag.TagsCache
 import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.Transaction
@@ -51,6 +52,7 @@ class AppModule(val context: Context) : ShankModule {
         tagsCache()
         transactionsCache()
         amountFormatter()
+        dateFormatter()
     }
 
     private fun database() {
@@ -86,5 +88,9 @@ class AppModule(val context: Context) : ShankModule {
                 override fun format(amount: BigDecimal, currency: Currency) = currencyFormat.format(amount)
             }
         })
+    }
+
+    private fun dateFormatter() {
+        registerFactory(DateFormatter::class.java, { DateFormatter(context) })
     }
 }

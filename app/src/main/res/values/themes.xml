@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2016 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
         <item name="colorAccent">#FF4081</item>
         <item name="colorAccentDark">#EF3071</item>
         <item name="colorActionIcon">#333333</item>
+        <item name="colorDivider">#33333333</item>
         <item name="colorBackgroundPrimary">#FFFFFF</item>
         <item name="colorBackgroundSecondary">#AAAAAA</item>
 

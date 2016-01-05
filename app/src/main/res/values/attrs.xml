@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2016 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
         <attr name="themeInverse" format="reference" />
         <attr name="colorAccentDark" format="color" />
         <attr name="colorActionIcon" format="color" />
+        <attr name="colorDivider" format="color" />
         <attr name="colorBackgroundPrimary" format="color" />
         <attr name="colorBackgroundSecondary" format="color" />
     </declare-styleable>
