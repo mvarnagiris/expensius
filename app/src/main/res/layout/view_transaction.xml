@@ -70,7 +70,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/keyline"
+                android:layout_marginTop="@dimen/space_large"
                 android:clipToPadding="false"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
@@ -95,6 +95,7 @@
                     android:layout_marginStart="-12dp"
                     android:gravity="start|center_vertical"
                     android:textAllCaps="false"
+                    android:textAppearance="@style/Text.Subhead"
                     tools:text="Today" />
 
             </LinearLayout>
@@ -102,7 +103,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/keyline"
+                android:layout_marginTop="@dimen/space_large"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingLeft="@dimen/keyline"
@@ -120,26 +121,14 @@
                 <com.mvcoding.expensius.feature.tag.QuickTagsView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/Text.Body2" />
-
-                <!--<Button-->
-                <!--android:id="@+id/tagsButton"-->
-                <!--style="@style/Button.Flat"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginEnd="-12dp"-->
-                <!--android:layout_marginStart="-12dp"-->
-                <!--android:gravity="start|center_vertical"-->
-                <!--android:hint="@string/select_tags"-->
-                <!--android:textAllCaps="false"-->
-                <!--tools:text="Essential, Food" />-->
+                    android:textAppearance="@style/Text.Subhead" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/keyline"
+                android:layout_marginTop="@dimen/space_large"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingLeft="@dimen/keyline"
@@ -149,9 +138,9 @@
                     android:layout_width="@dimen/keyline_content_minus_keyline_2x"
                     android:layout_height="@dimen/keyline_content_minus_keyline_2x"
                     android:layout_marginEnd="@dimen/keyline"
-                    android:contentDescription="@string/note"
+                    android:contentDescription="@string/add_a_note"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_short_text"
+                    android:src="@drawable/ic_action_note"
                     android:tint="?colorActionIcon" />
 
                 <EditText
@@ -161,47 +150,36 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="-4dp"
                     android:layout_marginRight="-4dp"
-                    android:hint="@string/note"
-                    android:textAppearance="@style/Text.Body2" />
+                    android:hint="@string/add_a_note" />
+
             </LinearLayout>
 
             <View
                 style="@style/Divider"
                 android:layout_marginTop="@dimen/space_large" />
 
-            <ImageButton
-                android:id="@+id/moreButton"
-                style="@style/Button.Flat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/more_options"
-                android:src="@drawable/ic_action_more_horizontal"
-                android:tint="?colorActionIcon" />
-
             <CheckBox
                 android:id="@+id/transactionStateCheckBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/keyline_plus_view_padding"
-                android:layout_marginTop="@dimen/keyline"
+                android:layout_marginTop="@dimen/space_large"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingEnd="@dimen/keyline"
                 android:paddingStart="@dimen/keyline_plus_view_padding"
                 android:text="@string/confirmed"
-                android:textAppearance="@style/Text.Body2"
-                android:visibility="gone"
+                android:textAppearance="@style/Text.Subhead"
                 tools:ignore="RtlSymmetry" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/keyline"
+                android:layout_marginTop="@dimen/space_large"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingLeft="@dimen/keyline"
-                android:paddingRight="@dimen/keyline"
-                android:visibility="gone">
+                android:paddingRight="@dimen/keyline">
 
                 <ImageView
                     android:layout_width="@dimen/keyline_content_minus_keyline_2x"
@@ -221,6 +199,7 @@
                     android:layout_marginStart="-12dp"
                     android:gravity="start|center_vertical"
                     android:textAllCaps="false"
+                    android:textAppearance="@style/Text.Subhead"
                     tools:text="USD ($)" />
 
             </LinearLayout>

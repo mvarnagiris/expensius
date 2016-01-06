@@ -198,8 +198,8 @@
     <!-- =============================================================================================================================== -->
 
     <style name="QuickTagsView">
-        <item name="tagPaddingHorizontal">6dp</item>
-        <item name="tagPaddingVertical">3dp</item>
-        <item name="tagCornerRadius">10dp</item>
+        <item name="tagPaddingHorizontal">12dp</item>
+        <item name="tagPaddingVertical">8dp</item>
+        <item name="tagCornerRadius">16dp</item>
     </style>
 </resources>

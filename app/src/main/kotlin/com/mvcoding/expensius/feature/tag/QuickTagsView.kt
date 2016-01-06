@@ -26,10 +26,13 @@ import android.text.style.ImageSpan
 import android.util.AttributeSet
 import android.widget.TextView
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import rx.Observable
 import rx.Observable.never
 
 class QuickTagsView : TextView, QuickTagsPresenter.View {
+    private val presenter = provideActivityScopedSingleton(QuickTagsPresenter::class)
+
     private var tagPaddingHorizontal = 0
     private var tagPaddingVertical = 0
     private var tagCornerRadius = 0.toFloat();
@@ -55,6 +58,16 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
             setQuickTags(listOf(QuickTag("Essential", getColor(context, R.color.orange_500)),
                                 QuickTag("Food", getColor(context, R.color.lime_500))), " ")
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        presenter?.onAttachView(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        presenter?.onDetachView(this)
     }
 
     override fun onSelectableTagToggled(): Observable<SelectableTag> {
@@ -85,6 +98,7 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
     private fun createSpan(quickTag: QuickTag) = QuickTagSpan(quickTag.text,
                                                               textSize,
                                                               currentTextColor,
+                                                              typeface,
                                                               tagPaddingHorizontal,
                                                               tagPaddingVertical,
                                                               quickTag.color,
@@ -96,6 +110,7 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
             text: String,
             textSize: Float,
             textColor: Int,
+            typeface: Typeface,
             quickTagPaddingHorizontal: Int,
             quickTagPaddingVertical: Int,
             quickTagColor: Int,
@@ -103,6 +118,7 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
             QuickTagDrawable(text,
                              textSize,
                              textColor,
+                             typeface,
                              quickTagPaddingHorizontal,
                              quickTagPaddingVertical,
                              quickTagColor,
@@ -112,6 +128,7 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
             private val text: String,
             textSize: Float,
             textColor: Int,
+            typeface: Typeface,
             private val quickTagPaddingHorizontal: Int,
             private val quickTagPaddingVertical: Int,
             quickTagColor: Int,
@@ -119,22 +136,18 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
         private val textPaint = Paint()
         private val backgroundPaint = Paint()
         private val bounds: RectF
-        private val textHeight: Float
 
         init {
-            textPaint.color = textColor;
-            textPaint.textSize = textSize;
-            textPaint.isAntiAlias = true;
-            textPaint.style = FILL;
-            textPaint.textAlign = CENTER;
+            textPaint.color = textColor
+            textPaint.textSize = textSize
+            textPaint.setTypeface(typeface)
+            textPaint.isAntiAlias = true
+            textPaint.style = FILL
+            textPaint.textAlign = CENTER
 
-            val textBounds = Rect()
-            textPaint.getTextBounds(text, 0, text.length, textBounds)
-            textHeight = textBounds.height().toFloat()
-
-            backgroundPaint.color = quickTagColor;
-            backgroundPaint.style = FILL;
-            backgroundPaint.isAntiAlias = true;
+            backgroundPaint.color = quickTagColor
+            backgroundPaint.style = FILL
+            backgroundPaint.isAntiAlias = true
 
             setBounds(
                     0,
@@ -146,7 +159,7 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
 
         override fun draw(canvas: Canvas) {
             canvas.drawRoundRect(bounds, quickTagCornerRadius, quickTagCornerRadius, backgroundPaint);
-            canvas.drawText(text, bounds.centerX(), bounds.centerY() + (textHeight / 2), textPaint);
+            canvas.drawText(text, bounds.centerX(), bounds.centerY() + (textPaint.textSize / 2) - (textPaint.textSize / 6), textPaint);
         }
 
         override fun setAlpha(alpha: Int) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,13 @@ import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.intro.IntroModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.splash.SplashModule
+import com.mvcoding.expensius.feature.tag.QuickTagsModule
 import net.danlew.android.joda.JodaTimeAndroid
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
         JodaTimeAndroid.init(this);
-        initializeModules(AppModule(this), SplashModule(), IntroModule(), OverviewModule())
+        initializeModules(AppModule(this), SplashModule(), IntroModule(), OverviewModule(), QuickTagsModule())
     }
 }

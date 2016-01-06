@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2016 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
     <dimen name="keyline_content_minus_keyline_2x">40dp</dimen>
     <dimen name="keyline_content_minus_keyline_3x">24dp</dimen>
     <dimen name="keyline_plus_view_padding">20dp</dimen>
+    <dimen name="keyline_minus_view_padding">12dp</dimen>
 
     <dimen name="space_normal">8dp</dimen>
     <dimen name="space_large">16dp</dimen>
