@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.0.0-beta-4583'
+    ext.kotlin_version = '1.0.0-beta-4584'
     repositories {
         jcenter()
     }

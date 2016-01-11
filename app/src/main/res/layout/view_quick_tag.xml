@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<com.mvcoding.expensius.feature.tag.QuickTagView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/keyline_quarter"
+    android:layout_marginLeft="@dimen/keyline_quarter"
+    android:layout_marginRight="@dimen/keyline_quarter"
+    android:layout_marginTop="@dimen/keyline_quarter">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingBottom="@dimen/space_normal"
+        android:paddingLeft="@dimen/keyline"
+        android:paddingRight="@dimen/keyline"
+        android:paddingTop="@dimen/space_normal"
+        android:textAppearance="@style/Text.Body2" />
+
+</com.mvcoding.expensius.feature.tag.QuickTagView>

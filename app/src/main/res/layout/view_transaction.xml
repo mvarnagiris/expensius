@@ -71,8 +71,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_large"
-                android:clipToPadding="false"
-                android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingLeft="@dimen/keyline"
                 android:paddingRight="@dimen/keyline">
@@ -81,46 +79,18 @@
                     android:layout_width="@dimen/keyline_content_minus_keyline_2x"
                     android:layout_height="@dimen/keyline_content_minus_keyline_2x"
                     android:layout_marginEnd="@dimen/keyline"
-                    android:contentDescription="@string/date"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_calendar"
-                    android:tint="?colorActionIcon" />
-
-                <Button
-                    android:id="@+id/dateButton"
-                    style="@style/Button.Flat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-12dp"
-                    android:layout_marginStart="-12dp"
-                    android:gravity="start|center_vertical"
-                    android:textAllCaps="false"
-                    android:textAppearance="@style/Text.Subhead"
-                    tools:text="Today" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_large"
-                android:gravity="center_vertical"
-                android:minHeight="?actionBarSize"
-                android:paddingLeft="@dimen/keyline"
-                android:paddingRight="@dimen/keyline">
-
-                <ImageView
-                    android:layout_width="@dimen/keyline_content_minus_keyline_2x"
-                    android:layout_height="@dimen/keyline_content_minus_keyline_2x"
-                    android:layout_marginEnd="@dimen/keyline"
+                    android:layout_marginTop="2dp"
                     android:contentDescription="@string/tags"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_action_tag"
                     android:tint="?colorActionIcon" />
 
                 <com.mvcoding.expensius.feature.tag.QuickTagsView
+                    android:id="@+id/quickTagsView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="-4dp"
+                    android:layout_marginRight="-4dp"
                     android:textAppearance="@style/Text.Subhead" />
 
             </LinearLayout>
@@ -157,6 +127,39 @@
             <View
                 style="@style/Divider"
                 android:layout_marginTop="@dimen/space_large" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_large"
+                android:clipToPadding="false"
+                android:gravity="center_vertical"
+                android:minHeight="?actionBarSize"
+                android:paddingLeft="@dimen/keyline"
+                android:paddingRight="@dimen/keyline">
+
+                <ImageView
+                    android:layout_width="@dimen/keyline_content_minus_keyline_2x"
+                    android:layout_height="@dimen/keyline_content_minus_keyline_2x"
+                    android:layout_marginEnd="@dimen/keyline"
+                    android:contentDescription="@string/date"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_action_calendar"
+                    android:tint="?colorActionIcon" />
+
+                <Button
+                    android:id="@+id/dateButton"
+                    style="@style/Button.Flat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-12dp"
+                    android:layout_marginStart="-12dp"
+                    android:gravity="start|center_vertical"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/Text.Subhead"
+                    tools:text="Today" />
+
+            </LinearLayout>
 
             <CheckBox
                 android:id="@+id/transactionStateCheckBox"

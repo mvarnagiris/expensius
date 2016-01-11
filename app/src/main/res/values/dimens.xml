@@ -16,6 +16,7 @@
     <dimen name="keyline">16dp</dimen>
     <dimen name="keyline_2x">32dp</dimen>
     <dimen name="keyline_half">8dp</dimen>
+    <dimen name="keyline_quarter">4dp</dimen>
     <dimen name="keyline_content">72dp</dimen>
     <dimen name="keyline_content_minus_keyline">56dp</dimen>
     <dimen name="keyline_content_minus_keyline_2x">40dp</dimen>
@@ -23,6 +24,7 @@
     <dimen name="keyline_plus_view_padding">20dp</dimen>
     <dimen name="keyline_minus_view_padding">12dp</dimen>
 
+    <dimen name="space_small">4dp</dimen>
     <dimen name="space_normal">8dp</dimen>
     <dimen name="space_large">16dp</dimen>
     <dimen name="space_xlarge">24dp</dimen>
