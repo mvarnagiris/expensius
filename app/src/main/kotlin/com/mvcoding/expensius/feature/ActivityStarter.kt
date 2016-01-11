@@ -23,7 +23,7 @@ import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
 import android.view.View
 import com.mvcoding.expensius.extension.isActivity
-import com.mvcoding.expensius.extension.toActivity
+import com.mvcoding.expensius.extension.toBaseActivity
 import java.io.Serializable
 import kotlin.reflect.KClass
 
@@ -75,7 +75,7 @@ class ActivityStarter(val context: Context, activityClass: KClass<out BaseActivi
 
     fun start() {
         if (context.isActivity()) {
-            ActivityCompat.startActivity(context.toActivity(), intent, options?.toBundle());
+            ActivityCompat.startActivity(context.toBaseActivity(), intent, options?.toBundle());
         } else {
             context.startActivity(intent)
         }
@@ -86,6 +86,6 @@ class ActivityStarter(val context: Context, activityClass: KClass<out BaseActivi
             throw IllegalArgumentException("Context must be an Activity, when starting for result.")
         }
 
-        ActivityCompat.startActivityForResult(context.toActivity(), intent, requestCode, options?.toBundle());
+        ActivityCompat.startActivityForResult(context.toBaseActivity(), intent, requestCode, options?.toBundle());
     }
 }

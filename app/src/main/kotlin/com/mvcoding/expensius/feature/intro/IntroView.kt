@@ -22,7 +22,7 @@ import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.extension.toActivity
+import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.overview.OverviewActivity
 import kotlinx.android.synthetic.view_intro.view.*
@@ -68,11 +68,11 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
 
     override fun startOverview() {
         OverviewActivity.start(context)
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
     }
 
     override fun startLogin() {
         LoginActivity.start(context)
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
     }
 }

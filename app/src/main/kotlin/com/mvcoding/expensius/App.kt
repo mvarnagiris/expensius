@@ -20,12 +20,22 @@ import com.mvcoding.expensius.feature.intro.IntroModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.splash.SplashModule
 import com.mvcoding.expensius.feature.tag.QuickTagsModule
+import com.mvcoding.expensius.feature.tag.TagModule
+import com.mvcoding.expensius.feature.tag.TagsModule
+import com.mvcoding.expensius.feature.transaction.TransactionModule
 import net.danlew.android.joda.JodaTimeAndroid
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
         JodaTimeAndroid.init(this);
-        initializeModules(AppModule(this), SplashModule(), IntroModule(), OverviewModule(), QuickTagsModule())
+        initializeModules(AppModule(this),
+                          SplashModule(),
+                          IntroModule(),
+                          OverviewModule(),
+                          TagsModule(),
+                          TagModule(),
+                          QuickTagsModule(),
+                          TransactionModule())
     }
 }

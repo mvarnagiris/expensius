@@ -27,9 +27,8 @@ import android.widget.Button
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
-import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.provideActivityScopedNamedSingleton
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.MULTI_CHOICE
@@ -51,8 +50,9 @@ class TagsView : LinearLayout, TagsPresenter.View {
     private val commitArchiveObservable = PublishSubject<Unit>()
     private val undoArchiveObservable = PublishSubject<Unit>()
 
-    private val presenter by lazy { provideActivityScopedNamedSingleton(TagsPresenter::class, adapter.displayType.name) }
+    private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class, adapter.displayType, selectedTags) }
     private val adapter = TagsAdapter()
+    private lateinit var selectedTags: Set<Tag>
 
     constructor(context: Context?) : super(context)
 
@@ -61,8 +61,8 @@ class TagsView : LinearLayout, TagsPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag>) {
-        initializeModules(TagsModule(displayType, selectedTags))
-        adapter.displayType = displayType
+        this.selectedTags = selectedTags
+        this.adapter.displayType = displayType
     }
 
     override fun onFinishInflate() {

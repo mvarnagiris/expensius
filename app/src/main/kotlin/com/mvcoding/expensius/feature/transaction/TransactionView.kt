@@ -23,11 +23,10 @@ import android.widget.*
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
-import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.provideSingleton
-import com.mvcoding.expensius.extension.toActivity
+import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
@@ -48,9 +47,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         private const val REQUEST_AMOUNT = 1
     }
 
+    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class, transaction) }
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
     private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
-    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class) }
     private val timestampSubject by lazy { PublishSubject<Long>() }
     private val currencySubject by lazy { PublishSubject<Currency>() }
     private val amountSubject by lazy { PublishSubject<BigDecimal>() }
@@ -64,6 +63,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private val transactionStateCheckBox by lazy { findViewById(R.id.transactionStateCheckBox) as CheckBox }
     private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
 
+    private lateinit var transaction: Transaction
     private var transactionState = CONFIRMED
     private var transactionType = EXPENSE
     private var currency = noCurrency
@@ -83,7 +83,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     fun init(transaction: Transaction) {
-        initializeModules(TransactionModule(transaction))
+        this.transaction = transaction
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -169,7 +169,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun startResult(transaction: Transaction) {
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
     }
 
     private fun updateAmount() {

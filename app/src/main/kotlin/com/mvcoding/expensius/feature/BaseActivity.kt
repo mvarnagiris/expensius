@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature
 
+import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
@@ -21,9 +22,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.mvcoding.expensius.R
 import rx.lang.kotlin.PublishSubject
+import java.util.*
+import java.util.UUID.randomUUID
 
 abstract class BaseActivity : AppCompatActivity() {
     val finishSubject = PublishSubject<Unit>()
+    var scopeId = randomUUID()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            scopeId = savedInstanceState.getSerializable("STATE_SCOPE_ID") as UUID
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("STATE_SCOPE_ID", scopeId)
+    }
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)

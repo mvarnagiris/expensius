@@ -14,12 +14,12 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.memoizrlabs.Shank
+import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 
 class QuickTagsModule : ShankModule {
     override fun registerFactories() {
-        Shank.registerFactory(QuickTagsPresenter::class.java, { QuickTagsPresenter(provideSingleton(TagsCache::class)) })
+        registerFactory(QuickTagsPresenter::class.java, { -> QuickTagsPresenter(provideSingleton(TagsCache::class)) })
     }
 }

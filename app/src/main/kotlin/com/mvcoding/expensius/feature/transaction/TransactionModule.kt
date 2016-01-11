@@ -18,9 +18,11 @@ import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 
-class TransactionModule(private val transaction: Transaction) : ShankModule {
+class TransactionModule : ShankModule {
     override fun registerFactories() {
-        val transactionsCache = provideSingleton(TransactionsCache::class)
-        registerFactory(TransactionPresenter::class.java, { TransactionPresenter(transaction, transactionsCache) })
+        registerFactory(TransactionPresenter::class.java, {
+            transaction: Transaction ->
+            TransactionPresenter(transaction, provideSingleton(TransactionsCache::class))
+        })
     }
 }

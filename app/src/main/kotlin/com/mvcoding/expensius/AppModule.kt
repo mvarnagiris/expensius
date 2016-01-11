@@ -42,12 +42,12 @@ import java.math.BigDecimal
 
 class AppModule(val context: Context) : ShankModule {
     init {
-        registerFactory(Context::class.java, { context })
+        registerFactory<Context>(Context::class.java, { context })
     }
 
     override fun registerFactories() {
-        registerFactory(Settings::class.java, { UserSettings() })
-        registerFactory(Session::class.java, { UserSession() })
+        registerFactory<Settings>(Settings::class.java, { UserSettings() })
+        registerFactory<Session>(Session::class.java, { UserSession() })
         database()
         tagsCache()
         transactionsCache()
@@ -57,17 +57,17 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun database() {
         val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(context, TagsTable()))
-        registerFactory(Database::class.java, { SqliteDatabase(briteDatabase) })
+        registerFactory<Database>(Database::class.java, { SqliteDatabase(briteDatabase) })
     }
 
     private fun tagsCache() {
         val database = provideSingleton(Database::class)
-        registerFactory(TagsCache::class.java, { DatabaseTagsCache(database, TagsTable()) })
+        registerFactory<TagsCache>(TagsCache::class.java, { DatabaseTagsCache(database, TagsTable()) })
     }
 
     private fun transactionsCache() {
         // TODO: This is temporary
-        registerFactory(TransactionsCache::class.java, {
+        registerFactory<TransactionsCache>(TransactionsCache::class.java, {
             object : TransactionsCache {
                 override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
                     return empty()
@@ -81,7 +81,7 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun amountFormatter() {
         // TODO: This is temporary
-        registerFactory(AmountFormatter::class.java, {
+        registerFactory<AmountFormatter>(AmountFormatter::class.java, {
             object : AmountFormatter {
                 private val currencyFormat = CurrencyFormat("£", START, CLOSE, DOT, COMMA, 2, 2)
 
@@ -91,6 +91,6 @@ class AppModule(val context: Context) : ShankModule {
     }
 
     private fun dateFormatter() {
-        registerFactory(DateFormatter::class.java, { DateFormatter(context) })
+        registerFactory<DateFormatter>(DateFormatter::class.java, { DateFormatter(context) })
     }
 }

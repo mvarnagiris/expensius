@@ -32,12 +32,11 @@ import com.larswerkman.lobsterpicker.ColorAdapter
 import com.larswerkman.lobsterpicker.LobsterPicker
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
-import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.extension.supportsLollipop
-import com.mvcoding.expensius.extension.toActivity
+import com.mvcoding.expensius.extension.toBaseActivity
 import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
 import rx.lang.kotlin.observable
@@ -46,12 +45,13 @@ class TagView : LinearLayout, TagPresenter.View {
     private val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
     private val lobsterShadeSlider by lazy { findViewById(R.id.lobsterShadeSlider) as LobsterShadeSlider }
 
-    private val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class) }
+    private val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class, tag) }
     private val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
     private val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
     private var titleUpdatesAvailable = true
     private var colorUpdatesAvailable = true
     private var colorAnimator: ValueAnimator? = null
+    private lateinit var tag: Tag
 
     constructor(context: Context?) : this(context, null)
 
@@ -60,7 +60,7 @@ class TagView : LinearLayout, TagPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(tag: Tag) {
-        initializeModules(TagModule(tag))
+        this.tag = tag
     }
 
     override fun onFinishInflate() {
@@ -146,7 +146,7 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun startResult(tag: Tag) {
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
         // TODO: Set the result
     }
 
@@ -182,7 +182,7 @@ class TagView : LinearLayout, TagPresenter.View {
         toolbarView.navigationIcon = navigationIcon
 
         if (supportsLollipop()) {
-            context.toActivity().window.statusBarColor = color;
+            context.toBaseActivity().window.statusBarColor = color;
         }
     }
 
@@ -219,7 +219,7 @@ class TagView : LinearLayout, TagPresenter.View {
             val orange = resources.getIntArray(R.array.oranges)
 
             colors = arrayOf(red, deepPurple, lightBlue, green, yellow, deepOrange, blueGrey, pink, indigo, cyan, lightGreen, amber, brown,
-                    purple, blue, teal, lime, orange)
+                             purple, blue, teal, lime, orange)
         }
 
         override fun size(): Int {

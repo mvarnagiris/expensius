@@ -23,6 +23,7 @@ import java.math.BigDecimal
 class CalculatorModule(private val initialNumber: BigDecimal?, private val resultDestination: CalculatorPresenter.ResultDestination) : ShankModule {
     override fun registerFactories() {
         val settings = provideSingleton(Settings::class)
-        registerFactory(CalculatorPresenter::class.java, { CalculatorPresenter(Calculator(Interpreter()), resultDestination, settings, initialNumber) })
+        registerFactory<CalculatorPresenter>(CalculatorPresenter::class.java,
+                                             { CalculatorPresenter(Calculator(Interpreter()), resultDestination, settings, initialNumber) })
     }
 }

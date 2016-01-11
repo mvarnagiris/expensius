@@ -27,7 +27,7 @@ import com.jakewharton.rxbinding.view.longClicks
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.extension.toActivity
+import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.feature.transaction.Transaction
@@ -147,15 +147,15 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
     }
 
     override fun startResult(number: BigDecimal) {
-        val activity = context.toActivity()
+        val activity = context.toBaseActivity()
         val data = Intent();
         data.putExtra(RESULT_EXTRA_AMOUNT, number)
         activity.setResult(RESULT_OK, data)
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
     }
 
     override fun startTransaction(transaction: Transaction) {
         TransactionActivity.start(context, transaction)
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
     }
 }

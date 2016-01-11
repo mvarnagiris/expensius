@@ -30,7 +30,7 @@ class OverviewView : FrameLayout, OverviewPresenter.View {
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val floatingActionButton by lazy { findViewById(R.id.floatingActionButton) as FloatingActionButton }
 
-    private val presenter by lazy { provideActivityScopedSingleton(OverviewPresenter::class) }
+    private val presenter = provideActivityScopedSingleton(OverviewPresenter::class)
 
     constructor(context: Context?) : this(context, null)
 

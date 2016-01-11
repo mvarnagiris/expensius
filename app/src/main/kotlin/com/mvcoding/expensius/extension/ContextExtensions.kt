@@ -18,13 +18,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.support.v7.view.ContextThemeWrapper
+import com.mvcoding.expensius.feature.BaseActivity
 
-fun Context.toActivity(): Activity {
+fun Context.toBaseActivity(): BaseActivity {
     when (this) {
-        is Activity -> return this
-        is ContextThemeWrapper -> return this.baseContext.toActivity()
-        is android.view.ContextThemeWrapper -> return this.baseContext.toActivity()
-        is ContextWrapper -> return this.baseContext.toActivity()
+        is Activity -> return this as BaseActivity
+        is ContextThemeWrapper -> return this.baseContext.toBaseActivity()
+        is android.view.ContextThemeWrapper -> return this.baseContext.toBaseActivity()
+        is ContextWrapper -> return this.baseContext.toBaseActivity()
         else -> throw IllegalArgumentException("Context " + this + " is not an Activity.")
     }
 }

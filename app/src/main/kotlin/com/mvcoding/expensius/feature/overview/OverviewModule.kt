@@ -19,6 +19,6 @@ import com.memoizrlabs.ShankModule
 
 class OverviewModule() : ShankModule {
     override fun registerFactories() {
-        registerFactory(OverviewPresenter::class.java, { OverviewPresenter() })
+        registerFactory(OverviewPresenter::class.java, { -> OverviewPresenter() })
     }
 }

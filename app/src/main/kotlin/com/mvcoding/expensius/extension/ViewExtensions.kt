@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.extension
 
 import android.graphics.Outline
-import android.support.design.widget.Snackbar
 import android.view.View
 import android.view.ViewOutlineProvider
 import com.memoizrlabs.Shank.withBoundScope
@@ -27,17 +26,26 @@ fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>): T? {
         return null
     }
 
-    val activity = context.toActivity()
-    return withBoundScope(activity.javaClass, activity.observeFinish().map { Any() }).provide(cls.java)
+    val activity = context.toBaseActivity()
+    return withBoundScope(activity.scopeId, activity.observeFinish().map { Any() }).provide(cls.java)
 }
 
-fun <T : Any> View.provideActivityScopedNamedSingleton(cls: KClass<T>, name: String): T? {
+fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>, arg1: Any): T? {
     if (isInEditMode) {
         return null
     }
 
-    val activity = context.toActivity()
-    return withBoundScope(activity.javaClass, activity.observeFinish().map { Any() }).provideNamed(cls.java, name)
+    val activity = context.toBaseActivity()
+    return withBoundScope(activity.scopeId, activity.observeFinish().map { Any() }).provide(cls.java, arg1)
+}
+
+fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>, arg1: Any, arg2: Any): T? {
+    if (isInEditMode) {
+        return null
+    }
+
+    val activity = context.toBaseActivity()
+    return withBoundScope(activity.scopeId, activity.observeFinish().map { Any() }).provide(cls.java, arg1, arg2)
 }
 
 fun View.makeOutlineProviderOval() {
@@ -49,7 +57,5 @@ fun View.makeOutlineProviderOval() {
         }
     }
 }
-
-fun View.createSnackbar(resId: Int, duration: Int) = Snackbar.make(this, resId, duration)
 
 fun View.snackbar(resId: Int, duration: Int) = snackbar(this, resId, duration)

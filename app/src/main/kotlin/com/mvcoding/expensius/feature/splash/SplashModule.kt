@@ -22,8 +22,10 @@ import com.mvcoding.expensius.extension.provideSingleton
 
 class SplashModule : ShankModule {
     override fun registerFactories() {
-        val userSettings = provideSingleton(Settings::class)
-        val session = provideSingleton(Session::class)
-        registerFactory(SplashPresenter::class.java, { SplashPresenter(userSettings, session) })
+        registerFactory(SplashPresenter::class.java, { ->
+            val userSettings = provideSingleton(Settings::class)
+            val session = provideSingleton(Session::class)
+            SplashPresenter(userSettings, session)
+        })
     }
 }

@@ -18,7 +18,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.extension.toActivity
+import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.intro.IntroActivity
 import com.mvcoding.expensius.feature.overview.OverviewActivity
 
@@ -43,11 +43,11 @@ class SplashView : FrameLayout, SplashPresenter.View {
 
     override fun startOverview() {
         OverviewActivity.start(context)
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
     }
 
     override fun startIntro() {
         IntroActivity.start(context)
-        context.toActivity().finish()
+        context.toBaseActivity().finish()
     }
 }
