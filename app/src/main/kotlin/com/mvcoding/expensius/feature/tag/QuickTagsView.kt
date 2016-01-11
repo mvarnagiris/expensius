@@ -59,6 +59,16 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
         presenter?.onDetachView(this)
     }
 
+    private fun setQuickTags(quickTags: List<QuickTag>) {
+        removeAllViews()
+        quickTags.forEach {
+            val quickTagView = QuickTagView.inflate(this)
+            addView(quickTagView)
+            quickTagView.setQuickTag(it)
+        }
+        requestLayout()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = getSize(widthMeasureSpec) - paddingLeft - paddingRight
         var measuredHeight = paddingTop
@@ -122,16 +132,6 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
     }
 
     override fun showUpdatedSelectableTag(oldSelectableTag: SelectableTag, newSelectableTag: SelectableTag) {
-    }
-
-    private fun setQuickTags(quickTags: List<QuickTag>) {
-        removeAllViews()
-        quickTags.forEach {
-            val quickTagView = QuickTagView.inflate(this)
-            addView(quickTagView)
-            quickTagView.setQuickTag(it)
-        }
-        requestLayout()
     }
 
     private fun layoutChild(child: View, childLayoutParams: MarginLayoutParams, left: Int, top: Int) {
