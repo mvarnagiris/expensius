@@ -25,12 +25,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.getColorFromTheme
 
 class QuickTagView : CardView {
     private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
 
     private val darkTextColor by lazy { getColorStateList(context, R.color.text_primary) }
     private val lightTextColor by lazy { getColorStateList(context, R.color.text_primary_inverse) }
+    private val unselectedBackgroundColor by lazy { getColorFromTheme(context, R.attr.colorBackgroundPrimary) }
+
+    private var color = 0
 
     constructor(context: Context?) : this(context, null)
 
@@ -49,10 +53,21 @@ class QuickTagView : CardView {
         }
     }
 
+    override fun setSelected(selected: Boolean) {
+        super.setSelected(selected)
+        updateBackgroundColor()
+    }
+
     fun setQuickTag(quickTag: QuickTag) {
+        color = quickTag.color
         titleTextView.text = quickTag.text
-        titleTextView.setTextColor(calculateTextColor(quickTag.color))
-        setCardBackgroundColor(quickTag.color)
+        updateBackgroundColor()
+    }
+
+    private fun updateBackgroundColor() {
+        val backgroundColor = if (isSelected) color else unselectedBackgroundColor
+        titleTextView.setTextColor(calculateTextColor(backgroundColor))
+        setCardBackgroundColor(backgroundColor)
     }
 
     private fun calculateTextColor(backgroundColor: Int): ColorStateList {

@@ -67,33 +67,25 @@
                 app:backgroundTint="@color/transaction_type"
                 app:fabSize="mini" />
 
-            <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/keyline"
+                android:layout_marginRight="@dimen/keyline"
+                android:layout_marginTop="@dimen/space_large"
+                android:text="@string/select_tags"
+                android:textAppearance="@style/Text.Subhead"
+                android:textColor="?android:textColorSecondary" />
+
+            <com.mvcoding.expensius.feature.tag.QuickTagsView
+                android:id="@+id/quickTagsView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_large"
-                android:minHeight="?actionBarSize"
-                android:paddingLeft="@dimen/keyline"
-                android:paddingRight="@dimen/keyline">
-
-                <ImageView
-                    android:layout_width="@dimen/keyline_content_minus_keyline_2x"
-                    android:layout_height="@dimen/keyline_content_minus_keyline_2x"
-                    android:layout_marginEnd="@dimen/keyline"
-                    android:layout_marginTop="2dp"
-                    android:contentDescription="@string/tags"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_tag"
-                    android:tint="?colorActionIcon" />
-
-                <com.mvcoding.expensius.feature.tag.QuickTagsView
-                    android:id="@+id/quickTagsView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="-4dp"
-                    android:layout_marginRight="-4dp"
-                    android:textAppearance="@style/Text.Subhead" />
-
-            </LinearLayout>
+                android:layout_marginLeft="@dimen/keyline_minus_view_padding"
+                android:layout_marginRight="@dimen/keyline_minus_view_padding"
+                android:layout_marginTop="@dimen/space_normal"
+                android:clipToPadding="false"
+                android:textAppearance="@style/Text.Subhead" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -111,16 +103,24 @@
                     android:contentDescription="@string/add_a_note"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_action_note"
-                    android:tint="?colorActionIcon" />
+                    android:tint="?colorActionIcon"
+                    android:visibility="gone" />
 
-                <EditText
-                    android:id="@+id/noteEditText"
-                    style="@style/EditText"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="-4dp"
                     android:layout_marginRight="-4dp"
-                    android:hint="@string/add_a_note" />
+                    app:hintAnimationEnabled="true">
+
+                    <EditText
+                        android:id="@+id/noteEditText"
+                        style="@style/EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/add_a_note"
+                        android:textAppearance="@style/Text.Subhead" />
+                </android.support.design.widget.TextInputLayout>
 
             </LinearLayout>
 

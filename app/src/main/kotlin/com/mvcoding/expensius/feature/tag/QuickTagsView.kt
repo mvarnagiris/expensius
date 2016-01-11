@@ -23,12 +23,14 @@ import android.view.ViewGroup
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.QuickTagView.QuickTag
-import rx.Observable
-import rx.Observable.never
+import rx.lang.kotlin.PublishSubject
 import java.lang.Math.max
 
 class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
     private val presenter by lazy { provideActivityScopedSingleton(QuickTagsPresenter::class) }
+    private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
+    private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }
+    private val selectableTags = arrayListOf<SelectableTag>()
 
     constructor(context: Context?) : this(context, null)
 
@@ -46,6 +48,9 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
                                 QuickTag("Going out", getColor(context, R.color.blue_500)),
                                 QuickTag("Some other very long tag that can take up a few lines, but how?",
                                          getColor(context, R.color.orange_500))))
+
+            getChildAt(1).isSelected = true
+            getChildAt(2).isSelected = true
         }
     }
 
@@ -59,12 +64,15 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
         presenter?.onDetachView(this)
     }
 
+    fun selectedTagsChanges() = selectedTagsSubject.asObservable()
+
     private fun setQuickTags(quickTags: List<QuickTag>) {
         removeAllViews()
-        quickTags.forEach {
+        quickTags.forEachIndexed { i, quickTag ->
             val quickTagView = QuickTagView.inflate(this)
             addView(quickTagView)
-            quickTagView.setQuickTag(it)
+            quickTagView.setQuickTag(quickTag)
+            quickTagView.setOnClickListener { selectableTagToggledSubject.onNext(selectableTags[i]) };
         }
         requestLayout()
     }
@@ -123,15 +131,20 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
         }
     }
 
-    override fun onSelectableTagToggled(): Observable<SelectableTag> {
-        return never()
-    }
+    override fun onSelectableTagToggled() = selectableTagToggledSubject
 
     override fun showSelectableTags(selectableTags: List<SelectableTag>) {
+        this.selectableTags.clear()
+        this.selectableTags.addAll(selectableTags)
         setQuickTags(selectableTags.map { QuickTag(it.tag.title, it.tag.color) })
     }
 
     override fun showUpdatedSelectableTag(oldSelectableTag: SelectableTag, newSelectableTag: SelectableTag) {
+        val index = selectableTags.indexOf(oldSelectableTag)
+        selectableTags.removeAt(index)
+        selectableTags.add(index, newSelectableTag)
+        selectedTagsSubject.onNext(selectableTags.filter { it.isSelected }.map { it.tag }.toSet())
+        getChildAt(index).isSelected = newSelectableTag.isSelected
     }
 
     private fun layoutChild(child: View, childLayoutParams: MarginLayoutParams, left: Int, top: Int) {

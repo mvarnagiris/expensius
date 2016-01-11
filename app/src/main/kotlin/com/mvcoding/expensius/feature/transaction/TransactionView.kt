@@ -30,6 +30,7 @@ import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
+import com.mvcoding.expensius.feature.tag.QuickTagsView
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
 import com.mvcoding.expensius.feature.transaction.Transaction.Companion.transaction
@@ -37,7 +38,6 @@ import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
-import kotlinx.android.synthetic.main.view_tag.view.*
 import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
@@ -54,15 +54,15 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private val timestampSubject by lazy { PublishSubject<Long>() }
     private val currencySubject by lazy { PublishSubject<Currency>() }
     private val amountSubject by lazy { PublishSubject<BigDecimal>() }
-    private val tagsSubject by lazy { PublishSubject<Set<Tag>>() }
 
     private val transactionTypeFloatingActionButton by lazy { findViewById(R.id.transactionTypeFloatingActionButton) as FloatingActionButton }
     private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
+    private val quickTagsView by lazy { findViewById(R.id.quickTagsView) as QuickTagsView }
     private val dateButton by lazy { findViewById(R.id.dateButton) as Button }
-    //    private val tagsButton by lazy { findViewById(R.id.tagsButton) as Button }
     private val noteEditText by lazy { findViewById(R.id.noteEditText) as EditText }
     private val transactionStateCheckBox by lazy { findViewById(R.id.transactionStateCheckBox) as CheckBox }
     private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
+    private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
 
     private var transaction: Transaction = transaction(noCurrency, ZERO)
     private var transactionState = CONFIRMED
@@ -80,7 +80,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        //        amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
+        if (!isInEditMode) {
+            amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
+        }
     }
 
     fun init(transaction: Transaction) {
@@ -127,7 +129,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onAmountChanged() = amountSubject.asObservable()
 
-    override fun onTagsChanged() = tagsSubject.asObservable()
+    override fun onTagsChanged() = quickTagsView.selectedTagsChanges()
 
     override fun onNoteChanged() = noteEditText.textChanges().filter { allowNoteChanges }.map { it.toString() }
 
