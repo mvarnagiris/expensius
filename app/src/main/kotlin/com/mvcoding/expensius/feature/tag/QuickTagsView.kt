@@ -54,10 +54,7 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
             attributesArray.recycle();
         }
 
-        if (isInEditMode) {
-            setQuickTags(listOf(QuickTag("Essential", getColor(context, R.color.orange_500)),
-                                QuickTag("Food", getColor(context, R.color.lime_500))), " ")
-        }
+        showSomethingInEditMode(context)
     }
 
     override fun onAttachedToWindow() {
@@ -103,6 +100,13 @@ class QuickTagsView : TextView, QuickTagsPresenter.View {
                                                               tagPaddingVertical,
                                                               quickTag.color,
                                                               tagCornerRadius)
+
+    private fun showSomethingInEditMode(context: Context) {
+        if (isInEditMode) {
+            setQuickTags(listOf(QuickTag("Essential", getColor(context, R.color.orange_500)),
+                                QuickTag("Food", getColor(context, R.color.lime_500))), " ")
+        }
+    }
 
     data class QuickTag(val text: String, val color: Int)
 

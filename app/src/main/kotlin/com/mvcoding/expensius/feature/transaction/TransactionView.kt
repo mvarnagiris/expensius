@@ -32,6 +32,7 @@ import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
+import com.mvcoding.expensius.feature.transaction.Transaction.Companion.transaction
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
@@ -63,7 +64,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private val transactionStateCheckBox by lazy { findViewById(R.id.transactionStateCheckBox) as CheckBox }
     private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
 
-    private lateinit var transaction: Transaction
+    private var transaction: Transaction = transaction(noCurrency, ZERO)
     private var transactionState = CONFIRMED
     private var transactionType = EXPENSE
     private var currency = noCurrency
