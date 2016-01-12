@@ -28,8 +28,10 @@ import java.lang.Math.max
 
 class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
     private val presenter by lazy { provideActivityScopedSingleton(QuickTagsPresenter::class) }
+
     private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
     private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }
+    private val selectedTagsUpdatedSubject = PublishSubject<Set<Tag>>()
     private val selectableTags = arrayListOf<SelectableTag>()
 
     constructor(context: Context?) : this(context, null)
@@ -62,6 +64,10 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         presenter?.onDetachView(this)
+    }
+
+    fun setSelectedTags(tags: Set<Tag>) {
+        selectedTagsUpdatedSubject.onNext(tags)
     }
 
     fun selectedTagsChanges() = selectedTagsSubject.asObservable()
@@ -132,6 +138,8 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
     }
 
     override fun onSelectableTagToggled() = selectableTagToggledSubject
+
+    override fun onSelectedTagsUpdated() = selectedTagsUpdatedSubject
 
     override fun showSelectableTags(selectableTags: List<SelectableTag>) {
         this.selectableTags.clear()

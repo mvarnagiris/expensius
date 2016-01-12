@@ -162,7 +162,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showTags(tags: Set<Tag>) {
-        //        tagsButton.text = tags.joinToString(separator = ", ", transform = { it.title })
+        quickTagsView.setSelectedTags(tags)
     }
 
     override fun showNote(note: String) {

@@ -18,24 +18,23 @@ import com.mvcoding.expensius.feature.Presenter
 import rx.Observable
 
 class QuickTagsPresenter(private val tagsCache: TagsCache) : Presenter<QuickTagsPresenter.View>() {
-    private var toggledTags = hashMapOf<Tag, Boolean>().withDefault { false }
+    private val toggledTags = hashMapOf<Tag, Boolean>().withDefault { false }
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
-        unsubscribeOnDetach(tagsCache.tags()
-                .map { toSelectableTags(it) }
-                .subscribe { view.showSelectableTags(it) })
+        unsubscribeOnDetach(tagsCache.tags().map { toSelectableTags(it) }.subscribe { view.showSelectableTags(it) })
 
         unsubscribeOnDetach(view.onSelectableTagToggled()
-                .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
-                .subscribe { view.showUpdatedSelectableTag(it, it.toggled()) })
+                                    .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
+                                    .subscribe { view.showUpdatedSelectableTag(it, it.toggled()) })
     }
 
     private fun toSelectableTags(tags: List<Tag>) = tags.map { SelectableTag(it, toggledTags.getOrImplicitDefault(it)) }
 
     interface View : Presenter.View {
         fun onSelectableTagToggled(): Observable<SelectableTag>
+        fun onSelectedTagsUpdated(): Observable<Set<Tag>>
         fun showSelectableTags(selectableTags: List<SelectableTag>)
         fun showUpdatedSelectableTag(oldSelectableTag: SelectableTag, newSelectableTag: SelectableTag)
     }
