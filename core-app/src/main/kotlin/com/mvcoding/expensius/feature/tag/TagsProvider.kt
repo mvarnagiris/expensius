@@ -16,8 +16,7 @@ package com.mvcoding.expensius.feature.tag
 
 import rx.Observable
 
-// TODO Rename to Provider
-interface TagsCache {
+interface TagsProvider {
     fun tags(): Observable<List<Tag>>
     fun archivedTags(): Observable<List<Tag>>
     fun save(tags: Set<Tag>)

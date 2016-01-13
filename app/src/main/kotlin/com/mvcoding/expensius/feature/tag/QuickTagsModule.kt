@@ -20,6 +20,6 @@ import com.mvcoding.expensius.extension.provideSingleton
 
 class QuickTagsModule : ShankModule {
     override fun registerFactories() {
-        registerFactory(QuickTagsPresenter::class.java, { -> QuickTagsPresenter(provideSingleton(TagsCache::class)) })
+        registerFactory(QuickTagsPresenter::class.java, { -> QuickTagsPresenter(provideSingleton(TagsProvider::class)) })
     }
 }

@@ -26,7 +26,7 @@ class QuickTagsPresenterTest {
     val selectedTagsUpdatedSubject = BehaviourSubject<Set<Tag>>(setOf())
     val defaultTags = listOf(aTag(), aTag())
     val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }
-    val tagsCache = mock(TagsCache::class.java)
+    val tagsCache = mock(TagsProvider::class.java)
     val view = mock(QuickTagsPresenter.View::class.java)
     val presenter = QuickTagsPresenter(tagsCache)
 

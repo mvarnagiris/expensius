@@ -21,7 +21,7 @@ import com.mvcoding.expensius.extension.provideSingleton
 class TagsModule : ShankModule {
     override fun registerFactories() {
         Shank.registerFactory(TagsPresenter::class.java, { displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag> ->
-            val tagsCache = provideSingleton(TagsCache::class)
+            val tagsCache = provideSingleton(TagsProvider::class)
             TagsPresenter(tagsCache, displayType, selectedTags)
         })
     }

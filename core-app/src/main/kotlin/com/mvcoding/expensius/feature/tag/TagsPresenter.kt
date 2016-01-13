@@ -24,7 +24,7 @@ import rx.Observable
 import rx.Observable.merge
 
 class TagsPresenter(
-        private val tagsCache: TagsCache,
+        private val tagsProvider: TagsProvider,
         private val displayType: TagsPresenter.DisplayType = VIEW,
         private var selectedTags: Set<Tag> = setOf()) : Presenter<TagsPresenter.View>() {
     private var tags = listOf<Tag>()
@@ -52,7 +52,7 @@ class TagsPresenter(
         unsubscribeOnDetach(view.onUndoRemove().subscribe { undoRemove(view) })
     }
 
-    private fun tags() = if (displayType == DisplayType.ARCHIVED) tagsCache.archivedTags() else tagsCache.tags()
+    private fun tags() = if (displayType == DisplayType.ARCHIVED) tagsProvider.archivedTags() else tagsProvider.tags()
 
     private fun selectTag(view: View, tag: Tag) {
         when (displayType) {
@@ -77,7 +77,7 @@ class TagsPresenter(
 
     private fun commitRemove(view: View) {
         if (removedTag.equals(noTag)) return
-        tagsCache.save(setOf(removedTag.withModelState(if (displayType == DisplayType.ARCHIVED) NONE else ARCHIVED)))
+        tagsProvider.save(setOf(removedTag.withModelState(if (displayType == DisplayType.ARCHIVED) NONE else ARCHIVED)))
         removedTag = noTag
         view.hideUndoForRemovedTag()
     }

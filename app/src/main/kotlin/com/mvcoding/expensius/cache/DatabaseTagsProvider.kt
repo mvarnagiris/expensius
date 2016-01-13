@@ -24,10 +24,10 @@ import com.mvcoding.expensius.extension.selectFrom
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTag
 import com.mvcoding.expensius.feature.tag.Tag
-import com.mvcoding.expensius.feature.tag.TagsCache
+import com.mvcoding.expensius.feature.tag.TagsProvider
 import rx.Observable
 
-class DatabaseTagsCache(private val database: Database, private val tagsTable: TagsTable) : TagsCache {
+class DatabaseTagsProvider(private val database: Database, private val tagsTable: TagsTable) : TagsProvider {
     override fun save(tags: Set<Tag>) {
         database.save(tagsTable, tags.map { it.toContentValues(tagsTable) })
     }

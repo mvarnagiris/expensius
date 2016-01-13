@@ -34,7 +34,7 @@ class TagsPresenterTest {
     val removeSubject = PublishSubject.create<Tag>()
     val commitSubject = PublishSubject.create<Unit>()
     val undoSubject = PublishSubject.create<Unit>()
-    val tagsCache = mock(TagsCache::class.java)
+    val tagsCache = mock(TagsProvider::class.java)
     val view = mock(TagsPresenter.View::class.java)
 
     @Before

@@ -28,7 +28,7 @@ class TagPresenterTest {
     val colorSubject = PublishSubject.create<Int>()
     val saveSubject = PublishSubject.create<Unit>()
     val tag = aTag()
-    val tagsCache = TagsCacheForTest()
+    val tagsCache = TagsProviderForTest()
     val view = mock(TagPresenter.View::class.java)
     val presenter = TagPresenter(tag, tagsCache)
 
@@ -130,7 +130,7 @@ class TagPresenterTest {
         saveSubject.onNext(Unit)
     }
 
-    class TagsCacheForTest : TagsCache {
+    class TagsProviderForTest : TagsProvider {
         var lastSavedTags: Set<Tag>? = null
 
         override fun tags(): Observable<List<Tag>> {

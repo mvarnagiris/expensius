@@ -18,14 +18,14 @@ import com.mvcoding.expensius.feature.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 
-class QuickTagsPresenter(private val tagsCache: TagsCache) : Presenter<QuickTagsPresenter.View>() {
+class QuickTagsPresenter(private val tagsProvider: TagsProvider) : Presenter<QuickTagsPresenter.View>() {
     private val toggledTags = hashMapOf<Tag, Boolean>().withDefault { false }
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
         val selectedTags = view.onShowSelectedTags().doOnNext { it.forEach { toggledTags.put(it, true) } }
-        val allTags = combineLatest(tagsCache.tags(), selectedTags, {
+        val allTags = combineLatest(tagsProvider.tags(), selectedTags, {
             providerTags, selectedTags ->
             providerTags.plus(selectedTags.filterNot { providerTags.contains(it) })
         })

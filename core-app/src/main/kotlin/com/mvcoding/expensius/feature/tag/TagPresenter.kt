@@ -20,7 +20,7 @@ import rx.Observable.combineLatest
 import rx.Observable.just
 import java.util.*
 
-class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Presenter<TagPresenter.View>() {
+class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider) : Presenter<TagPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
@@ -36,7 +36,7 @@ class TagPresenter(private var tag: Tag, private val tagsCache: TagsCache) : Pre
         unsubscribeOnDetach(view.onSave()
                 .withLatestFrom(tagObservable, { action, tag -> tag })
                 .filter { validate(it, view) }
-                .doOnNext { tagsCache.save(setOf(it)) }
+                                    .doOnNext { tagsProvider.save(setOf(it)) }
                 .subscribe { view.startResult(it) })
     }
 

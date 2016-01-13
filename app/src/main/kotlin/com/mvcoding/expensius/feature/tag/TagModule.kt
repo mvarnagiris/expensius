@@ -20,6 +20,6 @@ import com.mvcoding.expensius.extension.provideSingleton
 
 class TagModule : ShankModule {
     override fun registerFactories() {
-        registerFactory(TagPresenter::class.java, { tag: Tag -> TagPresenter(tag, provideSingleton(TagsCache::class)) })
+        registerFactory(TagPresenter::class.java, { tag: Tag -> TagPresenter(tag, provideSingleton(TagsProvider::class)) })
     }
 }

@@ -17,7 +17,7 @@ package com.mvcoding.expensius
 import android.content.Context
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
-import com.mvcoding.expensius.cache.DatabaseTagsCache
+import com.mvcoding.expensius.cache.DatabaseTagsProvider
 import com.mvcoding.expensius.cache.database.Database
 import com.mvcoding.expensius.cache.database.SqliteDatabase
 import com.mvcoding.expensius.cache.database.table.TagsTable
@@ -29,7 +29,7 @@ import com.mvcoding.expensius.feature.CurrencyFormat.GroupSeparator.COMMA
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolDistance.CLOSE
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.START
 import com.mvcoding.expensius.feature.DateFormatter
-import com.mvcoding.expensius.feature.tag.TagsCache
+import com.mvcoding.expensius.feature.tag.TagsProvider
 import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsCache
@@ -62,7 +62,7 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun tagsCache() {
         val database = provideSingleton(Database::class)
-        registerFactory<TagsCache>(TagsCache::class.java, { DatabaseTagsCache(database, TagsTable()) })
+        registerFactory<TagsProvider>(TagsProvider::class.java, { DatabaseTagsProvider(database, TagsTable()) })
     }
 
     private fun transactionsCache() {
