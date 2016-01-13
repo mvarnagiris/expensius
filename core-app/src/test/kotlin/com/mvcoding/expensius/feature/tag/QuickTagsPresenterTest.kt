@@ -18,11 +18,12 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
 import rx.Observable.just
+import rx.lang.kotlin.BehaviourSubject
 import rx.lang.kotlin.PublishSubject
 
 class QuickTagsPresenterTest {
     val toggleSelectableTagSubject = PublishSubject<SelectableTag>()
-    val selectedTagsUpdatedSubject = PublishSubject<Set<Tag>>()
+    val selectedTagsUpdatedSubject = BehaviourSubject<Set<Tag>>(setOf())
     val defaultTags = listOf(aTag(), aTag())
     val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }
     val tagsCache = mock(TagsCache::class.java)
@@ -32,7 +33,7 @@ class QuickTagsPresenterTest {
     @Before
     fun setUp() {
         given(view.onSelectableTagToggled()).willReturn(toggleSelectableTagSubject)
-        given(view.onSelectedTagsUpdated()).willReturn(selectedTagsUpdatedSubject)
+        given(view.onShowSelectedTags()).willReturn(selectedTagsUpdatedSubject)
         given(tagsCache.tags()).willReturn(just(defaultTags))
     }
 
@@ -43,15 +44,16 @@ class QuickTagsPresenterTest {
         verify(view).showSelectableTags(defaultSelectableTags)
     }
 
-    // TODO Write tests that check if tag is archived but it was set as selected it should be displayed in this session.
-
     @Test
-    fun showsNewSelectedTagsWhenNewSelectedTagsAreSet() {
+    fun showsAllSelectedTagsEvenIfTheyAreNotPartOfTagsProvider() {
+        val extraTag = aTag()
         presenter.onAttachView(view)
 
-        updateSelectedTags(setOf(defaultTags[1]))
+        updateSelectedTags(setOf(defaultTags[1], extraTag))
 
-        verify(view).showSelectableTags(listOf(SelectableTag(defaultTags[0], false), SelectableTag(defaultTags[1], true)))
+        verify(view).showSelectableTags(listOf(SelectableTag(defaultTags[0], false),
+                                               SelectableTag(defaultTags[1], true),
+                                               SelectableTag(extraTag, true)))
     }
 
     @Test

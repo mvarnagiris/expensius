@@ -66,7 +66,7 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
         presenter?.onDetachView(this)
     }
 
-    fun setSelectedTags(tags: Set<Tag>) {
+    fun showSelectedTags(tags: Set<Tag>) {
         selectedTagsUpdatedSubject.onNext(tags)
     }
 
@@ -139,7 +139,7 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
 
     override fun onSelectableTagToggled() = selectableTagToggledSubject
 
-    override fun onSelectedTagsUpdated() = selectedTagsUpdatedSubject
+    override fun onShowSelectedTags() = selectedTagsUpdatedSubject
 
     override fun showSelectableTags(selectableTags: List<SelectableTag>) {
         this.selectableTags.clear()
