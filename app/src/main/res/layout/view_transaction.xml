@@ -87,51 +87,33 @@
                 android:clipToPadding="false"
                 android:textAppearance="@style/Text.Subhead" />
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_large"
-                android:gravity="center_vertical"
-                android:minHeight="?actionBarSize"
+                android:layout_marginLeft="-4dp"
+                android:layout_marginRight="-4dp"
                 android:paddingLeft="@dimen/keyline"
-                android:paddingRight="@dimen/keyline">
+                android:paddingRight="@dimen/keyline"
+                android:textColorHint="?android:textColorSecondary"
+                app:hintAnimationEnabled="true">
 
-                <ImageView
-                    android:layout_width="@dimen/keyline_content_minus_keyline_2x"
-                    android:layout_height="@dimen/keyline_content_minus_keyline_2x"
-                    android:layout_marginEnd="@dimen/keyline"
-                    android:contentDescription="@string/add_a_note"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_note"
-                    android:tint="?colorActionIcon"
-                    android:visibility="gone" />
-
-                <android.support.design.widget.TextInputLayout
+                <EditText
+                    android:id="@+id/noteEditText"
+                    style="@style/EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="-4dp"
-                    android:layout_marginRight="-4dp"
-                    app:hintAnimationEnabled="true">
-
-                    <EditText
-                        android:id="@+id/noteEditText"
-                        style="@style/EditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/add_a_note"
-                        android:textAppearance="@style/Text.Subhead" />
-                </android.support.design.widget.TextInputLayout>
-
-            </LinearLayout>
+                    android:hint="@string/add_a_note"
+                    android:textAppearance="@style/Text.Subhead" />
+            </android.support.design.widget.TextInputLayout>
 
             <View
                 style="@style/Divider"
+                android:layout_marginBottom="@dimen/space_large"
                 android:layout_marginTop="@dimen/space_large" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_large"
                 android:clipToPadding="false"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
@@ -166,7 +148,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/keyline_plus_view_padding"
-                android:layout_marginTop="@dimen/space_large"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingEnd="@dimen/keyline"
@@ -178,7 +159,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_large"
                 android:gravity="center_vertical"
                 android:minHeight="?actionBarSize"
                 android:paddingLeft="@dimen/keyline"

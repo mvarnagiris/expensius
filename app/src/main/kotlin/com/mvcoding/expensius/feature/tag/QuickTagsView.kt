@@ -31,7 +31,7 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
 
     private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
     private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }
-    private val selectedTagsUpdatedSubject = PublishSubject<Set<Tag>>()
+    private val selectedTagsUpdatedSubject by lazy { PublishSubject<Set<Tag>>() }
     private val selectableTags = arrayListOf<SelectableTag>()
 
     constructor(context: Context?) : this(context, null)
