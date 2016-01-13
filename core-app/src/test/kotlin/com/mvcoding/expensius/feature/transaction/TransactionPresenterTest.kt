@@ -36,7 +36,7 @@ class TransactionPresenterTest {
     val saveSubject = PublishSubject<Unit>()
     val view = mock(TransactionPresenter.View::class.java)
     val transaction = aTransaction()
-    val transactionsCache = mock(TransactionsCache::class.java)
+    val transactionsCache = mock(TransactionsProvider::class.java)
     val presenter = TransactionPresenter(transaction, transactionsCache)
 
     @Before

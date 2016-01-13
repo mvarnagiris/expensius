@@ -22,7 +22,7 @@ import java.util.UUID.randomUUID
 
 class TransactionPresenter(
         private var transaction: Transaction,
-        private val transactionsCache: TransactionsCache) : Presenter<TransactionPresenter.View>() {
+        private val transactionsProvider: TransactionsProvider) : Presenter<TransactionPresenter.View>() {
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
@@ -71,7 +71,7 @@ class TransactionPresenter(
 
         unsubscribeOnDetach(view.onSave()
                 .withLatestFrom(transactionObservable, { action, transaction -> transaction })
-                .doOnNext { transactionsCache.save(setOf(it)) }
+                                    .doOnNext { transactionsProvider.save(setOf(it)) }
                 .subscribe { view.startResult(it) })
     }
 

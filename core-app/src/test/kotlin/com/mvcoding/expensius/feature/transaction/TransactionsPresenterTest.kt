@@ -30,7 +30,7 @@ class TransactionsPresenterTest {
     val defaultFirstPage = Page(0, PAGE_SIZE)
     val defaultFirstPageResult = pageResult(defaultFirstPage, PAGE_SIZE, { aTransaction() })
     val pagingEdgeSubject = BehaviourSubject(START)
-    val transactionsCache = mock(TransactionsCache::class.java)
+    val transactionsCache = mock(TransactionsProvider::class.java)
     val view = mock(TransactionsPresenter.View::class.java)
     val presenter = TransactionsPresenter(transactionsCache)
 

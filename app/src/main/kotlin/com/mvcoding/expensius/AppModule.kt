@@ -32,7 +32,7 @@ import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.tag.TagsProvider
 import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.Transaction
-import com.mvcoding.expensius.feature.transaction.TransactionsCache
+import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import com.squareup.sqlbrite.SqlBrite
@@ -67,8 +67,8 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun transactionsCache() {
         // TODO: This is temporary
-        registerFactory<TransactionsCache>(TransactionsCache::class.java, {
-            object : TransactionsCache {
+        registerFactory<TransactionsProvider>(TransactionsProvider::class.java, {
+            object : TransactionsProvider {
                 override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
                     return empty()
                 }

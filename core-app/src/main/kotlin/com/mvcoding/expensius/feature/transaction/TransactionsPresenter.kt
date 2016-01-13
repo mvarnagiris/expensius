@@ -20,7 +20,7 @@ import rx.Observable
 import rx.Observable.just
 
 class TransactionsPresenter(
-        private val transactionsCache: TransactionsCache) : Presenter<TransactionsPresenter.View>() {
+        private val transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
 
     internal companion object {
         const val PAGE_SIZE = 50
@@ -31,7 +31,7 @@ class TransactionsPresenter(
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
-        unsubscribeOnDetach(transactionsCache.transactions(pageObservable).subscribe { view.showTransactions(it.items) })
+        unsubscribeOnDetach(transactionsProvider.transactions(pageObservable).subscribe { view.showTransactions(it.items) })
     }
 
     enum class PagingEdge {

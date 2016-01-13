@@ -18,7 +18,7 @@ import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
 
-interface TransactionsCache {
+interface TransactionsProvider {
     fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>>
     fun save(transactions: Set<Transaction>)
 }

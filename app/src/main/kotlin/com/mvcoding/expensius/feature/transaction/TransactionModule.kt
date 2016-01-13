@@ -22,7 +22,7 @@ class TransactionModule : ShankModule {
     override fun registerFactories() {
         registerFactory(TransactionPresenter::class.java, {
             transaction: Transaction ->
-            TransactionPresenter(transaction, provideSingleton(TransactionsCache::class))
+            TransactionPresenter(transaction, provideSingleton(TransactionsProvider::class))
         })
     }
 }
