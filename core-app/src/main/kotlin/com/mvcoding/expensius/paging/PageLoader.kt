@@ -32,9 +32,9 @@ abstract class PageLoader<T, Q, D, DI> {
         })
     }
 
-    internal abstract fun load(query: Q): Observable<D>
-    internal abstract fun sizeOf(data: D): Int
-    internal abstract fun dataItemAtPosition(data: D, position: Int): DI
+    abstract fun load(query: Q): Observable<D>
+    abstract fun sizeOf(data: D): Int
+    abstract fun dataItemAtPosition(data: D, position: Int): DI
 
     interface Converter<F, T> {
         fun convert(from: F): T
