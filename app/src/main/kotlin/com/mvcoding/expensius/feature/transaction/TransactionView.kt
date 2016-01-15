@@ -74,7 +74,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private var transactionType = EXPENSE
     private var currency = noCurrency
     private var amount = ZERO
-    private var timestamp = 0 as Long
+    private var timestamp = 0L
     private var allowTransactionStateChanges = false
     private var allowNoteChanges = true
 
