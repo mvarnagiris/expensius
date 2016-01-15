@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache.database.table
+package com.mvcoding.expensius.provider.database.table
 
 class TagsTable : ModelTable("tags") {
     val title = Column(this, "title", Column.Type.Text);

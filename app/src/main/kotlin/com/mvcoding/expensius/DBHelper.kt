@@ -18,9 +18,9 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.support.v4.content.ContextCompat
-import com.mvcoding.expensius.cache.database.table.TagsTable
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.provider.database.table.TagsTable
 
 class DBHelper(private val context: Context, private val tagsTable: TagsTable) : SQLiteOpenHelper(context, "expensius.db", null, 1) {
     override fun onCreate(db: SQLiteDatabase) {

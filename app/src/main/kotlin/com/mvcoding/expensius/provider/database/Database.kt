@@ -12,21 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache.database.table
+package com.mvcoding.expensius.provider.database
 
-import com.mvcoding.expensius.ModelState
+import android.content.ContentValues
+import android.database.Cursor
+import com.mvcoding.expensius.provider.database.table.Table
+import rx.Observable
 
-abstract class ModelTable(name: String) : Table(name) {
-    val id = Column(this, "id", Column.Type.TextPrimaryKey);
-    val modelState = Column(this, "modelState", Column.Type.Text, ModelState.NONE.name);
-
-    override fun idColumns(): List<Column> {
-        return listOf(id)
-    }
-
-    override fun columns(): List<Column> {
-        return listOf(id, modelState).plus(modelColumns())
-    }
-
-    abstract fun modelColumns(): List<Column>
+interface Database {
+    fun save(table: Table, contentValues: List<ContentValues>)
+    fun query(queryRequest: QueryRequest): Observable<Cursor>
 }

@@ -12,14 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache.database
+package com.mvcoding.expensius.provider.database.table
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.mvcoding.expensius.cache.database.table.Table
-import rx.Observable
+abstract class Table(val name: String) {
+    fun createScript(): String {
+        return "create table $name (${columns().joinToString { it.createScript() }})"
+    }
 
-interface Database {
-    fun save(table: Table, contentValues: List<ContentValues>)
-    fun query(queryRequest: QueryRequest): Observable<Cursor>
+    abstract fun idColumns(): List<Column>
+    abstract fun columns(): List<Column>
 }

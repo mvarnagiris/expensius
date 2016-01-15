@@ -17,10 +17,6 @@ package com.mvcoding.expensius
 import android.content.Context
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
-import com.mvcoding.expensius.cache.DatabaseTagsProvider
-import com.mvcoding.expensius.cache.database.Database
-import com.mvcoding.expensius.cache.database.SqliteDatabase
-import com.mvcoding.expensius.cache.database.table.TagsTable
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.CurrencyFormat
@@ -35,6 +31,10 @@ import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
+import com.mvcoding.expensius.provider.DatabaseTagsProvider
+import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.SqliteDatabase
+import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.squareup.sqlbrite.SqlBrite
 import rx.Observable
 import rx.Observable.empty

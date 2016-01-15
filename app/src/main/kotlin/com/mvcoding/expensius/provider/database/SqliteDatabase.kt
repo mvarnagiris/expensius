@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache.database
+package com.mvcoding.expensius.provider.database
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.mvcoding.expensius.cache.database.table.Table
+import com.mvcoding.expensius.provider.database.table.Table
 import com.squareup.sqlbrite.BriteDatabase
 import rx.Observable
 

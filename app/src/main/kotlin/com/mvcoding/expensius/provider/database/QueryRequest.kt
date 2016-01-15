@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache.database
+package com.mvcoding.expensius.provider.database
 
-import com.mvcoding.expensius.cache.database.table.Column
-import com.mvcoding.expensius.cache.database.table.Table
+import com.mvcoding.expensius.provider.database.table.Column
+import com.mvcoding.expensius.provider.database.table.Table
 
 abstract class QueryRequest {
     protected abstract val tables: List<Table>

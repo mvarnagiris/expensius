@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache.database.table
+package com.mvcoding.expensius.provider.database.table
 
 class Column(val name: String, private val type: Column.Type, private val defaultValue: String = "") {
     constructor(table: Table, name: String, type: Column.Type, defaultValue: String = "") : this("${table.name}_$name", type, defaultValue)

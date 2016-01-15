@@ -17,11 +17,11 @@ package com.mvcoding.expensius.extension
 import android.content.ContentValues
 import android.database.Cursor
 import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.cache.database.QueryRequest
-import com.mvcoding.expensius.cache.database.table.Column
-import com.mvcoding.expensius.cache.database.table.Table
-import com.mvcoding.expensius.cache.database.table.TagsTable
 import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.provider.database.QueryRequest
+import com.mvcoding.expensius.provider.database.table.Column
+import com.mvcoding.expensius.provider.database.table.Table
+import com.mvcoding.expensius.provider.database.table.TagsTable
 
 fun select(columns: List<Column>): QueryRequest.Select = QueryRequest.Select(columns);
 fun selectFrom(table: Table): QueryRequest.From = select(table.columns()).from(table);

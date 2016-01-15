@@ -12,13 +12,21 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache.database.table
+package com.mvcoding.expensius.provider.database.table
 
-abstract class Table(val name: String) {
-    fun createScript(): String {
-        return "create table $name (${columns().joinToString { it.createScript() }})"
+import com.mvcoding.expensius.ModelState
+
+abstract class ModelTable(name: String) : Table(name) {
+    val id = Column(this, "id", Column.Type.TextPrimaryKey);
+    val modelState = Column(this, "modelState", Column.Type.Text, ModelState.NONE.name);
+
+    override fun idColumns(): List<Column> {
+        return listOf(id)
     }
 
-    abstract fun idColumns(): List<Column>
-    abstract fun columns(): List<Column>
+    override fun columns(): List<Column> {
+        return listOf(id, modelState).plus(modelColumns())
+    }
+
+    abstract fun modelColumns(): List<Column>
 }

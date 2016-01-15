@@ -12,19 +12,19 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.cache
+package com.mvcoding.expensius.provider
 
 import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.ModelState.ARCHIVED
 import com.mvcoding.expensius.ModelState.NONE
-import com.mvcoding.expensius.cache.database.Database
-import com.mvcoding.expensius.cache.database.table.TagsTable
 import com.mvcoding.expensius.extension.map
 import com.mvcoding.expensius.extension.selectFrom
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTag
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.tag.TagsProvider
+import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.table.TagsTable
 import rx.Observable
 
 class DatabaseTagsProvider(private val database: Database, private val tagsTable: TagsTable) : TagsProvider {
