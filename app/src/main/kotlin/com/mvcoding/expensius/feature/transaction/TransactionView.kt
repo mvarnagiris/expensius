@@ -24,10 +24,13 @@ import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.RxBus
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.AmountFormatter
+import com.mvcoding.expensius.feature.DateDialogFragment
+import com.mvcoding.expensius.feature.DateDialogFragment.DateDialogResult
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.QuickTagsView
@@ -38,6 +41,7 @@ import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
+import org.joda.time.DateTime
 import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
@@ -46,14 +50,15 @@ import java.math.BigDecimal.ZERO
 class TransactionView : LinearLayout, TransactionPresenter.View {
     companion object {
         private const val REQUEST_AMOUNT = 1
+        private const val REQUEST_DATE = 2
     }
 
     private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class, transaction) }
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
     private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
-    private val timestampSubject by lazy { PublishSubject<Long>() }
     private val currencySubject by lazy { PublishSubject<Currency>() }
     private val amountSubject by lazy { PublishSubject<BigDecimal>() }
+    private val rxBus by lazy { provideSingleton(RxBus::class) }
 
     private val transactionTypeFloatingActionButton by lazy { findViewById(R.id.transactionTypeFloatingActionButton) as FloatingActionButton }
     private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
@@ -69,6 +74,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private var transactionType = EXPENSE
     private var currency = noCurrency
     private var amount = ZERO
+    private var timestamp = 0 as Long
     private var allowTransactionStateChanges = false
     private var allowNoteChanges = true
 
@@ -82,6 +88,12 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         super.onFinishInflate()
         if (!isInEditMode) {
             amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
+            dateButton.clicks().subscribe {
+                DateDialogFragment.show(context.toBaseActivity().supportFragmentManager,
+                                        REQUEST_DATE,
+                                        rxBus,
+                                        timestamp)
+            }
         }
     }
 
@@ -123,7 +135,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onTransactionTypeChanged() = transactionTypeFloatingActionButton.clicks().map { if (transactionType == EXPENSE) INCOME else EXPENSE }
 
-    override fun onTimestampChanged() = timestampSubject.asObservable()
+    override fun onTimestampChanged() = rxBus.observe(DateDialogResult::class.java).map {
+        DateTime(timestamp).withYear(it.year).withMonthOfYear(it.monthOfYear).withDayOfMonth(it.dayOfMonth).millis
+    }
 
     override fun onCurrencyChanged() = currencySubject.asObservable()
 
@@ -131,7 +145,16 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onTagsChanged() = quickTagsView.selectedTagsChanges()
 
-    override fun onNoteChanged() = noteEditText.textChanges().filter { allowNoteChanges }.map { it.toString() }
+    override fun onNoteChanged(): Observable<String> {
+        return noteEditText.textChanges().filter {
+            if (allowNoteChanges) {
+                true
+            } else {
+                allowNoteChanges = true
+                false
+            }
+        }.map { it.toString() }
+    }
 
     override fun onSave() = saveButton.clicks()
 
@@ -147,6 +170,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showTimestamp(timestamp: Long) {
+        this.timestamp = timestamp
         dateButton.text = dateFormatter.formatDateRelativeToToday(timestamp)
     }
 

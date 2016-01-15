@@ -103,6 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/add_a_note"
+                    android:inputType="textCapSentences"
                     android:textAppearance="@style/Text.Subhead" />
             </android.support.design.widget.TextInputLayout>
 
