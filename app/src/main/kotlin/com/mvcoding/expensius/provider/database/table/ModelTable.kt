@@ -17,8 +17,8 @@ package com.mvcoding.expensius.provider.database.table
 import com.mvcoding.expensius.ModelState
 
 abstract class ModelTable(name: String) : Table(name) {
-    val id = Column(this, "id", Column.Type.TextPrimaryKey);
-    val modelState = Column(this, "modelState", Column.Type.Text, ModelState.NONE.name);
+    val id = Column(this, "id", Column.Type.TEXT_PRIMARY_KEY);
+    val modelState = Column(this, "modelState", Column.Type.TEXT, ModelState.NONE.name);
 
     override fun idColumns(): List<Column> {
         return listOf(id)

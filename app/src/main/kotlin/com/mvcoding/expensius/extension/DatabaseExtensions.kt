@@ -18,10 +18,12 @@ import android.content.ContentValues
 import android.database.Cursor
 import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.provider.database.QueryRequest
 import com.mvcoding.expensius.provider.database.table.Column
 import com.mvcoding.expensius.provider.database.table.Table
 import com.mvcoding.expensius.provider.database.table.TagsTable
+import com.mvcoding.expensius.provider.database.table.TransactionsTable
 
 fun select(columns: List<Column>): QueryRequest.Select = QueryRequest.Select(columns);
 fun selectFrom(table: Table): QueryRequest.From = select(table.columns()).from(table);
@@ -32,6 +34,20 @@ fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
     contentValues.put(tagsTable.modelState.name, modelState.name)
     contentValues.put(tagsTable.title.name, title)
     contentValues.put(tagsTable.color.name, color)
+    return contentValues
+}
+
+fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentValues {
+    val contentValues = ContentValues()
+    contentValues.put(transactionsTable.id.name, id)
+    contentValues.put(transactionsTable.modelState.name, modelState.name)
+    contentValues.put(transactionsTable.transactionType.name, transactionType.name)
+    contentValues.put(transactionsTable.transactionState.name, transactionState.name)
+    contentValues.put(transactionsTable.timestamp.name, timestamp)
+    contentValues.put(transactionsTable.currency.name, currency.code)
+    contentValues.put(transactionsTable.amount.name, amount.toPlainString())
+    contentValues.put(transactionsTable.tags.name, tags.joinToString(separator = ",", transform = { it.id }))
+    contentValues.put(transactionsTable.note.name, note)
     return contentValues
 }
 

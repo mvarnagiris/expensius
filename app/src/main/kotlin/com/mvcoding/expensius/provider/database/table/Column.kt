@@ -24,12 +24,12 @@ class Column(val name: String, private val type: Column.Type, private val defaul
     }
 
     enum class Type(val dataType: String) {
-        Text("text"),
-        TextPrimaryKey("text primary key"),
-        Integer("integer"),
-        Real("real"),
-        Boolean("boolean"),
-        DateTime("datetime");
+        TEXT("text"),
+        TEXT_PRIMARY_KEY("text primary key"),
+        INTEGER("integer"),
+        REAL("real"),
+        BOOLEAN("boolean"),
+        DATE_TIME("datetime");
 
         override fun toString(): String {
             return dataType

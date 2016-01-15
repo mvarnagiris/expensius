@@ -15,8 +15,8 @@
 package com.mvcoding.expensius.provider.database.table
 
 class TagsTable : ModelTable("tags") {
-    val title = Column(this, "title", Column.Type.Text);
-    val color = Column(this, "color", Column.Type.Integer, "0");
+    val title = Column(this, "title", Column.Type.TEXT);
+    val color = Column(this, "color", Column.Type.INTEGER, "0");
 
     override fun modelColumns(): List<Column> {
         return listOf(title, color)
