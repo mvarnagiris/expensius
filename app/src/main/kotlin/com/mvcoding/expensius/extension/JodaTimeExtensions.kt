@@ -17,9 +17,11 @@ package com.mvcoding.expensius.extension
 import org.joda.time.ReadableInstant
 
 fun isYesterday(readableInstant: ReadableInstant): Boolean {
+    // TODO Implement
     return false
 }
 
 fun isTomorrow(readableInstant: ReadableInstant): Boolean {
+    // TODO Implement
     return false
 }

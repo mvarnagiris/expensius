@@ -31,10 +31,12 @@ import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.provider.DatabaseTagsProvider
 import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
+import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.DatabasePageLoader
 import com.mvcoding.expensius.provider.database.SqliteDatabase
 import com.mvcoding.expensius.provider.database.table.TagsTable
+import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.squareup.sqlbrite.SqlBrite
 import java.math.BigDecimal
@@ -55,7 +57,11 @@ class AppModule(val context: Context) : ShankModule {
     }
 
     private fun registerDatabase() {
-        val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(context, TagsTable()))
+        val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(
+                context,
+                TagsTable(),
+                TransactionsTable(),
+                TransactionTagsTable()))
         registerFactory<Database>(Database::class.java, { SqliteDatabase(briteDatabase) })
     }
 

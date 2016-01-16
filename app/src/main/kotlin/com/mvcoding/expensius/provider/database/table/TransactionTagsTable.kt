@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,12 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-import com.mvcoding.expensius.ModelState
+import com.mvcoding.expensius.provider.database.table.Column.Type.TEXT
 
-abstract class ModelTable(name: String) : Table(name) {
-    val id = Column(this, "id", Column.Type.TEXT_PRIMARY_KEY);
-    val modelState = Column(this, "modelState", Column.Type.TEXT, ModelState.NONE.name);
+class TransactionTagsTable : RelationshipTable("transaction_tags") {
+    val transactionId = Column(this, "transactionId", TEXT);
+    val tagId = Column(this, "tagId", TEXT);
 
-    override fun idColumns() = listOf(id)
-    override fun columns() = listOf(id, modelState).plus(modelColumns())
-    abstract fun modelColumns(): List<Column>
+    override fun idColumns() = listOf(transactionId, tagId)
+    override fun columns() = listOf(transactionId, tagId)
 }

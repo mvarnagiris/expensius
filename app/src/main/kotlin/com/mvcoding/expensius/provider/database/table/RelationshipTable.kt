@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,8 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-import com.mvcoding.expensius.ModelState
-
-abstract class ModelTable(name: String) : Table(name) {
-    val id = Column(this, "id", Column.Type.TEXT_PRIMARY_KEY);
-    val modelState = Column(this, "modelState", Column.Type.TEXT, ModelState.NONE.name);
-
-    override fun idColumns() = listOf(id)
-    override fun columns() = listOf(id, modelState).plus(modelColumns())
-    abstract fun modelColumns(): List<Column>
+abstract class RelationshipTable(name: String) : Table(name) {
+    override fun createScript(): String {
+        return "create table $name (${columns().joinToString { it.createScript() }}, primary key ${idColumns().joinToString { it.name }})"
+    }
 }
