@@ -14,13 +14,13 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.memoizrlabs.Shank
+import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 
 class TagsModule : ShankModule {
     override fun registerFactories() {
-        Shank.registerFactory(TagsPresenter::class.java, { displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag> ->
+        registerFactory(TagsPresenter::class.java, { displayType: TagsPresenter.DisplayType, selectedTags: Set<Tag> ->
             val tagsCache = provideSingleton(TagsProvider::class)
             TagsPresenter(tagsCache, displayType, selectedTags)
         })
