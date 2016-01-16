@@ -17,12 +17,12 @@ package com.mvcoding.expensius.provider.database
 import android.database.Cursor
 import com.mvcoding.expensius.paging.PageLoader
 
-class DatabasePageLoader<T>(private val database: Database) : PageLoader<T, QueryRequest, Cursor, Cursor>() {
-    override fun load(query: QueryRequest) = database.query(query)
+open class DatabasePageLoader<T>(private val database: Database) : PageLoader<T, QueryRequest, Cursor, Cursor>() {
+    override protected fun load(query: QueryRequest) = database.query(query)
 
-    override fun sizeOf(data: Cursor) = data.count
+    override protected fun sizeOf(data: Cursor) = data.count
 
-    override fun dataItemAtPosition(data: Cursor, position: Int): Cursor {
+    override protected fun dataItemAtPosition(data: Cursor, position: Int): Cursor {
         data.moveToPosition(position)
         return data
     }

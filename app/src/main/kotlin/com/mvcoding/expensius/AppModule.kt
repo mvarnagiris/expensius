@@ -29,15 +29,14 @@ import com.mvcoding.expensius.feature.tag.TagsProvider
 import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
-import com.mvcoding.expensius.paging.Page
-import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.provider.DatabaseTagsProvider
+import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
 import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.DatabasePageLoader
 import com.mvcoding.expensius.provider.database.SqliteDatabase
 import com.mvcoding.expensius.provider.database.table.TagsTable
+import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.squareup.sqlbrite.SqlBrite
-import rx.Observable
-import rx.Observable.empty
 import java.math.BigDecimal
 
 class AppModule(val context: Context) : ShankModule {
@@ -48,38 +47,30 @@ class AppModule(val context: Context) : ShankModule {
     override fun registerFactories() {
         registerFactory<Settings>(Settings::class.java, { UserSettings() })
         registerFactory<Session>(Session::class.java, { UserSession() })
-        database()
-        tagsCache()
-        transactionsCache()
-        amountFormatter()
-        dateFormatter()
+        registerDatabase()
+        registerTagsProvider()
+        registerTransactionsProvider()
+        registerAmountFormatter()
+        registerDateFormatter()
     }
 
-    private fun database() {
+    private fun registerDatabase() {
         val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(context, TagsTable()))
         registerFactory<Database>(Database::class.java, { SqliteDatabase(briteDatabase) })
     }
 
-    private fun tagsCache() {
-        val database = provideSingleton(Database::class)
-        registerFactory<TagsProvider>(TagsProvider::class.java, { DatabaseTagsProvider(database, TagsTable()) })
+    private fun registerTagsProvider() {
+        registerFactory<TagsProvider>(TagsProvider::class.java, { DatabaseTagsProvider(provideSingleton(Database::class), TagsTable()) })
     }
 
-    private fun transactionsCache() {
-        // TODO: This is temporary
+    private fun registerTransactionsProvider() {
         registerFactory<TransactionsProvider>(TransactionsProvider::class.java, {
-            object : TransactionsProvider {
-                override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-                    return empty()
-                }
-
-                override fun save(transactions: Set<Transaction>) {
-                }
-            }
+            val database = provideSingleton(Database::class)
+            DatabaseTransactionsProvider(database, DatabasePageLoader<Transaction>(database), TransactionsTable())
         })
     }
 
-    private fun amountFormatter() {
+    private fun registerAmountFormatter() {
         // TODO: This is temporary
         registerFactory<AmountFormatter>(AmountFormatter::class.java, {
             object : AmountFormatter {
@@ -90,7 +81,7 @@ class AppModule(val context: Context) : ShankModule {
         })
     }
 
-    private fun dateFormatter() {
+    private fun registerDateFormatter() {
         registerFactory<DateFormatter>(DateFormatter::class.java, { DateFormatter(context) })
     }
 }

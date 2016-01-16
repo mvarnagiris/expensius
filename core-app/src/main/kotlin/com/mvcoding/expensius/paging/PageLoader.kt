@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,25 +18,21 @@ import rx.Observable
 import rx.Observable.combineLatest
 
 abstract class PageLoader<T, Q, D, DI> {
-    fun load(converter: Converter<DI, T>, query: Q, pageObservable: Observable<Page>): Observable<PageResult<T>> {
+    fun load(converter: (DI) -> T, query: Q, pageObservable: Observable<Page>): Observable<PageResult<T>> {
         return combineLatest(pageObservable, load(query), { page, data ->
             val range = page.rangeTo(sizeOf(data))
             if (range.isEmpty()) {
                 PageResult(page, emptyList<T>())
             } else {
                 range.map { dataItemAtPosition(data, it) }
-                        .map { converter.convert(it) }
+                        .map { converter.invoke(it) }
                         .toList()
                         .let { PageResult(page, it) }
             }
         })
     }
 
-    abstract fun load(query: Q): Observable<D>
-    abstract fun sizeOf(data: D): Int
-    abstract fun dataItemAtPosition(data: D, position: Int): DI
-
-    interface Converter<F, T> {
-        fun convert(from: F): T
-    }
+    protected abstract fun load(query: Q): Observable<D>
+    protected abstract fun sizeOf(data: D): Int
+    protected abstract fun dataItemAtPosition(data: D, position: Int): DI
 }

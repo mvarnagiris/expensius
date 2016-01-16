@@ -14,17 +14,22 @@
 
 package com.mvcoding.expensius.provider
 
+import com.mvcoding.expensius.ModelState.NONE
+import com.mvcoding.expensius.extension.selectFrom
 import com.mvcoding.expensius.extension.toContentValues
+import com.mvcoding.expensius.extension.toTransaction
 import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.DatabasePageLoader
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import rx.Observable
 
 class DatabaseTransactionsProvider(
         private val database: Database,
+        private val pageLoader: DatabasePageLoader<Transaction>,
         private val transactionsTable: TransactionsTable) : TransactionsProvider {
 
     override fun save(transactions: Set<Transaction>) {
@@ -32,6 +37,8 @@ class DatabaseTransactionsProvider(
     }
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-        throw UnsupportedOperationException()
+        return pageLoader.load({ it.toTransaction(transactionsTable) },
+                               selectFrom(transactionsTable).where("${transactionsTable.modelState}=?", arrayOf(NONE.name)),
+                               pages)
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,16 @@ import android.content.ContentValues
 import android.database.Cursor
 import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.Transaction
+import com.mvcoding.expensius.feature.transaction.TransactionState
+import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.provider.database.QueryRequest
 import com.mvcoding.expensius.provider.database.table.Column
 import com.mvcoding.expensius.provider.database.table.Table
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
+import java.math.BigDecimal
 
 fun select(columns: List<Column>): QueryRequest.Select = QueryRequest.Select(columns);
 fun selectFrom(table: Table): QueryRequest.From = select(table.columns()).from(table);
@@ -57,6 +61,20 @@ fun Cursor.toTag(tagsTable: TagsTable): Tag {
     val title = getString(this.getColumnIndex(tagsTable.title.name))
     val color = getInt(this.getColumnIndex(tagsTable.color.name))
     return Tag(id, modelState, title, color)
+}
+
+fun Cursor.toTransaction(transactionsTable: TransactionsTable): Transaction {
+    val id = getString(this.getColumnIndex(transactionsTable.id.name))
+    val modelState = ModelState.valueOf(getString(this.getColumnIndex(transactionsTable.modelState.name)))
+    val transactionType = TransactionType.valueOf(getString(this.getColumnIndex(transactionsTable.transactionType.name)))
+    val transactionState = TransactionState.valueOf(getString(this.getColumnIndex(transactionsTable.transactionState.name)))
+    val timestamp = getLong(this.getColumnIndex(transactionsTable.timestamp.name))
+    val currency = Currency(getString(this.getColumnIndex(transactionsTable.currency.name)))
+    val amount = BigDecimal(getString(this.getColumnIndex(transactionsTable.amount.name)))
+    // TODO Read tags from cursor
+    val tags = setOf<Tag>()
+    val note = getString(this.getColumnIndex(transactionsTable.note.name))
+    return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, tags, note)
 }
 
 fun <T> Cursor.map(mapper: ((Cursor) -> T)): List<T> {
