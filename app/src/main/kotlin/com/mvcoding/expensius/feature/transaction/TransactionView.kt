@@ -111,12 +111,12 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter?.onAttachView(this)
+        presenter.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter?.onDetachView(this)
+        presenter.onDetachView(this)
     }
 
     override fun onTransactionStateChanged(): Observable<TransactionState> {
@@ -146,14 +146,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     override fun onTagsChanged() = quickTagsView.selectedTagsChanges()
 
     override fun onNoteChanged(): Observable<String> {
-        return noteEditText.textChanges().filter {
-            if (allowNoteChanges) {
-                true
-            } else {
-                allowNoteChanges = true
-                false
-            }
-        }.map { it.toString() }
+        return noteEditText.textChanges().doOnNext { allowNoteChanges = false }.map { it.toString() }
     }
 
     override fun onSave() = saveButton.clicks()
@@ -190,8 +183,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     override fun showNote(note: String) {
-        allowNoteChanges = false
-        noteEditText.setText(note)
+        if (allowNoteChanges) {
+            noteEditText.setText(note)
+        }
         allowNoteChanges = true
     }
 

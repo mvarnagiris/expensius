@@ -47,6 +47,7 @@ class AppModule(val context: Context) : ShankModule {
     }
 
     override fun registerFactories() {
+        registerFactory<RxBus>(RxBus::class.java, { RxBus() })
         registerFactory<Settings>(Settings::class.java, { UserSettings() })
         registerFactory<Session>(Session::class.java, { UserSession() })
         registerDatabase()

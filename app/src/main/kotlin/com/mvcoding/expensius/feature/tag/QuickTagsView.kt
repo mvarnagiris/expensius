@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.QuickTagView.QuickTag
+import rx.lang.kotlin.BehaviourSubject
 import rx.lang.kotlin.PublishSubject
 import java.lang.Math.max
 
@@ -31,8 +32,10 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
 
     private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
     private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }
-    private val selectedTagsUpdatedSubject by lazy { PublishSubject<Set<Tag>>() }
+    private val selectedTagsUpdatedSubject by lazy { BehaviourSubject<Set<Tag>>() }
     private val selectableTags = arrayListOf<SelectableTag>()
+
+    private var allowShowSelectedTags = true
 
     constructor(context: Context?) : this(context, null)
 
@@ -58,16 +61,18 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter?.onAttachView(this)
+        presenter.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter?.onDetachView(this)
+        presenter.onDetachView(this)
     }
 
     fun showSelectedTags(tags: Set<Tag>) {
-        selectedTagsUpdatedSubject.onNext(tags)
+        if (allowShowSelectedTags) {
+            selectedTagsUpdatedSubject.onNext(tags)
+        }
     }
 
     fun selectedTagsChanges() = selectedTagsSubject.asObservable()
@@ -145,13 +150,16 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
         this.selectableTags.clear()
         this.selectableTags.addAll(selectableTags)
         setQuickTags(selectableTags.map { QuickTag(it.tag.title, it.tag.color) })
+        selectableTags.forEachIndexed { i, selectableTag -> getChildAt(i).isSelected = selectableTag.isSelected }
     }
 
     override fun showUpdatedSelectableTag(oldSelectableTag: SelectableTag, newSelectableTag: SelectableTag) {
         val index = selectableTags.indexOf(oldSelectableTag)
         selectableTags.removeAt(index)
         selectableTags.add(index, newSelectableTag)
+        allowShowSelectedTags = false
         selectedTagsSubject.onNext(selectableTags.filter { it.isSelected }.map { it.tag }.toSet())
+        allowShowSelectedTags = true
         getChildAt(index).isSelected = newSelectableTag.isSelected
     }
 

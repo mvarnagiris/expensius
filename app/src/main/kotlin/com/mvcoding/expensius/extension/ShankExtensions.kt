@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,16 +23,13 @@ fun <T : Any> provideSingleton(cls: KClass<T>): T {
     return Shank.provideSingleton(cls.java)
 }
 
-fun <T : Any> provideScopedSingleton(cls: KClass<T>, scope: Any, scopeDestroyObservable: Observable<Unit>, vararg args: Any): T {
-    if (args.size > 4) {
-        throw IllegalArgumentException("Cannot have more than 4 arguments in " + args)
-    }
-
-    val arg1 = args.getOrNull(0)
-    val arg2 = args.getOrNull(1)
-    val arg3 = args.getOrNull(2)
-    val arg4 = args.getOrNull(3)
-
+fun <T : Any> provideScopedSingleton(cls: KClass<T>,
+                                     scope: Any,
+                                     scopeDestroyObservable: Observable<Unit>,
+                                     arg1: Any? = null,
+                                     arg2: Any? = null,
+                                     arg3: Any? = null,
+                                     arg4: Any? = null): T {
     val shankScope = Scope.scope(scope)
     scopeDestroyObservable.take(1).subscribe { shankScope.clear() }
 

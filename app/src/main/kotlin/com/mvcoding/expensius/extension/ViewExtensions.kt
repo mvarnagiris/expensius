@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,13 @@ import android.view.ViewOutlineProvider
 import com.mvcoding.expensius.feature.SnackbarBuilder.Companion.snackbar
 import kotlin.reflect.KClass
 
-fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>, vararg args: Any): T {
+fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>,
+                                                  arg1: Any? = null,
+                                                  arg2: Any? = null,
+                                                  arg3: Any? = null,
+                                                  arg4: Any? = null): T {
     val baseActivity = context.toBaseActivity()
-    return provideScopedSingleton(cls, baseActivity.scopeId, baseActivity.observeFinish(), args)
+    return provideScopedSingleton(cls, baseActivity.scopeId, baseActivity.observeFinish(), arg1, arg2, arg3, arg4)
 }
 
 fun View.makeOutlineProviderOval() {
