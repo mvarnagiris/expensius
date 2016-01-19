@@ -73,7 +73,11 @@ class AppModule(val context: Context) : ShankModule {
     private fun registerTransactionsProvider() {
         registerFactory<TransactionsProvider>(TransactionsProvider::class.java, {
             val database = provideSingleton(Database::class)
-            DatabaseTransactionsProvider(database, DatabasePageLoader<Transaction>(database), TransactionsTable(), TransactionTagsTable(), TagsTable())
+            DatabaseTransactionsProvider(database,
+                                         DatabasePageLoader<Transaction>(database),
+                                         TransactionsTable(),
+                                         TransactionTagsTable(),
+                                         TagsTable())
         })
     }
 
