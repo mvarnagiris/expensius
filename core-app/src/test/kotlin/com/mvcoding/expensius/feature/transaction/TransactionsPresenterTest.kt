@@ -30,14 +30,14 @@ class TransactionsPresenterTest {
     val defaultFirstPage = Page(0, PAGE_SIZE)
     val defaultFirstPageResult = pageResult(defaultFirstPage, PAGE_SIZE, { aTransaction() })
     val pagingEdgeSubject = BehaviourSubject(START)
-    val transactionsCache = mock(TransactionsProvider::class.java)
+    val transactionsProvider = mock(TransactionsProvider::class.java)
     val view = mock(TransactionsPresenter.View::class.java)
-    val presenter = TransactionsPresenter(transactionsCache)
+    val presenter = TransactionsPresenter(transactionsProvider)
 
     @Before
     fun setUp() {
         given(view.onPagingEdgeReached()).willReturn(pagingEdgeSubject)
-        given(transactionsCache.transactions(presenter.pageObservable)).willReturn(just(defaultFirstPageResult))
+        given(transactionsProvider.transactions(presenter.pageObservable)).willReturn(just(defaultFirstPageResult))
     }
 
     @Test
@@ -45,5 +45,10 @@ class TransactionsPresenterTest {
         presenter.onAttachView(view)
 
         verify(view).showTransactions(defaultFirstPageResult.items)
+    }
+
+    @Test
+    fun loadsNextPageWhenEdgeIsReached() {
+        
     }
 }

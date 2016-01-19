@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.provider
 
 import com.mvcoding.expensius.ModelState.NONE
-import com.mvcoding.expensius.extension.selectFrom
+import com.mvcoding.expensius.extension.select
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
 import com.mvcoding.expensius.feature.transaction.Transaction
@@ -24,13 +24,17 @@ import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.DatabasePageLoader
+import com.mvcoding.expensius.provider.database.table.TagsTable
+import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import rx.Observable
 
 class DatabaseTransactionsProvider(
         private val database: Database,
         private val pageLoader: DatabasePageLoader<Transaction>,
-        private val transactionsTable: TransactionsTable) : TransactionsProvider {
+        private val transactionsTable: TransactionsTable,
+        private val transactionTagsTable: TransactionTagsTable,
+        private val tagsTable: TagsTable) : TransactionsProvider {
 
     override fun save(transactions: Set<Transaction>) {
         database.save(transactionsTable, transactions.map { it.toContentValues(transactionsTable) })
@@ -38,7 +42,9 @@ class DatabaseTransactionsProvider(
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
         return pageLoader.load({ it.toTransaction(transactionsTable) },
-                               selectFrom(transactionsTable).where("${transactionsTable.modelState}=?", arrayOf(NONE.name)),
+                               select(transactionsTable.columns().plus(tagsTable.columns()))
+                                       .from(transactionsTable)
+                                       .where("${transactionsTable.modelState}=?", arrayOf(NONE.name)),
                                pages)
     }
 }

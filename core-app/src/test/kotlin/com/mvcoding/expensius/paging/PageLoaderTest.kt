@@ -22,7 +22,7 @@ import rx.subjects.BehaviorSubject
 class PageLoaderTest {
     private val query = Query()
     private val subscriber = TestSubscriber.create<PageResult<Item>>()
-    private val converter = ConverterForTest()
+    private val converter = { dataItem: DataItem -> Item() }
     private val pageLoader = PageLoaderForTest()
 
     @Test
@@ -92,10 +92,6 @@ class PageLoaderTest {
     private class Data(val dataItems: List<DataItem>)
 
     private class DataItem
-
-    private class ConverterForTest : PageLoader.Converter<DataItem, Item> {
-        override fun convert(from: DataItem) = Item()
-    }
 
     private class PageLoaderForTest : PageLoader<Item, Query, Data, DataItem>() {
         var queryData: Data = Data(emptyList())
