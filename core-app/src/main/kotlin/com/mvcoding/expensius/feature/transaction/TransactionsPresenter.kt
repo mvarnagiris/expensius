@@ -19,9 +19,7 @@ import com.mvcoding.expensius.paging.Page
 import rx.Observable
 import rx.Observable.just
 
-class TransactionsPresenter(
-        private val transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
-
+class TransactionsPresenter(private val transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
     internal companion object {
         const val PAGE_SIZE = 50
     }

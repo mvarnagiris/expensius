@@ -17,38 +17,69 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.Companion.PAGE_SIZE
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.START
 import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.paging.pageResult
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
 import org.mockito.Mockito.mock
-import rx.Observable.just
+import rx.Observable
 import rx.lang.kotlin.BehaviourSubject
 
 class TransactionsPresenterTest {
+    val pagingEdgeSubject = BehaviourSubject(START)
+
+
     val defaultFirstPage = Page(0, PAGE_SIZE)
     val defaultFirstPageResult = pageResult(defaultFirstPage, PAGE_SIZE, { aTransaction() })
-    val pagingEdgeSubject = BehaviourSubject(START)
-    val transactionsProvider = mock(TransactionsProvider::class.java)
+    val transactionsProvider = TransactionsProviderForTest()
     val view = mock(TransactionsPresenter.View::class.java)
     val presenter = TransactionsPresenter(transactionsProvider)
 
     @Before
     fun setUp() {
         given(view.onPagingEdgeReached()).willReturn(pagingEdgeSubject)
-        given(transactionsProvider.transactions(presenter.pageObservable)).willReturn(just(defaultFirstPageResult))
     }
 
     @Test
     fun initiallyLoadsFirstPage() {
+        transactionsProvider.preparePagesCount(1)
         presenter.onAttachView(view)
 
-        verify(view).showTransactions(defaultFirstPageResult.items)
+        verify(view).showTransactions(transactionsProvider.getPageResultsAtPage(0))
     }
 
-    @Test
-    fun loadsNextPageWhenEdgeIsReached() {
-        
+    //    @Test
+    //    fun loadsNextPageWhenEndEdgeIsReached() {
+    //
+    //    }
+
+    class TransactionsProviderForTest : TransactionsProvider {
+        private val pageResultsSubject = BehaviourSubject<PageResult<Transaction>>()
+        private val pageResults = hashMapOf<Page, PageResult<Transaction>>()
+
+        override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
+            pages.subscribe {
+                if (pageResults.containsKey(it)) {
+                    pageResultsSubject.onNext(pageResults.get(it))
+                }
+            }
+            return pageResultsSubject
+        }
+
+        override fun save(transactions: Set<Transaction>) {
+            throw UnsupportedOperationException()
+        }
+
+        fun preparePagesCount(pagesCount: Int) {
+            var page = Page(0, PAGE_SIZE).previousPage();
+            pagesCount.downTo(1).forEach {
+                page = page.nextPage()
+                pageResults.put(page, pageResult(page, PAGE_SIZE, { aTransaction() }))
+            }
+        }
+
+        fun getPageResultsAtPage(pagePosition: Int) = pageResults.values.elementAt(pagePosition).items
     }
 }
