@@ -15,27 +15,23 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.Companion.PAGE_SIZE
-import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.START
+import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
 import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.PageLoader
 import com.mvcoding.expensius.paging.PageResult
-import com.mvcoding.expensius.paging.pageResult
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.verify
+import org.mockito.BDDMockito.*
 import org.mockito.Mockito.mock
 import rx.Observable
 import rx.lang.kotlin.BehaviourSubject
+import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenterTest {
-    val pagingEdgeSubject = BehaviourSubject(START)
-
-
-    val defaultFirstPage = Page(0, PAGE_SIZE)
-    val defaultFirstPageResult = pageResult(defaultFirstPage, PAGE_SIZE, { aTransaction() })
-    val transactionsProvider = TransactionsProviderForTest()
+    val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
+    val pageLoader = PageLoaderForTest()
     val view = mock(TransactionsPresenter.View::class.java)
-    val presenter = TransactionsPresenter(transactionsProvider)
+    val presenter = TransactionsPresenter(TransactionsProviderForTest(pageLoader))
 
     @Before
     fun setUp() {
@@ -43,43 +39,129 @@ class TransactionsPresenterTest {
     }
 
     @Test
-    fun initiallyLoadsFirstPage() {
-        transactionsProvider.preparePagesCount(1)
+    fun showsTransactions() {
+        pageLoader.size = 1
+
         presenter.onAttachView(view)
 
-        verify(view).showTransactions(transactionsProvider.getPageResultsAtPage(0))
+        verify(view).showTransactions(anyListOf(Transaction::class.java))
+    }
+
+    @Test
+    fun addsNextPageWhenEndEdgeIsReached() {
+        pageLoader.size = PAGE_SIZE + 1
+        presenter.onAttachView(view)
+
+        pagingEdgeEnd()
+
+        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE))
+    }
+
+    @Test
+    fun addsNextPageWhenEndEdgeIsReachedMoreThanOnce() {
+        pageLoader.size = PAGE_SIZE * 2 + 1
+        presenter.onAttachView(view)
+
+        pagingEdgeEnd()
+        pagingEdgeEnd()
+
+        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE * 2))
+    }
+
+    @Test
+    fun doesNotAddNextPageWhenCurrentPageIsTheLastOne() {
+        pageLoader.size = PAGE_SIZE * 2 - 1
+        presenter.onAttachView(view)
+
+        pagingEdgeEnd()
+        pagingEdgeEnd()
+
+        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
+    }
+
+    @Test
+    fun doesNotAddNextPageWhenNextPageIsEmpty() {
+        pageLoader.size = PAGE_SIZE * 2
+        presenter.onAttachView(view)
+
+        pagingEdgeEnd()
+        pagingEdgeEnd()
+
+        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
+    }
+
+    @Test
+    fun showsCurrentPageTransactionsWhenDataIsReloaded() {
+
     }
 
     //    @Test
-    //    fun loadsNextPageWhenEndEdgeIsReached() {
+    //    fun addsPreviousPageWhenStartEdgeIsReached() {
+    //        pageLoader.size = PAGE_SIZE + 1
+    //        presenter.onAttachView(view)
     //
+    //        pagingEdgeEnd()
+    //
+    //        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE))
+    //    }
+    //
+    //    @Test
+    //    fun addsPreviousPageWhenStartEdgeIsReachedMoreThanOnce() {
+    //        pageLoader.size = PAGE_SIZE * 2 + 1
+    //        presenter.onAttachView(view)
+    //
+    //        pagingEdgeEnd()
+    //        pagingEdgeEnd()
+    //
+    //        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE * 2))
+    //    }
+    //
+    //    @Test
+    //    fun doesNotAddPreviousPageWhenCurrentPageIsTheFirstOne() {
+    //        pageLoader.size = PAGE_SIZE * 2 - 1
+    //        presenter.onAttachView(view)
+    //
+    //        pagingEdgeEnd()
+    //        pagingEdgeEnd()
+    //
+    //        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
+    //    }
+    //
+    //    @Test
+    //    fun doesNotAddPreviousPageWhenPreviousPageIsEmpty() {
+    //        pageLoader.size = PAGE_SIZE * 2
+    //        presenter.onAttachView(view)
+    //
+    //        pagingEdgeEnd()
+    //        pagingEdgeEnd()
+    //
+    //        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
     //    }
 
-    class TransactionsProviderForTest : TransactionsProvider {
-        private val pageResultsSubject = BehaviourSubject<PageResult<Transaction>>()
-        private val pageResults = hashMapOf<Page, PageResult<Transaction>>()
+    private fun pagingEdgeEnd() {
+        pagingEdgeSubject.onNext(END)
+    }
 
+    class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {
         override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-            pages.subscribe {
-                if (pageResults.containsKey(it)) {
-                    pageResultsSubject.onNext(pageResults.get(it))
-                }
-            }
-            return pageResultsSubject
+            return pageLoader.load({ aTransaction() }, Any(), pages)
         }
 
         override fun save(transactions: Set<Transaction>) {
             throw UnsupportedOperationException()
         }
+    }
 
-        fun preparePagesCount(pagesCount: Int) {
-            var page = Page(0, PAGE_SIZE).previousPage();
-            pagesCount.downTo(1).forEach {
-                page = page.nextPage()
-                pageResults.put(page, pageResult(page, PAGE_SIZE, { aTransaction() }))
-            }
+    class PageLoaderForTest : PageLoader<Transaction, Any, Any, Any>() {
+        private val loadSubject = BehaviourSubject(Any())
+        var size = 0;
+
+        override fun load(query: Any) = loadSubject
+        override fun sizeOf(data: Any) = size;
+        override fun dataItemAtPosition(data: Any, position: Int) = Any()
+
+        fun reload() {
+            loadSubject.onNext(Any())
         }
-
-        fun getPageResultsAtPage(pagePosition: Int) = pageResults.values.elementAt(pagePosition).items
     }
 }

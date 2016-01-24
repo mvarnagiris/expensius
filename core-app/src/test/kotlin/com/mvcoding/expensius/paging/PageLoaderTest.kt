@@ -32,7 +32,7 @@ class PageLoaderTest {
 
         pageLoader.load(converter, query, just(page)).subscribe(subscriber)
 
-        subscriber.assertValue(PageResult(page, emptyList()))
+        subscriber.assertValue(PageResult(page, emptyList(), true))
     }
 
     @Test
@@ -42,7 +42,7 @@ class PageLoaderTest {
 
         pageLoader.load(converter, query, just(page)).subscribe(subscriber)
 
-        subscriber.assertValue(PageResult(page, listOf(Item())))
+        subscriber.assertValue(PageResult(page, listOf(Item()), true))
     }
 
     @Test
@@ -52,7 +52,7 @@ class PageLoaderTest {
 
         pageLoader.load(converter, query, just(page)).subscribe(subscriber)
 
-        subscriber.assertValue(PageResult(page, listOf(Item(), Item())))
+        subscriber.assertValue(PageResult(page, listOf(Item(), Item()), true))
     }
 
     @Test
@@ -66,8 +66,8 @@ class PageLoaderTest {
         pageObservable.onNext(secondPage)
 
         subscriber.assertValues(
-                PageResult(firstPage, listOf(Item(), Item())),
-                PageResult(secondPage, listOf(Item())))
+                PageResult(firstPage, listOf(Item(), Item()), true),
+                PageResult(secondPage, listOf(Item()), false))
     }
 
     @Test
@@ -81,8 +81,8 @@ class PageLoaderTest {
         pageObservable.onNext(secondPage)
 
         subscriber.assertValues(
-                PageResult(firstPage, listOf(Item(), Item())),
-                PageResult(secondPage, listOf(Item(), Item())))
+                PageResult(firstPage, listOf(Item(), Item()), true),
+                PageResult(secondPage, listOf(Item(), Item()), false))
     }
 
     private data class Item(val id: Int = 0)

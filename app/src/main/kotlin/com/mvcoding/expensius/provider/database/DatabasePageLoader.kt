@@ -19,7 +19,6 @@ import com.mvcoding.expensius.paging.PageLoader
 
 open class DatabasePageLoader<T>(private val database: Database) : PageLoader<T, QueryRequest, Cursor, Cursor>() {
     override protected fun load(query: QueryRequest) = database.query(query)
-
     override protected fun sizeOf(data: Cursor) = data.count
 
     override protected fun dataItemAtPosition(data: Cursor, position: Int): Cursor {

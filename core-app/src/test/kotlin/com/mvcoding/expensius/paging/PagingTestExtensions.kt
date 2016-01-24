@@ -14,5 +14,5 @@
 
 package com.mvcoding.expensius.paging
 
-fun <T> pageResult(page: Page, itemsCount: Int, itemFactory: () -> T) =
-        PageResult(page, itemsCount.downTo(1).map { itemFactory.invoke() }.toList())
+fun <T> pageResult(page: Page, itemsCount: Int, isInvalidated: Boolean, itemFactory: () -> T) =
+        PageResult(page, itemsCount.downTo(1).map { itemFactory.invoke() }.toList(), isInvalidated)

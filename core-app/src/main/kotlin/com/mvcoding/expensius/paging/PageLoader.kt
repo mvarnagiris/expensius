@@ -18,16 +18,21 @@ import rx.Observable
 import rx.Observable.combineLatest
 
 abstract class PageLoader<T, Q, D, DI> {
+    private var isNewDataLoad = false
+
     fun load(converter: (DI) -> T, query: Q, pageObservable: Observable<Page>): Observable<PageResult<T>> {
-        return combineLatest(pageObservable, load(query), { page, data ->
+        return combineLatest(pageObservable, load(query).doOnNext { isNewDataLoad = true }, { page, data ->
+            val wasNewDataLoad = isNewDataLoad;
+            isNewDataLoad = false;
+
             val range = page.rangeTo(sizeOf(data))
             if (range.isEmpty()) {
-                PageResult(page, emptyList<T>())
+                PageResult(page, emptyList<T>(), wasNewDataLoad)
             } else {
                 range.map { dataItemAtPosition(data, it) }
                         .map { converter.invoke(it) }
                         .toList()
-                        .let { PageResult(page, it) }
+                        .let { PageResult(page, it, wasNewDataLoad) }
             }
         })
     }

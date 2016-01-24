@@ -21,29 +21,36 @@ import org.junit.Test
 class PageResultTest {
     @Test
     fun doesNotHavePreviousPageWhenPageStartsAt0() {
-        val pageResult = PageResult<Unit>(Page(0, 5), listOf())
+        val pageResult = PageResult<Unit>(Page(0, 5), listOf(), true)
 
         assertThat(pageResult.hasPreviousPage(), equalTo(false))
     }
 
     @Test
     fun hasPreviousPageWhenPageStartsAtMoreThan0() {
-        val pageResult = PageResult<Unit>(Page(5, 5), listOf())
+        val pageResult = PageResult<Unit>(Page(5, 5), listOf(), true)
 
         assertThat(pageResult.hasPreviousPage(), equalTo(true))
     }
 
     @Test
     fun doesNotHaveNextPageWhenItemsSizeIsLessThanPageSize() {
-        val pageResult = PageResult<Unit>(Page(0, 5), listOf())
+        val pageResult = PageResult<Unit>(Page(0, 5), listOf(), true)
 
         assertThat(pageResult.hasNextPage(), equalTo(false))
     }
 
     @Test
     fun hasNextPageWhenItemsSizeIsSameAsPageSize() {
-        val pageResult = PageResult(Page(0, 2), listOf(Unit, Unit))
+        val pageResult = PageResult(Page(0, 2), listOf(Unit, Unit), true)
 
         assertThat(pageResult.hasNextPage(), equalTo(true))
+    }
+
+    @Test
+    fun positionIsSameAsPageFirstPosition() {
+        val pageResult = PageResult(Page(1, 2), listOf(Unit, Unit), true)
+
+        assertThat(pageResult.position, equalTo(1))
     }
 }

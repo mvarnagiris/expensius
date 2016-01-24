@@ -15,21 +15,50 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
 import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
 import rx.Observable.just
+import rx.Observable.merge
+import rx.lang.kotlin.PublishSubject
 
-class TransactionsPresenter(private val transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
+class TransactionsPresenter(transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
     internal companion object {
         const val PAGE_SIZE = 50
     }
 
-    internal val pageObservable = just(Page(0, PAGE_SIZE))
+    private val pagingEdges = PublishSubject<PagingEdge>()
+    private val transactions: Observable<PageResult<Transaction>>
+
+    private var endPage = Page(0, PAGE_SIZE)
+    private var hasNextPage = true
+
+    init {
+        val endPages = pagingEdges.filter { it == END }.filter { hasNextPage }.map { endPage.nextPage() }.doOnNext { endPage = it }
+
+        val pages = merge(just(Page(0, PAGE_SIZE)), endPages)
+        transactions = transactionsProvider
+                .transactions(pages)
+                .doOnNext {
+                    hasNextPage = it.hasNextPage()
+                }
+                .cache(1)
+    }
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
-        unsubscribeOnDetach(transactionsProvider.transactions(pageObservable).subscribe { view.showTransactions(it.items) })
+        unsubscribeOnDetach(view.onPagingEdgeReached().subscribe(pagingEdges))
+        unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
+    }
+
+    private fun showTransactions(view: View, pageResult: PageResult<Transaction>) {
+        if (pageResult.isInvalidated) {
+            view.showTransactions(pageResult.items)
+        } else if (pageResult.items.isNotEmpty()) {
+            view.addTransactions(pageResult.items, pageResult.position)
+        }
     }
 
     enum class PagingEdge {
@@ -39,5 +68,6 @@ class TransactionsPresenter(private val transactionsProvider: TransactionsProvid
     interface View : Presenter.View {
         fun onPagingEdgeReached(): Observable<PagingEdge>
         fun showTransactions(transactions: List<Transaction>)
+        fun addTransactions(transactions: List<Transaction>, position: Int)
     }
 }
