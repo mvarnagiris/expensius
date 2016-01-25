@@ -17,9 +17,8 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
 import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
-import rx.Observable.just
-import rx.Observable.merge
 import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenter(transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
@@ -28,42 +27,42 @@ class TransactionsPresenter(transactionsProvider: TransactionsProvider) : Presen
     }
 
     private val pagingEdges = PublishSubject<PagingEdge>()
-    private val transactions: Observable<List<Transaction>>
-    private val endTransaction: Observable<List<Transaction>>
+    private val transactions: Observable<PageResult<Transaction>>
     private val transactionsCache = arrayListOf<Transaction>()
 
     private var endPage = Page(0, PAGE_SIZE)
     private var hasNextPage = true
 
     init {
-        val endPages = pagingEdges.filter { it == END }.filter { hasNextPage }.map { endPage.nextPage() }.doOnNext { endPage = it }
-        val pages = merge(just(endPage), endPages)
-
-        val allTransactionsUpdates = transactionsProvider.transactions(pages).doOnNext {
-            if (it.isInvalidated) {
-                transactionsCache.clear();
-            }
-            transactionsCache.addAll(it.items)
-        }
-        transactions = allTransactionsUpdates.filter { it.isInvalidated }.map { it.items }
-        endTransaction = allTransactionsUpdates
-                .filter { it.isInvalidated.not() }
-                .doOnNext {
-                    hasNextPage = it.hasNextPage()
-                }
-                .map { it.items }
+        val pages = pagingEdges
+                .filter { it == END && hasNextPage }
+                .map { endPage.nextPage() }
+                .doOnNext { endPage = it }
+                .startWith(endPage)
+        transactions = transactionsProvider.transactions(pages)
     }
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
-        if (transactionsCache.size > 0) {
+        if (transactionsCache.isNotEmpty()) {
             view.showTransactions(transactionsCache)
         }
 
         unsubscribeOnDetach(view.onPagingEdgeReached().subscribe(pagingEdges))
-        unsubscribeOnDetach(transactions.subscribe { view.showTransactions(it) })
-        unsubscribeOnDetach(endTransaction.subscribe { view.addTransactions(it, transactionsCache.size - it.size) })
+        unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
+    }
+
+    private fun showTransactions(view: View, pageResult: PageResult<Transaction>) {
+        if (pageResult.isInvalidated) {
+            transactionsCache.clear();
+            view.showTransactions(pageResult.items)
+        } else if (pageResult.items.isNotEmpty()) {
+            view.addTransactions(pageResult.items, transactionsCache.size)
+        }
+
+        transactionsCache.addAll(pageResult.items)
+        hasNextPage = pageResult.hasNextPage()
     }
 
     enum class PagingEdge {

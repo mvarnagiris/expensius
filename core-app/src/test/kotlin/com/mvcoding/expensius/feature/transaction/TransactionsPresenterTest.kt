@@ -26,7 +26,7 @@ import org.junit.Test
 import org.mockito.BDDMockito.*
 import org.mockito.Mockito.mock
 import rx.Observable
-import rx.lang.kotlin.BehaviourSubject
+import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenterTest {
@@ -125,10 +125,9 @@ class TransactionsPresenterTest {
     }
 
     class PageLoaderForTest : PageLoader<Transaction, Any, Any, Any>() {
-        private val loadSubject = BehaviourSubject(Any())
         var size = 0;
 
-        override fun load(query: Any) = loadSubject
+        override fun load(query: Any) = just(Any())
         override fun sizeOf(data: Any) = size;
         override fun dataItemAtPosition(data: Any, position: Int) = Any()
     }
