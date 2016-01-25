@@ -19,6 +19,8 @@ import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEd
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageLoader
 import com.mvcoding.expensius.paging.PageResult
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
@@ -91,52 +93,22 @@ class TransactionsPresenterTest {
     }
 
     @Test
-    fun showsCurrentPageTransactionsWhenDataIsReloaded() {
+    fun showsCachedTransactionsAfterReattach() {
+        var lastShownSize = 0;
+        willAnswer {
+            lastShownSize = it.getArgumentAt(0, List::class.java).size
+            null
+        }.given(view).showTransactions(anyListOf(Transaction::class.java))
+        pageLoader.size = PAGE_SIZE + 1
+        presenter.onAttachView(view)
+        pagingEdgeEnd()
 
+        presenter.onDetachView(view)
+        presenter.onAttachView(view)
+
+        verify(view, times(2)).showTransactions(anyListOf(Transaction::class.java))
+        assertThat(lastShownSize, equalTo(PAGE_SIZE + 1))
     }
-
-    //    @Test
-    //    fun addsPreviousPageWhenStartEdgeIsReached() {
-    //        pageLoader.size = PAGE_SIZE + 1
-    //        presenter.onAttachView(view)
-    //
-    //        pagingEdgeEnd()
-    //
-    //        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE))
-    //    }
-    //
-    //    @Test
-    //    fun addsPreviousPageWhenStartEdgeIsReachedMoreThanOnce() {
-    //        pageLoader.size = PAGE_SIZE * 2 + 1
-    //        presenter.onAttachView(view)
-    //
-    //        pagingEdgeEnd()
-    //        pagingEdgeEnd()
-    //
-    //        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE * 2))
-    //    }
-    //
-    //    @Test
-    //    fun doesNotAddPreviousPageWhenCurrentPageIsTheFirstOne() {
-    //        pageLoader.size = PAGE_SIZE * 2 - 1
-    //        presenter.onAttachView(view)
-    //
-    //        pagingEdgeEnd()
-    //        pagingEdgeEnd()
-    //
-    //        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
-    //    }
-    //
-    //    @Test
-    //    fun doesNotAddPreviousPageWhenPreviousPageIsEmpty() {
-    //        pageLoader.size = PAGE_SIZE * 2
-    //        presenter.onAttachView(view)
-    //
-    //        pagingEdgeEnd()
-    //        pagingEdgeEnd()
-    //
-    //        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
-    //    }
 
     private fun pagingEdgeEnd() {
         pagingEdgeSubject.onNext(END)
@@ -159,9 +131,5 @@ class TransactionsPresenterTest {
         override fun load(query: Any) = loadSubject
         override fun sizeOf(data: Any) = size;
         override fun dataItemAtPosition(data: Any, position: Int) = Any()
-
-        fun reload() {
-            loadSubject.onNext(Any())
-        }
     }
 }
