@@ -14,23 +14,30 @@
 
 package com.mvcoding.expensius.provider.database
 
-class JoinTable(
-        private val joinType: String,
-        private val table: String,
-        val on: String) {
-    override fun toString(): String {
-        return "$joinType join $table on $on"
-    }
+import com.mvcoding.expensius.provider.database.table.Column
+import com.mvcoding.expensius.provider.database.table.Table
+import com.mvcoding.expensius.provider.database.table.TransactionsTable
+
+interface Element {
+    fun sql(): String
 }
 
-class Query(
-        private val columns: List<String>,
-        private val table: String,
-        private val joinTables: List<JoinTable>) {
+abstract class Sql(private var elements: List<Element>) : Element {
+    override fun sql() = elements.joinToString(separator = " ", transform = { it.sql() })
+}
 
-    fun sql(): String {
-        return "select ${columns.joinToString { it }} " +
-               "from $table" +
-               joinTables.joinToString(prefix = " ", separator = "", transform = { it.toString() })
-    }
+class Select(private vararg val columns: Column) : Sql(emptyList()) {
+    constructor(vararg table: Table) : this(*table.map { it.columns() }.flatten().toTypedArray())
+
+    fun from(table: Table) = From(table)
+
+    override fun sql() = "SELECT ${columns.joinToString { it.name }}"
+}
+
+class From(val table: Table) : Element {
+    override fun sql() = table.name
+}
+
+fun test() {
+    Select(TransactionsTable()).from()
 }

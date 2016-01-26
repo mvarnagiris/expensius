@@ -27,8 +27,8 @@ abstract class QueryRequest {
         fun from(table: Table) = From(columns, table)
     }
 
-    class From(override val columns: List<Column>, table: Table) : QueryRequest() {
-        override val tables = listOf(table)
+    class From(override val columns: List<Column>, table: Table, private val leftJoinTables: List<Table>) : QueryRequest() {
+        override val tables = listOf(table, *leftJoinTables.toTypedArray())
         override val whereClause = ""
         override val whereArgs = emptyArray<String>()
 
