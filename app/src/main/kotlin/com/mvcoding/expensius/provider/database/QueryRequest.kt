@@ -24,7 +24,7 @@ abstract class QueryRequest {
     protected abstract val whereArgs: Array<String>
 
     class Select(private val columns: List<Column>) {
-        fun from(table: Table) = From(columns, table)
+        fun from(table: Table) = From(columns, table, listOf())
     }
 
     class From(override val columns: List<Column>, table: Table, private val leftJoinTables: List<Table>) : QueryRequest() {
