@@ -32,9 +32,9 @@ class SqliteDatabase(private val database: BriteDatabase) : Database {
     }
 
     override fun query(queryRequest: QueryRequest): Observable<Cursor> {
-        val tables: Iterable<String> = queryRequest.getTables().map { it.name }
-        val sql = queryRequest.getSql()
-        val arguments = queryRequest.getArguments()
+        val tables: Iterable<String> = queryRequest.tables.map { it.name }
+        val sql = queryRequest.sql()
+        val arguments = queryRequest.arguments
         return database.createQuery(tables, sql, *arguments).map { it.run() }
     }
 

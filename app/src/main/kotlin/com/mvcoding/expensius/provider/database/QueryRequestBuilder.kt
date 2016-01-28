@@ -17,19 +17,18 @@ package com.mvcoding.expensius.provider.database
 import com.mvcoding.expensius.provider.database.table.Column
 import com.mvcoding.expensius.provider.database.table.Table
 
-fun select(columns: Array<Column>) = Select(columns)
 fun select(vararg table: Table) = Select(*table)
 
 interface Element {
     fun elementPartSql(): String
 }
 
-abstract class Sql(
+abstract class QueryRequest(
         protected val previousElement: Element,
         val columns: Array<Column>,
         val tables: Array<Table>,
         val arguments: Array<String>) : Element {
-    fun sql(): String = "${if (previousElement is Sql) previousElement.sql() else previousElement.elementPartSql() } ${elementPartSql()}"
+    fun sql(): String = "${if (previousElement is QueryRequest) previousElement.sql() else previousElement.elementPartSql() } ${elementPartSql()}"
 }
 
 class Select(private val columns: Array<Column>) : Element {
@@ -43,11 +42,16 @@ class From(
         previousElement: Element,
         columns: Array<Column>,
         table: Table,
-        arguments: Array<String>) : Sql(previousElement, columns, arrayOf(table), arguments) {
+        arguments: Array<String>) : QueryRequest(previousElement, columns, arrayOf(table), arguments) {
 
     override fun elementPartSql() = "FROM ${tables.last().name}"
     fun leftJoin(table: Table, on: String) = Join(this, columns, tables.plus(table), arguments, "LEFT", on)
-    fun where(clause: String) = Where(this, columns, tables, arguments, "WHERE", clause)
+    fun where(clause: String, vararg arguments: String = emptyArray()) = Where(this,
+                                                                               columns,
+                                                                               tables,
+                                                                               arguments.toArrayList().toTypedArray(),
+                                                                               "WHERE",
+                                                                               clause)
 }
 
 class Join(
@@ -56,10 +60,15 @@ class Join(
         tables: Array<Table>,
         arguments: Array<String>,
         private val joinType: String,
-        private val on: String) : Sql(previousElement, columns, tables, arguments) {
+        private val on: String) : QueryRequest(previousElement, columns, tables, arguments) {
 
     override fun elementPartSql() = "$joinType JOIN ${tables.last().name} ON $on"
-    fun where(clause: String) = Where(this, columns, tables, arguments, "WHERE", clause)
+    fun where(clause: String, vararg arguments: String = emptyArray()) = Where(this,
+                                                                               columns,
+                                                                               tables,
+                                                                               arguments.toArrayList().toTypedArray(),
+                                                                               "WHERE",
+                                                                               clause)
 }
 
 class Where(
@@ -68,11 +77,21 @@ class Where(
         tables: Array<Table>,
         arguments: Array<String>,
         private val keyword: String,
-        private val clause: String) : Sql(previousElement, columns, tables, arguments) {
+        private val clause: String) : QueryRequest(previousElement, columns, tables, arguments) {
 
     override fun elementPartSql() = "$keyword $clause"
 
-    fun withArgs(vararg arguments: String) = Where(previousElement, columns, tables, this.arguments.plus(arguments), keyword, clause)
-    fun and(clause: String) = Where(this, columns, tables, arguments, "AND", clause)
-    fun or(clause: String) = Where(this, columns, tables, arguments, "OR", clause)
+    fun and(clause: String, vararg arguments: String = emptyArray()) = Where(this,
+                                                                             columns,
+                                                                             tables,
+                                                                             arguments.toArrayList().toTypedArray(),
+                                                                             "AND",
+                                                                             clause)
+
+    fun or(clause: String, vararg arguments: String = emptyArray()) = Where(this,
+                                                                            columns,
+                                                                            tables,
+                                                                            arguments.toArrayList().toTypedArray(),
+                                                                            "OR",
+                                                                            clause)
 }

@@ -18,12 +18,12 @@ import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.ModelState.ARCHIVED
 import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.extension.map
-import com.mvcoding.expensius.extension.selectFrom
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTag
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.tag.TagsProvider
 import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.select
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import rx.Observable
 
@@ -41,6 +41,8 @@ class DatabaseTagsProvider(private val database: Database, private val tagsTable
     }
 
     private fun queryTags(modelState: ModelState) =
-            database.query(selectFrom(tagsTable).where("${tagsTable.modelState}=?", arrayOf(modelState.name)))
+            database.query(select(tagsTable)
+                                   .from(tagsTable)
+                                   .where("${tagsTable.modelState}=?", modelState.name))
                     .map { it.map { it.toTag(tagsTable) } }
 }

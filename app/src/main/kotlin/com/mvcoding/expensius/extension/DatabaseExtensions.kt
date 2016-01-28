@@ -22,15 +22,9 @@ import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionState
 import com.mvcoding.expensius.feature.transaction.TransactionType
-import com.mvcoding.expensius.provider.database.QueryRequest
-import com.mvcoding.expensius.provider.database.table.Column
-import com.mvcoding.expensius.provider.database.table.Table
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import java.math.BigDecimal
-
-fun select(columns: List<Column>): QueryRequest.Select = QueryRequest.Select(columns);
-fun selectFrom(table: Table): QueryRequest.From = select(table.columns()).from(table);
 
 fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
     val contentValues = ContentValues()

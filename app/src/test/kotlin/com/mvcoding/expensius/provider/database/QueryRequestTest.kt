@@ -20,7 +20,7 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class SqlTest {
+class QueryRequestTest {
     val tableFirst = TableFirst()
     val tableSecond = TableSecond()
 
@@ -76,12 +76,11 @@ class SqlTest {
                 .leftJoin(tableSecond, "${tableFirst.id.name}=${tableSecond.id.name}")
                 .where("${tableFirst.id.name}=1")
                 .or("${tableFirst.id.name}=2")
-                .and("${tableFirst.value.name}=?")
-                .withArgs("3")
+                .and("${tableFirst.value.name}=?", "3", "4")
 
         assertArrayEquals(arrayOf(tableFirst, tableSecond), sql.tables)
         assertArrayEquals(arrayOf(tableFirst.id, tableFirst.value, tableSecond.id, tableSecond.value), sql.columns)
-        assertArrayEquals(arrayOf("3"), sql.arguments)
+        assertArrayEquals(arrayOf("3", "4"), sql.arguments)
     }
 
     class TableFirst : Table("tableFirst") {

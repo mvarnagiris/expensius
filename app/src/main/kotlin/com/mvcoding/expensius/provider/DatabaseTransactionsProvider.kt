@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.provider
 
 import com.mvcoding.expensius.ModelState.NONE
-import com.mvcoding.expensius.extension.select
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
 import com.mvcoding.expensius.feature.transaction.Transaction
@@ -24,6 +23,7 @@ import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.DatabasePageLoader
+import com.mvcoding.expensius.provider.database.select
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
@@ -42,9 +42,9 @@ class DatabaseTransactionsProvider(
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
         return pageLoader.load({ it.toTransaction(transactionsTable) },
-                               select(transactionsTable.columns().plus(tagsTable.columns()))
+                               select(transactionsTable, tagsTable)
                                        .from(transactionsTable)
-                                       .where("${transactionsTable.modelState}=?", arrayOf(NONE.name)),
+                                       .where("${transactionsTable.modelState}=?", NONE.name),
                                pages)
     }
 }
