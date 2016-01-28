@@ -24,47 +24,55 @@ interface Element {
     fun elementPartSql(): String
 }
 
-abstract class Sql(private val previousElement: Element, val columns: Array<Column>, val tables: Array<Table>) : Element {
+abstract class Sql(
+        protected val previousElement: Element,
+        val columns: Array<Column>,
+        val tables: Array<Table>,
+        val arguments: Array<String>) : Element {
     fun sql(): String = "${if (previousElement is Sql) previousElement.sql() else previousElement.elementPartSql() } ${elementPartSql()}"
 }
 
 class Select(private val columns: Array<Column>) : Element {
     constructor(vararg table: Table) : this(table.map { it.columns() }.flatten().toTypedArray())
 
-    fun from(table: Table) = From(this, columns, table)
+    fun from(table: Table) = From(this, columns, table, emptyArray())
     override fun elementPartSql() = "SELECT ${columns.joinToString { it.name }}"
 }
 
 class From(
         previousElement: Element,
         columns: Array<Column>,
-        table: Table) : Sql(previousElement, columns, arrayOf(table)) {
+        table: Table,
+        arguments: Array<String>) : Sql(previousElement, columns, arrayOf(table), arguments) {
 
     override fun elementPartSql() = "FROM ${tables.last().name}"
-    fun leftJoin(table: Table, on: String) = Join(this, columns, tables.plus(table), "LEFT", on)
-    fun where(clause: String) = Where(this, columns, tables, "WHERE", clause)
+    fun leftJoin(table: Table, on: String) = Join(this, columns, tables.plus(table), arguments, "LEFT", on)
+    fun where(clause: String) = Where(this, columns, tables, arguments, "WHERE", clause)
 }
 
 class Join(
         previousElement: Element,
         columns: Array<Column>,
         tables: Array<Table>,
+        arguments: Array<String>,
         private val joinType: String,
-        private val on: String) : Sql(previousElement, columns, tables) {
+        private val on: String) : Sql(previousElement, columns, tables, arguments) {
 
     override fun elementPartSql() = "$joinType JOIN ${tables.last().name} ON $on"
-    fun where(clause: String) = Where(this, columns, tables, "WHERE", clause)
+    fun where(clause: String) = Where(this, columns, tables, arguments, "WHERE", clause)
 }
 
 class Where(
         previousElement: Element,
         columns: Array<Column>,
         tables: Array<Table>,
+        arguments: Array<String>,
         private val keyword: String,
-        private val clause: String) : Sql(previousElement, columns, tables) {
+        private val clause: String) : Sql(previousElement, columns, tables, arguments) {
 
     override fun elementPartSql() = "$keyword $clause"
 
-    fun and(clause: String) = Where(this, columns, tables, "AND", clause)
-    fun or(clause: String) = Where(this, columns, tables, "OR", clause)
+    fun withArgs(vararg arguments: String) = Where(previousElement, columns, tables, this.arguments.plus(arguments), keyword, clause)
+    fun and(clause: String) = Where(this, columns, tables, arguments, "AND", clause)
+    fun or(clause: String) = Where(this, columns, tables, arguments, "OR", clause)
 }

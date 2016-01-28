@@ -16,6 +16,7 @@ package com.mvcoding.expensius.provider.database
 
 import com.mvcoding.expensius.provider.database.table.Column
 import com.mvcoding.expensius.provider.database.table.Table
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -39,7 +40,7 @@ class SqlTest {
                 .and("${tableFirst.value.name}=?")
                 .sql()
 
-        assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 OR tableFirst_value=?",
+        assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=?",
                      sql)
     }
 
@@ -64,8 +65,23 @@ class SqlTest {
                 .and("${tableFirst.value.name}=?")
                 .sql()
 
-        assertEquals("SELECT tableFirst_id, tableFirst_value, tableSecond_id, tableSecond_value FROM tableFirst INNJER JOIN tableSecond ON tableFirst_id=tableSecond_id WHERE tableFirst_id=1 OR tableFirst_id=2 OR tableFirst_value=?",
+        assertEquals("SELECT tableFirst_id, tableFirst_value, tableSecond_id, tableSecond_value FROM tableFirst LEFT JOIN tableSecond ON tableFirst_id=tableSecond_id WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=?",
                      sql)
+    }
+
+    @Test
+    fun containsAllPassedValues() {
+        val sql = select(tableFirst, tableSecond)
+                .from(tableFirst)
+                .leftJoin(tableSecond, "${tableFirst.id.name}=${tableSecond.id.name}")
+                .where("${tableFirst.id.name}=1")
+                .or("${tableFirst.id.name}=2")
+                .and("${tableFirst.value.name}=?")
+                .withArgs("3")
+
+        assertArrayEquals(arrayOf(tableFirst, tableSecond), sql.tables)
+        assertArrayEquals(arrayOf(tableFirst.id, tableFirst.value, tableSecond.id, tableSecond.value), sql.columns)
+        assertArrayEquals(arrayOf("3"), sql.arguments)
     }
 
     class TableFirst : Table("tableFirst") {
