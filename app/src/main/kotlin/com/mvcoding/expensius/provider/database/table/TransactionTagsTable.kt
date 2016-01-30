@@ -14,12 +14,12 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-import com.mvcoding.expensius.provider.database.table.Column.Type.TEXT
+import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.TEXT
 
 class TransactionTagsTable : RelationshipTable("transaction_tags") {
-    val transactionId = Column(this, "transactionId", TEXT);
-    val tagId = Column(this, "tagId", TEXT);
+    val transactionId = ValueColumn(this, "transactionId", TEXT);
+    val tagId = ValueColumn(this, "tagId", TEXT);
 
-    override fun idColumns() = listOf(transactionId, tagId)
-    override fun columns() = listOf(transactionId, tagId)
+    override fun idColumns() = arrayOf(transactionId, tagId)
+    override fun columns() = arrayOf(transactionId, tagId)
 }

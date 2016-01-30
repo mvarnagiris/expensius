@@ -42,9 +42,12 @@ class DatabaseTransactionsProvider(
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
         return pageLoader.load({ it.toTransaction(transactionsTable) },
-                               select(transactionsTable, tagsTable)
+                               select(arrayOf(*transactionsTable.columns(), tagsTable.transactionTags))
                                        .from(transactionsTable)
+                                       .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
+                                       .leftJoin(tagsTable, "${transactionTagsTable.tagId}=${tagsTable.id}")
                                        .where("${transactionsTable.modelState}=?", NONE.name),
+                //.groupBy(transactionsTable.id)
                                pages)
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,7 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-data class Column(val name: String, private val type: Column.Type, private val defaultValue: String = "") {
-    constructor(table: Table, name: String, type: Column.Type, defaultValue: String = "") : this("${table.name}_$name", type, defaultValue)
-
-    fun createScript() = "$name $type ${if (defaultValue.isBlank()) "" else "default $defaultValue"}"
-
-    override fun toString(): String {
-        return name
-    }
-
-    enum class Type(val dataType: String) {
-        TEXT("text"),
-        TEXT_PRIMARY_KEY("text primary key"),
-        INTEGER("integer"),
-        REAL("real"),
-        BOOLEAN("boolean"),
-        DATE_TIME("datetime");
-
-        override fun toString(): String {
-            return dataType
-        }
-    }
+interface Column {
+    val query: String
+    val name: String
 }

@@ -17,10 +17,10 @@ package com.mvcoding.expensius.provider.database.table
 import com.mvcoding.expensius.ModelState
 
 abstract class ModelTable(name: String) : Table(name) {
-    val id = Column(this, "id", Column.Type.TEXT_PRIMARY_KEY);
-    val modelState = Column(this, "modelState", Column.Type.TEXT, ModelState.NONE.name);
+    val id = ValueColumn(this, "id", ValueColumn.Type.TEXT_PRIMARY_KEY);
+    val modelState = ValueColumn(this, "modelState", ValueColumn.Type.TEXT, ModelState.NONE.name);
 
-    override fun idColumns() = listOf(id)
-    override fun columns() = listOf(id, modelState).plus(modelColumns())
-    abstract fun modelColumns(): List<Column>
+    override fun idColumns() = arrayOf(id)
+    override fun columns() = arrayOf(id, modelState).plus(modelColumns())
+    abstract fun modelColumns(): Array<ValueColumn>
 }

@@ -14,8 +14,8 @@
 
 package com.mvcoding.expensius.provider.database
 
-import com.mvcoding.expensius.provider.database.table.Column
 import com.mvcoding.expensius.provider.database.table.Table
+import com.mvcoding.expensius.provider.database.table.ValueColumn
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -84,18 +84,18 @@ class QueryRequestTest {
     }
 
     class TableFirst : Table("tableFirst") {
-        val id = Column(this, "id", Column.Type.TEXT_PRIMARY_KEY);
-        val value = Column(this, "value", Column.Type.TEXT);
+        val id = ValueColumn(this, "id", ValueColumn.Type.TEXT_PRIMARY_KEY);
+        val value = ValueColumn(this, "value", ValueColumn.Type.TEXT);
 
-        override fun idColumns() = listOf(id)
-        override fun columns() = listOf(id, value)
+        override fun idColumns() = arrayOf(id)
+        override fun columns() = arrayOf(id, value)
     }
 
     class TableSecond : Table("tableSecond") {
-        val id = Column(this, "id", Column.Type.TEXT_PRIMARY_KEY);
-        val value = Column(this, "value", Column.Type.TEXT);
+        val id = ValueColumn(this, "id", ValueColumn.Type.TEXT_PRIMARY_KEY);
+        val value = ValueColumn(this, "value", ValueColumn.Type.TEXT);
 
-        override fun idColumns() = listOf(id)
-        override fun columns() = listOf(id, value)
+        override fun idColumns() = arrayOf(id)
+        override fun columns() = arrayOf(id, value)
     }
 }

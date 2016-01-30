@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,4 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-abstract class Table(val name: String) {
-    open fun createScript() = "create table $name (${columns().joinToString { it.createScript() }})"
-    abstract fun idColumns(): Array<ValueColumn>
-    abstract fun columns(): Array<ValueColumn>
-}
+data class CalculatedColumn(override val query: String, override val name: String) : Column

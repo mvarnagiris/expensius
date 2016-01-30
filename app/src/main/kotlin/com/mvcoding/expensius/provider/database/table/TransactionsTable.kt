@@ -14,18 +14,16 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-import com.mvcoding.expensius.provider.database.table.Column.Type.*
+import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.*
 
 class TransactionsTable : ModelTable("transactions") {
-    val transactionType = Column(this, "transactionType", TEXT)
-    val transactionState = Column(this, "transactionState", TEXT)
-    val timestamp = Column(this, "timestamp", DATE_TIME)
-    val currency = Column(this, "currency", TEXT)
-    val amount = Column(this, "amount", REAL)
-    val tags = Column(this, "tags", TEXT)
-    val note = Column(this, "note", TEXT)
+    val transactionType = ValueColumn(this, "transactionType", TEXT)
+    val transactionState = ValueColumn(this, "transactionState", TEXT)
+    val timestamp = ValueColumn(this, "timestamp", DATE_TIME)
+    val currency = ValueColumn(this, "currency", TEXT)
+    val amount = ValueColumn(this, "amount", REAL)
+    val tags = ValueColumn(this, "tags", TEXT)
+    val note = ValueColumn(this, "note", TEXT)
 
-    override fun modelColumns(): List<Column> {
-        return listOf(transactionType, transactionState, timestamp, currency, amount, tags, note)
-    }
+    override fun modelColumns() = arrayOf(transactionType, transactionState, timestamp, currency, amount, tags, note)
 }

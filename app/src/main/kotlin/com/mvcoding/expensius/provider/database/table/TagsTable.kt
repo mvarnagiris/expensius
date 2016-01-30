@@ -14,11 +14,16 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-class TagsTable : ModelTable("tags") {
-    val title = Column(this, "title", Column.Type.TEXT);
-    val color = Column(this, "color", Column.Type.INTEGER, "0");
+import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.INTEGER
+import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.TEXT
 
-    override fun modelColumns(): List<Column> {
-        return listOf(title, color)
-    }
+class TagsTable : ModelTable("tags") {
+    val title = ValueColumn(this, "title", TEXT);
+    val color = ValueColumn(this, "color", INTEGER, "0");
+
+    val transactionTags = CalculatedColumn(
+            "group_concat(${columns().joinToString(separator = ":;:", transform = { it.toString() })}, ';:;')",
+            "tags")
+
+    override fun modelColumns() = arrayOf(title, color)
 }

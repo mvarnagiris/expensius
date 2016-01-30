@@ -17,6 +17,7 @@ package com.mvcoding.expensius.provider.database
 import com.mvcoding.expensius.provider.database.table.Column
 import com.mvcoding.expensius.provider.database.table.Table
 
+fun select(columns: Array<Column>) = Select(columns)
 fun select(vararg table: Table) = Select(*table)
 
 interface Element {
@@ -32,7 +33,7 @@ abstract class QueryRequest(
 }
 
 class Select(private val columns: Array<Column>) : Element {
-    constructor(vararg table: Table) : this(table.map { it.columns() }.flatten().toTypedArray())
+    constructor(vararg table: Table) : this(table.map { it.columns().map { it } }.flatten().toTypedArray())
 
     fun from(table: Table) = From(this, columns, table, emptyArray())
     override fun elementPartSql() = "SELECT ${columns.joinToString { it.name }}"
@@ -63,6 +64,7 @@ class Join(
         private val on: String) : QueryRequest(previousElement, columns, tables, arguments) {
 
     override fun elementPartSql() = "$joinType JOIN ${tables.last().name} ON $on"
+    fun leftJoin(table: Table, on: String) = Join(this, columns, tables.plus(table), arguments, "LEFT", on)
     fun where(clause: String, vararg arguments: String = emptyArray()) = Where(this,
                                                                                columns,
                                                                                tables,
