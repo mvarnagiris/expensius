@@ -40,10 +40,10 @@ class SqliteDatabase(private val database: BriteDatabase) : Database {
 
     private fun updateOrInsert(table: Table, contentValues: ContentValues) {
         val where = "${table.idColumns().joinToString(separator = " AND ", transform = { "${it.name}=?" })}"
-        val query = "SELECT ${table.idColumns().joinToString { it.name }} " +
-                "FROM ${table.name} " +
-                "WHERE $where " +
-                "LIMIT 1"
+        val query = "SELECT ${table.idColumns().joinToString { it.toString() }} " +
+                    "FROM ${table.name} " +
+                    "WHERE $where " +
+                    "LIMIT 1"
         val args = table.idColumns().map {
             contentValues.getAsString(it.name).let { value -> if (value.isBlank()) "0" else value }
         }.toTypedArray()

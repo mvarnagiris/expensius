@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.tag
+package com.mvcoding.expensius.feature.transaction
 
 import android.content.Context
 import android.os.Bundle
@@ -20,23 +20,15 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 
-class TagActivity : BaseActivity() {
+class TransactionsActivity : BaseActivity() {
     companion object {
-        private const val EXTRA_TAG = "EXTRA_TAG"
-
-        fun start(context: Context, tag: Tag) {
-            ActivityStarter(context, TagActivity::class)
-                    .extra(EXTRA_TAG, tag)
-                    .start()
+        fun start(context: Context) {
+            ActivityStarter(context, TransactionsActivity::class).start()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_tag)
-
-        val tag = intent.getSerializableExtra(TagActivity.EXTRA_TAG) as Tag
-        val tagView = findViewById(R.id.tagView) as TagView
-        tagView.init(tag)
+        setContentView(R.layout.view_transactions)
     }
 }

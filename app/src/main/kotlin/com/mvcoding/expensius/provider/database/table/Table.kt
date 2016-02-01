@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.provider.database.table
 
 abstract class Table(val name: String) {
-    open fun createScript() = "create table $name (${columns().joinToString { it.createScript() }})"
+    open fun createScript() = "CREATE TABLE $name (${columns().joinToString { it.createScript() }})"
     abstract fun idColumns(): Array<ValueColumn>
     abstract fun columns(): Array<ValueColumn>
 }

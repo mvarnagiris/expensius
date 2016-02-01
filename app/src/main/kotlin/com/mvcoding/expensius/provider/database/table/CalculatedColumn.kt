@@ -14,4 +14,6 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-data class CalculatedColumn(override val query: String, override val name: String) : Column
+data class CalculatedColumn(override val query: String, override val name: String) : Column {
+    override fun toString() = "$query as $name"
+}

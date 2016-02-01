@@ -43,6 +43,9 @@
             android:name=".feature.calculator.CalculatorActivity"
             android:label="@string/calculator" />
         <activity
+            android:name=".feature.transaction.TransactionsActivity"
+            android:label="@string/transactions" />
+        <activity
             android:name=".feature.transaction.TransactionActivity"
             android:label="@string/transaction" />
     </application>

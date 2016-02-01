@@ -19,10 +19,15 @@ import android.support.percent.PercentRelativeLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.mvcoding.expensius.R
-import kotlinx.android.synthetic.view_intro_page.view.*
 
 class IntroPageView : PercentRelativeLayout {
+    private val imageView by lazy { findViewById(R.id.imageView) as ImageView }
+    private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
+    private val messageTextView by lazy { findViewById(R.id.messageTextView) as TextView }
+
     constructor(context: Context?) : this(context, null)
 
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)

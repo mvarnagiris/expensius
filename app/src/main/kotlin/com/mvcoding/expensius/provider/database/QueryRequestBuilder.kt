@@ -36,7 +36,7 @@ class Select(private val columns: Array<Column>) : Element {
     constructor(vararg table: Table) : this(table.map { it.columns().map { it } }.flatten().toTypedArray())
 
     fun from(table: Table) = From(this, columns, table, emptyArray())
-    override fun elementPartSql() = "SELECT ${columns.joinToString { it.name }}"
+    override fun elementPartSql() = "SELECT ${columns.joinToString { it.toString() }}"
 }
 
 class From(

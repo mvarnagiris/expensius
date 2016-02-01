@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.intro
 import android.content.Context
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
+import android.widget.Button
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
@@ -25,11 +26,12 @@ import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.overview.OverviewActivity
-import kotlinx.android.synthetic.view_intro.view.*
 import rx.Observable
 
 class IntroView : LinearLayout, IntroPresenter.View<Int> {
     private val viewPager by lazy { findViewById(R.id.viewPager) as ViewPager }
+    private val loginButton by lazy { findViewById(R.id.loginButton) as Button }
+    private val skipButton by lazy { findViewById(R.id.skipButton) as Button }
 
     private val presenter = provideActivityScopedSingleton(IntroPresenter::class)
     private val adapter = IntroPagesAdapter()
@@ -47,12 +49,12 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter?.onAttachView(this)
+        presenter.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter?.onDetachView(this)
+        presenter.onDetachView(this)
     }
 
     override fun showIntroPages(introPages: List<IntroPage<Int>>, activeIntroPagePosition: Int) {

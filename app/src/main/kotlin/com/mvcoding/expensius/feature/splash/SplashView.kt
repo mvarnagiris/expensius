@@ -33,12 +33,12 @@ class SplashView : FrameLayout, SplashPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter?.onAttachView(this)
+        presenter.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter?.onDetachView(this)
+        presenter.onDetachView(this)
     }
 
     override fun startOverview() {

@@ -16,6 +16,6 @@ package com.mvcoding.expensius.provider.database.table
 
 abstract class RelationshipTable(name: String) : Table(name) {
     override fun createScript(): String {
-        return "create table $name (${columns().joinToString { it.createScript() }}, primary key ${idColumns().joinToString { it.name }})"
+        return "CREATE TABLE $name (${columns().joinToString { it.createScript() }}, PRIMARY KEY(${idColumns().joinToString { it.name }}))"
     }
 }

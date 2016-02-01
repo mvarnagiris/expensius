@@ -66,10 +66,10 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTa
     val currency = Currency(getString(this.getColumnIndex(transactionsTable.currency.name)))
     val amount = BigDecimal(getString(this.getColumnIndex(transactionsTable.amount.name)))
     val tagSplitRegex = Regex(TagsTable.COLUMN_SEPARATOR)
-    val tags = getString(this.getColumnIndex(tagsTable.transactionTags.name)).split(Regex(TagsTable.TAG_SEPARATOR)).map {
+    val tags = getString(this.getColumnIndex(tagsTable.transactionTags.name))?.split(Regex(TagsTable.TAG_SEPARATOR))?.map {
         val tagValues = it.split(tagSplitRegex)
         Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt())
-    }.toSet()
+    }?.toSet() ?: setOf<Tag>()
     val note = getString(this.getColumnIndex(transactionsTable.note.name))
     return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, tags, note)
 }

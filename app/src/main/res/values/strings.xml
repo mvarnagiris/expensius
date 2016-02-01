@@ -37,6 +37,7 @@
     <string name="date">Date</string>
     <string name="confirmed">Confirmed</string>
     <string name="transaction">Transaction</string>
+    <string name="transactions">Transactions</string>
     <string name="select_tags">Select tags</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>

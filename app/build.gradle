@@ -21,10 +21,6 @@ buildscript {
     }
 }
 
-repositories {
-    maven { url "https://jitpack.io" }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: "kotlin-android"
 

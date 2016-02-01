@@ -24,5 +24,8 @@ class TransactionModule : ShankModule {
             transaction: Transaction ->
             TransactionPresenter(transaction, provideSingleton(TransactionsProvider::class))
         })
+        registerFactory<TransactionsPresenter>(TransactionsPresenter::class.java, {
+            TransactionsPresenter(provideSingleton(TransactionsProvider::class))
+        })
     }
 }

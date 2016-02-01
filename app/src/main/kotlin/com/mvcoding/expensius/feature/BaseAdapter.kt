@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature
 import android.support.v7.widget.RecyclerView
 
 abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Adapter<VH>() {
-    val items = arrayListOf<T>()
+    private val items = arrayListOf<T>()
 
     override fun getItemCount(): Int {
         return items.size
@@ -36,6 +36,11 @@ abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Ada
     fun insert(item: T, position: Int) {
         items.add(position, item)
         notifyItemInserted(position)
+    }
+
+    fun insert(items: List<T>, position: Int) {
+        this.items.addAll(position, items)
+        notifyItemRangeInserted(position, items.size)
     }
 
     fun remove(item: T) {

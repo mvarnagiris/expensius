@@ -25,6 +25,8 @@ import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.util.Pair
+import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.textChanges
@@ -37,13 +39,16 @@ import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.extension.supportsLollipop
 import com.mvcoding.expensius.extension.toBaseActivity
-import kotlinx.android.synthetic.view_tag.view.*
 import rx.Observable
 import rx.lang.kotlin.observable
 
 class TagView : LinearLayout, TagPresenter.View {
+    private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
     private val lobsterShadeSlider by lazy { findViewById(R.id.lobsterShadeSlider) as LobsterShadeSlider }
+    private val titleContainerView by lazy { findViewById(R.id.titleContainerView) }
+    private val titleEditText by lazy { findViewById(R.id.titleEditText) as EditText }
+    private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
 
     private val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class, tag) }
     private val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
@@ -71,12 +76,12 @@ class TagView : LinearLayout, TagPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter?.onAttachView(this)
+        presenter.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter?.onDetachView(this)
+        presenter.onDetachView(this)
     }
 
     override fun showTitle(title: String) {
@@ -168,18 +173,16 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     private fun setColorOnViews(color: Int) {
-        val toolbarView = toolbar as Toolbar
-
         titleContainerView.setBackgroundColor(color)
-        toolbarView.setBackgroundColor(color)
+        toolbar.setBackgroundColor(color)
 
         val textColor = calculateTextColor(color)
         titleEditText.setTextColor(textColor)
         titleEditText.setHintTextColor(ColorUtils.setAlphaComponent(textColor, 0x88))
-        toolbarView.setTitleTextColor(textColor)
-        val navigationIcon = DrawableCompat.wrap(toolbarView.navigationIcon.mutate())
+        toolbar.setTitleTextColor(textColor)
+        val navigationIcon = DrawableCompat.wrap(toolbar.navigationIcon.mutate())
         DrawableCompat.setTint(navigationIcon, textColor)
-        toolbarView.navigationIcon = navigationIcon
+        toolbar.navigationIcon = navigationIcon
 
         if (supportsLollipop()) {
             context.toBaseActivity().window.statusBarColor = color;

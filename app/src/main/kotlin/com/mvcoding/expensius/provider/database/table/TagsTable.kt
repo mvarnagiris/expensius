@@ -20,14 +20,14 @@ import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.TEXT
 class TagsTable : ModelTable("tags") {
     companion object {
         const val COLUMN_SEPARATOR = ":!:"
-        const val TAG_SEPARATOR = "?:?"
+        const val TAG_SEPARATOR = ";:;"
     }
 
     val title = ValueColumn(this, "title", TEXT);
     val color = ValueColumn(this, "color", INTEGER, "0");
 
     val transactionTags = CalculatedColumn(
-            "group_concat(${columns().joinToString(separator = COLUMN_SEPARATOR, transform = { it.toString() })}, '$TAG_SEPARATOR')",
+            "group_concat(${columns().joinToString(separator = "+'$COLUMN_SEPARATOR'+", transform = { it.toString() })}, '$TAG_SEPARATOR')",
             "tags")
 
     override fun modelColumns() = arrayOf(title, color)
