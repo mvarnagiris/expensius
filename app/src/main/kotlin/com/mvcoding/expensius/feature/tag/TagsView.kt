@@ -85,7 +85,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter?.onAttachView(this)
+        presenter.onAttachView(this)
     }
 
     override fun onDetachedFromWindow() {
@@ -95,7 +95,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
             commitArchiveObservable.onNext(Unit)
         }
 
-        presenter?.onDetachView(this)
+        presenter.onDetachView(this)
     }
 
     override fun setDisplayType(displayType: TagsPresenter.DisplayType) {
@@ -133,7 +133,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
         dismissSnackbarIfVisible()
     }
 
-    override fun onTagSelected() = adapter.onTagSelected()
+    override fun onTagSelected() = adapter.itemClicks()
 
     override fun onCreateTag() = toolbarItemClicks.filter { it == R.id.action_create }.map { Unit }
 

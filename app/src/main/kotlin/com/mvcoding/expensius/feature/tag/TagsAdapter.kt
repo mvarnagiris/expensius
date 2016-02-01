@@ -14,15 +14,12 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import com.mvcoding.expensius.feature.BaseAdapter
-import rx.Observable
-import rx.lang.kotlin.PublishSubject
+import com.mvcoding.expensius.feature.BaseClickableAdapter
+import com.mvcoding.expensius.feature.ClickableViewHolder
 import rx.subjects.PublishSubject
 
-class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
-    val tagSelectedSubject = PublishSubject<Int>()
+class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<TagItemView>>() {
     var displayType: TagsPresenter.DisplayType = TagsPresenter.DisplayType.VIEW
     var selectedTags: Set<Tag> = setOf()
         set(value) {
@@ -30,22 +27,11 @@ class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tagItemView.setTag(getItem(position))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, positionClickedSubject: PublishSubject<Int>) =
+            ClickableViewHolder(TagItemView.inflate(parent), positionClickedSubject)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(TagItemView.inflate(parent), tagSelectedSubject)
-    }
-
-    class ViewHolder(
-            itemView: TagItemView,
-            tagSelectedSubject: PublishSubject<Int>) : RecyclerView.ViewHolder(itemView) {
-        val tagItemView: TagItemView = itemView
-
-        init {
-            tagItemView.setOnClickListener({ tagSelectedSubject.onNext(adapterPosition) })
-        }
+    override fun onBindViewHolder(holder: ClickableViewHolder<TagItemView>, position: Int) {
+        holder.view.setTag(getItem(position))
     }
 
     fun setTagSelected(tag: Tag, selected: Boolean) {
@@ -54,9 +40,5 @@ class TagsAdapter() : BaseAdapter<Tag, TagsAdapter.ViewHolder>() {
         } else {
             selectedTags = selectedTags.minus(tag)
         }
-    }
-
-    fun onTagSelected(): Observable<Tag> {
-        return tagSelectedSubject.map({ getItem(it) })
     }
 }
