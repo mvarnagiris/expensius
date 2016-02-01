@@ -46,8 +46,8 @@ class DatabaseTransactionsProvider(
                                        .from(transactionsTable)
                                        .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
                                        .leftJoin(tagsTable, "${transactionTagsTable.tagId}=${tagsTable.id}")
-                                       .where("${transactionsTable.modelState}=?", NONE.name),
-                //.groupBy(transactionsTable.id)
+                                       .where("${transactionsTable.modelState}=?", NONE.name)
+                                       .groupBy(transactionsTable.id),
                                pages)
     }
 }

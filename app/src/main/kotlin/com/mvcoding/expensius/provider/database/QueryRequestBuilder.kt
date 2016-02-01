@@ -96,4 +96,16 @@ class Where(
                                                                             arguments.toArrayList().toTypedArray(),
                                                                             "OR",
                                                                             clause)
+
+    fun groupBy(vararg groupByColumns: Column) = GroupBy(this, columns, tables, arguments, groupByColumns.toArrayList().toTypedArray())
+}
+
+class GroupBy(
+        previousElement: Element,
+        columns: Array<Column>,
+        tables: Array<Table>,
+        arguments: Array<String>,
+        private val groupByColumns: Array<Column>) : QueryRequest(previousElement, columns, tables, arguments) {
+
+    override fun elementPartSql() = "GROUP BY ${groupByColumns.joinToString { it.name }}"
 }

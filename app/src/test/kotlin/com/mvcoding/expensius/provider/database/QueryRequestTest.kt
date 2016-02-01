@@ -45,6 +45,20 @@ class QueryRequestTest {
     }
 
     @Test
+    fun selectWhereGroupBy() {
+        val sql = select(tableFirst)
+                .from(tableFirst)
+                .where("${tableFirst.id.name}=1")
+                .or("${tableFirst.id.name}=2")
+                .and("${tableFirst.value.name}=?")
+                .groupBy(tableFirst.id, tableSecond.id)
+                .sql()
+
+        assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=? GROUP BY tableFirst_id, tableSecond_id",
+                     sql)
+    }
+
+    @Test
     fun leftJoin() {
         val sql = select(tableFirst, tableSecond)
                 .from(tableFirst)
