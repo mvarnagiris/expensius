@@ -41,7 +41,7 @@ class DatabaseTransactionsProvider(
     }
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-        return pageLoader.load({ it.toTransaction(transactionsTable) },
+        return pageLoader.load({ it.toTransaction(transactionsTable, tagsTable) },
                                select(arrayOf(*transactionsTable.columns(), tagsTable.transactionTags))
                                        .from(transactionsTable)
                                        .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
