@@ -57,7 +57,7 @@ fun Cursor.toTag(tagsTable: TagsTable): Tag {
     return Tag(id, modelState, title, color)
 }
 
-fun Cursor.toTransaction(transactionsTable: TransactionsTable): Transaction {
+fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTable): Transaction {
     val id = getString(this.getColumnIndex(transactionsTable.id.name))
     val modelState = ModelState.valueOf(getString(this.getColumnIndex(transactionsTable.modelState.name)))
     val transactionType = TransactionType.valueOf(getString(this.getColumnIndex(transactionsTable.transactionType.name)))
@@ -65,8 +65,11 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable): Transaction {
     val timestamp = getLong(this.getColumnIndex(transactionsTable.timestamp.name))
     val currency = Currency(getString(this.getColumnIndex(transactionsTable.currency.name)))
     val amount = BigDecimal(getString(this.getColumnIndex(transactionsTable.amount.name)))
-    // TODO Read tags from cursor
-    val tags = setOf<Tag>()
+    val tagSplitRegex = Regex(TagsTable.COLUMN_SEPARATOR)
+    val tags = getString(this.getColumnIndex(tagsTable.transactionTags.name)).split(Regex(TagsTable.TAG_SEPARATOR)).map {
+        val tagValues = it.split(tagSplitRegex)
+        Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt())
+    }.toSet()
     val note = getString(this.getColumnIndex(transactionsTable.note.name))
     return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, tags, note)
 }
