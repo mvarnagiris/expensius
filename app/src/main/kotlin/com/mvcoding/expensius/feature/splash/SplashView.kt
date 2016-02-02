@@ -23,7 +23,7 @@ import com.mvcoding.expensius.feature.intro.IntroActivity
 import com.mvcoding.expensius.feature.overview.OverviewActivity
 
 class SplashView : FrameLayout, SplashPresenter.View {
-    private val presenter = provideActivityScopedSingleton(SplashPresenter::class)
+    private val presenter = provideActivityScopedSingleton(SplashPresenter::class, context)
 
     constructor(context: Context?) : this(context, null)
 

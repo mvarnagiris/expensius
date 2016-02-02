@@ -17,17 +17,18 @@ package com.mvcoding.expensius.feature
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
-abstract class Presenter<in V : Presenter.View> {
+abstract class Presenter<V : Presenter.View> {
+    private val lifetimeSubscriptions: CompositeSubscription = CompositeSubscription()
+    private lateinit var viewSubscriptions: CompositeSubscription
     private var view: View? = null
-    private var subscriptions: CompositeSubscription? = null
 
     open fun onAttachView(view: V) {
-        if (this.view !== null) {
-            throw IllegalStateException("View " + this.view + " is already defined")
+        if (this.view != null) {
+            throw IllegalStateException("Cannot attach $view, because ${this.view} is already attached")
         }
 
         this.view = view
-        this.subscriptions = CompositeSubscription()
+        this.viewSubscriptions = CompositeSubscription()
     }
 
     open fun onDetachView(view: V) {
@@ -35,18 +36,28 @@ abstract class Presenter<in V : Presenter.View> {
             throw IllegalStateException("View is already detached.")
         }
 
-        if (this.view !== view) {
-            throw IllegalStateException("Trying to detach different view. We have view: " + this.view + ". Trying to detach view: " + view)
+        if (this.view != view) {
+            throw IllegalStateException("Trying to detach different view. We have view: ${this.view}. Trying to detach view: $view")
         }
+
         this.view = null;
-        this.subscriptions?.unsubscribe()
-        this.subscriptions = null;
+        this.viewSubscriptions.unsubscribe()
+    }
+
+    open fun onDestroy() {
+        if (lifetimeSubscriptions.isUnsubscribed) {
+            throw IllegalStateException("Presenter $this has already been destroyed.")
+        }
+        lifetimeSubscriptions.unsubscribe()
     }
 
     protected fun unsubscribeOnDetach(subscription: Subscription) {
-        subscriptions!!.add(subscription)
+        viewSubscriptions.add(subscription)
     }
 
-    interface View {
+    protected fun unsubscribeOnDestroy(subscription: Subscription) {
+        lifetimeSubscriptions.add(subscription)
     }
+
+    interface View
 }

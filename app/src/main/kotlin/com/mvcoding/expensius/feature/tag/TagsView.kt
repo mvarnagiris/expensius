@@ -50,7 +50,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
     private val commitArchiveObservable = PublishSubject<Unit>()
     private val undoArchiveObservable = PublishSubject<Unit>()
 
-    private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class, adapter.displayType, selectedTags) }
+    private val presenter by lazy { provideActivityScopedSingleton(TagsPresenter::class, context, adapter.displayType, selectedTags) }
     private val adapter = TagsAdapter()
     private lateinit var selectedTags: Set<Tag>
 

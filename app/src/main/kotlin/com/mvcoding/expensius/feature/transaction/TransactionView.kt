@@ -53,7 +53,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         private const val REQUEST_DATE = 2
     }
 
-    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class, transaction) }
+    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class, context, transaction) }
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
     private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
     private val currencySubject by lazy { PublishSubject<Currency>() }

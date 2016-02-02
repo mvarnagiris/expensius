@@ -18,16 +18,6 @@ import android.graphics.Outline
 import android.view.View
 import android.view.ViewOutlineProvider
 import com.mvcoding.expensius.feature.SnackbarBuilder.Companion.snackbar
-import kotlin.reflect.KClass
-
-fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>,
-                                                  arg1: Any? = null,
-                                                  arg2: Any? = null,
-                                                  arg3: Any? = null,
-                                                  arg4: Any? = null): T {
-    val baseActivity = context.toBaseActivity()
-    return provideScopedSingleton(cls, baseActivity.scopeId, baseActivity.observeFinish(), arg1, arg2, arg3, arg4)
-}
 
 fun View.makeOutlineProviderOval() {
     if (supportsLollipop()) {

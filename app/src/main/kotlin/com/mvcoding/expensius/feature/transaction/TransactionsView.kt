@@ -29,7 +29,7 @@ class TransactionsView @JvmOverloads constructor(
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr), TransactionsPresenter.View {
 
-    private val presenter = provideActivityScopedSingleton(TransactionsPresenter::class)
+    private val presenter = provideActivityScopedSingleton(TransactionsPresenter::class, context)
     private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
     private val adapter = TransactionsAdapter()
 

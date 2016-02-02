@@ -20,20 +20,19 @@ import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import com.memoizrlabs.Scope
+import com.memoizrlabs.Scope.scope
 import com.mvcoding.expensius.R
-import rx.lang.kotlin.PublishSubject
-import java.util.*
 import java.util.UUID.randomUUID
 
 abstract class BaseActivity : AppCompatActivity() {
-    val finishSubject = PublishSubject<Unit>()
-    var scopeId = randomUUID()
+    private lateinit var scopeId: String
+    lateinit var scope: Scope
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState != null) {
-            scopeId = savedInstanceState.getSerializable("STATE_SCOPE_ID") as UUID
-        }
+        scopeId = savedInstanceState?.getString("STATE_SCOPE_ID") ?: randomUUID().toString()
+        scope = scope(scopeId)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -59,7 +58,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            finishSubject.onNext(Unit)
+            scope.clearWithFinalAction { if (it is Presenter<*>) it.onDestroy() }
         }
     }
 

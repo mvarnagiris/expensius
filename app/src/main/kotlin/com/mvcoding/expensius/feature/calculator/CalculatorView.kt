@@ -63,7 +63,7 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
                 .subscribe { clicks.onNext(it) }
         clicks
     }
-    private val presenter by lazy { provideActivityScopedSingleton(CalculatorPresenter::class) }
+    private val presenter by lazy { provideActivityScopedSingleton(CalculatorPresenter::class, context) }
     private var isFloatingActionButtonClickConsumed = false
     private var state = SAVE
 

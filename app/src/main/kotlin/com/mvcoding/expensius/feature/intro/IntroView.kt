@@ -33,7 +33,7 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
     private val loginButton by lazy { findViewById(R.id.loginButton) as Button }
     private val skipButton by lazy { findViewById(R.id.skipButton) as Button }
 
-    private val presenter = provideActivityScopedSingleton(IntroPresenter::class)
+    private val presenter = provideActivityScopedSingleton(IntroPresenter::class, context)
     private val adapter = IntroPagesAdapter()
 
     constructor(context: Context?) : this(context, null)

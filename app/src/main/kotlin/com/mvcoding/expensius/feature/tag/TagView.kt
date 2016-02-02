@@ -50,7 +50,7 @@ class TagView : LinearLayout, TagPresenter.View {
     private val titleEditText by lazy { findViewById(R.id.titleEditText) as EditText }
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
 
-    private val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class, tag) }
+    private val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class, context, tag) }
     private val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
     private val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
     private var titleUpdatesAvailable = true
