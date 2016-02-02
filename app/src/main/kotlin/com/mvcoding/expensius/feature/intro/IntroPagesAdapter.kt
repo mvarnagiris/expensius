@@ -25,20 +25,16 @@ class IntroPagesAdapter() : PagerAdapter() {
             notifyDataSetChanged();
         }
 
-    override fun instantiateItem(container: ViewGroup?, position: Int): Any? {
-        if (container == null) {
-            throw IllegalArgumentException("Container cannot be null.")
-        }
-
+    override fun instantiateItem(container: ViewGroup, position: Int): Any? {
         val introPageView = IntroPageView.inflate(container)
         introPageView.setIntroPage(introPages!![position])
         container.addView(introPageView)
         return introPageView
     }
 
-    override fun destroyItem(container: ViewGroup?, position: Int, obj: Any?) {
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any?) {
         if (obj is View) {
-            container?.removeView(obj)
+            container.removeView(obj)
         }
     }
 

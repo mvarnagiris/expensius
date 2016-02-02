@@ -26,14 +26,13 @@ import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.overview.OverviewActivity
-import rx.Observable
 
 class IntroView : LinearLayout, IntroPresenter.View<Int> {
     private val viewPager by lazy { findViewById(R.id.viewPager) as ViewPager }
     private val loginButton by lazy { findViewById(R.id.loginButton) as Button }
     private val skipButton by lazy { findViewById(R.id.skipButton) as Button }
 
-    private val presenter = provideActivityScopedSingleton(IntroPresenter::class, context)
+    private val presenter by lazy { provideActivityScopedSingleton(IntroPresenter::class) }
     private val adapter = IntroPagesAdapter()
 
     constructor(context: Context?) : this(context, null)
@@ -62,11 +61,11 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
         viewPager.setCurrentItem(activeIntroPagePosition, false)
     }
 
-    override fun onSkipLogin(): Observable<Unit> = skipButton.clicks()
+    override fun onSkipLogin() = skipButton.clicks()
 
-    override fun onLogin(): Observable<Unit> = loginButton.clicks()
+    override fun onLogin() = loginButton.clicks()
 
-    override fun onActiveIntroPagePositionChanged(): Observable<Int> = viewPager.pageSelections()
+    override fun onActiveIntroPagePositionChanged() = viewPager.pageSelections()
 
     override fun startOverview() {
         OverviewActivity.start(context)

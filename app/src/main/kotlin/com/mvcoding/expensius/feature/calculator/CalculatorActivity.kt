@@ -25,8 +25,6 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import java.math.BigDecimal
 
 class CalculatorActivity : BaseActivity() {
-    private val calculatorView by lazy { findViewById(R.id.calculatorView) as CalculatorView }
-
     companion object {
         private const val EXTRA_INITIAL_NUMBER = "EXTRA_INITIAL_NUMBER"
         private const val EXTRA_RESULT_DESTINATION = "EXTRA_RESULT_DESTINATION"
@@ -53,6 +51,7 @@ class CalculatorActivity : BaseActivity() {
 
         val initialNumber = intent.getSerializableExtra(EXTRA_INITIAL_NUMBER) as BigDecimal?
         val resultDestination = intent.getSerializableExtra(EXTRA_RESULT_DESTINATION) as CalculatorPresenter.ResultDestination
+        val calculatorView = findViewById(R.id.calculatorView) as CalculatorView
         calculatorView.init(initialNumber, resultDestination)
     }
 }

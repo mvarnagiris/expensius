@@ -35,10 +35,7 @@ class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<TagItemView>
     }
 
     fun setTagSelected(tag: Tag, selected: Boolean) {
-        if (selected) {
-            selectedTags = selectedTags.plus(tag)
-        } else {
-            selectedTags = selectedTags.minus(tag)
-        }
+        if (selected) selectedTags = selectedTags.plus(tag)
+        else selectedTags = selectedTags.minus(tag)
     }
 }

@@ -71,10 +71,10 @@ class QuickTagView : CardView {
     }
 
     private fun calculateTextColor(backgroundColor: Int): ColorStateList {
-        if (calculateContrast(lightTextColor.defaultColor, backgroundColor) > 2) {
-            return lightTextColor
+        return if (calculateContrast(lightTextColor.defaultColor, backgroundColor) > 2) {
+            lightTextColor
         } else {
-            return darkTextColor
+            darkTextColor
         }
     }
 

@@ -79,11 +79,11 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
 
     private fun setQuickTags(quickTags: List<QuickTag>) {
         removeAllViews()
-        quickTags.forEachIndexed { i, quickTag ->
+        quickTags.forEachIndexed { index, quickTag ->
             val quickTagView = QuickTagView.inflate(this)
             addView(quickTagView)
             quickTagView.setQuickTag(quickTag)
-            quickTagView.setOnClickListener { selectableTagToggledSubject.onNext(selectableTags[i]) };
+            quickTagView.setOnClickListener { selectableTagToggledSubject.onNext(selectableTags[index]) };
         }
         requestLayout()
     }
@@ -169,11 +169,11 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
         child.layout(childLeft, childTop, childLeft + child.measuredWidth, childTop + child.measuredHeight)
     }
 
-    private fun totalChildHeight(child: View,
-                                 childLayoutParams: MarginLayoutParams) = childLayoutParams.topMargin + child.measuredHeight + childLayoutParams.bottomMargin
+    private fun totalChildHeight(child: View, childLayoutParams: MarginLayoutParams) =
+            childLayoutParams.topMargin + child.measuredHeight + childLayoutParams.bottomMargin
 
-    private fun totalChildWidth(child: View,
-                                childLayoutParams: MarginLayoutParams) = childLayoutParams.leftMargin + child.measuredWidth + childLayoutParams.rightMargin
+    private fun totalChildWidth(child: View, childLayoutParams: MarginLayoutParams) =
+            childLayoutParams.leftMargin + child.measuredWidth + childLayoutParams.rightMargin
 
     private fun childExceedsAvailableWidth(childTakenWidth: Int, usedWidth: Int, width: Int) = width < usedWidth + childTakenWidth
 }

@@ -24,7 +24,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.view.longClicks
-import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
@@ -63,7 +62,8 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
                 .subscribe { clicks.onNext(it) }
         clicks
     }
-    private val presenter by lazy { provideActivityScopedSingleton(CalculatorPresenter::class, context) }
+
+    private lateinit var presenter: CalculatorPresenter
     private var isFloatingActionButtonClickConsumed = false
     private var state = SAVE
 
@@ -71,14 +71,14 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
         const val RESULT_EXTRA_AMOUNT = "RESULT_EXTRA_AMOUNT"
     }
 
-    constructor(context: Context?) : this(context, null)
+    constructor(context: Context?) : super(context)
 
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(initialNumber: BigDecimal?, resultDestination: CalculatorPresenter.ResultDestination) {
-        initializeModules(CalculatorModule(initialNumber, resultDestination))
+        presenter = provideActivityScopedSingleton(CalculatorPresenter::class, initialNumber, resultDestination)
     }
 
     override fun onAttachedToWindow() {

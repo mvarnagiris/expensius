@@ -50,13 +50,12 @@ class TagView : LinearLayout, TagPresenter.View {
     private val titleEditText by lazy { findViewById(R.id.titleEditText) as EditText }
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
 
-    private val presenter by lazy { provideActivityScopedSingleton(TagPresenter::class, context, tag) }
     private val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
     private val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
     private var titleUpdatesAvailable = true
     private var colorUpdatesAvailable = true
     private var colorAnimator: ValueAnimator? = null
-    private lateinit var tag: Tag
+    private lateinit var presenter: TagPresenter
 
     constructor(context: Context?) : this(context, null)
 
@@ -65,7 +64,7 @@ class TagView : LinearLayout, TagPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(tag: Tag) {
-        this.tag = tag
+        presenter = provideActivityScopedSingleton(TagPresenter::class, tag)
     }
 
     override fun onFinishInflate() {

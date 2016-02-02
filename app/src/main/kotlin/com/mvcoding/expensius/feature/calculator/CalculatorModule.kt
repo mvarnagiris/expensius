@@ -20,10 +20,12 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.extension.provideSingleton
 import java.math.BigDecimal
 
-class CalculatorModule(private val initialNumber: BigDecimal?, private val resultDestination: CalculatorPresenter.ResultDestination) : ShankModule {
+class CalculatorModule : ShankModule {
     override fun registerFactories() {
         val settings = provideSingleton(Settings::class)
-        registerFactory<CalculatorPresenter>(CalculatorPresenter::class.java,
-                                             { CalculatorPresenter(Calculator(Interpreter()), resultDestination, settings, initialNumber) })
+        registerFactory(CalculatorPresenter::class.java, {
+            initialNumber: BigDecimal?, resultDestination: CalculatorPresenter.ResultDestination ->
+            CalculatorPresenter(Calculator(Interpreter()), resultDestination, settings, initialNumber)
+        })
     }
 }

@@ -38,7 +38,6 @@ class IntroModule : ShankModule {
             val introPage4 = IntroPage(ResourceImage(R.drawable.intro_4),
                                        context.getString(R.string.intro_title_4),
                                        context.getString(R.string.intro_message_4))
-
             val introPages = listOf(introPage1, introPage2, introPage3, introPage4)
             IntroPresenter(introPages, provideSingleton(Settings::class))
         })
