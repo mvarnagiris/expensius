@@ -22,27 +22,17 @@ import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import java.io.Serializable
 import java.lang.System.currentTimeMillis
 import java.math.BigDecimal
+import java.math.BigDecimal.ZERO
 import java.util.UUID.randomUUID
 
 data class Transaction(
         val id: String = randomUUID().toString(),
         val modelState: ModelState = NONE,
-        val transactionType: TransactionType,
-        val transactionState: TransactionState,
-        val timestamp: Long,
+        val transactionType: TransactionType = EXPENSE,
+        val transactionState: TransactionState = CONFIRMED,
+        val timestamp: Long = currentTimeMillis(),
         val currency: Currency,
-        val amount: BigDecimal,
-        val tags: Set<Tag>,
-        val note: String) : Serializable {
-
-    companion object {
-        fun transaction(currency: Currency, amount: BigDecimal) = Transaction(
-                transactionType = EXPENSE,
-                transactionState = CONFIRMED,
-                timestamp = currentTimeMillis(),
-                currency = currency,
-                amount = amount,
-                tags = emptySet(),
-                note = "")
-    }
+        val amount: BigDecimal = ZERO,
+        val tags: Set<Tag> = emptySet(),
+        val note: String = "") : Serializable {
 }

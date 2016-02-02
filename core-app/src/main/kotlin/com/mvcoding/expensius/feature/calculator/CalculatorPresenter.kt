@@ -20,7 +20,6 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.feature.transaction.Transaction
-import com.mvcoding.expensius.feature.transaction.Transaction.Companion.transaction
 import rx.Observable
 import rx.Observable.merge
 import java.math.BigDecimal
@@ -32,9 +31,7 @@ class CalculatorPresenter(
         private val initialNumber: BigDecimal? = null) : Presenter<CalculatorPresenter.View>() {
 
     init {
-        if (initialNumber != null) {
-            calculator.setNumber(initialNumber)
-        }
+        initialNumber?.let { calculator.setNumber(it) }
     }
 
     override fun onAttachView(view: View) {
@@ -66,14 +63,14 @@ class CalculatorPresenter(
                 .map { calculator.calculate() }
 
         unsubscribeOnDetach(view.onSave()
-                .withLatestFrom(expressionAlteringObservable, { unit, number -> number })
-                .subscribe {
-                    if (resultDestination == TRANSACTION) {
-                        view.startTransaction(transaction(settings.getMainCurrency(), it))
-                    } else {
-                        view.startResult(it)
-                    }
-                })
+                                    .withLatestFrom(expressionAlteringObservable, { unit, number -> number })
+                                    .subscribe {
+                                        if (resultDestination == TRANSACTION) {
+                                            view.startTransaction(Transaction(currency = settings.getMainCurrency(), amount = it))
+                                        } else {
+                                            view.startResult(it)
+                                        }
+                                    })
     }
 
     enum class State { SAVE, CALCULATE }

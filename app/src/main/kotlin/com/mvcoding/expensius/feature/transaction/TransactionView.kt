@@ -35,8 +35,6 @@ import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.QuickTagsView
 import com.mvcoding.expensius.feature.tag.Tag
-import com.mvcoding.expensius.feature.transaction.Currency.Companion.noCurrency
-import com.mvcoding.expensius.feature.transaction.Transaction.Companion.transaction
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
@@ -53,7 +51,6 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         private const val REQUEST_DATE = 2
     }
 
-    private val presenter by lazy { provideActivityScopedSingleton(TransactionPresenter::class, context, transaction) }
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
     private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
     private val currencySubject by lazy { PublishSubject<Currency>() }
@@ -69,11 +66,11 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
 
-    private var transaction: Transaction = transaction(noCurrency, ZERO)
+    private lateinit var presenter: TransactionPresenter
     private var transactionState = CONFIRMED
     private var transactionType = EXPENSE
-    private var currency = noCurrency
     private var amount = ZERO
+    private var currency = Currency()
     private var timestamp = 0L
     private var allowTransactionStateChanges = false
     private var allowNoteChanges = true
@@ -98,7 +95,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     fun init(transaction: Transaction) {
-        this.transaction = transaction
+        presenter = provideActivityScopedSingleton(TransactionPresenter::class, transaction)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

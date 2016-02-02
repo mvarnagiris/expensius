@@ -16,8 +16,4 @@ package com.mvcoding.expensius.feature.transaction
 
 import java.io.Serializable
 
-data class Currency(val code: String) : Serializable {
-    companion object {
-        val noCurrency = Currency("")
-    }
-}
+data class Currency(val code: String = "") : Serializable

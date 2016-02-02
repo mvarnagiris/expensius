@@ -29,5 +29,5 @@ data class Tag(
         val noTag = Tag("", NONE, "", 0)
     }
 
-    fun withModelState(modelState: ModelState) = Tag(id, modelState, title, color)
+    fun withModelState(modelState: ModelState) = copy(modelState = modelState)
 }
