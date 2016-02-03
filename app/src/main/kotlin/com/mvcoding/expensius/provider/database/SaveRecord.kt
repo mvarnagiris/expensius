@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,7 @@
 
 package com.mvcoding.expensius.provider.database
 
-import android.database.Cursor
-import rx.Observable
+import android.content.ContentValues
+import com.mvcoding.expensius.provider.database.table.Table
 
-interface Database {
-    fun save(saveRecords: List<SaveRecord>)
-    fun query(queryRequest: QueryRequest): Observable<Cursor>
-}
+data class SaveRecord(val table: Table, val contentValues: ContentValues)

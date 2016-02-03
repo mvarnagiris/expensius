@@ -21,10 +21,10 @@ import com.squareup.sqlbrite.BriteDatabase
 import rx.Observable
 
 class SqliteDatabase(private val database: BriteDatabase) : Database {
-    override fun save(table: Table, contentValues: List<ContentValues>) {
+    override fun save(saveRecords: List<SaveRecord>) {
         val transaction = database.newTransaction()
         try {
-            contentValues.forEach { updateOrInsert(table, it) }
+            saveRecords.forEach { updateOrInsert(it.table, it.contentValues) }
             transaction.markSuccessful()
         } finally {
             transaction.end()

@@ -23,13 +23,14 @@ import com.mvcoding.expensius.extension.toTag
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.tag.TagsProvider
 import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.SaveRecord
 import com.mvcoding.expensius.provider.database.select
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import rx.Observable
 
 class DatabaseTagsProvider(private val database: Database, private val tagsTable: TagsTable) : TagsProvider {
     override fun save(tags: Set<Tag>) {
-        database.save(tagsTable, tags.map { it.toContentValues(tagsTable) })
+        database.save(tags.map { SaveRecord(tagsTable, it.toContentValues(tagsTable)) })
     }
 
     override fun tags(): Observable<List<Tag>> {

@@ -14,15 +14,18 @@
 
 package com.mvcoding.expensius.provider
 
+import android.content.ContentValues
 import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
+import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.DatabasePageLoader
+import com.mvcoding.expensius.provider.database.SaveRecord
 import com.mvcoding.expensius.provider.database.select
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
@@ -37,7 +40,10 @@ class DatabaseTransactionsProvider(
         private val tagsTable: TagsTable) : TransactionsProvider {
 
     override fun save(transactions: Set<Transaction>) {
-        database.save(transactionsTable, transactions.map { it.toContentValues(transactionsTable) })
+        val transactionSaveRecords = transactions.map { SaveRecord(transactionsTable, it.toContentValues(transactionsTable)) }
+        val relationshipSaveRecords = transactions.map { transaction -> transaction.tags.map { relationshipSaveRecord(transaction, it) } }
+                .flatten()
+        database.save(transactionSaveRecords.plus(relationshipSaveRecords))
     }
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
@@ -49,5 +55,12 @@ class DatabaseTransactionsProvider(
                                        .where("${transactionsTable.modelState}=?", NONE.name)
                                        .groupBy(transactionsTable.id),
                                pages)
+    }
+
+    private fun relationshipSaveRecord(transaction: Transaction, tag: Tag): SaveRecord {
+        val contentValues = ContentValues()
+        contentValues.put(transactionTagsTable.transactionId.name, transaction.id)
+        contentValues.put(transactionTagsTable.tagId.name, tag.id)
+        return SaveRecord(transactionTagsTable, contentValues)
     }
 }
