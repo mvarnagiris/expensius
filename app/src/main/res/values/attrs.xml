@@ -18,6 +18,8 @@
         <attr name="colorAccentDark" format="color" />
         <attr name="colorActionIcon" format="color" />
         <attr name="colorDivider" format="color" />
+        <attr name="colorExpense" format="color" />
+        <attr name="colorIncome" format="color" />
         <attr name="colorBackgroundPrimary" format="color" />
         <attr name="colorBackgroundSecondary" format="color" />
     </declare-styleable>

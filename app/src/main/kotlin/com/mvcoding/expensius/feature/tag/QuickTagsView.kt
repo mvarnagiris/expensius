@@ -28,7 +28,7 @@ import rx.lang.kotlin.PublishSubject
 import java.lang.Math.max
 
 class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
-    private val presenter by lazy { provideActivityScopedSingleton(QuickTagsPresenter::class, context) }
+    private val presenter by lazy { provideActivityScopedSingleton(QuickTagsPresenter::class) }
 
     private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
     private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }

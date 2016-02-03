@@ -23,61 +23,55 @@
     android:paddingTop="@dimen/space_normal">
 
     <LinearLayout
-        android:layout_width="@dimen/keyline_content_minus_keyline_2x"
-        android:layout_height="@dimen/keyline_content_minus_keyline_2x"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/monthTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textAllCaps="true"
-            android:textAppearance="@style/Text.Caption"
-            tools:text="JAN" />
-
-        <TextView
-            android:id="@+id/dayTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textAppearance="@style/Text.Title"
-            tools:text="21" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/keyline"
-        android:layout_marginRight="@dimen/keyline"
+        android:layout_marginEnd="@dimen/keyline"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/noteTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/Text.Body2"
-            tools:text="This is a note for this transaction" />
-
-        <TextView
             android:id="@+id/tagsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Text.Body1"
-            tools:text="Essential Food Lunch" />
+            android:textAppearance="@style/Text.Body2"
+            tools:text="Essential - Food - Lunch" />
+
+        <TextView
+            android:id="@+id/noteTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Text.Caption"
+            android:textColor="?android:textColorSecondary"
+            tools:text="This is a note for this transaction" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/amountTextView"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:textAppearance="@style/Text.Subhead"
-        tools:text="1,234.56 $" />
+        android:gravity="end|center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/amountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textAppearance="@style/Text.Body2"
+            tools:text="1,234.56 $" />
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textAppearance="@style/Text.Caption"
+            android:textColor="?android:textColorSecondary"
+            tools:text="Today" />
+    </LinearLayout>
+
 
 </com.mvcoding.expensius.feature.transaction.TransactionItemView>
