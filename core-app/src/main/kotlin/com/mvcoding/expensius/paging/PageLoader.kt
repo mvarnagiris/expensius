@@ -29,8 +29,7 @@ abstract class PageLoader<T, Q, D, DI> {
             if (range.isEmpty()) {
                 PageResult(page, emptyList<T>(), wasNewDataLoad)
             } else {
-                range.map { dataItemAtPosition(data, it) }
-                        .map { converter.invoke(it) }
+                range.map { converter.invoke(dataItemAtPosition(data, it)) }
                         .toList()
                         .let { PageResult(page, it, wasNewDataLoad) }
             }
