@@ -41,7 +41,11 @@ class TagsView : LinearLayout, TagsPresenter.View {
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
     private var snackbar: Snackbar? = null
 
-    private val toolbarItemClicks by lazy { toolbar.itemClicks().map { it.itemId } }
+    private val toolbarItemClicks by lazy {
+        val itemClicks = PublishSubject<Int>()
+        toolbar.itemClicks().map { it.itemId }.subscribe(itemClicks)
+        itemClicks
+    }
     private val archiveTagObservable by lazy { PublishSubject<Tag>() }
     private val commitArchiveObservable by lazy { PublishSubject<Unit>() }
     private val undoArchiveObservable by lazy { PublishSubject<Unit>() }
