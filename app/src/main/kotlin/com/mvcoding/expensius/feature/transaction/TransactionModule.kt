@@ -20,12 +20,12 @@ import com.mvcoding.expensius.extension.provideSingleton
 
 class TransactionModule : ShankModule {
     override fun registerFactories() {
+        registerFactory(TransactionsPresenter::class.java, { ->
+            TransactionsPresenter(provideSingleton(TransactionsProvider::class))
+        })
         registerFactory(TransactionPresenter::class.java, {
             transaction: Transaction ->
             TransactionPresenter(transaction, provideSingleton(TransactionsProvider::class))
-        })
-        registerFactory<TransactionsPresenter>(TransactionsPresenter::class.java, {
-            TransactionsPresenter(provideSingleton(TransactionsProvider::class))
         })
     }
 }
