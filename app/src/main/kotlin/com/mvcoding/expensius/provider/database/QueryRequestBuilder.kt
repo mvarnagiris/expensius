@@ -108,4 +108,23 @@ class GroupBy(
         private val groupByColumns: Array<Column>) : QueryRequest(previousElement, columns, tables, arguments) {
 
     override fun elementPartSql() = "GROUP BY ${groupByColumns.joinToString { it.name }}"
+
+    fun orderBy(vararg orderByColumns: Order) = OrderBy(this, columns, tables, arguments, orderByColumns.toArrayList().toTypedArray())
+}
+
+class OrderBy(
+        previousElement: Element,
+        columns: Array<Column>,
+        tables: Array<Table>,
+        arguments: Array<String>,
+        private val orders: Array<Order>) : QueryRequest(previousElement, columns, tables, arguments) {
+    override fun elementPartSql() = "ORDER BY ${orders.joinToString { it.toString() }}"
+}
+
+class Order(private val column: Column, private val orderDirection: OrderDirection) {
+    override fun toString() = "${column.name} $orderDirection"
+}
+
+enum class OrderDirection {
+    ASC, DESC
 }

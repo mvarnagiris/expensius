@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.provider.database
 
+import com.mvcoding.expensius.provider.database.OrderDirection.ASC
+import com.mvcoding.expensius.provider.database.OrderDirection.DESC
 import com.mvcoding.expensius.provider.database.table.Table
 import com.mvcoding.expensius.provider.database.table.ValueColumn
 import org.junit.Assert.assertArrayEquals
@@ -55,6 +57,21 @@ class QueryRequestTest {
                 .sql()
 
         assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=? GROUP BY tableFirst_id, tableSecond_id",
+                     sql)
+    }
+
+    @Test
+    fun selectWhereGroupByOrderBy() {
+        val sql = select(tableFirst)
+                .from(tableFirst)
+                .where("${tableFirst.id.name}=1")
+                .or("${tableFirst.id.name}=2")
+                .and("${tableFirst.value.name}=?")
+                .groupBy(tableFirst.id, tableSecond.id)
+                .orderBy(Order(tableFirst.id, ASC), Order(tableSecond.id, DESC))
+                .sql()
+
+        assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=? GROUP BY tableFirst_id, tableSecond_id ORDER BY tableFirst_id ASC, tableSecond_id DESC",
                      sql)
     }
 

@@ -23,10 +23,8 @@ import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
-import com.mvcoding.expensius.provider.database.Database
-import com.mvcoding.expensius.provider.database.DatabasePageLoader
-import com.mvcoding.expensius.provider.database.SaveRecord
-import com.mvcoding.expensius.provider.database.select
+import com.mvcoding.expensius.provider.database.*
+import com.mvcoding.expensius.provider.database.OrderDirection.DESC
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
@@ -53,7 +51,8 @@ class DatabaseTransactionsProvider(
                                        .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
                                        .leftJoin(tagsTable, "${transactionTagsTable.tagId}=${tagsTable.id}")
                                        .where("${transactionsTable.modelState}=?", NONE.name)
-                                       .groupBy(transactionsTable.id),
+                                       .groupBy(transactionsTable.id)
+                                       .orderBy(Order(transactionsTable.timestamp, DESC)),
                                pages)
     }
 
