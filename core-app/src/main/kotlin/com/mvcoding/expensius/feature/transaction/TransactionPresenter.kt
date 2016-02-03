@@ -29,8 +29,12 @@ class TransactionPresenter(
 
         val idObservable = Observable.just(transaction.id).filter { !it.isBlank() }.defaultIfEmpty(randomUUID().toString())
         val modelStateObservable = Observable.just(transaction.modelState)
-        val transactionStateObservable = view.onTransactionStateChanged().startWith(transaction.transactionState).doOnNext { view.showTransactionState(it) }
-        val transactionTypeObservable = view.onTransactionTypeChanged().startWith(transaction.transactionType).doOnNext { view.showTransactionType(it) }
+        val transactionStateObservable = view.onTransactionStateChanged().startWith(transaction.transactionState).doOnNext {
+            view.showTransactionState(it)
+        }
+        val transactionTypeObservable = view.onTransactionTypeChanged().startWith(transaction.transactionType).doOnNext {
+            view.showTransactionType(it)
+        }
         val timestampObservable = view.onTimestampChanged().startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
         val currencyObservable = view.onCurrencyChanged().startWith(transaction.currency).doOnNext { view.showCurrency(it) }
         val amountObservable = view.onAmountChanged().startWith(transaction.amount).doOnNext { view.showAmount(it) }
@@ -47,32 +51,15 @@ class TransactionPresenter(
                 amountObservable,
                 tagsObservable,
                 noteObservable,
-                { id,
-                  modelState,
-                  transactionState,
-                  transactionType,
-                  timestamp,
-                  currency,
-                  amount,
-                  tags,
-                  note ->
-                    Transaction(
-                            id,
-                            modelState,
-                            transactionType,
-                            transactionState,
-                            timestamp,
-                            currency,
-                            amount,
-                            tags,
-                            note)
+                { id, modelState, transactionState, transactionType, timestamp, currency, amount, tags, note ->
+                    Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, tags, note)
                 })
                 .doOnNext { transaction = it }
 
         unsubscribeOnDetach(view.onSave()
-                .withLatestFrom(transactionObservable, { action, transaction -> transaction })
+                                    .withLatestFrom(transactionObservable, { action, transaction -> transaction })
                                     .doOnNext { transactionsProvider.save(setOf(it)) }
-                .subscribe { view.startResult(it) })
+                                    .subscribe { view.startResult(it) })
     }
 
     interface View : Presenter.View {
