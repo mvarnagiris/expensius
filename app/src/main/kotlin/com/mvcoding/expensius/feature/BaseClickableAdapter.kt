@@ -15,23 +15,15 @@
 package com.mvcoding.expensius.feature
 
 import android.view.ViewGroup
-import rx.Subscription
 import rx.lang.kotlin.PublishSubject
 import rx.subjects.PublishSubject
 
 abstract class BaseClickableAdapter<T, VH : ClickableViewHolder<*>> : BaseAdapter<T, VH>() {
     private val itemClickedSubject = PublishSubject<T>()
     private val positionClickedSubject = PublishSubject<Int>()
-    private lateinit var subscription: Subscription
 
-    override fun onViewAttachedToWindow(holder: VH) {
-        super.onViewAttachedToWindow(holder)
-        subscription = positionClickedSubject.map { getItem(it) }.subscribe(itemClickedSubject)
-    }
-
-    override fun onViewDetachedFromWindow(holder: VH) {
-        super.onViewDetachedFromWindow(holder)
-        subscription.unsubscribe()
+    init {
+        positionClickedSubject.map { getItem(it) }.subscribe(itemClickedSubject)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(parent, viewType, positionClickedSubject)
