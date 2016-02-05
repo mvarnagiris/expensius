@@ -19,7 +19,7 @@ import rx.Observable
 import rx.Observable.combineLatest
 
 class QuickTagsPresenter(private val tagsProvider: TagsProvider) : Presenter<QuickTagsPresenter.View>() {
-    private val toggledTags = hashMapOf<Tag, Boolean>().withDefault { false }
+    private val toggledTags = hashMapOf<Tag, Boolean>()
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
@@ -36,7 +36,7 @@ class QuickTagsPresenter(private val tagsProvider: TagsProvider) : Presenter<Qui
                                     .subscribe { view.showUpdatedSelectableTag(it, it.toggled()) })
     }
 
-    private fun toSelectableTags(tags: List<Tag>) = tags.map { SelectableTag(it, toggledTags.getOrImplicitDefault(it)) }
+    private fun toSelectableTags(tags: List<Tag>) = tags.map { SelectableTag(it, toggledTags.getOrElse(it, { false })) }
 
     interface View : Presenter.View {
         fun onShowSelectedTags(): Observable<Set<Tag>>

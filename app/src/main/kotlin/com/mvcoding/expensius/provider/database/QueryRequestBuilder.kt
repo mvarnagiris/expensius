@@ -26,13 +26,13 @@ interface Element {
 
 abstract class QueryRequest(
         protected val previousElement: Element,
-        val columns: Array<Column>,
+        val columns: Array<out Column>,
         val tables: Array<Table>,
         val arguments: Array<String>) : Element {
     fun sql(): String = "${if (previousElement is QueryRequest) previousElement.sql() else previousElement.elementPartSql() } ${elementPartSql()}"
 }
 
-class Select(private val columns: Array<Column>) : Element {
+class Select(private val columns: Array<out Column>) : Element {
     constructor(vararg table: Table) : this(table.map { it.columns().map { it } }.flatten().toTypedArray())
 
     fun from(table: Table) = From(this, columns, table, emptyArray())
@@ -41,7 +41,7 @@ class Select(private val columns: Array<Column>) : Element {
 
 class From(
         previousElement: Element,
-        columns: Array<Column>,
+        columns: Array<out Column>,
         table: Table,
         arguments: Array<String>) : QueryRequest(previousElement, columns, arrayOf(table), arguments) {
 
@@ -50,14 +50,14 @@ class From(
     fun where(clause: String, vararg arguments: String = emptyArray()) = Where(this,
                                                                                columns,
                                                                                tables,
-                                                                               arguments.toArrayList().toTypedArray(),
+                                                                               arguments.toList().toTypedArray(),
                                                                                "WHERE",
                                                                                clause)
 }
 
 class Join(
         previousElement: Element,
-        columns: Array<Column>,
+        columns: Array<out Column>,
         tables: Array<Table>,
         arguments: Array<String>,
         private val joinType: String,
@@ -68,14 +68,14 @@ class Join(
     fun where(clause: String, vararg arguments: String = emptyArray()) = Where(this,
                                                                                columns,
                                                                                tables,
-                                                                               arguments.toArrayList().toTypedArray(),
+                                                                               arguments.toList().toTypedArray(),
                                                                                "WHERE",
                                                                                clause)
 }
 
 class Where(
         previousElement: Element,
-        columns: Array<Column>,
+        columns: Array<out Column>,
         tables: Array<Table>,
         arguments: Array<String>,
         private val keyword: String,
@@ -86,35 +86,35 @@ class Where(
     fun and(clause: String, vararg arguments: String = emptyArray()) = Where(this,
                                                                              columns,
                                                                              tables,
-                                                                             arguments.toArrayList().toTypedArray(),
+                                                                             arguments.toList().toTypedArray(),
                                                                              "AND",
                                                                              clause)
 
     fun or(clause: String, vararg arguments: String = emptyArray()) = Where(this,
                                                                             columns,
                                                                             tables,
-                                                                            arguments.toArrayList().toTypedArray(),
+                                                                            arguments.toList().toTypedArray(),
                                                                             "OR",
                                                                             clause)
 
-    fun groupBy(vararg groupByColumns: Column) = GroupBy(this, columns, tables, arguments, groupByColumns.toArrayList().toTypedArray())
+    fun groupBy(vararg groupByColumns: Column) = GroupBy(this, columns, tables, arguments, groupByColumns.toList().toTypedArray())
 }
 
 class GroupBy(
         previousElement: Element,
-        columns: Array<Column>,
+        columns: Array<out Column>,
         tables: Array<Table>,
         arguments: Array<String>,
-        private val groupByColumns: Array<Column>) : QueryRequest(previousElement, columns, tables, arguments) {
+        private val groupByColumns: Array<out Column>) : QueryRequest(previousElement, columns, tables, arguments) {
 
     override fun elementPartSql() = "GROUP BY ${groupByColumns.joinToString { it.name }}"
 
-    fun orderBy(vararg orderByColumns: Order) = OrderBy(this, columns, tables, arguments, orderByColumns.toArrayList().toTypedArray())
+    fun orderBy(vararg orderByColumns: Order) = OrderBy(this, columns, tables, arguments, orderByColumns.toList().toTypedArray())
 }
 
 class OrderBy(
         previousElement: Element,
-        columns: Array<Column>,
+        columns: Array<out Column>,
         tables: Array<Table>,
         arguments: Array<String>,
         private val orders: Array<Order>) : QueryRequest(previousElement, columns, tables, arguments) {

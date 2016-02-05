@@ -166,7 +166,7 @@ class TagView : LinearLayout, TagPresenter.View {
         animator.setIntValues(startColor, color);
         animator.setEvaluator(ArgbEvaluator());
         animator.addUpdateListener { setColorOnViews(it.animatedValue as Int) }
-        animator.setDuration(150);
+        animator.duration = 150;
         animator.start();
         colorAnimator = animator;
     }
@@ -179,7 +179,7 @@ class TagView : LinearLayout, TagPresenter.View {
         titleEditText.setTextColor(textColor)
         titleEditText.setHintTextColor(ColorUtils.setAlphaComponent(textColor, 0x88))
         toolbar.setTitleTextColor(textColor)
-        val navigationIcon = DrawableCompat.wrap(toolbar.navigationIcon.mutate())
+        val navigationIcon = DrawableCompat.wrap(toolbar.navigationIcon?.mutate())
         DrawableCompat.setTint(navigationIcon, textColor)
         toolbar.navigationIcon = navigationIcon
 

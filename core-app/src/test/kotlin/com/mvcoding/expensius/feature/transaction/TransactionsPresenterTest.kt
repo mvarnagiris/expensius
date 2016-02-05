@@ -19,8 +19,8 @@ import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEd
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageLoader
 import com.mvcoding.expensius.paging.PageResult
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*

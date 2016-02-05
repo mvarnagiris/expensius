@@ -74,8 +74,8 @@ abstract class BaseActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar?
         if (toolbar != null) {
             setSupportActionBar(toolbar)
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setHomeButtonEnabled(true);
+            supportActionBar?.setDisplayHomeAsUpEnabled(true);
+            supportActionBar?.setHomeButtonEnabled(true);
         }
     }
 }

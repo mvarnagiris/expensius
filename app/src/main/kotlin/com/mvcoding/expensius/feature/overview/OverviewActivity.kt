@@ -42,7 +42,7 @@ class OverviewActivity : BaseActivity() {
     }
 
     private fun removeUpArrowFromToolbar() {
-        supportActionBar.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
         toolbar.setContentInsetsRelative(keyline, keyline)

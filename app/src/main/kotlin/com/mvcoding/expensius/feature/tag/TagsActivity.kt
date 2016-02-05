@@ -52,7 +52,7 @@ class TagsActivity : BaseActivity() {
         val displayType = displayType
         val selectedTags = setOf<Tag>() // TODO: Get selected tags from extras.
         tagsView.init(displayType, selectedTags)
-        supportActionBar.title = if (displayType == ARCHIVED) getString(R.string.archived_tags) else getString(R.string.tags)
+        supportActionBar?.title = if (displayType == ARCHIVED) getString(R.string.archived_tags) else getString(R.string.tags)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

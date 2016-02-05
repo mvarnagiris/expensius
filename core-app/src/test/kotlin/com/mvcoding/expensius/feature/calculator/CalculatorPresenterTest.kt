@@ -648,7 +648,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        //        verify(view).startTransaction(any(Transaction::class.java))
+        //                verify(view).startTransaction(any(Transaction::class.java))
     }
 
     fun digit0() {
