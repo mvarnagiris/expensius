@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert.assertThat
@@ -73,7 +74,7 @@ class TagPresenterTest {
 
     @Test
     fun showsDefaultColorWhenCreatingNewTag() {
-        val presenter = TagPresenter(Tag.noTag, tagsCache)
+        val presenter = TagPresenter(noTag, tagsCache)
         presenter.onAttachView(view)
 
         verify(view).showColor(color(0x607d8b))

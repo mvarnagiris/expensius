@@ -20,15 +20,15 @@ import android.view.Menu
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW_ARCHIVED
+import rx.Observable.never
 
 class TagsActivity : BaseActivity() {
     private val tagsView by lazy { findViewById(R.id.tagsView) as TagsView }
 
     companion object {
         private const val EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE"
-        private const val EXTRA_SELECTED_TAGS = "EXTRA_SELECTED_TAGS"
 
         fun startView(context: Context) {
             ActivityStarter(context, TagsActivity::class)
@@ -38,7 +38,7 @@ class TagsActivity : BaseActivity() {
 
         fun startArchived(context: Context) {
             ActivityStarter(context, TagsActivity::class)
-                    .extra(EXTRA_DISPLAY_TYPE, ARCHIVED)
+                    .extra(EXTRA_DISPLAY_TYPE, VIEW_ARCHIVED)
                     .start()
         }
     }
@@ -50,14 +50,13 @@ class TagsActivity : BaseActivity() {
         setContentView(R.layout.view_tags)
 
         val displayType = displayType
-        val selectedTags = setOf<Tag>() // TODO: Get selected tags from extras.
-        tagsView.init(displayType, selectedTags)
-        supportActionBar?.title = if (displayType == ARCHIVED) getString(R.string.archived_tags) else getString(R.string.tags)
+        tagsView.init(displayType, never())
+        supportActionBar?.title = if (displayType == VIEW_ARCHIVED) getString(R.string.archived_tags) else getString(R.string.tags)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val result = super.onCreateOptionsMenu(menu)
-        if (displayType != ARCHIVED) {
+        if (displayType != VIEW_ARCHIVED) {
             menuInflater.inflate(R.menu.tags, menu)
             return true
         }

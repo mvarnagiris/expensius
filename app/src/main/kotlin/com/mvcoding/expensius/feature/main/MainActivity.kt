@@ -83,8 +83,7 @@ class MainActivity : BaseActivity(), MainPresenter.View {
     private fun tagsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
         val tagsView = layoutInflater.inflate(R.layout.view_tags, parent, false) as TagsView
-        tagsView.init(VIEW, emptySet())
-        tagsView.createTagObservable = addTagFloatingActionButton.clicks()
+        tagsView.init(VIEW, addTagFloatingActionButton.clicks())
         tagsView
     }
 
