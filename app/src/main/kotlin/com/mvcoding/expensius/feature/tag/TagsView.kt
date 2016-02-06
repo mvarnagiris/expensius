@@ -67,7 +67,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = adapter
 
-        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?) = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
