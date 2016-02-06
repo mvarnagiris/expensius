@@ -20,32 +20,27 @@ import android.support.design.widget.Snackbar.LENGTH_LONG
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.AttributeSet
 import android.widget.Button
 import android.widget.LinearLayout
-import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.MULTI_CHOICE
+import rx.Observable
 import rx.lang.kotlin.PublishSubject
 
 class TagsView : LinearLayout, TagsPresenter.View {
-    private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
+    lateinit var createTagSubject: Observable<Unit>
+
     private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
     private val buttonBarView by lazy { findViewById(R.id.buttonBarView) }
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
     private var snackbar: Snackbar? = null
 
-    private val toolbarItemClicks by lazy {
-        val itemClicks = PublishSubject<Int>()
-        toolbar.itemClicks().map { it.itemId }.subscribe(itemClicks)
-        itemClicks
-    }
     private val archiveTagObservable by lazy { PublishSubject<Tag>() }
     private val commitArchiveObservable by lazy { PublishSubject<Unit>() }
     private val undoArchiveObservable by lazy { PublishSubject<Unit>() }
@@ -135,11 +130,11 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onTagSelected() = adapter.itemClicks()
 
-    override fun onCreateTag() = toolbarItemClicks.filter { it == R.id.action_create }.map { Unit }
+    override fun onCreateTag() = createTagSubject
 
     override fun onSave() = saveButton.clicks()
 
-    override fun onArchivedTags() = toolbarItemClicks.filter { it == R.id.action_archived }.map { Unit }
+    override fun onArchivedTags() = Observable.never<Unit>()
 
     override fun onRemoveTag() = archiveTagObservable
 

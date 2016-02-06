@@ -115,6 +115,11 @@
         <item name="android:theme">@style/AppTheme.Inverse</item>
     </style>
 
+    <style name="Button.Fab.Secondary">
+        <item name="android:theme">@style/AppTheme</item>
+        <item name="backgroundTint">?colorBackgroundPrimary</item>
+    </style>
+
     <!-- ButtonBar -->
     <!-- =============================================================================================================================== -->
 

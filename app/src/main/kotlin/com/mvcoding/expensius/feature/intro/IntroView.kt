@@ -25,7 +25,7 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
-import com.mvcoding.expensius.feature.overview.OverviewActivity
+import com.mvcoding.expensius.feature.main.MainActivity
 
 class IntroView : LinearLayout, IntroPresenter.View<Int> {
     private val viewPager by lazy { findViewById(R.id.viewPager) as ViewPager }
@@ -68,8 +68,8 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
 
     override fun onActiveIntroPagePositionChanged() = viewPager.pageSelections()
 
-    override fun startOverview() {
-        OverviewActivity.start(context)
+    override fun startMain() {
+        MainActivity.start(context)
         context.toBaseActivity().finish()
     }
 

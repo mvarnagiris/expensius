@@ -41,7 +41,7 @@
     <style name="AppTheme.Inverse">
         <item name="themeInverse">@style/AppTheme</item>
 
-        <item name="colorActionIcon">#EEEEEE</item>
+        <item name="colorActionIcon">#FEFEFE</item>
         <item name="colorBackgroundPrimary">#333333</item>
         <item name="colorBackgroundSecondary">#666666</item>
 

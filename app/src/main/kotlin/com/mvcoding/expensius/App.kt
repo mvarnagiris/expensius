@@ -18,6 +18,7 @@ import android.app.Application
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.intro.IntroModule
+import com.mvcoding.expensius.feature.main.MainModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.splash.SplashModule
 import com.mvcoding.expensius.feature.tag.TagModule
@@ -32,6 +33,7 @@ class App : Application() {
                           SplashModule(),
                           IntroModule(),
                           CalculatorModule(),
+                          MainModule(),
                           OverviewModule(),
                           TagModule(),
                           TransactionModule())

@@ -12,13 +12,11 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.tag.TagsView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tagsView"
+<com.mvcoding.expensius.feature.tag.TagsView android:id="@+id/tagsView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <include layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

@@ -31,7 +31,7 @@ class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val 
 
         unsubscribeOnDetach(view.onSkipLogin()
                                     .doOnNext { settings.setIsIntroductionSeen(true) }
-                                    .subscribe { view.startOverview() })
+                                    .subscribe { view.startMain() })
 
         unsubscribeOnDetach(view.onActiveIntroPagePositionChanged().subscribe { position -> activeIntroPagePosition = position })
     }
@@ -41,7 +41,7 @@ class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val 
         fun onSkipLogin(): Observable<Unit>
         fun onActiveIntroPagePositionChanged(): Observable<Int>
         fun onLogin(): Observable<Unit>
-        fun startOverview()
+        fun startMain()
         fun startLogin()
     }
 }

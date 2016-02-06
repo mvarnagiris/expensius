@@ -13,15 +13,7 @@
   -->
 
 <com.mvcoding.expensius.feature.transaction.TransactionsView android:id="@+id/transactionsView"
+    style="@style/RecyclerView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include layout="@layout/toolbar" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        style="@style/RecyclerView" />
-
-</com.mvcoding.expensius.feature.transaction.TransactionsView>
+    android:layout_height="match_parent" />

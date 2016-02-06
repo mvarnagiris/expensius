@@ -19,7 +19,6 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.widget.LinearLayout
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
@@ -29,21 +28,20 @@ import rx.Observable.just
 class TransactionsView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr), TransactionsPresenter.View {
+        defStyleAttr: Int = 0) : RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View {
 
     private val presenter by lazy { provideActivityScopedSingleton(TransactionsPresenter::class) }
-    private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
-    private val adapter = TransactionsAdapter()
+    private val transactionsAdapter = TransactionsAdapter()
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        recyclerView.addItemDecoration(DividerItemDecoration(
+        setHasFixedSize(true)
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        itemAnimator = DefaultItemAnimator()
+        addItemDecoration(DividerItemDecoration(
                 getColorFromTheme(context, R.attr.colorDivider),
                 resources.getDimensionPixelSize(R.dimen.divider)))
-        recyclerView.adapter = adapter
+        adapter = transactionsAdapter
     }
 
     override fun onAttachedToWindow() {
@@ -59,10 +57,10 @@ class TransactionsView @JvmOverloads constructor(
     override fun onPagingEdgeReached() = just(TransactionsPresenter.PagingEdge.END)
 
     override fun showTransactions(transactions: List<Transaction>) {
-        adapter.setItems(transactions)
+        transactionsAdapter.setItems(transactions)
     }
 
     override fun addTransactions(transactions: List<Transaction>, position: Int) {
-        adapter.insert(transactions, position)
+        transactionsAdapter.insert(transactions, position)
     }
 }

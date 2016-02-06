@@ -57,13 +57,13 @@ class IntroPresenterTest {
     }
 
     @Test
-    fun setsIntroductionAsSeenAndStartsOverviewWhenSkippingLogin() {
+    fun setsIntroductionAsSeenAndStartsMainWhenSkippingLogin() {
         presenter.onAttachView(view)
 
         skipLogin()
 
         verify(userSettings).setIsIntroductionSeen(true)
-        verify(view).startOverview()
+        verify(view).startMain()
     }
 
     @Test
