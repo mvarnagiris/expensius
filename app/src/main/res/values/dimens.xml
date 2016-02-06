@@ -41,5 +41,7 @@
     <dimen name="fab_size_half_negative">-28dp</dimen>
     <dimen name="fab_mini_size_half_negative">-20dp</dimen>
 
+    <dimen name="divider">0.67dp</dimen>
+
     <dimen name="recycler_card_space">@dimen/keyline_half</dimen>
 </resources>

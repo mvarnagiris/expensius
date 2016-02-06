@@ -19,7 +19,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.getColor
 import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.Toolbar
@@ -35,10 +35,7 @@ import com.larswerkman.lobsterpicker.LobsterPicker
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.extension.snackbar
-import com.mvcoding.expensius.extension.supportsLollipop
-import com.mvcoding.expensius.extension.toBaseActivity
+import com.mvcoding.expensius.extension.*
 import rx.Observable
 import rx.lang.kotlin.observable
 
@@ -50,8 +47,8 @@ class TagView : LinearLayout, TagPresenter.View {
     private val titleEditText by lazy { findViewById(R.id.titleEditText) as EditText }
     private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
 
-    private val darkTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary) }
-    private val lightTextColor by lazy { ContextCompat.getColor(context, R.color.text_primary_inverse) }
+    private val darkTextColor by lazy { getColor(context, R.color.text_primary) }
+    private val lightTextColor by lazy { getColor(context, R.color.text_primary_inverse) }
     private var titleUpdatesAvailable = true
     private var colorUpdatesAvailable = true
     private var colorAnimator: ValueAnimator? = null
@@ -175,7 +172,7 @@ class TagView : LinearLayout, TagPresenter.View {
         titleContainerView.setBackgroundColor(color)
         toolbar.setBackgroundColor(color)
 
-        val textColor = calculateTextColor(color)
+        val textColor = pickForegroundColor(color, lightTextColor, darkTextColor)
         titleEditText.setTextColor(textColor)
         titleEditText.setHintTextColor(ColorUtils.setAlphaComponent(textColor, 0x88))
         toolbar.setTitleTextColor(textColor)
@@ -185,14 +182,6 @@ class TagView : LinearLayout, TagPresenter.View {
 
         if (supportsLollipop()) {
             context.toBaseActivity().window.statusBarColor = color;
-        }
-    }
-
-    private fun calculateTextColor(color: Int): Int {
-        if (ColorUtils.calculateContrast(lightTextColor, color) > 2) {
-            return lightTextColor
-        } else {
-            return darkTextColor
         }
     }
 

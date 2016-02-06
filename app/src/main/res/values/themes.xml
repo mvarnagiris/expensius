@@ -23,8 +23,8 @@
         <item name="colorAccentDark">#EF3071</item>
         <item name="colorActionIcon">#727272</item>
         <item name="colorDivider">#33333333</item>
-        <item name="colorExpense">@color/red_500</item>
-        <item name="colorIncome">@color/light_green_500</item>
+        <item name="colorExpense">@color/red_700</item>
+        <item name="colorIncome">@color/light_green_700</item>
         <item name="colorBackgroundPrimary">#FFFFFF</item>
         <item name="colorBackgroundSecondary">#AAAAAA</item>
 

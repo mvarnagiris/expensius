@@ -15,10 +15,7 @@
 package com.mvcoding.expensius.feature.tag
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.support.v4.content.ContextCompat.getColor
-import android.support.v4.content.ContextCompat.getColorStateList
-import android.support.v4.graphics.ColorUtils.calculateContrast
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -26,12 +23,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
+import com.mvcoding.expensius.extension.pickForegroundColor
 
 class QuickTagView : CardView {
     private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
 
-    private val darkTextColor by lazy { getColorStateList(context, R.color.text_primary) }
-    private val lightTextColor by lazy { getColorStateList(context, R.color.text_primary_inverse) }
+    private val darkTextColor by lazy { getColor(context, R.color.text_primary) }
+    private val lightTextColor by lazy { getColor(context, R.color.text_primary_inverse) }
     private val unselectedBackgroundColor by lazy { getColorFromTheme(context, R.attr.colorBackgroundPrimary) }
 
     private var color = 0
@@ -66,17 +64,10 @@ class QuickTagView : CardView {
 
     private fun updateBackgroundColor() {
         val backgroundColor = if (isSelected) color else unselectedBackgroundColor
-        titleTextView.setTextColor(calculateTextColor(backgroundColor))
+        titleTextView.setTextColor(pickForegroundColor(backgroundColor, lightTextColor, darkTextColor))
         setCardBackgroundColor(backgroundColor)
     }
 
-    private fun calculateTextColor(backgroundColor: Int): ColorStateList {
-        return if (calculateContrast(lightTextColor.defaultColor, backgroundColor) > 2) {
-            lightTextColor
-        } else {
-            darkTextColor
-        }
-    }
 
     data class QuickTag(val text: String, val color: Int)
 }

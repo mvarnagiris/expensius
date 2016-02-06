@@ -21,7 +21,9 @@ import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.feature.DividerItemDecoration
 import rx.Observable.just
 
 class TransactionsView @JvmOverloads constructor(
@@ -38,6 +40,9 @@ class TransactionsView @JvmOverloads constructor(
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.addItemDecoration(DividerItemDecoration(
+                getColorFromTheme(context, R.attr.colorDivider),
+                resources.getDimensionPixelSize(R.dimen.divider)))
         recyclerView.adapter = adapter
     }
 

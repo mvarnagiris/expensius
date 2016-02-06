@@ -32,19 +32,18 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tagsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/Text.Body2"
-            tools:text="Essential - Food - Lunch" />
-
-        <TextView
             android:id="@+id/noteTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Text.Caption"
-            android:textColor="?android:textColorSecondary"
+            android:textAppearance="@style/Text.Subhead"
             tools:text="This is a note for this transaction" />
+
+        <TextView
+            android:id="@+id/tagsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Text.Caption"
+            tools:text="Essential - Food - Lunch" />
 
     </LinearLayout>
 
