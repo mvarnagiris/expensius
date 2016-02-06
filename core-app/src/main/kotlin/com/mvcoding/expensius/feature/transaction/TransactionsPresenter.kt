@@ -51,6 +51,7 @@ class TransactionsPresenter(transactionsProvider: TransactionsProvider) : Presen
 
         unsubscribeOnDetach(view.onPagingEdgeReached().subscribe(pagingEdges))
         unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
+        unsubscribeOnDetach(view.onAddNewTransaction().subscribe { view.startTransactionEdit() })
     }
 
     private fun showTransactions(view: View, pageResult: PageResult<Transaction>) {
@@ -71,7 +72,9 @@ class TransactionsPresenter(transactionsProvider: TransactionsProvider) : Presen
 
     interface View : Presenter.View {
         fun onPagingEdgeReached(): Observable<PagingEdge>
+        fun onAddNewTransaction(): Observable<Unit>
         fun showTransactions(transactions: List<Transaction>)
         fun addTransactions(transactions: List<Transaction>, position: Int)
+        fun startTransactionEdit()
     }
 }

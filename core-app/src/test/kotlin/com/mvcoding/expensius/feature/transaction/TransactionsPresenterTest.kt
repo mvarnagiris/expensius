@@ -30,6 +30,7 @@ import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenterTest {
+    val addNewTransactionSubject = PublishSubject<Unit>()
     val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
     val pageLoader = PageLoaderForTest()
     val view = mock(TransactionsPresenter.View::class.java)
@@ -37,6 +38,7 @@ class TransactionsPresenterTest {
 
     @Before
     fun setUp() {
+        given(view.onAddNewTransaction()).willReturn(addNewTransactionSubject)
         given(view.onPagingEdgeReached()).willReturn(pagingEdgeSubject)
     }
 
@@ -110,8 +112,21 @@ class TransactionsPresenterTest {
         assertThat(lastShownSize, equalTo(PAGE_SIZE + 1))
     }
 
+    @Test
+    fun startsTransactionEditOnAddNewTransaction() {
+        presenter.onAttachView(view)
+
+        addNewTransaction()
+
+        verify(view).startTransactionEdit()
+    }
+
     private fun pagingEdgeEnd() {
         pagingEdgeSubject.onNext(END)
+    }
+
+    private fun addNewTransaction() {
+        addNewTransactionSubject.onNext(Unit)
     }
 
     class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {

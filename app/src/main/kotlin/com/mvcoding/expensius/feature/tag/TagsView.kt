@@ -34,7 +34,7 @@ import rx.Observable
 import rx.lang.kotlin.PublishSubject
 
 class TagsView : LinearLayout, TagsPresenter.View {
-    lateinit var createTagSubject: Observable<Unit>
+    lateinit var createTagObservable: Observable<Unit>
 
     private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
     private val buttonBarView by lazy { findViewById(R.id.buttonBarView) }
@@ -130,7 +130,7 @@ class TagsView : LinearLayout, TagsPresenter.View {
 
     override fun onTagSelected() = adapter.itemClicks()
 
-    override fun onCreateTag() = createTagSubject
+    override fun onCreateTag() = createTagObservable
 
     override fun onSave() = saveButton.clicks()
 

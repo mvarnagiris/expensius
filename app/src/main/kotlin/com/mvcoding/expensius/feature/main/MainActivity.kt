@@ -29,12 +29,12 @@ import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.forEachTabIndexed
 import com.mvcoding.expensius.extension.getColorFromTheme
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import com.mvcoding.expensius.feature.tag.TagsView
+import com.mvcoding.expensius.feature.transaction.TransactionsView
 
 class MainActivity : BaseActivity(), MainPresenter.View {
     companion object {
@@ -45,7 +45,6 @@ class MainActivity : BaseActivity(), MainPresenter.View {
 
     private val addTransactionFloatingActionButton by lazy { findViewById(R.id.addTransactionFloatingActionButton) }
     private val addTagFloatingActionButton by lazy { findViewById(R.id.addTagFloatingActionButton) }
-    private val presenter by lazy { provideActivityScopedSingleton(MainPresenter::class, this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,25 +70,21 @@ class MainActivity : BaseActivity(), MainPresenter.View {
             DrawableCompat.setTint(icon, getColorFromTheme(tabLayout.context, R.attr.colorActionIcon))
             tab.icon = icon
         }
-
-        presenter.onAttachView(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.onDetachView(this)
     }
 
     private fun transactionsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
-        layoutInflater.inflate(R.layout.view_transactions, parent, false)
+        val transactionsView = layoutInflater.inflate(R.layout.view_transactions, parent, false) as TransactionsView
+        transactionsView.createTransactionObservable = addTransactionFloatingActionButton.clicks()
+        transactionsView
+
     }
 
     private fun tagsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
         val tagsView = layoutInflater.inflate(R.layout.view_tags, parent, false) as TagsView
         tagsView.init(VIEW, emptySet())
-        tagsView.createTagSubject = addTagFloatingActionButton.clicks()
+        tagsView.createTagObservable = addTagFloatingActionButton.clicks()
         tagsView
     }
 

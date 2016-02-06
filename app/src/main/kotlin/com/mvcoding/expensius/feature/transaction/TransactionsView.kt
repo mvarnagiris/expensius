@@ -23,12 +23,16 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.DividerItemDecoration
+import com.mvcoding.expensius.feature.calculator.CalculatorActivity
+import rx.Observable
 import rx.Observable.just
 
 class TransactionsView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0) : RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View {
+
+    lateinit var createTransactionObservable: Observable<Unit>
 
     private val presenter by lazy { provideActivityScopedSingleton(TransactionsPresenter::class) }
     private val transactionsAdapter = TransactionsAdapter()
@@ -54,6 +58,8 @@ class TransactionsView @JvmOverloads constructor(
         presenter.onDetachView(this)
     }
 
+    override fun onAddNewTransaction() = createTransactionObservable
+
     override fun onPagingEdgeReached() = just(TransactionsPresenter.PagingEdge.END)
 
     override fun showTransactions(transactions: List<Transaction>) {
@@ -62,5 +68,9 @@ class TransactionsView @JvmOverloads constructor(
 
     override fun addTransactions(transactions: List<Transaction>, position: Int) {
         transactionsAdapter.insert(transactions, position)
+    }
+
+    override fun startTransactionEdit() {
+        CalculatorActivity.start(context)
     }
 }
