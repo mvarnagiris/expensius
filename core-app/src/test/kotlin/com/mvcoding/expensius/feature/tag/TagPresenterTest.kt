@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.ModelState.ARCHIVED
+import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
@@ -28,7 +29,7 @@ import rx.lang.kotlin.PublishSubject
 class TagPresenterTest {
     val titleSubject = PublishSubject<String>()
     val colorSubject = PublishSubject<Int>()
-    val archiveSubject = PublishSubject<Unit>()
+    val archiveToggleSubject = PublishSubject<Unit>()
     val saveSubject = PublishSubject<Unit>()
     val tag = aTag()
     val tagsProvider = TagsProviderForTest()
@@ -39,7 +40,7 @@ class TagPresenterTest {
     fun setUp() {
         given(view.onTitleChanged()).willReturn(titleSubject)
         given(view.onColorChanged()).willReturn(colorSubject)
-        given(view.onArchive()).willReturn(archiveSubject)
+        given(view.onToggleArchive()).willReturn(archiveToggleSubject)
         given(view.onSave()).willReturn(saveSubject)
     }
 
@@ -49,6 +50,7 @@ class TagPresenterTest {
 
         verify(view).showTitle(tag.title)
         verify(view).showColor(tag.color)
+        verify(view).showModelState(tag.modelState)
     }
 
     @Test
@@ -143,10 +145,23 @@ class TagPresenterTest {
         val archivedTag = tag.withModelState(ARCHIVED)
         presenter.onAttachView(view)
 
-        archive()
+        toggleArchive()
 
         assertThat(tagsProvider.lastSavedTags?.first(), equalTo(archivedTag))
         verify(view).displayResult(archivedTag)
+    }
+
+    @Test
+    fun restoresTagAndDisplaysResult() {
+        val archivedTag = tag.withModelState(ARCHIVED)
+        val restoredTag = tag.withModelState(NONE)
+        val presenter = TagPresenter(archivedTag, tagsProvider)
+        presenter.onAttachView(view)
+
+        toggleArchive()
+
+        assertThat(tagsProvider.lastSavedTags?.first(), equalTo(restoredTag))
+        verify(view).displayResult(restoredTag)
     }
 
     private fun updateTitle(title: String) {
@@ -157,8 +172,8 @@ class TagPresenterTest {
         colorSubject.onNext(color)
     }
 
-    private fun archive() {
-        archiveSubject.onNext(Unit)
+    private fun toggleArchive() {
+        archiveToggleSubject.onNext(Unit)
     }
 
     private fun save() {

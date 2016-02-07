@@ -19,16 +19,11 @@ import rx.lang.kotlin.PublishSubject
 import rx.subjects.PublishSubject
 
 abstract class BaseClickableAdapter<T, VH : ClickableViewHolder<*>> : BaseAdapter<T, VH>() {
-    private val itemClickedSubject = PublishSubject<T>()
     private val positionClickedSubject = PublishSubject<Int>()
 
-    init {
-        positionClickedSubject.map { getItem(it) }.subscribe(itemClickedSubject)
-    }
+    fun itemPositionClicks() = positionClickedSubject.asObservable()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(parent, viewType, positionClickedSubject)
-
-    fun itemClicks() = itemClickedSubject.asObservable()
 
     protected abstract fun onCreateViewHolder(parent: ViewGroup, viewType: Int, positionClickedSubject: PublishSubject<Int>): VH
 }

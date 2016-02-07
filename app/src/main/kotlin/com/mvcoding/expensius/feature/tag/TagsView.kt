@@ -19,7 +19,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import rx.Observable
@@ -27,7 +27,7 @@ import rx.Observable
 class TagsView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), TagsPresenter.View {
+        defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr), TagsPresenter.View {
 
     private val recyclerView by lazy { findViewById(R.id.recyclerView) as RecyclerView }
     private val adapter = TagsAdapter()
@@ -66,11 +66,11 @@ class TagsView @JvmOverloads constructor(
         adapter.setItems(tags)
     }
 
-    override fun onTagSelected() = adapter.itemClicks()
+    override fun onTagSelected() = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
 
     override fun onCreateTag() = createTagObservable
 
-    override fun onDisplayArchivedTags() = Observable.never<Unit>()
+    override fun onDisplayArchivedTags() = adapter.itemPositionClicks().filter { !adapter.isTagPosition(it) }.map { Unit }
 
     override fun displayTagEdit(tag: Tag) {
         TagActivity.start(context, tag)

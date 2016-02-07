@@ -14,28 +14,47 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.BaseClickableAdapter
 import com.mvcoding.expensius.feature.ClickableViewHolder
+import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import rx.subjects.PublishSubject
 
-class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<TagItemView>>() {
-    var displayType: TagsPresenter.DisplayType = TagsPresenter.DisplayType.VIEW
-    var selectedTags: Set<Tag> = setOf()
+class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<View>>() {
+    private val VIEW_TYPE_DEFAULT = 0
+    private val VIEW_TYPE_ARCHIVED = 1
+
+    var displayType = VIEW
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, positionClickedSubject: PublishSubject<Int>) =
-            ClickableViewHolder(TagItemView.inflate(parent), positionClickedSubject)
+    fun isTagPosition(position: Int) = position < itemCount - 1 || displayType != VIEW
 
-    override fun onBindViewHolder(holder: ClickableViewHolder<TagItemView>, position: Int) {
-        holder.view.setTag(getItem(position))
+    override fun getItemCount(): Int {
+        return super.getItemCount() + if (displayType == VIEW) 1 else 0
     }
 
-    fun setTagSelected(tag: Tag, selected: Boolean) {
-        if (selected) selectedTags = selectedTags.plus(tag)
-        else selectedTags = selectedTags.minus(tag)
+    override fun getItemViewType(position: Int): Int {
+        return if (isTagPosition(position)) VIEW_TYPE_DEFAULT else VIEW_TYPE_ARCHIVED
+    }
+
+    override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int,
+            positionClickedSubject: PublishSubject<Int>) = ClickableViewHolder(
+            if (viewType == VIEW_TYPE_DEFAULT) TagItemView.inflate(parent)
+            else LayoutInflater.from(parent.context).inflate(R.layout.item_view_archived,
+                                                             parent,
+                                                             false), positionClickedSubject)
+
+    override fun onBindViewHolder(holder: ClickableViewHolder<View>, position: Int) {
+        if (holder.view is TagItemView) {
+            holder.view.setTag(getItem(position))
+        }
     }
 }

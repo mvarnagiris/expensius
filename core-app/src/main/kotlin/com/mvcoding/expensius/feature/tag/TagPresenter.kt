@@ -14,7 +14,9 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.ModelState.ARCHIVED
+import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import rx.Observable
@@ -27,6 +29,7 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
         super.onAttachView(view)
 
         view.showArchiveEnabled(tag != noTag)
+        view.showModelState(tag.modelState)
 
         val idObservable = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(UUID.randomUUID().toString())
         val modelStateObservable = just(tag.modelState)
@@ -49,28 +52,30 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
                                     .doOnNext { tagsProvider.save(setOf(it)) }
                                     .subscribe { view.displayResult(it) })
 
-        unsubscribeOnDetach(view.onArchive()
-                                    .map { tag.withModelState(ARCHIVED) }
+        unsubscribeOnDetach(view.onToggleArchive()
+                                    .map { tagWithToggledArchiveState() }
                                     .doOnNext { tagsProvider.save(setOf(it)) }
                                     .subscribe { view.displayResult(it) })
     }
 
-    private fun validate(tag: Tag, view: View): Boolean {
-        if (tag.title.isBlank()) {
-            view.showTitleCannotBeEmptyError()
-            return false
-        }
-        return true
+    private fun tagWithToggledArchiveState() = tag.withModelState(if (tag.modelState == NONE) ARCHIVED else NONE)
+
+    private fun validate(tag: Tag, view: View) = if (tag.title.isBlank()) {
+        view.showTitleCannotBeEmptyError()
+        false
+    } else {
+        true
     }
 
     interface View : Presenter.View {
         fun showTitle(title: String)
         fun showColor(color: Int)
+        fun showModelState(modelState: ModelState)
         fun showTitleCannotBeEmptyError()
         fun showArchiveEnabled(archiveEnabled: Boolean)
         fun onTitleChanged(): Observable<String>
         fun onColorChanged(): Observable<Int>
-        fun onArchive(): Observable<Unit>
+        fun onToggleArchive(): Observable<Unit>
         fun onSave(): Observable<Unit>
         fun displayResult(tag: Tag)
     }

@@ -43,7 +43,9 @@ class TagActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.tag, menu)
-        menu.findItem(R.id.action_archive).isVisible = tagView.isArchiveVisible
+        val menuItem = menu.findItem(R.id.action_archive)
+        menuItem.isVisible = tagView.isArchiveToggleVisible
+        menuItem.title = tagView.archiveToggleTitle
         return true
     }
 }

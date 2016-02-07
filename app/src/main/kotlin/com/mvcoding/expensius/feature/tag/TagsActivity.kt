@@ -46,19 +46,10 @@ class TagsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_tags)
+        setContentView(R.layout.activity_tags)
 
         val displayType = displayType
         tagsView.init(displayType, never())
         supportActionBar?.title = if (displayType == VIEW_ARCHIVED) getString(R.string.archived_tags) else getString(R.string.tags)
     }
-
-    //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    //        val result = super.onCreateOptionsMenu(menu)
-    //        if (displayType != VIEW_ARCHIVED) {
-    //            menuInflater.inflate(R.menu.tag, menu)
-    //            return true
-    //        }
-    //        return result
-    //    }
 }

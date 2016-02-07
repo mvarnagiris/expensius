@@ -35,13 +35,16 @@ import com.larswerkman.lobsterpicker.ColorAdapter
 import com.larswerkman.lobsterpicker.LobsterPicker
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
+import com.mvcoding.expensius.ModelState
+import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.*
 import rx.Observable
 import rx.lang.kotlin.observable
 
 class TagView : LinearLayout, TagPresenter.View {
-    var isArchiveVisible = true
+    var isArchiveToggleVisible = true
+    var archiveToggleTitle = resources.getString(R.string.archive)
 
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
@@ -84,7 +87,7 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun showArchiveEnabled(archiveEnabled: Boolean) {
-        isArchiveVisible = archiveEnabled
+        isArchiveToggleVisible = archiveEnabled
         toolbar.menu.findItem(R.id.action_archive)?.isVisible = archiveEnabled
     }
 
@@ -123,6 +126,11 @@ class TagView : LinearLayout, TagPresenter.View {
         }
     }
 
+    override fun showModelState(modelState: ModelState) {
+        archiveToggleTitle = if (modelState == NONE) resources.getString(R.string.archive) else resources.getString(R.string.restore)
+        toolbar.menu.findItem(R.id.action_archive)?.title = archiveToggleTitle
+    }
+
     override fun showTitleCannotBeEmptyError() {
         snackbar(R.string.error_title_empty, Snackbar.LENGTH_LONG).show()
     }
@@ -154,7 +162,7 @@ class TagView : LinearLayout, TagPresenter.View {
         return saveButton.clicks()
     }
 
-    override fun onArchive() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
+    override fun onToggleArchive() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
 
     override fun displayResult(tag: Tag) {
         context.toBaseActivity().finish()
