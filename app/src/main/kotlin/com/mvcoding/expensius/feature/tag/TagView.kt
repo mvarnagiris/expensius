@@ -28,6 +28,7 @@ import android.util.Pair
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.textChanges
 import com.larswerkman.lobsterpicker.ColorAdapter
@@ -40,6 +41,8 @@ import rx.Observable
 import rx.lang.kotlin.observable
 
 class TagView : LinearLayout, TagPresenter.View {
+    var isArchiveVisible = true
+
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val lobsterPicker by lazy { findViewById(R.id.lobsterPicker) as LobsterPicker }
     private val lobsterShadeSlider by lazy { findViewById(R.id.lobsterShadeSlider) as LobsterShadeSlider }
@@ -78,6 +81,11 @@ class TagView : LinearLayout, TagPresenter.View {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         presenter.onDetachView(this)
+    }
+
+    override fun showArchiveEnabled(archiveEnabled: Boolean) {
+        isArchiveVisible = archiveEnabled
+        toolbar.menu.findItem(R.id.action_archive)?.isVisible = archiveEnabled
     }
 
     override fun showTitle(title: String) {
@@ -146,12 +154,14 @@ class TagView : LinearLayout, TagPresenter.View {
         return saveButton.clicks()
     }
 
-    override fun startResult(tag: Tag) {
+    override fun onArchive() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
+
+    override fun displayResult(tag: Tag) {
         context.toBaseActivity().finish()
         // TODO: Set the result
     }
 
-    fun onTagColorUpdated(color: Int, animate: Boolean) {
+    private fun onTagColorUpdated(color: Int, animate: Boolean) {
         colorAnimator?.cancel()
         if (!animate) {
             setColorOnViews(color)

@@ -14,15 +14,10 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/action_create"
-        android:icon="@drawable/ic_action_add"
-        android:title="@string/create"
-        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_archived"
+        android:id="@+id/action_archive"
         android:icon="@drawable/ic_action_archive"
-        android:title="@string/archived_tags"
-        app:showAsAction="ifRoom" />
+        android:title="@string/archive"
+        app:showAsAction="never" />
 </menu>

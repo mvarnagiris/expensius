@@ -14,7 +14,9 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.ModelState.ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.Observable.just
@@ -24,20 +26,33 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
+        view.showArchiveEnabled(tag != noTag)
+
         val idObservable = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(UUID.randomUUID().toString())
         val modelStateObservable = just(tag.modelState)
         val titleObservable = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.trim() }
-        val colorObservable = view.onColorChanged().startWith(if (tag.color == 0) color(0x607d8b) else tag.color).doOnNext { view.showColor(it) }
+        val colorObservable = view.onColorChanged().startWith(if (tag.color == 0) color(0x607d8b) else tag.color).doOnNext {
+            view.showColor(it)
+        }
 
-        val tagObservable = combineLatest(idObservable, modelStateObservable, titleObservable, colorObservable,
+        val tagObservable = combineLatest(
+                idObservable,
+                modelStateObservable,
+                titleObservable,
+                colorObservable,
                 { id, modelState, title, color -> Tag(id, modelState, title, color) })
                 .doOnNext { tag = it }
 
         unsubscribeOnDetach(view.onSave()
-                .withLatestFrom(tagObservable, { action, tag -> tag })
-                .filter { validate(it, view) }
+                                    .withLatestFrom(tagObservable, { action, tag -> tag })
+                                    .filter { validate(it, view) }
                                     .doOnNext { tagsProvider.save(setOf(it)) }
-                .subscribe { view.startResult(it) })
+                                    .subscribe { view.displayResult(it) })
+
+        unsubscribeOnDetach(view.onArchive()
+                                    .map { tag.withModelState(ARCHIVED) }
+                                    .doOnNext { tagsProvider.save(setOf(it)) }
+                                    .subscribe { view.displayResult(it) })
     }
 
     private fun validate(tag: Tag, view: View): Boolean {
@@ -52,9 +67,11 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
         fun showTitle(title: String)
         fun showColor(color: Int)
         fun showTitleCannotBeEmptyError()
+        fun showArchiveEnabled(archiveEnabled: Boolean)
         fun onTitleChanged(): Observable<String>
         fun onColorChanged(): Observable<Int>
+        fun onArchive(): Observable<Unit>
         fun onSave(): Observable<Unit>
-        fun startResult(tag: Tag)
+        fun displayResult(tag: Tag)
     }
 }

@@ -16,7 +16,6 @@ package com.mvcoding.expensius.feature.tag
 
 import android.content.Context
 import android.os.Bundle
-import android.view.Menu
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -54,12 +53,12 @@ class TagsActivity : BaseActivity() {
         supportActionBar?.title = if (displayType == VIEW_ARCHIVED) getString(R.string.archived_tags) else getString(R.string.tags)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val result = super.onCreateOptionsMenu(menu)
-        if (displayType != VIEW_ARCHIVED) {
-            menuInflater.inflate(R.menu.tags, menu)
-            return true
-        }
-        return result
-    }
+    //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    //        val result = super.onCreateOptionsMenu(menu)
+    //        if (displayType != VIEW_ARCHIVED) {
+    //            menuInflater.inflate(R.menu.tag, menu)
+    //            return true
+    //        }
+    //        return result
+    //    }
 }

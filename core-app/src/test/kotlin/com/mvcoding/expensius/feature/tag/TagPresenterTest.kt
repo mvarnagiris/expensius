@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.ModelState.ARCHIVED
 import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
@@ -22,21 +23,23 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
 import rx.Observable
-import rx.subjects.PublishSubject
+import rx.lang.kotlin.PublishSubject
 
 class TagPresenterTest {
-    val titleSubject = PublishSubject.create<String>()
-    val colorSubject = PublishSubject.create<Int>()
-    val saveSubject = PublishSubject.create<Unit>()
+    val titleSubject = PublishSubject<String>()
+    val colorSubject = PublishSubject<Int>()
+    val archiveSubject = PublishSubject<Unit>()
+    val saveSubject = PublishSubject<Unit>()
     val tag = aTag()
-    val tagsCache = TagsProviderForTest()
+    val tagsProvider = TagsProviderForTest()
     val view = mock(TagPresenter.View::class.java)
-    val presenter = TagPresenter(tag, tagsCache)
+    val presenter = TagPresenter(tag, tagsProvider)
 
     @Before
     fun setUp() {
         given(view.onTitleChanged()).willReturn(titleSubject)
         given(view.onColorChanged()).willReturn(colorSubject)
+        given(view.onArchive()).willReturn(archiveSubject)
         given(view.onSave()).willReturn(saveSubject)
     }
 
@@ -74,7 +77,7 @@ class TagPresenterTest {
 
     @Test
     fun showsDefaultColorWhenCreatingNewTag() {
-        val presenter = TagPresenter(noTag, tagsCache)
+        val presenter = TagPresenter(noTag, tagsProvider)
         presenter.onAttachView(view)
 
         verify(view).showColor(color(0x607d8b))
@@ -87,7 +90,7 @@ class TagPresenterTest {
 
         save()
 
-        assertThat(tagsCache.lastSavedTags, nullValue())
+        assertThat(tagsProvider.lastSavedTags, nullValue())
         verify(view).showTitleCannotBeEmptyError()
     }
 
@@ -97,7 +100,7 @@ class TagPresenterTest {
 
         save()
 
-        assertThat(tagsCache.lastSavedTags!!.first(), equalTo(tag))
+        assertThat(tagsProvider.lastSavedTags!!.first(), equalTo(tag))
     }
 
     @Test
@@ -107,16 +110,43 @@ class TagPresenterTest {
 
         save()
 
-        assertThat(tagsCache.lastSavedTags!!.first().title, equalTo("title"))
+        assertThat(tagsProvider.lastSavedTags!!.first().title, equalTo("title"))
     }
 
     @Test
-    fun startsResultWhenTagIsSavedSuccessfully() {
+    fun displaysResultWhenTagIsSavedSuccessfully() {
         presenter.onAttachView(view)
 
         save()
 
-        verify(view).startResult(tag)
+        verify(view).displayResult(tag)
+    }
+
+    @Test
+    fun archiveIsDisabledForNewTag() {
+        val presenter = TagPresenter(noTag, tagsProvider)
+
+        presenter.onAttachView(view)
+
+        verify(view).showArchiveEnabled(false)
+    }
+
+    @Test
+    fun archiveIsEnabledForExistingTag() {
+        presenter.onAttachView(view)
+
+        verify(view).showArchiveEnabled(true)
+    }
+
+    @Test
+    fun archivesTagAndDisplaysResult() {
+        val archivedTag = tag.withModelState(ARCHIVED)
+        presenter.onAttachView(view)
+
+        archive()
+
+        assertThat(tagsProvider.lastSavedTags?.first(), equalTo(archivedTag))
+        verify(view).displayResult(archivedTag)
     }
 
     private fun updateTitle(title: String) {
@@ -125,6 +155,10 @@ class TagPresenterTest {
 
     private fun updateColor(color: Int) {
         colorSubject.onNext(color)
+    }
+
+    private fun archive() {
+        archiveSubject.onNext(Unit)
     }
 
     private fun save() {

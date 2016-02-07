@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature.tag
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -31,12 +32,18 @@ class TagActivity : BaseActivity() {
         }
     }
 
+    private val tagView by lazy { findViewById(R.id.tagView) as TagView }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_tag)
+        tagView.init(intent.getSerializableExtra(TagActivity.EXTRA_TAG) as Tag)
+    }
 
-        val tag = intent.getSerializableExtra(TagActivity.EXTRA_TAG) as Tag
-        val tagView = findViewById(R.id.tagView) as TagView
-        tagView.init(tag)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.tag, menu)
+        menu.findItem(R.id.action_archive).isVisible = tagView.isArchiveVisible
+        return true
     }
 }
