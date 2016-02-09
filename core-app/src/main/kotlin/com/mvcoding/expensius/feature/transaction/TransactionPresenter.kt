@@ -14,9 +14,13 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.ModelState
+import com.mvcoding.expensius.ModelState.ARCHIVED
+import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.tag.Tag
 import rx.Observable
+import rx.Observable.just
 import java.math.BigDecimal
 import java.util.UUID.randomUUID
 
@@ -27,30 +31,33 @@ class TransactionPresenter(
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
-        val idObservable = Observable.just(transaction.id).filter { !it.isBlank() }.defaultIfEmpty(randomUUID().toString())
-        val modelStateObservable = Observable.just(transaction.modelState)
-        val transactionStateObservable = view.onTransactionStateChanged().startWith(transaction.transactionState).doOnNext {
+        view.showArchiveEnabled(transaction.isStored())
+        view.showModelState(transaction.modelState)
+
+        val ids = just(transaction.id).filter { !it.isBlank() }.defaultIfEmpty(randomUUID().toString())
+        val modelStates = just(transaction.modelState)
+        val transactionStates = view.onTransactionStateChanged().startWith(transaction.transactionState).doOnNext {
             view.showTransactionState(it)
         }
-        val transactionTypeObservable = view.onTransactionTypeChanged().startWith(transaction.transactionType).doOnNext {
+        val transactionTypes = view.onTransactionTypeChanged().startWith(transaction.transactionType).doOnNext {
             view.showTransactionType(it)
         }
-        val timestampObservable = view.onTimestampChanged().startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
-        val currencyObservable = view.onCurrencyChanged().startWith(transaction.currency).doOnNext { view.showCurrency(it) }
-        val amountObservable = view.onAmountChanged().startWith(transaction.amount).doOnNext { view.showAmount(it) }
-        val tagsObservable = view.onTagsChanged().startWith(transaction.tags).doOnNext { view.showTags(it) }
-        val noteObservable = view.onNoteChanged().startWith(transaction.note).doOnNext { view.showNote(it) }
+        val timestamps = view.onTimestampChanged().startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
+        val currencies = view.onCurrencyChanged().startWith(transaction.currency).doOnNext { view.showCurrency(it) }
+        val amounts = view.onAmountChanged().startWith(transaction.amount).doOnNext { view.showAmount(it) }
+        val tags = view.onTagsChanged().startWith(transaction.tags).doOnNext { view.showTags(it) }
+        val notes = view.onNoteChanged().startWith(transaction.note).doOnNext { view.showNote(it) }
 
         val transactionObservable = Observable.combineLatest(
-                idObservable,
-                modelStateObservable,
-                transactionStateObservable,
-                transactionTypeObservable,
-                timestampObservable,
-                currencyObservable,
-                amountObservable,
-                tagsObservable,
-                noteObservable,
+                ids,
+                modelStates,
+                transactionStates,
+                transactionTypes,
+                timestamps,
+                currencies,
+                amounts,
+                tags,
+                notes,
                 { id, modelState, transactionState, transactionType, timestamp, currency, amount, tags, note ->
                     Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, tags, note)
                 })
@@ -59,8 +66,15 @@ class TransactionPresenter(
         unsubscribeOnDetach(view.onSave()
                                     .withLatestFrom(transactionObservable, { action, transaction -> transaction })
                                     .doOnNext { transactionsProvider.save(setOf(it)) }
-                                    .subscribe { view.startResult(it) })
+                                    .subscribe { view.displayResult(it) })
+
+        unsubscribeOnDetach(view.onToggleArchive()
+                                    .map { transactionWithToggledArchiveState() }
+                                    .doOnNext { transactionsProvider.save(setOf(it)) }
+                                    .subscribe { view.displayResult(it) })
     }
+
+    private fun transactionWithToggledArchiveState() = transaction.withModelState(if (transaction.modelState == NONE) ARCHIVED else NONE)
 
     interface View : Presenter.View {
         fun onTransactionStateChanged(): Observable<TransactionState>
@@ -70,8 +84,11 @@ class TransactionPresenter(
         fun onAmountChanged(): Observable<BigDecimal>
         fun onTagsChanged(): Observable<Set<Tag>>
         fun onNoteChanged(): Observable<String>
+        fun onToggleArchive(): Observable<Unit>
         fun onSave(): Observable<Unit>
 
+        fun showArchiveEnabled(archiveEnabled: Boolean)
+        fun showModelState(modelState: ModelState)
         fun showTransactionState(transactionState: TransactionState)
         fun showTransactionType(transactionType: TransactionType)
         fun showTimestamp(timestamp: Long)
@@ -80,6 +97,6 @@ class TransactionPresenter(
         fun showTags(tags: Set<Tag>)
         fun showNote(note: String)
 
-        fun startResult(transaction: Transaction)
+        fun displayResult(transaction: Transaction)
     }
 }

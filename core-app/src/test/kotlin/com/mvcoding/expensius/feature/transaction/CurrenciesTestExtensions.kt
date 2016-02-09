@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +14,4 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.feature.tag.aTag
-import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
-import java.math.BigDecimal.ZERO
-
-fun aTransaction(): Transaction = Transaction(
-        transactionType = EXPENSE,
-        transactionState = CONFIRMED,
-        timestamp = System.currentTimeMillis(),
-        currency = Currency("GBP"),
-        amount = ZERO,
-        tags = setOf(aTag()),
-        note = "note")
+fun aCurrency() = Currency("GBP")

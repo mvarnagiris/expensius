@@ -127,7 +127,7 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun showModelState(modelState: ModelState) {
-        archiveToggleTitle = if (modelState == NONE) resources.getString(R.string.archive) else resources.getString(R.string.restore)
+        archiveToggleTitle = resources.getString(if (modelState == NONE) R.string.archive else R.string.restore)
         toolbar.menu.findItem(R.id.action_archive)?.title = archiveToggleTitle
     }
 

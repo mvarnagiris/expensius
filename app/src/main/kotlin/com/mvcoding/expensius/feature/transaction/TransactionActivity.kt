@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.transaction
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -45,5 +46,14 @@ class TransactionActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         transactionView.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.tag, menu)
+        val menuItem = menu.findItem(R.id.action_archive)
+        menuItem.isVisible = transactionView.isArchiveToggleVisible
+        menuItem.title = transactionView.archiveToggleTitle
+        return true
     }
 }

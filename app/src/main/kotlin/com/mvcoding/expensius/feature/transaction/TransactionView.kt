@@ -18,11 +18,14 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.widget.*
+import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
+import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.RxBus
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
@@ -51,6 +54,10 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         private const val REQUEST_DATE = 2
     }
 
+    var isArchiveToggleVisible = true
+    var archiveToggleTitle = resources.getString(R.string.archive)
+
+    private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
     private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
     private val currencySubject by lazy { PublishSubject<Currency>() }
@@ -146,7 +153,19 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         return noteEditText.textChanges().doOnNext { allowNoteChanges = false }.map { it.toString() }
     }
 
+    override fun onToggleArchive() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
+
     override fun onSave() = saveButton.clicks()
+
+    override fun showArchiveEnabled(archiveEnabled: Boolean) {
+        isArchiveToggleVisible = archiveEnabled
+        toolbar.menu.findItem(R.id.action_archive)?.isVisible = archiveEnabled
+    }
+
+    override fun showModelState(modelState: ModelState) {
+        archiveToggleTitle = resources.getString(if (modelState == ModelState.NONE) R.string.archive else R.string.restore)
+        toolbar.menu.findItem(R.id.action_archive)?.title = archiveToggleTitle
+    }
 
     override fun showTransactionState(transactionState: TransactionState) {
         this.transactionState = transactionState;
@@ -186,7 +205,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         allowNoteChanges = true
     }
 
-    override fun startResult(transaction: Transaction) {
+    override fun displayResult(transaction: Transaction) {
         context.toBaseActivity().finish()
     }
 

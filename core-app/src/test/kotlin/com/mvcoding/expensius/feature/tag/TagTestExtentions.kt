@@ -14,10 +14,9 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.ModelState
+import com.mvcoding.expensius.ModelState.NONE
+import java.util.UUID.randomUUID
 
-fun aTag(): Tag {
-    return Tag(title = "title", color = 1)
-}
-
-fun Tag.withModelState(modelState: ModelState): Tag = Tag(id, modelState, title, color)
+fun aTag(): Tag = Tag(randomUUID().toString(), NONE, "title", 1)
+fun someTags() = setOf(aTag(), aTag())
+fun aNewTag(): Tag = Tag()

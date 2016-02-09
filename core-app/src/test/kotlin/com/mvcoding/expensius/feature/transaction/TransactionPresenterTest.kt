@@ -14,13 +14,20 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.ModelState.ARCHIVED
+import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
+import com.mvcoding.expensius.paging.Page
+import com.mvcoding.expensius.paging.PageResult
+import org.hamcrest.CoreMatchers.equalTo
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
+import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 import java.math.BigDecimal.TEN
@@ -33,11 +40,12 @@ class TransactionPresenterTest {
     val amountSubject = PublishSubject<BigDecimal>()
     val tagsSubject = PublishSubject<Set<Tag>>()
     val noteSubject = PublishSubject<String>()
+    val toggleArchiveSubject = PublishSubject<Unit>()
     val saveSubject = PublishSubject<Unit>()
     val view = mock(TransactionPresenter.View::class.java)
     val transaction = aTransaction()
-    val transactionsCache = mock(TransactionsProvider::class.java)
-    val presenter = TransactionPresenter(transaction, transactionsCache)
+    val transactionsProvider = TransactionsProviderForTest()
+    val presenter = TransactionPresenter(transaction, transactionsProvider)
 
     @Before
     fun setUp() {
@@ -48,6 +56,7 @@ class TransactionPresenterTest {
         given(view.onAmountChanged()).willReturn(amountSubject)
         given(view.onTagsChanged()).willReturn(tagsSubject)
         given(view.onNoteChanged()).willReturn(noteSubject)
+        given(view.onToggleArchive()).willReturn(toggleArchiveSubject)
         given(view.onSave()).willReturn(saveSubject)
     }
 
@@ -62,6 +71,7 @@ class TransactionPresenterTest {
         verify(view).showAmount(transaction.amount)
         verify(view).showTags(transaction.tags)
         verify(view).showNote(transaction.note)
+        verify(view).showModelState(transaction.modelState)
     }
 
     @Test
@@ -113,12 +123,56 @@ class TransactionPresenterTest {
     }
 
     @Test
-    fun savesTransactionAndStartsResult() {
+    fun savesTransactionAndDisplaysResult() {
         presenter.onAttachView(view)
 
         save()
 
-        verify(transactionsCache).save(setOf(transaction))
+        assertThat(transactionsProvider.lastSavedTransactions?.first(), equalTo(transaction))
+    }
+
+    @Test
+    fun archiveIsDisabledForNewTransaction() {
+        val presenter = TransactionPresenter(aNewTransaction(), transactionsProvider)
+
+        presenter.onAttachView(view)
+
+        verify(view).showArchiveEnabled(false)
+    }
+
+    @Test
+    fun archiveIsEnabledForExistingTransaction() {
+        presenter.onAttachView(view)
+
+        verify(view).showArchiveEnabled(true)
+    }
+
+    @Test
+    fun archivesTransactionAndDisplaysResult() {
+        val archivedTransaction = transaction.withModelState(ARCHIVED)
+        presenter.onAttachView(view)
+
+        toggleArchive()
+
+        assertThat(transactionsProvider.lastSavedTransactions?.first(), equalTo(archivedTransaction))
+        verify(view).displayResult(archivedTransaction)
+    }
+
+    @Test
+    fun restoresTagAndDisplaysResult() {
+        val archivedTransaction = transaction.withModelState(ARCHIVED)
+        val restoredTransaction = transaction.withModelState(NONE)
+        val presenter = TransactionPresenter(archivedTransaction, transactionsProvider)
+        presenter.onAttachView(view)
+
+        toggleArchive()
+
+        assertThat(transactionsProvider.lastSavedTransactions?.first(), equalTo(restoredTransaction))
+        verify(view).displayResult(restoredTransaction)
+    }
+
+    private fun toggleArchive() {
+        toggleArchiveSubject.onNext(Unit)
     }
 
     fun updateTransactionType(transactionType: TransactionType) {
@@ -151,5 +205,17 @@ class TransactionPresenterTest {
 
     fun save() {
         saveSubject.onNext(Unit)
+    }
+
+    class TransactionsProviderForTest : TransactionsProvider {
+        var lastSavedTransactions: Set<Transaction>? = null
+
+        override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
+            throw UnsupportedOperationException()
+        }
+
+        override fun save(transactions: Set<Transaction>) {
+            lastSavedTransactions = transactions
+        }
     }
 }

@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW_ARCHIVED
 import org.junit.Before
@@ -78,7 +77,7 @@ class TagsPresenterTest {
 
         createTag()
 
-        verify(view).displayTagEdit(noTag)
+        verify(view).displayTagEdit(aNewTag())
     }
 
     @Test

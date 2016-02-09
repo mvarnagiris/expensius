@@ -17,17 +17,13 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.ModelState.NONE
 import java.io.Serializable
-import java.util.UUID.randomUUID
 
 data class Tag(
-        val id: String = randomUUID().toString(),
+        val id: String = "",
         val modelState: ModelState = NONE,
-        val title: String,
-        val color: Int) : Serializable {
-
-    companion object {
-        val noTag = Tag("", NONE, "", 0)
-    }
+        val title: String = "",
+        val color: Int = 0) : Serializable {
 
     fun withModelState(modelState: ModelState) = copy(modelState = modelState)
+    fun isStored() = id.isNotBlank()
 }

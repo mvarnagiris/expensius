@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.Presenter
-import com.mvcoding.expensius.feature.tag.Tag.Companion.noTag
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW_ARCHIVED
 import rx.Observable
@@ -31,7 +30,7 @@ class TagsPresenter(
         view.showDisplayType(displayType)
 
         unsubscribeOnDetach(tags().subscribe { view.showTags(it) })
-        unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { noTag }).subscribe { view.displayTagEdit(it) })
+        unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { Tag() }).subscribe { view.displayTagEdit(it) })
         unsubscribeOnDetach(view.onDisplayArchivedTags().subscribe { view.displayArchivedTags() })
     }
 

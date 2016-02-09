@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,27 +14,23 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.ModelState.NONE
-import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.feature.tag.someTags
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
-import java.io.Serializable
 import java.lang.System.currentTimeMillis
-import java.math.BigDecimal
-import java.math.BigDecimal.ZERO
+import java.math.BigDecimal.ONE
+import java.util.UUID.randomUUID
 
-data class Transaction(
-        val id: String = "",
-        val modelState: ModelState = NONE,
-        val transactionType: TransactionType = EXPENSE,
-        val transactionState: TransactionState = CONFIRMED,
-        val timestamp: Long = currentTimeMillis(),
-        val currency: Currency,
-        val amount: BigDecimal = ZERO,
-        val tags: Set<Tag> = emptySet(),
-        val note: String = "") : Serializable {
+fun aTransaction() = Transaction(
+        randomUUID().toString(),
+        NONE,
+        EXPENSE,
+        CONFIRMED,
+        currentTimeMillis(),
+        aCurrency(),
+        ONE,
+        someTags(),
+        "note")
 
-    fun withModelState(modelState: ModelState) = copy(modelState = modelState)
-    fun isStored() = id.isNotBlank()
-}
+fun aNewTransaction() = Transaction(currency = aCurrency())

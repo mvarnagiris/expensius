@@ -31,12 +31,11 @@ import com.mvcoding.expensius.extension.forEachTabIndexed
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import com.mvcoding.expensius.feature.tag.TagsView
 import com.mvcoding.expensius.feature.transaction.TransactionsView
 
-class MainActivity : BaseActivity(), MainPresenter.View {
+class MainActivity : BaseActivity() {
     companion object {
         fun start(context: Context) {
             ActivityStarter(context, MainActivity::class).start()
@@ -104,12 +103,6 @@ class MainActivity : BaseActivity(), MainPresenter.View {
                 addTransactionFloatingActionButton.visibility = GONE
             }
         }
-    }
-
-    override fun onAddNewTransaction() = addTransactionFloatingActionButton.clicks()
-
-    override fun startTransactionEdit() {
-        CalculatorActivity.start(this)
     }
 
     private data class Screen(val inflate: (LayoutInflater, ViewGroup) -> View, val iconResId: Int)
