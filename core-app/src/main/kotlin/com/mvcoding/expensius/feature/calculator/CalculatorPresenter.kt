@@ -19,7 +19,7 @@ import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
-import com.mvcoding.expensius.feature.transaction.Transaction
+import com.mvcoding.expensius.model.Transaction
 import rx.Observable
 import rx.Observable.merge
 import java.math.BigDecimal

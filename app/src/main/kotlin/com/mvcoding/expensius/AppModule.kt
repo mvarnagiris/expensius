@@ -27,8 +27,8 @@ import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.START
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.tag.TagsProvider
 import com.mvcoding.expensius.feature.transaction.Currency
-import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
+import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provider.DatabaseTagsProvider
 import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
 import com.mvcoding.expensius.provider.database.DBHelper

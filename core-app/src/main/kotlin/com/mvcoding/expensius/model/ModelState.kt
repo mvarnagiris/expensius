@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,18 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.tag
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.ModelState.NONE
-import java.io.Serializable
-
-data class Tag(
-        val id: String = "",
-        val modelState: ModelState = NONE,
-        val title: String = "",
-        val color: Int = 0) : Serializable {
-
-    fun withModelState(modelState: ModelState) = copy(modelState = modelState)
-    fun isStored() = id.isNotBlank()
+enum class ModelState {
+    NONE, ARCHIVED
 }

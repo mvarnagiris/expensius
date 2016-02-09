@@ -20,7 +20,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.support.v4.content.ContextCompat
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.toContentValues
-import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable

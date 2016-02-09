@@ -23,6 +23,7 @@ import android.view.ViewGroup
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.QuickTagView.QuickTag
+import com.mvcoding.expensius.model.Tag
 import rx.lang.kotlin.BehaviourSubject
 import rx.lang.kotlin.PublishSubject
 import java.lang.Math.max

@@ -14,12 +14,13 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.ModelState.ARCHIVED
-import com.mvcoding.expensius.ModelState.NONE
-import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import org.hamcrest.CoreMatchers.equalTo

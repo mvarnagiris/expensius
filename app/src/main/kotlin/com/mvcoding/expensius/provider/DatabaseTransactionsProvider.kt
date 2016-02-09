@@ -15,12 +15,12 @@
 package com.mvcoding.expensius.provider
 
 import android.content.ContentValues
-import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
-import com.mvcoding.expensius.feature.tag.Tag
-import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.provider.database.*

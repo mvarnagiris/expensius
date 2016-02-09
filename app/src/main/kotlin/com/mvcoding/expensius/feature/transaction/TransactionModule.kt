@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.transaction
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.model.Transaction
 
 class TransactionModule : ShankModule {
     override fun registerFactories() {

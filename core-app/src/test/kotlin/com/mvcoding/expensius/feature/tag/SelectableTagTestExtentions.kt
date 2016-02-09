@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.model.Tag
+
 fun aSelectableTag() = SelectableTag(aTag(), false)
 
 fun SelectableTag.withTag(tag: Tag) = copy(tag = tag)

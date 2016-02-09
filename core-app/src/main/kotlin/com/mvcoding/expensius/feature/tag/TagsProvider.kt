@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.model.Tag
 import rx.Observable
 
 interface TagsProvider {

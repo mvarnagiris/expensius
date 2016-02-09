@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,12 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.tag
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Tag
-import java.util.UUID.randomUUID
+import java.io.Serializable
 
-fun aTag(): Tag = Tag(randomUUID().toString(), NONE, "title", 1)
-fun someTags() = setOf(aTag(), aTag())
-fun aNewTag(): Tag = Tag()
+interface Model : Serializable {
+    val id: String
+    val modelState: ModelState
+
+    fun isStored() = id.isNotBlank()
+}

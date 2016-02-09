@@ -21,6 +21,7 @@ import android.view.Menu
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.model.Transaction
 
 class TransactionActivity : BaseActivity() {
     companion object {

@@ -14,10 +14,11 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.tag.someTags
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Transaction
 import java.lang.System.currentTimeMillis
 import java.math.BigDecimal.ONE
 import java.util.UUID.randomUUID

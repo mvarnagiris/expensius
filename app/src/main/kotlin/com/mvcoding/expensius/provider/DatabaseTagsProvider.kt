@@ -14,14 +14,14 @@
 
 package com.mvcoding.expensius.provider
 
-import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.ModelState.ARCHIVED
-import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.extension.map
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTag
-import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.tag.TagsProvider
+import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.SaveRecord
 import com.mvcoding.expensius.provider.database.select

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,29 +12,28 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.ModelState.NONE
-import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.feature.transaction.Currency
+import com.mvcoding.expensius.feature.transaction.TransactionState
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
+import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
-import java.io.Serializable
+import com.mvcoding.expensius.model.ModelState.NONE
 import java.lang.System.currentTimeMillis
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 
 data class Transaction(
-        val id: String = "",
-        val modelState: ModelState = NONE,
+        override val id: String = "",
+        override val modelState: ModelState = NONE,
         val transactionType: TransactionType = EXPENSE,
         val transactionState: TransactionState = CONFIRMED,
         val timestamp: Long = currentTimeMillis(),
         val currency: Currency,
         val amount: BigDecimal = ZERO,
         val tags: Set<Tag> = emptySet(),
-        val note: String = "") : Serializable {
+        val note: String = "") : Model {
 
     fun withModelState(modelState: ModelState) = copy(modelState = modelState)
-    fun isStored() = id.isNotBlank()
 }

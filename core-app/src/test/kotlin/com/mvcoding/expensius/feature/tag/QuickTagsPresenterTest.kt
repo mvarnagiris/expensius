@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.model.Tag
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*

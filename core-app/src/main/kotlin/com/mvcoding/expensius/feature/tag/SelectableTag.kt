@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.model.Tag
+
 data class SelectableTag(val tag: Tag, val isSelected: Boolean) {
     fun toggled() = copy(isSelected = isSelected.not())
 }

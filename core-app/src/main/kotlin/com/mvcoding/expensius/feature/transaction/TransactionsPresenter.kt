@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
+import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import rx.Observable

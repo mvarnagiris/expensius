@@ -14,8 +14,9 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.ModelState.ARCHIVED
-import com.mvcoding.expensius.ModelState.NONE
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert.assertThat

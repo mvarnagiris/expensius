@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-import com.mvcoding.expensius.ModelState
+import com.mvcoding.expensius.model.ModelState
 
 abstract class ModelTable(name: String) : Table(name) {
     val id = ValueColumn(this, "id", ValueColumn.Type.TEXT_PRIMARY_KEY);

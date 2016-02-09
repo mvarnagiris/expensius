@@ -16,12 +16,12 @@ package com.mvcoding.expensius.extension
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.Currency
-import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionState
 import com.mvcoding.expensius.feature.transaction.TransactionType
+import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import java.math.BigDecimal

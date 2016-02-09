@@ -23,6 +23,7 @@ import android.widget.LinearLayout
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.model.Tag
 import rx.Observable
 
 class TagsView @JvmOverloads constructor(

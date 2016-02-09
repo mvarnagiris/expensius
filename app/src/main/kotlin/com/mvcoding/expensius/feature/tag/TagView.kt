@@ -35,10 +35,11 @@ import com.larswerkman.lobsterpicker.ColorAdapter
 import com.larswerkman.lobsterpicker.LobsterPicker
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
-import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.*
+import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
 import rx.Observable
 import rx.lang.kotlin.observable
 

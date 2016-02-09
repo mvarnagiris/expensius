@@ -24,6 +24,7 @@ import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.DividerItemDecoration
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
+import com.mvcoding.expensius.model.Transaction
 import rx.Observable
 import rx.Observable.just
 

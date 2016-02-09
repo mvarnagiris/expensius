@@ -14,11 +14,12 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.ModelState.ARCHIVED
-import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.Presenter
-import com.mvcoding.expensius.feature.tag.Tag
+import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
 import rx.Observable
 import rx.Observable.just
 import java.math.BigDecimal

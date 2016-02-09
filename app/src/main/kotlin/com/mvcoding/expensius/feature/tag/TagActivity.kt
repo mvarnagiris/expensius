@@ -20,6 +20,7 @@ import android.view.Menu
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.model.Tag
 
 class TagActivity : BaseActivity() {
     companion object {

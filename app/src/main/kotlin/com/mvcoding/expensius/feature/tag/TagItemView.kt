@@ -21,10 +21,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.mvcoding.expensius.ModelState.ARCHIVED
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.makeOutlineProviderOval
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.Tag
 
 class TagItemView : LinearLayout {
     private val colorImageView by lazy { findViewById(R.id.colorImageView) as ImageView }

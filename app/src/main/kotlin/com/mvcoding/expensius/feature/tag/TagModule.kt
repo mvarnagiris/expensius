@@ -18,6 +18,7 @@ import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.model.Tag
 
 class TagModule : ShankModule {
     override fun registerFactories() {

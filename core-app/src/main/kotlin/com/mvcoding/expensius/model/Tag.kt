@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,8 +12,15 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.model
 
-enum class ModelState {
-    NONE, ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
+
+data class Tag(
+        override val id: String = "",
+        override val modelState: ModelState = NONE,
+        val title: String = "",
+        val color: Int = 0) : Model {
+
+    fun withModelState(modelState: ModelState) = copy(modelState = modelState)
 }

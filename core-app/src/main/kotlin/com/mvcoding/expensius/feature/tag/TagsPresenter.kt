@@ -18,6 +18,7 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NON_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.model.Tag
 import rx.Observable
 import rx.Observable.merge
 

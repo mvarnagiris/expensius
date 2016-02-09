@@ -18,8 +18,9 @@ import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
-import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
 
 class TransactionItemView : LinearLayout {
     private val NON_BREAKABLE_SPACE = "\u00A0"

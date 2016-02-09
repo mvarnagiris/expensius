@@ -14,10 +14,11 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.ModelState
-import com.mvcoding.expensius.ModelState.ARCHIVED
-import com.mvcoding.expensius.ModelState.NONE
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.Observable.just

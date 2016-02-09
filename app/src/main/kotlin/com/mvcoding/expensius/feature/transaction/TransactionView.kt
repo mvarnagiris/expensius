@@ -25,7 +25,6 @@ import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
-import com.mvcoding.expensius.ModelState
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.RxBus
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
@@ -37,11 +36,13 @@ import com.mvcoding.expensius.feature.DateDialogFragment.DateDialogResult
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.QuickTagsView
-import com.mvcoding.expensius.feature.tag.Tag
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
+import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
 import org.joda.time.DateTime
 import rx.Observable
 import rx.lang.kotlin.PublishSubject

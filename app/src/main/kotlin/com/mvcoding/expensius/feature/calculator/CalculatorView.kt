@@ -29,8 +29,8 @@ import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
-import com.mvcoding.expensius.feature.transaction.Transaction
 import com.mvcoding.expensius.feature.transaction.TransactionActivity
+import com.mvcoding.expensius.model.Transaction
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
