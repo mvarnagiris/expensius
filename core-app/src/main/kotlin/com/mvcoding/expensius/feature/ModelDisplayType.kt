@@ -14,6 +14,6 @@
 
 package com.mvcoding.expensius.feature
 
-enum class ModelStateDisplayType {
+enum class ModelDisplayType {
     VIEW_NON_ARCHIVED, VIEW_ARCHIVED
 }

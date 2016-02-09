@@ -17,13 +17,14 @@ package com.mvcoding.expensius.feature.tag
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.feature.ModelDisplayType
 
 class TagModule : ShankModule {
     override fun registerFactories() {
         registerFactory(QuickTagsPresenter::class.java, { -> QuickTagsPresenter(provideSingleton(TagsProvider::class)) })
         registerFactory(TagPresenter::class.java, { tag: Tag -> TagPresenter(tag, provideSingleton(TagsProvider::class)) })
-        registerFactory(TagsPresenter::class.java, { displayType: DisplayType ->
-            TagsPresenter(provideSingleton(TagsProvider::class), displayType)
+        registerFactory(TagsPresenter::class.java, { modelDisplayType: ModelDisplayType ->
+            TagsPresenter(provideSingleton(TagsProvider::class), modelDisplayType)
         })
     }
 }

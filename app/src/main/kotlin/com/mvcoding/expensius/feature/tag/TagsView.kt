@@ -22,6 +22,7 @@ import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.feature.ModelDisplayType
 import rx.Observable
 
 class TagsView @JvmOverloads constructor(
@@ -35,9 +36,9 @@ class TagsView @JvmOverloads constructor(
     private lateinit var createTagObservable: Observable<Unit>
     private lateinit var presenter: TagsPresenter
 
-    fun init(displayType: DisplayType, createTagObservable: Observable<Unit>) {
+    fun init(modelDisplayType: ModelDisplayType, createTagObservable: Observable<Unit>) {
         this.createTagObservable = createTagObservable
-        this.presenter = provideActivityScopedSingleton(TagsPresenter::class, displayType)
+        this.presenter = provideActivityScopedSingleton(TagsPresenter::class, modelDisplayType)
     }
 
     override fun onFinishInflate() {
@@ -58,8 +59,8 @@ class TagsView @JvmOverloads constructor(
         presenter.onDetachView(this)
     }
 
-    override fun showDisplayType(displayType: DisplayType) {
-        adapter.displayType = displayType
+    override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {
+        adapter.displayType = modelDisplayType
     }
 
     override fun showTags(tags: List<Tag>) {

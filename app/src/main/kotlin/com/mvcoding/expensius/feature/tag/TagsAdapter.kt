@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.BaseClickableAdapter
 import com.mvcoding.expensius.feature.ClickableViewHolder
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NON_ARCHIVED
 import rx.subjects.PublishSubject
 
 class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<View>>() {

@@ -14,8 +14,8 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.feature.ModelStateDisplayType.VIEW_ARCHIVED
-import com.mvcoding.expensius.feature.ModelStateDisplayType.VIEW_NON_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NON_ARCHIVED
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
@@ -45,7 +45,7 @@ class TagsPresenterTest {
 
         presenter.onAttachView(view)
 
-        verify(view).showModelStateDisplayType(VIEW_NON_ARCHIVED)
+        verify(view).showModelDisplayType(VIEW_NON_ARCHIVED)
     }
 
     @Test

@@ -31,6 +31,7 @@ import com.mvcoding.expensius.extension.forEachTabIndexed
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NON_ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsView
 import com.mvcoding.expensius.feature.transaction.TransactionsView
 
