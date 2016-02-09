@@ -20,23 +20,22 @@ import android.view.ViewGroup
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.BaseClickableAdapter
 import com.mvcoding.expensius.feature.ClickableViewHolder
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import rx.subjects.PublishSubject
 
 class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<View>>() {
     private val VIEW_TYPE_DEFAULT = 0
     private val VIEW_TYPE_ARCHIVED = 1
 
-    var displayType = VIEW
+    var displayType = VIEW_NON_ARCHIVED
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    fun isTagPosition(position: Int) = position < itemCount - 1 || displayType != VIEW
+    fun isTagPosition(position: Int) = position < itemCount - 1 || displayType != VIEW_NON_ARCHIVED
 
     override fun getItemCount(): Int {
-        return super.getItemCount() + if (displayType == VIEW) 1 else 0
+        return super.getItemCount() + if (displayType == VIEW_NON_ARCHIVED) 1 else 0
     }
 
     override fun getItemViewType(position: Int): Int {

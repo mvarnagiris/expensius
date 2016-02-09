@@ -19,8 +19,6 @@ import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW_ARCHIVED
 import rx.Observable.never
 
 class TagsActivity : BaseActivity() {
@@ -31,7 +29,7 @@ class TagsActivity : BaseActivity() {
 
         fun startView(context: Context) {
             ActivityStarter(context, TagsActivity::class)
-                    .extra(EXTRA_DISPLAY_TYPE, VIEW)
+                    .extra(EXTRA_DISPLAY_TYPE, VIEW_NON_ARCHIVED)
                     .start()
         }
 
@@ -42,7 +40,7 @@ class TagsActivity : BaseActivity() {
         }
     }
 
-    private val displayType by lazy { intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as TagsPresenter.DisplayType }
+    private val displayType by lazy { intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as DisplayType }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

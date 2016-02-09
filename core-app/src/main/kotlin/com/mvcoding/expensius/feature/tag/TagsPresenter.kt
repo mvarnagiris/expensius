@@ -14,30 +14,31 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.feature.ModelStateDisplayType
+import com.mvcoding.expensius.feature.ModelStateDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.feature.ModelStateDisplayType.VIEW_NON_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW_ARCHIVED
 import rx.Observable
 import rx.Observable.merge
 
 class TagsPresenter(
         private val tagsProvider: TagsProvider,
-        private val displayType: TagsPresenter.DisplayType = VIEW) : Presenter<TagsPresenter.View>() {
+        private val modelStateDisplayType: ModelStateDisplayType = VIEW_NON_ARCHIVED) : Presenter<TagsPresenter.View>() {
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
-        view.showDisplayType(displayType)
+        view.showModelStateDisplayType(modelStateDisplayType)
 
         unsubscribeOnDetach(tags().subscribe { view.showTags(it) })
         unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { Tag() }).subscribe { view.displayTagEdit(it) })
         unsubscribeOnDetach(view.onDisplayArchivedTags().subscribe { view.displayArchivedTags() })
     }
 
-    private fun tags() = if (displayType == VIEW_ARCHIVED) tagsProvider.archivedTags() else tagsProvider.tags()
+    private fun tags() = if (modelStateDisplayType == VIEW_ARCHIVED) tagsProvider.archivedTags() else tagsProvider.tags()
 
     interface View : Presenter.View {
-        fun showDisplayType(displayType: DisplayType)
+        fun showModelStateDisplayType(modelStateDisplayType: ModelStateDisplayType)
         fun showTags(tags: List<Tag>)
 
         fun onTagSelected(): Observable<Tag>
@@ -46,9 +47,5 @@ class TagsPresenter(
 
         fun displayTagEdit(tag: Tag)
         fun displayArchivedTags()
-    }
-
-    enum class DisplayType {
-        VIEW, VIEW_ARCHIVED
     }
 }

@@ -35,7 +35,7 @@ class TagsView @JvmOverloads constructor(
     private lateinit var createTagObservable: Observable<Unit>
     private lateinit var presenter: TagsPresenter
 
-    fun init(displayType: TagsPresenter.DisplayType, createTagObservable: Observable<Unit>) {
+    fun init(displayType: DisplayType, createTagObservable: Observable<Unit>) {
         this.createTagObservable = createTagObservable
         this.presenter = provideActivityScopedSingleton(TagsPresenter::class, displayType)
     }
@@ -58,7 +58,7 @@ class TagsView @JvmOverloads constructor(
         presenter.onDetachView(this)
     }
 
-    override fun showDisplayType(displayType: TagsPresenter.DisplayType) {
+    override fun showDisplayType(displayType: DisplayType) {
         adapter.displayType = displayType
     }
 

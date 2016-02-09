@@ -31,7 +31,6 @@ import com.mvcoding.expensius.extension.forEachTabIndexed
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.tag.TagsPresenter.DisplayType.VIEW
 import com.mvcoding.expensius.feature.tag.TagsView
 import com.mvcoding.expensius.feature.transaction.TransactionsView
 
@@ -82,7 +81,7 @@ class MainActivity : BaseActivity() {
     private fun tagsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
         val tagsView = layoutInflater.inflate(R.layout.view_tags, parent, false) as TagsView
-        tagsView.init(VIEW, addTagFloatingActionButton.clicks())
+        tagsView.init(VIEW_NON_ARCHIVED, addTagFloatingActionButton.clicks())
         tagsView
     }
 

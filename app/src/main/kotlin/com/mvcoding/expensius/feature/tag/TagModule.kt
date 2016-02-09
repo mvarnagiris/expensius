@@ -22,7 +22,7 @@ class TagModule : ShankModule {
     override fun registerFactories() {
         registerFactory(QuickTagsPresenter::class.java, { -> QuickTagsPresenter(provideSingleton(TagsProvider::class)) })
         registerFactory(TagPresenter::class.java, { tag: Tag -> TagPresenter(tag, provideSingleton(TagsProvider::class)) })
-        registerFactory(TagsPresenter::class.java, { displayType: TagsPresenter.DisplayType ->
+        registerFactory(TagsPresenter::class.java, { displayType: DisplayType ->
             TagsPresenter(provideSingleton(TagsProvider::class), displayType)
         })
     }
