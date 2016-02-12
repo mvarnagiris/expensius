@@ -17,7 +17,8 @@ package com.mvcoding.expensius.feature.splash
 import com.mvcoding.expensius.Session
 import com.mvcoding.expensius.Settings
 import org.junit.Test
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.mock
+import org.mockito.BDDMockito.verify
 
 class SplashPresenterTest {
     val settings: Settings = mock(Settings::class.java)
@@ -26,32 +27,39 @@ class SplashPresenterTest {
     val presenter = SplashPresenter(settings, session)
 
     @Test
-    fun startsOverviewWhenIntroductionWasSeen() {
-        given(session.isLoggedIn()).willReturn(false)
-        given(settings.isIntroductionSeen()).willReturn(true)
-
+    fun startsOverview() {
         presenter.onAttachView(view)
 
         verify(view).startOverview()
     }
 
-    @Test
-    fun startsOverviewWhenSessionIsLoggedIn() {
-        given(session.isLoggedIn()).willReturn(true)
-        given(settings.isIntroductionSeen()).willReturn(false)
-
-        presenter.onAttachView(view)
-
-        verify(view).startOverview()
-    }
-
-    @Test
-    fun startsIntroductionWhenSessionIsNotLoggedIn() {
-        given(session.isLoggedIn()).willReturn(false)
-        given(settings.isIntroductionSeen()).willReturn(false)
-
-        presenter.onAttachView(view)
-
-        verify(view).startIntro()
-    }
+    //    @Test
+    //    fun startsOverviewWhenIntroductionWasSeen() {
+    //        given(session.isLoggedIn()).willReturn(false)
+    //        given(settings.isIntroductionSeen()).willReturn(true)
+    //
+    //        presenter.onAttachView(view)
+    //
+    //        verify(view).startOverview()
+    //    }
+    //
+    //    @Test
+    //    fun startsOverviewWhenSessionIsLoggedIn() {
+    //        given(session.isLoggedIn()).willReturn(true)
+    //        given(settings.isIntroductionSeen()).willReturn(false)
+    //
+    //        presenter.onAttachView(view)
+    //
+    //        verify(view).startOverview()
+    //    }
+    //
+    //    @Test
+    //    fun startsIntroductionWhenSessionIsNotLoggedIn() {
+    //        given(session.isLoggedIn()).willReturn(false)
+    //        given(settings.isIntroductionSeen()).willReturn(false)
+    //
+    //        presenter.onAttachView(view)
+    //
+    //        verify(view).startIntro()
+    //    }
 }

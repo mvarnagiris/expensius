@@ -21,12 +21,7 @@ import com.mvcoding.expensius.feature.Presenter
 class SplashPresenter(private val settings: Settings, private val session: Session) : Presenter<SplashPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
-
-        if (session.isLoggedIn() || settings.isIntroductionSeen()) {
-            view.startOverview()
-        } else {
-            view.startIntro()
-        }
+        view.startOverview()
     }
 
     interface View : Presenter.View {
