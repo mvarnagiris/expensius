@@ -20,61 +20,64 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.feature.transaction.Currency
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
-import org.mockito.BDDMockito.*
-import rx.subjects.PublishSubject
+import org.mockito.Mockito.times
+import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorPresenterTest {
     val resultDestination = BACK
-    val digit0Observable = PublishSubject.create<Unit>()
-    val digit1Observable = PublishSubject.create<Unit>()
-    val digit2Observable = PublishSubject.create<Unit>()
-    val digit3Observable = PublishSubject.create<Unit>()
-    val digit4Observable = PublishSubject.create<Unit>()
-    val digit5Observable = PublishSubject.create<Unit>()
-    val digit6Observable = PublishSubject.create<Unit>()
-    val digit7Observable = PublishSubject.create<Unit>()
-    val digit8Observable = PublishSubject.create<Unit>()
-    val digit9Observable = PublishSubject.create<Unit>()
-    val decimalObservable = PublishSubject.create<Unit>()
-    val addObservable = PublishSubject.create<Unit>()
-    val subtractObservable = PublishSubject.create<Unit>()
-    val multiplyObservable = PublishSubject.create<Unit>()
-    val divideObservable = PublishSubject.create<Unit>()
-    val deleteObservable = PublishSubject.create<Unit>()
-    val clearObservable = PublishSubject.create<Unit>()
-    val calculateObservable = PublishSubject.create<Unit>()
-    val saveObservable = PublishSubject.create<Unit>()
-    val settings = mock(Settings::class.java)
-    val view = mock(CalculatorPresenter.View::class.java)
+    val digit0Observable = PublishSubject<Unit>()
+    val digit1Observable = PublishSubject<Unit>()
+    val digit2Observable = PublishSubject<Unit>()
+    val digit3Observable = PublishSubject<Unit>()
+    val digit4Observable = PublishSubject<Unit>()
+    val digit5Observable = PublishSubject<Unit>()
+    val digit6Observable = PublishSubject<Unit>()
+    val digit7Observable = PublishSubject<Unit>()
+    val digit8Observable = PublishSubject<Unit>()
+    val digit9Observable = PublishSubject<Unit>()
+    val decimalObservable = PublishSubject<Unit>()
+    val addObservable = PublishSubject<Unit>()
+    val subtractObservable = PublishSubject<Unit>()
+    val multiplyObservable = PublishSubject<Unit>()
+    val divideObservable = PublishSubject<Unit>()
+    val deleteObservable = PublishSubject<Unit>()
+    val clearObservable = PublishSubject<Unit>()
+    val calculateObservable = PublishSubject<Unit>()
+    val saveObservable = PublishSubject<Unit>()
+    val settings = mock<Settings>()
+    val view = mock<CalculatorPresenter.View>()
     val calculator = Calculator(Interpreter())
     val presenter = CalculatorPresenter(calculator, resultDestination, settings)
 
     @Before
     fun setUp() {
-        given(view.onDigit0()).willReturn(digit0Observable)
-        given(view.onDigit1()).willReturn(digit1Observable)
-        given(view.onDigit2()).willReturn(digit2Observable)
-        given(view.onDigit3()).willReturn(digit3Observable)
-        given(view.onDigit4()).willReturn(digit4Observable)
-        given(view.onDigit5()).willReturn(digit5Observable)
-        given(view.onDigit6()).willReturn(digit6Observable)
-        given(view.onDigit7()).willReturn(digit7Observable)
-        given(view.onDigit8()).willReturn(digit8Observable)
-        given(view.onDigit9()).willReturn(digit9Observable)
-        given(view.onDecimal()).willReturn(decimalObservable)
-        given(view.onAdd()).willReturn(addObservable)
-        given(view.onSubtract()).willReturn(subtractObservable)
-        given(view.onMultiply()).willReturn(multiplyObservable)
-        given(view.onDivide()).willReturn(divideObservable)
-        given(view.onDelete()).willReturn(deleteObservable)
-        given(view.onClear()).willReturn(clearObservable)
-        given(view.onCalculate()).willReturn(calculateObservable)
-        given(view.onSave()).willReturn(saveObservable)
-        given(settings.getMainCurrency()).willReturn(Currency("GBP"))
+        whenever(view.onDigit0()).thenReturn(digit0Observable)
+        whenever(view.onDigit1()).thenReturn(digit1Observable)
+        whenever(view.onDigit2()).thenReturn(digit2Observable)
+        whenever(view.onDigit3()).thenReturn(digit3Observable)
+        whenever(view.onDigit4()).thenReturn(digit4Observable)
+        whenever(view.onDigit5()).thenReturn(digit5Observable)
+        whenever(view.onDigit6()).thenReturn(digit6Observable)
+        whenever(view.onDigit7()).thenReturn(digit7Observable)
+        whenever(view.onDigit8()).thenReturn(digit8Observable)
+        whenever(view.onDigit9()).thenReturn(digit9Observable)
+        whenever(view.onDecimal()).thenReturn(decimalObservable)
+        whenever(view.onAdd()).thenReturn(addObservable)
+        whenever(view.onSubtract()).thenReturn(subtractObservable)
+        whenever(view.onMultiply()).thenReturn(multiplyObservable)
+        whenever(view.onDivide()).thenReturn(divideObservable)
+        whenever(view.onDelete()).thenReturn(deleteObservable)
+        whenever(view.onClear()).thenReturn(clearObservable)
+        whenever(view.onCalculate()).thenReturn(calculateObservable)
+        whenever(view.onSave()).thenReturn(saveObservable)
+        whenever(settings.getMainCurrency()).thenReturn(Currency("GBP"))
     }
 
     @Test
@@ -636,7 +639,6 @@ class CalculatorPresenterTest {
         verify(view).startResult(BigDecimal(2))
     }
 
-    @Ignore
     @Test
     fun startsTransactionWithCurrentlyDisplayedNumber() {
         val presenter = CalculatorPresenter(calculator, TRANSACTION, settings)
@@ -648,7 +650,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        //                verify(view).startTransaction(any(Transaction::class.java))
+        verify(view).startTransaction(argThat { amount == BigDecimal(2) })
     }
 
     fun digit0() {
