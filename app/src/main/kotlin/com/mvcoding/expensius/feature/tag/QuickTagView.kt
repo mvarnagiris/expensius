@@ -18,11 +18,12 @@ import android.content.Context
 import android.support.v4.content.ContextCompat.getColor
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.doInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
+import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.extension.pickForegroundColor
 
 class QuickTagView : CardView {
@@ -41,14 +42,12 @@ class QuickTagView : CardView {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     companion object {
-        fun inflate(parent: ViewGroup) = LayoutInflater.from(parent.context).inflate(R.layout.view_quick_tag, parent, false) as QuickTagView
+        fun inflate(parent: ViewGroup) = parent.inflate<QuickTagView>(R.layout.view_quick_tag)
     }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        if (isInEditMode) {
-            setQuickTag(QuickTag("Quick tag text", getColor(context, R.color.lime_500)))
-        }
+        doInEditMode { setQuickTag(QuickTag("Quick tag text", getColor(context, R.color.lime_500))) }
     }
 
     override fun setSelected(selected: Boolean) {

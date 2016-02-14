@@ -21,11 +21,11 @@ import com.mvcoding.expensius.feature.Presenter
 class SplashPresenter(private val settings: Settings, private val session: Session) : Presenter<SplashPresenter.View>() {
     override fun onAttachView(view: View) {
         super.onAttachView(view)
-        view.startOverview()
+        view.startMain()
     }
 
     interface View : Presenter.View {
-        fun startOverview()
+        fun startMain()
         fun startIntro()
     }
 }

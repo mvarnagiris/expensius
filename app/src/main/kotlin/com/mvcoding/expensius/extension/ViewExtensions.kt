@@ -39,3 +39,11 @@ fun View.makeOutlineProviderOval() {
 }
 
 fun View.snackbar(resId: Int, duration: Int) = snackbar(this, resId, duration)
+
+fun View.doInEditMode(action: () -> Unit) {
+    action.invoke()
+}
+
+fun View.doNotInEditMode(action: () -> Unit) {
+    action.invoke()
+}

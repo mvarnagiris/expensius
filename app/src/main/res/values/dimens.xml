@@ -40,6 +40,7 @@
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_size_half_negative">-28dp</dimen>
     <dimen name="fab_mini_size_half_negative">-20dp</dimen>
+    <dimen name="fab_size_plus_keyline_2x">88dp</dimen>
 
     <dimen name="divider">0.67dp</dimen>
 

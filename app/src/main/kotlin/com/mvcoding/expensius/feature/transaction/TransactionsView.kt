@@ -27,15 +27,15 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.model.Transaction
 import rx.Observable
-import rx.Observable.just
 import rx.Observable.never
 
 class TransactionsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View {
-    lateinit var createTransactionObservable: Observable<Unit>
 
-    private val presenter by lazy { provideActivityScopedSingleton(TransactionsPresenter::class) }
     private val transactionsAdapter = TransactionsAdapter()
+
+    private lateinit var presenter: TransactionsPresenter
+    private lateinit var createTransactionObservable: Observable<Unit>
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -46,6 +46,11 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
                 getColorFromTheme(context, R.attr.colorDivider),
                 resources.getDimensionPixelSize(R.dimen.divider)))
         adapter = transactionsAdapter
+    }
+
+    fun init(modelDisplayType: ModelDisplayType, createTransactionObservable: Observable<Unit>) {
+        this.createTransactionObservable = createTransactionObservable
+        this.presenter = provideActivityScopedSingleton(TransactionsPresenter::class, modelDisplayType)
     }
 
     override fun onAttachedToWindow() {
@@ -62,7 +67,7 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun onDisplayArchivedTransactions() = never<Unit>() // TODO
 
-    override fun onPagingEdgeReached() = just(TransactionsPresenter.PagingEdge.END)
+    override fun onPagingEdgeReached() = never<TransactionsPresenter.PagingEdge>() // TODO
 
     override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {
         // TODO

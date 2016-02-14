@@ -17,12 +17,13 @@ package com.mvcoding.expensius.feature.transaction
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Transaction
 
 class TransactionModule : ShankModule {
     override fun registerFactories() {
-        registerFactory(TransactionsPresenter::class.java, { ->
-            TransactionsPresenter(provideSingleton(TransactionsProvider::class))
+        registerFactory(TransactionsPresenter::class.java, { modelDisplayType: ModelDisplayType ->
+            TransactionsPresenter(provideSingleton(TransactionsProvider::class), modelDisplayType)
         })
         registerFactory(TransactionPresenter::class.java, {
             transaction: Transaction ->

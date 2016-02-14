@@ -33,6 +33,6 @@ class DateFormatter(private val context: Context) {
             return context.getString(R.string.tomorrow)
         }
 
-        return formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_SHOW_WEEKDAY or FORMAT_ABBREV_WEEKDAY)
+        return formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_SHOW_WEEKDAY or FORMAT_ABBREV_ALL)
     }
 }

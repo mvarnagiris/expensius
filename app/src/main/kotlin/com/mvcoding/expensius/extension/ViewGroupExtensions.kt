@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.extension
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
@@ -22,3 +23,6 @@ fun ViewGroup.forEachChild(action: (View) -> Unit) {
         action.invoke(getChildAt(it))
     }
 }
+
+@Suppress("UNCHECKED_CAST")
+fun <V : View> ViewGroup.inflate(layoutId: Int) = LayoutInflater.from(this.context).inflate(layoutId, this, false) as V

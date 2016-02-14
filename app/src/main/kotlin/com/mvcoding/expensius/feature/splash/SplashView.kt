@@ -20,7 +20,7 @@ import android.widget.FrameLayout
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.intro.IntroActivity
-import com.mvcoding.expensius.feature.overview.OverviewActivity
+import com.mvcoding.expensius.feature.main.MainActivity
 
 class SplashView : FrameLayout, SplashPresenter.View {
     private val presenter = provideActivityScopedSingleton(SplashPresenter::class)
@@ -41,8 +41,8 @@ class SplashView : FrameLayout, SplashPresenter.View {
         presenter.onDetachView(this)
     }
 
-    override fun startOverview() {
-        OverviewActivity.start(context)
+    override fun startMain() {
+        MainActivity.start(context)
         context.toBaseActivity().finish()
     }
 

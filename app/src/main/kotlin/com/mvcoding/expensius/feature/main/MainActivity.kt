@@ -29,6 +29,7 @@ import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.forEachTabIndexed
 import com.mvcoding.expensius.extension.getColorFromTheme
+import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
@@ -73,15 +74,14 @@ class MainActivity : BaseActivity() {
 
     private fun transactionsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
-        val transactionsView = layoutInflater.inflate(R.layout.view_transactions, parent, false) as TransactionsView
-        transactionsView.createTransactionObservable = addTransactionFloatingActionButton.clicks()
+        val transactionsView = parent.inflate<TransactionsView>(R.layout.view_transactions)
+        transactionsView.init(VIEW_NOT_ARCHIVED, addTransactionFloatingActionButton.clicks())
         transactionsView
-
     }
 
     private fun tagsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
-        val tagsView = layoutInflater.inflate(R.layout.view_tags, parent, false) as TagsView
+        val tagsView = parent.inflate<TagsView>(R.layout.view_tags)
         tagsView.init(VIEW_NOT_ARCHIVED, addTagFloatingActionButton.clicks())
         tagsView
     }

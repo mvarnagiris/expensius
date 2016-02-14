@@ -27,10 +27,10 @@ class SplashPresenterTest {
     val presenter = SplashPresenter(settings, session)
 
     @Test
-    fun startsOverview() {
+    fun startsMain() {
         presenter.onAttachView(view)
 
-        verify(view).startOverview()
+        verify(view).startMain()
     }
 
     //    @Test
