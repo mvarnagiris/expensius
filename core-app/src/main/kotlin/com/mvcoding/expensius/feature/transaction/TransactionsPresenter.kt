@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
 import com.mvcoding.expensius.model.Transaction
@@ -22,7 +24,9 @@ import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
 import rx.Observable.just
 
-class TransactionsPresenter(private val transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
+class TransactionsPresenter(
+        private val transactionsProvider: TransactionsProvider,
+        private val modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) : Presenter<TransactionsPresenter.View>() {
     internal companion object {
         const val PAGE_SIZE = 50
     }
@@ -35,6 +39,8 @@ class TransactionsPresenter(private val transactionsProvider: TransactionsProvid
     override fun onAttachView(view: View) {
         super.onAttachView(view)
 
+        view.showModelDisplayType(modelDisplayType)
+
         if (transactionsCache.isNotEmpty()) {
             view.showTransactions(transactionsCache)
         }
@@ -45,7 +51,11 @@ class TransactionsPresenter(private val transactionsProvider: TransactionsProvid
                 .doOnNext { endPage = it }
                 .startWith(just(endPage).filter { transactionsCache.isEmpty() })
 
-        unsubscribeOnDetach(transactionsProvider.transactions(pages).subscribe { showTransactions(view, it) })
+        val transactions =
+                if (modelDisplayType == VIEW_NOT_ARCHIVED ) transactionsProvider.transactions(pages)
+                else transactionsProvider.archivedTransactions(pages)
+
+        unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
         unsubscribeOnDetach(view.onAddNewTransaction().subscribe { view.displayTransactionEdit() })
         unsubscribeOnDetach(view.onDisplayArchivedTransactions().subscribe { view.displayArchivedTransactions() })
     }
@@ -70,6 +80,7 @@ class TransactionsPresenter(private val transactionsProvider: TransactionsProvid
         fun onPagingEdgeReached(): Observable<PagingEdge>
         fun onAddNewTransaction(): Observable<Unit>
         fun onDisplayArchivedTransactions(): Observable<Unit>
+        fun showModelDisplayType(modelDisplayType: ModelDisplayType)
         fun showTransactions(transactions: List<Transaction>)
         fun addTransactions(transactions: List<Transaction>, position: Int)
         fun displayTransactionEdit()

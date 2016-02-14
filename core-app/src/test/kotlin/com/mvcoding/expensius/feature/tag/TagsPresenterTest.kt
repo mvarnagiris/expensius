@@ -17,32 +17,34 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.Tag
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
-import rx.Observable
 import rx.Observable.empty
-import rx.subjects.PublishSubject
+import rx.Observable.just
+import rx.lang.kotlin.PublishSubject
 
 class TagsPresenterTest {
-    val tagSelectedSubject = PublishSubject.create<Tag>()
-    val tagCreateSubject = PublishSubject.create<Unit>()
-    val displayArchivedTagsSubject = PublishSubject.create<Unit>()
-    val tagsCache = mock(TagsProvider::class.java)
-    val view = mock(TagsPresenter.View::class.java)
+    val tagSelectedSubject = PublishSubject<Tag>()
+    val tagCreateSubject = PublishSubject<Unit>()
+    val displayArchivedTagsSubject = PublishSubject<Unit>()
+    val tagsProvider = mock<TagsProvider>()
+    val view = mock<TagsPresenter.View>()
 
     @Before
     fun setUp() {
-        given(view.onTagSelected()).willReturn(tagSelectedSubject)
-        given(view.onCreateTag()).willReturn(tagCreateSubject)
-        given(view.onDisplayArchivedTags()).willReturn(displayArchivedTagsSubject)
-        given(tagsCache.tags()).willReturn(empty())
-        given(tagsCache.archivedTags()).willReturn(empty())
+        whenever(view.onTagSelected()).thenReturn(tagSelectedSubject)
+        whenever(view.onCreateTag()).thenReturn(tagCreateSubject)
+        whenever(view.onDisplayArchivedTags()).thenReturn(displayArchivedTagsSubject)
+        whenever(tagsProvider.tags()).thenReturn(empty())
+        whenever(tagsProvider.archivedTags()).thenReturn(empty())
     }
 
     @Test
-    fun setsDisplayType() {
-        val presenter = presenterWithDisplayTypeView()
+    fun showsModelDisplayType() {
+        val presenter = presenterWithModelDisplayTypeView()
 
         presenter.onAttachView(view)
 
@@ -50,10 +52,21 @@ class TagsPresenterTest {
     }
 
     @Test
-    fun showsTagsFromTagsCache() {
-        val presenter = presenterWithDisplayTypeView()
+    fun showsTags() {
+        val presenter = presenterWithModelDisplayTypeView()
         val tags = listOf(aTag(), aTag(), aTag())
-        given(tagsCache.tags()).willReturn(Observable.just(tags))
+        whenever(tagsProvider.tags()).thenReturn(just(tags))
+
+        presenter.onAttachView(view)
+
+        verify(view).showTags(tags)
+    }
+
+    @Test
+    fun showsArchivedTags() {
+        val presenter = presenterWithModelDisplayTypeArchived()
+        val tags = listOf(aTag(), aTag(), aTag())
+        whenever(tagsProvider.archivedTags()).thenReturn(just(tags))
 
         presenter.onAttachView(view)
 
@@ -62,7 +75,7 @@ class TagsPresenterTest {
 
     @Test
     fun displaysTagEditWhenSelectingATagAndDisplayTypeIsView() {
-        val presenter = presenterWithDisplayTypeView()
+        val presenter = presenterWithModelDisplayTypeView()
         val tag = aTag()
         presenter.onAttachView(view)
 
@@ -73,7 +86,7 @@ class TagsPresenterTest {
 
     @Test
     fun displaysTagEditOnCreateTag() {
-        val presenter = presenterWithDisplayTypeView()
+        val presenter = presenterWithModelDisplayTypeView()
         presenter.onAttachView(view)
 
         createTag()
@@ -83,23 +96,12 @@ class TagsPresenterTest {
 
     @Test
     fun displaysArchivedTagsOnArchivedTags() {
-        val presenter = presenterWithDisplayTypeView()
+        val presenter = presenterWithModelDisplayTypeView()
         presenter.onAttachView(view)
 
         archivedTags()
 
         verify(view).displayArchivedTags()
-    }
-
-    @Test
-    fun showsArchivedTagsFromTagsCache() {
-        val presenter = presenterWithDisplayTypeArchived()
-        val tags = listOf(aTag(), aTag(), aTag())
-        given(tagsCache.archivedTags()).willReturn(Observable.just(tags))
-
-        presenter.onAttachView(view)
-
-        verify(view).showTags(tags)
     }
 
     private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
@@ -110,8 +112,8 @@ class TagsPresenterTest {
         tagCreateSubject.onNext(Unit)
     }
 
-    private fun presenterWithDisplayTypeView() = TagsPresenter(tagsCache, VIEW_NOT_ARCHIVED)
+    private fun presenterWithModelDisplayTypeView() = TagsPresenter(tagsProvider, VIEW_NOT_ARCHIVED)
 
-    private fun presenterWithDisplayTypeArchived() = TagsPresenter(tagsCache, VIEW_ARCHIVED)
+    private fun presenterWithModelDisplayTypeArchived() = TagsPresenter(tagsProvider, VIEW_ARCHIVED)
 }
 

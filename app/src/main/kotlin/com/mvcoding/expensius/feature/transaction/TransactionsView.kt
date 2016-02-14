@@ -23,14 +23,15 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.DividerItemDecoration
+import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.model.Transaction
 import rx.Observable
 import rx.Observable.just
+import rx.Observable.never
 
 class TransactionsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View {
-
     lateinit var createTransactionObservable: Observable<Unit>
 
     private val presenter by lazy { provideActivityScopedSingleton(TransactionsPresenter::class) }
@@ -59,11 +60,13 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun onAddNewTransaction() = createTransactionObservable
 
-    override fun onDisplayArchivedTransactions(): Observable<Unit> {
-        throw UnsupportedOperationException()
-    }
+    override fun onDisplayArchivedTransactions() = never<Unit>() // TODO
 
     override fun onPagingEdgeReached() = just(TransactionsPresenter.PagingEdge.END)
+
+    override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {
+        // TODO
+    }
 
     override fun showTransactions(transactions: List<Transaction>) {
         transactionsAdapter.setItems(transactions)
@@ -78,6 +81,6 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     override fun displayArchivedTransactions() {
-        throw UnsupportedOperationException()
+        // TODO
     }
 }

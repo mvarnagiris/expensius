@@ -14,8 +14,11 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.Companion.PAGE_SIZE
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageLoader
@@ -36,7 +39,6 @@ class TransactionsPresenterTest {
     val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
     val pageLoader = PageLoaderForTest()
     val view = mock<TransactionsPresenter.View>()
-    val presenter = TransactionsPresenter(TransactionsProviderForTest(pageLoader))
 
     @Before
     fun setUp() {
@@ -46,18 +48,37 @@ class TransactionsPresenterTest {
     }
 
     @Test
+    fun showsModelDisplayType() {
+        val presenter = presenterWithModelDisplayTypeArchived()
+
+        presenter.onAttachView(view)
+
+        verify(view).showModelDisplayType(VIEW_ARCHIVED)
+    }
+
+    @Test
     fun showsTransactions() {
         pageLoader.size = 1
 
-        presenter.onAttachView(view)
+        presenterWithModelDisplayTypeView().onAttachView(view)
 
         verify(view).showTransactions(argThat { size == 1 })
     }
 
     @Test
+    fun showsArchivedTransactions() {
+        pageLoader.size = 1
+        val presenter = presenterWithModelDisplayTypeArchived()
+
+        presenter.onAttachView(view)
+
+        verify(view).showTransactions(argThat { size == 1 && get(0).modelState == ARCHIVED })
+    }
+
+    @Test
     fun addsNextPageWhenEndEdgeIsReached() {
         pageLoader.size = PAGE_SIZE + 1
-        presenter.onAttachView(view)
+        presenterWithModelDisplayTypeView().onAttachView(view)
 
         pagingEdgeEnd()
 
@@ -67,7 +88,7 @@ class TransactionsPresenterTest {
     @Test
     fun addsNextPageWhenEndEdgeIsReachedMoreThanOnce() {
         pageLoader.size = PAGE_SIZE * 2 + 1
-        presenter.onAttachView(view)
+        presenterWithModelDisplayTypeView().onAttachView(view)
 
         pagingEdgeEnd()
         pagingEdgeEnd()
@@ -78,7 +99,7 @@ class TransactionsPresenterTest {
     @Test
     fun doesNotAddNextPageWhenCurrentPageIsTheLastOne() {
         pageLoader.size = PAGE_SIZE * 2 - 1
-        presenter.onAttachView(view)
+        presenterWithModelDisplayTypeView().onAttachView(view)
 
         pagingEdgeEnd()
         pagingEdgeEnd()
@@ -89,7 +110,7 @@ class TransactionsPresenterTest {
     @Test
     fun doesNotAddNextPageWhenNextPageIsEmpty() {
         pageLoader.size = PAGE_SIZE * 2
-        presenter.onAttachView(view)
+        presenterWithModelDisplayTypeView().onAttachView(view)
 
         pagingEdgeEnd()
         pagingEdgeEnd()
@@ -100,6 +121,7 @@ class TransactionsPresenterTest {
     @Test
     fun showsCachedTransactionsAfterReattach() {
         pageLoader.size = PAGE_SIZE + 1
+        val presenter = presenterWithModelDisplayTypeView()
         presenter.onAttachView(view)
         pagingEdgeEnd()
 
@@ -111,7 +133,7 @@ class TransactionsPresenterTest {
 
     @Test
     fun displaysTransactionEditOnAddNewTransaction() {
-        presenter.onAttachView(view)
+        presenterWithModelDisplayTypeView().onAttachView(view)
 
         addNewTransaction()
 
@@ -120,7 +142,7 @@ class TransactionsPresenterTest {
 
     @Test
     fun displaysArchivedTransactions() {
-        presenter.onAttachView(view)
+        presenterWithModelDisplayTypeView().onAttachView(view)
 
         displayArchivedTransactions()
 
@@ -139,9 +161,17 @@ class TransactionsPresenterTest {
         displayArchivedTransactionsSubject.onNext(Unit)
     }
 
+    private fun presenterWithModelDisplayTypeView() = TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_NOT_ARCHIVED)
+
+    private fun presenterWithModelDisplayTypeArchived() = TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_ARCHIVED)
+
     class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {
         override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
             return pageLoader.load({ aTransaction() }, Any(), pages)
+        }
+
+        override fun archivedTransactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
+            return pageLoader.load({ aTransaction().withModelState(ARCHIVED) }, Any(), pages)
         }
 
         override fun save(transactions: Set<Transaction>) {

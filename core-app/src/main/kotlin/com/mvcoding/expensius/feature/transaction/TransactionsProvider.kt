@@ -21,5 +21,6 @@ import rx.Observable
 
 interface TransactionsProvider {
     fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>>
+    fun archivedTransactions(pages: Observable<Page>): Observable<PageResult<Transaction>>
     fun save(transactions: Set<Transaction>)
 }

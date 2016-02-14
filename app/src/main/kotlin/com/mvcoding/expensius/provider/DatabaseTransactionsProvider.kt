@@ -18,6 +18,8 @@ import android.content.ContentValues
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
+import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
@@ -45,12 +47,20 @@ class DatabaseTransactionsProvider(
     }
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
+        return transactions(pages, NONE)
+    }
+
+    override fun archivedTransactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
+        return transactions(pages, ARCHIVED)
+    }
+
+    fun transactions(pages: Observable<Page>, modelState: ModelState): Observable<PageResult<Transaction>> {
         return pageLoader.load({ it.toTransaction(transactionsTable, tagsTable) },
                                select(arrayOf(*transactionsTable.columns(), tagsTable.transactionTags))
                                        .from(transactionsTable)
                                        .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
                                        .leftJoin(tagsTable, "${transactionTagsTable.tagId}=${tagsTable.id}")
-                                       .where("${transactionsTable.modelState}=?", NONE.name)
+                                       .where("${transactionsTable.modelState}=?", modelState.name)
                                        .groupBy(transactionsTable.id)
                                        .orderBy(Order(transactionsTable.timestamp, DESC)),
                                pages)

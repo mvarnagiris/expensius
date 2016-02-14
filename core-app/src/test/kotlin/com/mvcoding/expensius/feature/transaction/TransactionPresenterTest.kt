@@ -215,6 +215,10 @@ class TransactionPresenterTest {
             throw UnsupportedOperationException()
         }
 
+        override fun archivedTransactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
+            throw UnsupportedOperationException()
+        }
+
         override fun save(transactions: Set<Transaction>) {
             lastSavedTransactions = transactions
         }
