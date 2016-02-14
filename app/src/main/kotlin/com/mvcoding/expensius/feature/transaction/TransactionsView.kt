@@ -28,10 +28,8 @@ import com.mvcoding.expensius.model.Transaction
 import rx.Observable
 import rx.Observable.just
 
-class TransactionsView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0) : RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View {
+class TransactionsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View {
 
     lateinit var createTransactionObservable: Observable<Unit>
 
@@ -61,6 +59,10 @@ class TransactionsView @JvmOverloads constructor(
 
     override fun onAddNewTransaction() = createTransactionObservable
 
+    override fun onDisplayArchivedTransactions(): Observable<Unit> {
+        throw UnsupportedOperationException()
+    }
+
     override fun onPagingEdgeReached() = just(TransactionsPresenter.PagingEdge.END)
 
     override fun showTransactions(transactions: List<Transaction>) {
@@ -71,7 +73,11 @@ class TransactionsView @JvmOverloads constructor(
         transactionsAdapter.insert(transactions, position)
     }
 
-    override fun startTransactionEdit() {
+    override fun displayTransactionEdit() {
         CalculatorActivity.start(context)
+    }
+
+    override fun displayArchivedTransactions() {
+        throw UnsupportedOperationException()
     }
 }

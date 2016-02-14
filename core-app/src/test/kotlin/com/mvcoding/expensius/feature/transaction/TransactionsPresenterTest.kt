@@ -33,6 +33,7 @@ import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenterTest {
     val addNewTransactionSubject = PublishSubject<Unit>()
+    val displayArchivedTransactionsSubject = PublishSubject<Unit>()
     val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
     val pageLoader = PageLoaderForTest()
     val view = mock(TransactionsPresenter.View::class.java)
@@ -41,6 +42,7 @@ class TransactionsPresenterTest {
     @Before
     fun setUp() {
         given(view.onAddNewTransaction()).willReturn(addNewTransactionSubject)
+        given(view.onDisplayArchivedTransactions()).willReturn(displayArchivedTransactionsSubject)
         given(view.onPagingEdgeReached()).willReturn(pagingEdgeSubject)
     }
 
@@ -116,12 +118,21 @@ class TransactionsPresenterTest {
     }
 
     @Test
-    fun startsTransactionEditOnAddNewTransaction() {
+    fun displaysTransactionEditOnAddNewTransaction() {
         presenter.onAttachView(view)
 
         addNewTransaction()
 
-        verify(view).startTransactionEdit()
+        verify(view).displayTransactionEdit()
+    }
+
+    @Test
+    fun displaysArchivedTransactions() {
+        presenter.onAttachView(view)
+
+        displayArchivedTransactions()
+
+        verify(view).displayArchivedTransactions()
     }
 
     private fun pagingEdgeEnd() {
@@ -130,6 +141,10 @@ class TransactionsPresenterTest {
 
     private fun addNewTransaction() {
         addNewTransactionSubject.onNext(Unit)
+    }
+
+    private fun displayArchivedTransactions() {
+        displayArchivedTransactionsSubject.onNext(Unit)
     }
 
     class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {
