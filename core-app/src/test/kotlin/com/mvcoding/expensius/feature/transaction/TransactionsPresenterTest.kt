@@ -20,13 +20,12 @@ import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageLoader
 import com.mvcoding.expensius.paging.PageResult
-import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
-import org.mockito.BDDMockito.*
-import org.mockito.Mockito.mock
+import org.mockito.Matchers.anyInt
+import org.mockito.Matchers.anyListOf
+import org.mockito.Mockito.times
 import rx.Observable
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
@@ -36,14 +35,14 @@ class TransactionsPresenterTest {
     val displayArchivedTransactionsSubject = PublishSubject<Unit>()
     val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
     val pageLoader = PageLoaderForTest()
-    val view = mock(TransactionsPresenter.View::class.java)
+    val view = mock<TransactionsPresenter.View>()
     val presenter = TransactionsPresenter(TransactionsProviderForTest(pageLoader))
 
     @Before
     fun setUp() {
-        given(view.onAddNewTransaction()).willReturn(addNewTransactionSubject)
-        given(view.onDisplayArchivedTransactions()).willReturn(displayArchivedTransactionsSubject)
-        given(view.onPagingEdgeReached()).willReturn(pagingEdgeSubject)
+        whenever(view.onAddNewTransaction()).thenReturn(addNewTransactionSubject)
+        whenever(view.onDisplayArchivedTransactions()).thenReturn(displayArchivedTransactionsSubject)
+        whenever(view.onPagingEdgeReached()).thenReturn(pagingEdgeSubject)
     }
 
     @Test
@@ -52,7 +51,7 @@ class TransactionsPresenterTest {
 
         presenter.onAttachView(view)
 
-        verify(view).showTransactions(anyListOf(Transaction::class.java))
+        verify(view).showTransactions(argThat { size == 1 })
     }
 
     @Test
@@ -62,7 +61,7 @@ class TransactionsPresenterTest {
 
         pagingEdgeEnd()
 
-        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE))
+        verify(view).addTransactions(argThat { size == 1 }, eq(PAGE_SIZE))
     }
 
     @Test
@@ -73,7 +72,7 @@ class TransactionsPresenterTest {
         pagingEdgeEnd()
         pagingEdgeEnd()
 
-        verify(view).addTransactions(anyListOf(Transaction::class.java), eq(PAGE_SIZE * 2))
+        verify(view).addTransactions(argThat { size == 1 }, eq(PAGE_SIZE * 2))
     }
 
     @Test
@@ -84,7 +83,7 @@ class TransactionsPresenterTest {
         pagingEdgeEnd()
         pagingEdgeEnd()
 
-        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
+        verify(view, times(1)).addTransactions(anyListOf(Transaction::class.java), anyInt())
     }
 
     @Test
@@ -98,14 +97,8 @@ class TransactionsPresenterTest {
         verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
     }
 
-    @Ignore
     @Test
     fun showsCachedTransactionsAfterReattach() {
-        var lastShownSize = 0;
-        willAnswer {
-            lastShownSize = it.getArgumentAt(0, List::class.java).size
-            null
-        }.given(view).showTransactions(anyListOf(Transaction::class.java))
         pageLoader.size = PAGE_SIZE + 1
         presenter.onAttachView(view)
         pagingEdgeEnd()
@@ -113,8 +106,7 @@ class TransactionsPresenterTest {
         presenter.onDetachView(view)
         presenter.onAttachView(view)
 
-        verify(view, times(2)).showTransactions(anyListOf(Transaction::class.java))
-        assertThat(lastShownSize, equalTo(PAGE_SIZE + 1))
+        verify(view).showTransactions(argThat { size == PAGE_SIZE + 1 })
     }
 
     @Test

@@ -20,28 +20,17 @@ import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
-import rx.lang.kotlin.PublishSubject
+import rx.Observable.just
 
-class TransactionsPresenter(transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
+class TransactionsPresenter(private val transactionsProvider: TransactionsProvider) : Presenter<TransactionsPresenter.View>() {
     internal companion object {
         const val PAGE_SIZE = 50
     }
 
-    private val pagingEdges = PublishSubject<PagingEdge>()
-    private val transactions: Observable<PageResult<Transaction>>
     private val transactionsCache = arrayListOf<Transaction>()
 
     private var endPage = Page(0, PAGE_SIZE)
     private var hasNextPage = true
-
-    init {
-        val pages = pagingEdges
-                .filter { it == END && hasNextPage }
-                .map { endPage.nextPage() }
-                .doOnNext { endPage = it }
-                .startWith(endPage)
-        transactions = transactionsProvider.transactions(pages)
-    }
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
@@ -50,8 +39,13 @@ class TransactionsPresenter(transactionsProvider: TransactionsProvider) : Presen
             view.showTransactions(transactionsCache)
         }
 
-        unsubscribeOnDetach(view.onPagingEdgeReached().subscribe(pagingEdges))
-        unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
+        val pages = view.onPagingEdgeReached()
+                .filter { it == END && hasNextPage }
+                .map { endPage.nextPage() }
+                .doOnNext { endPage = it }
+                .startWith(just(endPage).filter { transactionsCache.isEmpty() })
+
+        unsubscribeOnDetach(transactionsProvider.transactions(pages).subscribe { showTransactions(view, it) })
         unsubscribeOnDetach(view.onAddNewTransaction().subscribe { view.displayTransactionEdit() })
         unsubscribeOnDetach(view.onDisplayArchivedTransactions().subscribe { view.displayArchivedTransactions() })
     }
