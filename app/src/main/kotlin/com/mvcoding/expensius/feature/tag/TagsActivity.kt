@@ -21,7 +21,7 @@ import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NON_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import rx.Observable.never
 
 class TagsActivity : BaseActivity() {
@@ -32,7 +32,7 @@ class TagsActivity : BaseActivity() {
 
         fun startView(context: Context) {
             ActivityStarter(context, TagsActivity::class)
-                    .extra(EXTRA_DISPLAY_TYPE, VIEW_NON_ARCHIVED)
+                    .extra(EXTRA_DISPLAY_TYPE, VIEW_NOT_ARCHIVED)
                     .start()
         }
 

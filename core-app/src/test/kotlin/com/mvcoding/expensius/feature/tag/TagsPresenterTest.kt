@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NON_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.Tag
 import org.junit.Before
 import org.junit.Test
@@ -46,7 +46,7 @@ class TagsPresenterTest {
 
         presenter.onAttachView(view)
 
-        verify(view).showModelDisplayType(VIEW_NON_ARCHIVED)
+        verify(view).showModelDisplayType(VIEW_NOT_ARCHIVED)
     }
 
     @Test
@@ -110,7 +110,7 @@ class TagsPresenterTest {
         tagCreateSubject.onNext(Unit)
     }
 
-    private fun presenterWithDisplayTypeView() = TagsPresenter(tagsCache, VIEW_NON_ARCHIVED)
+    private fun presenterWithDisplayTypeView() = TagsPresenter(tagsCache, VIEW_NOT_ARCHIVED)
 
     private fun presenterWithDisplayTypeArchived() = TagsPresenter(tagsCache, VIEW_ARCHIVED)
 }

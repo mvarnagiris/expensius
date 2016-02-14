@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NON_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.model.Tag
 import rx.Observable
@@ -24,7 +24,7 @@ import rx.Observable.merge
 
 class TagsPresenter(
         private val tagsProvider: TagsProvider,
-        private val modelDisplayType: ModelDisplayType = VIEW_NON_ARCHIVED) : Presenter<TagsPresenter.View>() {
+        private val modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) : Presenter<TagsPresenter.View>() {
 
     override fun onAttachView(view: View) {
         super.onAttachView(view)
