@@ -57,7 +57,7 @@ class DateDialogFragment : BaseDialogFragment(), DatePickerDialog.OnDateSetListe
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val year = arguments.getInt(ARG_YEAR)
         val monthOfYear = arguments.getInt(ARG_MONTH_OF_YEAR)
         val dayOfMonth = arguments.getInt(ARG_DAY_OF_MONTH)
