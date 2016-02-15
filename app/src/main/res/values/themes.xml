@@ -17,10 +17,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="themeInverse">@style/AppTheme.Inverse</item>
 
-        <item name="colorPrimary">#3F51B5</item>
-        <item name="colorPrimaryDark">#303F9F</item>
-        <item name="colorAccent">#FF4081</item>
-        <item name="colorAccentDark">#EF3071</item>
+        <item name="colorPrimary">#34495e</item>
+        <item name="colorPrimaryDark">#2c3e50</item>
+        <item name="colorAccent">#00bcd4</item>
+        <item name="colorAccentDark">#0097a7</item>
         <item name="colorActionIcon">#727272</item>
         <item name="colorDivider">#33333333</item>
         <item name="colorExpense">@color/red_700</item>
