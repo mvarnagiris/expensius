@@ -14,7 +14,8 @@
 
 package com.mvcoding.expensius.provider.database
 
-import android.content.ContentValues
 import com.mvcoding.expensius.provider.database.table.Table
 
-data class SaveRecord(val table: Table, val contentValues: ContentValues)
+interface DatabaseAction {
+    val table: Table
+}

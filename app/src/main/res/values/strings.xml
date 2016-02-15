@@ -31,6 +31,7 @@
     <string name="tag_restored">Tag restored</string>
     <string name="tag_archived">Tag archived</string>
     <string name="archived_tags">Archived tags</string>
+    <string name="archived_transactions">Archived transactions</string>
     <string name="archive">Archive</string>
     <string name="calculator">Calculator</string>
     <string name="add_a_note">Add a note</string>

@@ -21,10 +21,17 @@ import com.squareup.sqlbrite.BriteDatabase
 import rx.Observable
 
 class SqliteDatabase(private val database: BriteDatabase) : Database {
-    override fun save(saveRecords: List<SaveRecord>) {
+    override fun save(databaseActions: List<DatabaseAction>) {
         val transaction = database.newTransaction()
         try {
-            saveRecords.forEach { updateOrInsert(it.table, it.contentValues) }
+            databaseActions.forEach {
+                when (it) {
+                    is SaveDatabaseAction -> updateOrInsert(it.table, it.contentValues)
+                    is DeleteDatabaseAction -> delete(it.table, it.whereClause, it.whereArgs)
+                    else -> throw IllegalArgumentException("$it is not supported.")
+                }
+
+            }
             transaction.markSuccessful()
         } finally {
             transaction.end()
@@ -53,5 +60,9 @@ class SqliteDatabase(private val database: BriteDatabase) : Database {
         } else {
             database.insert(table.name, contentValues)
         }
+    }
+
+    private fun delete(table: Table, whereClause: String?, whereArgs: Array<String>?) {
+        database.delete(table.name, whereClause, *whereArgs.orEmpty())
     }
 }

@@ -63,14 +63,13 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
         presenter.onDetachView(this)
     }
 
-    override fun onAddNewTransaction() = createTransactionObservable
-
-    override fun onDisplayArchivedTransactions() = never<Unit>() // TODO
-
-    override fun onPagingEdgeReached() = never<TransactionsPresenter.PagingEdge>() // TODO
+    override fun onTransactionSelected() = transactionsAdapter.itemPositionClicks().map { transactionsAdapter.getItem(it) }
+    override fun onCreateTransaction() = createTransactionObservable
+    override fun onDisplayArchivedTransactions() = never<Unit>() // TODO Implement
+    override fun onPagingEdgeReached() = never<TransactionsPresenter.PagingEdge>() // TODO Implement
 
     override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {
-        // TODO
+        // TODO Implement
     }
 
     override fun showTransactions(transactions: List<Transaction>) {
@@ -81,11 +80,15 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
         transactionsAdapter.insert(transactions, position)
     }
 
-    override fun displayTransactionEdit() {
+    override fun displayCreateTransaction() {
         CalculatorActivity.start(context)
     }
 
+    override fun displayTransactionEdit(transaction: Transaction) {
+        TransactionActivity.start(context, transaction)
+    }
+
     override fun displayArchivedTransactions() {
-        // TODO
+        TransactionsActivity.startArchived(context)
     }
 }

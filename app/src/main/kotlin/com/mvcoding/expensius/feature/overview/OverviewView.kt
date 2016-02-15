@@ -25,7 +25,6 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
-import com.mvcoding.expensius.feature.transaction.TransactionsActivity
 
 class OverviewView : FrameLayout, OverviewPresenter.View {
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
@@ -38,11 +37,6 @@ class OverviewView : FrameLayout, OverviewPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
 
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        findViewById(R.id.transactionsButton).setOnClickListener { TransactionsActivity.start(context) }
-    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()

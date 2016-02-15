@@ -40,10 +40,15 @@ class DatabaseTransactionsProvider(
         private val tagsTable: TagsTable) : TransactionsProvider {
 
     override fun save(transactions: Set<Transaction>) {
-        val transactionSaveRecords = transactions.map { SaveRecord(transactionsTable, it.toContentValues(transactionsTable)) }
-        val relationshipSaveRecords = transactions.map { transaction -> transaction.tags.map { relationshipSaveRecord(transaction, it) } }
+        val saveTransactions = transactions.map { SaveDatabaseAction(transactionsTable, it.toContentValues(transactionsTable)) }
+        val saveRelationships = transactions
+                .map { transaction -> transaction.tags.map { relationshipSaveRecord(transaction, it) } }
                 .flatten()
-        database.save(transactionSaveRecords.plus(relationshipSaveRecords))
+        val deleteRelationships = transactions.map {
+            DeleteDatabaseAction(transactionTagsTable, "${transactionTagsTable.transactionId}=?", arrayOf(it.id))
+        }
+
+        database.save(saveTransactions.plus(deleteRelationships).plus(saveRelationships))
     }
 
     override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
@@ -66,10 +71,10 @@ class DatabaseTransactionsProvider(
                                pages)
     }
 
-    private fun relationshipSaveRecord(transaction: Transaction, tag: Tag): SaveRecord {
+    private fun relationshipSaveRecord(transaction: Transaction, tag: Tag): SaveDatabaseAction {
         val contentValues = ContentValues()
         contentValues.put(transactionTagsTable.transactionId.name, transaction.id)
         contentValues.put(transactionTagsTable.tagId.name, tag.id)
-        return SaveRecord(transactionTagsTable, contentValues)
+        return SaveDatabaseAction(transactionTagsTable, contentValues)
     }
 }

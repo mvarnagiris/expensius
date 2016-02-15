@@ -56,8 +56,9 @@ class TransactionsPresenter(
                 else transactionsProvider.archivedTransactions(pages)
 
         unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
-        unsubscribeOnDetach(view.onAddNewTransaction().subscribe { view.displayTransactionEdit() })
+        unsubscribeOnDetach(view.onCreateTransaction().subscribe { view.displayCreateTransaction() })
         unsubscribeOnDetach(view.onDisplayArchivedTransactions().subscribe { view.displayArchivedTransactions() })
+        unsubscribeOnDetach(view.onTransactionSelected().subscribe { view.displayTransactionEdit(it) })
     }
 
     private fun showTransactions(view: View, pageResult: PageResult<Transaction>) {
@@ -78,12 +79,16 @@ class TransactionsPresenter(
 
     interface View : Presenter.View {
         fun onPagingEdgeReached(): Observable<PagingEdge>
-        fun onAddNewTransaction(): Observable<Unit>
+        fun onTransactionSelected(): Observable<Transaction>
+        fun onCreateTransaction(): Observable<Unit>
         fun onDisplayArchivedTransactions(): Observable<Unit>
+
         fun showModelDisplayType(modelDisplayType: ModelDisplayType)
         fun showTransactions(transactions: List<Transaction>)
         fun addTransactions(transactions: List<Transaction>, position: Int)
-        fun displayTransactionEdit()
+
+        fun displayCreateTransaction()
+        fun displayTransactionEdit(transaction: Transaction)
         fun displayArchivedTransactions()
     }
 }

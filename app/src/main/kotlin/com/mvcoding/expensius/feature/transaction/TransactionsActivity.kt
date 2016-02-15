@@ -19,10 +19,12 @@ import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import rx.Observable.never
 
 class TransactionsActivity : BaseActivity() {
     companion object {
-        fun start(context: Context) {
+        fun startArchived(context: Context) {
             ActivityStarter(context, TransactionsActivity::class).start()
         }
     }
@@ -30,5 +32,9 @@ class TransactionsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_transactions)
+
+        val transactionsView = findViewById(R.id.transactionsView) as TransactionsView
+        transactionsView.init(VIEW_ARCHIVED, never())
+        supportActionBar?.title = getString(R.string.archived_transactions)
     }
 }

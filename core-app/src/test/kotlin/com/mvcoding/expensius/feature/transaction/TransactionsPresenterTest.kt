@@ -34,7 +34,8 @@ import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenterTest {
-    val addNewTransactionSubject = PublishSubject<Unit>()
+    val createTransactionSubject = PublishSubject<Unit>()
+    val selectTransactionSubject = PublishSubject<Transaction>()
     val displayArchivedTransactionsSubject = PublishSubject<Unit>()
     val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
     val pageLoader = PageLoaderForTest()
@@ -42,7 +43,8 @@ class TransactionsPresenterTest {
 
     @Before
     fun setUp() {
-        whenever(view.onAddNewTransaction()).thenReturn(addNewTransactionSubject)
+        whenever(view.onCreateTransaction()).thenReturn(createTransactionSubject)
+        whenever(view.onTransactionSelected()).thenReturn(selectTransactionSubject)
         whenever(view.onDisplayArchivedTransactions()).thenReturn(displayArchivedTransactionsSubject)
         whenever(view.onPagingEdgeReached()).thenReturn(pagingEdgeSubject)
     }
@@ -132,12 +134,22 @@ class TransactionsPresenterTest {
     }
 
     @Test
-    fun displaysTransactionEditOnAddNewTransaction() {
+    fun displaysCreateTransactionOnCreateTransaction() {
         presenterWithModelDisplayTypeView().onAttachView(view)
 
-        addNewTransaction()
+        createTransaction()
 
-        verify(view).displayTransactionEdit()
+        verify(view).displayCreateTransaction()
+    }
+
+    @Test
+    fun displaysTransactionEditOnTransactionSelected() {
+        val transaction = aTransaction()
+        presenterWithModelDisplayTypeView().onAttachView(view)
+
+        selectTransaction(transaction)
+
+        verify(view).displayTransactionEdit(transaction)
     }
 
     @Test
@@ -153,8 +165,12 @@ class TransactionsPresenterTest {
         pagingEdgeSubject.onNext(END)
     }
 
-    private fun addNewTransaction() {
-        addNewTransactionSubject.onNext(Unit)
+    private fun selectTransaction(transaction: Transaction) {
+        selectTransactionSubject.onNext(transaction)
+    }
+
+    private fun createTransaction() {
+        createTransactionSubject.onNext(Unit)
     }
 
     private fun displayArchivedTransactions() {
