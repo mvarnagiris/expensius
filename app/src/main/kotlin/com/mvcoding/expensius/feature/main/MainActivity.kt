@@ -21,10 +21,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
-import android.support.v4.view.ViewPager.*
+import android.support.v4.view.ViewPager.GONE
+import android.support.v4.view.ViewPager.VISIBLE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.jakewharton.rxbinding.support.v4.view.pageSelections
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.forEachTabIndexed
@@ -53,22 +55,25 @@ class MainActivity : BaseActivity() {
         val viewPager = findViewById(R.id.viewPager) as ViewPager
         val tabLayout = findViewById(R.id.tabLayout) as TabLayout
 
+        val defaultTabColor = getColorFromTheme(tabLayout.context, R.attr.colorActionIcon)
+        val selectedTabColor = getColorFromTheme(tabLayout.context, R.attr.colorAccent)
         val screens = listOf(
                 Screen(transactionsInflater(), R.drawable.ic_navigation_transactions),
                 Screen(tagsInflater(), R.drawable.ic_navigation_tags)
         )
 
         viewPager.adapter = ScreensAdapter(screens)
-        viewPager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                updateFloatingActionButtons(position)
-            }
-        })
         tabLayout.setupWithViewPager(viewPager)
         tabLayout.forEachTabIndexed { index, tab ->
             val icon = ContextCompat.getDrawable(this, screens[index].iconResId).mutate()
             DrawableCompat.setTint(icon, getColorFromTheme(tabLayout.context, R.attr.colorActionIcon))
             tab.icon = icon
+        }
+        viewPager.pageSelections().subscribe { position ->
+            updateFloatingActionButtons(position)
+            tabLayout.forEachTabIndexed { tabIndex, tab ->
+                tab.icon?.let { DrawableCompat.setTint(it, if (tabIndex == position) selectedTabColor else defaultTabColor) }
+            }
         }
     }
 
