@@ -195,7 +195,7 @@ class TagView : LinearLayout, TagPresenter.View {
         titleEditText.setTextColor(textColor)
         titleEditText.setHintTextColor(ColorUtils.setAlphaComponent(textColor, 0x88))
         toolbar.setTitleTextColor(textColor)
-        val navigationIcon = DrawableCompat.wrap(toolbar.navigationIcon?.mutate())
+        val navigationIcon = DrawableCompat.wrap(toolbar.navigationIcon!!.mutate())
         DrawableCompat.setTint(navigationIcon, textColor)
         toolbar.navigationIcon = navigationIcon
 
