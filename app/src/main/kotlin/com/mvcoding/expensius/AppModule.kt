@@ -39,6 +39,7 @@ import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.squareup.sqlbrite.SqlBrite
+import rx.schedulers.Schedulers
 import java.math.BigDecimal
 
 class AppModule(val context: Context) : ShankModule {
@@ -62,7 +63,7 @@ class AppModule(val context: Context) : ShankModule {
                 context,
                 TagsTable(),
                 TransactionsTable(),
-                TransactionTagsTable()))
+                TransactionTagsTable()), Schedulers.io())
         registerFactory<Database>(Database::class.java, { SqliteDatabase(briteDatabase) })
     }
 

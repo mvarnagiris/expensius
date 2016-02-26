@@ -53,7 +53,7 @@ class DateDialogFragment : BaseDialogFragment(), DatePickerDialog.OnDateSetListe
             fragment.arguments = args
             fragment.show(fragmentManager, DateDialogFragment::class.java.name)
 
-            return rxBus.observe(DateDialogResult::class.java)
+            return rxBus.observe(DateDialogResult::class)
         }
     }
 

@@ -140,7 +140,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onTransactionTypeChanged() = transactionTypeFloatingActionButton.clicks().map { if (transactionType == EXPENSE) INCOME else EXPENSE }
 
-    override fun onTimestampChanged() = rxBus.observe(DateDialogResult::class.java).map {
+    override fun onTimestampChanged() = rxBus.observe(DateDialogResult::class).map {
         DateTime(timestamp).withYear(it.year).withMonthOfYear(it.monthOfYear).withDayOfMonth(it.dayOfMonth).millis
     }
 
