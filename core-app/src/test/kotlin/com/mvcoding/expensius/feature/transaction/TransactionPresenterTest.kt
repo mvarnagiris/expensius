@@ -63,7 +63,7 @@ class TransactionPresenterTest {
 
     @Test
     fun showsInitialValues() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showTransactionType(transaction.transactionType)
         verify(view).showTransactionState(transaction.transactionState)
@@ -79,7 +79,7 @@ class TransactionPresenterTest {
     fun showsUpdatedValues() {
         val tags = setOf(aTag(), aTag())
         val currency = Currency("EUR")
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         updateTransactionType(INCOME)
         updateTransactionState(PENDING)
@@ -102,7 +102,7 @@ class TransactionPresenterTest {
     fun showsUpdatedValuesAfterReattach() {
         val tags = setOf(aTag(), aTag())
         val currency = Currency("EUR")
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         updateTransactionType(INCOME)
         updateTransactionState(PENDING)
@@ -111,8 +111,8 @@ class TransactionPresenterTest {
         updateAmount(TEN)
         updateTags(tags)
         updateNote("Updated note")
-        presenter.onDetachView(view)
-        presenter.onAttachView(view)
+        presenter.onViewDetached(view)
+        presenter.onViewAttached(view)
 
         verify(view, times(2)).showTransactionType(INCOME)
         verify(view, times(2)).showTransactionState(PENDING)
@@ -125,7 +125,7 @@ class TransactionPresenterTest {
 
     @Test
     fun savesTransactionAndDisplaysResult() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         save()
 
@@ -136,14 +136,14 @@ class TransactionPresenterTest {
     fun archiveIsDisabledForNewTransaction() {
         val presenter = TransactionPresenter(aNewTransaction(), transactionsProvider)
 
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showArchiveEnabled(false)
     }
 
     @Test
     fun archiveIsEnabledForExistingTransaction() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showArchiveEnabled(true)
     }
@@ -151,7 +151,7 @@ class TransactionPresenterTest {
     @Test
     fun archivesTransactionAndDisplaysResult() {
         val archivedTransaction = transaction.withModelState(ARCHIVED)
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         toggleArchive()
 
@@ -164,7 +164,7 @@ class TransactionPresenterTest {
         val archivedTransaction = transaction.withModelState(ARCHIVED)
         val restoredTransaction = transaction.withModelState(NONE)
         val presenter = TransactionPresenter(archivedTransaction, transactionsProvider)
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         toggleArchive()
 

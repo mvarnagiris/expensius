@@ -22,8 +22,8 @@ import rx.Observable.combineLatest
 class QuickTagsPresenter(private val tagsProvider: TagsProvider) : Presenter<QuickTagsPresenter.View>() {
     private val toggledTags = hashMapOf<Tag, Boolean>()
 
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         val selectedTags = view.onShowSelectedTags().doOnNext { it.forEach { toggledTags.put(it, true) } }
         val allTags = combineLatest(tagsProvider.tags(), selectedTags, {

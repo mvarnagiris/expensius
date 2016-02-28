@@ -33,7 +33,7 @@ class OverviewPresenterTest {
 
     @Test
     fun startsTransactionEditOnAddNewTransaction() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         addNewTransaction()
 
@@ -42,7 +42,7 @@ class OverviewPresenterTest {
 
     @Test
     fun startsTagsOnStartTags() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         startTags()
 

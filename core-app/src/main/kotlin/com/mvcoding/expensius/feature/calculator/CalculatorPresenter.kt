@@ -34,8 +34,8 @@ class CalculatorPresenter(
         initialNumber?.let { calculator.setNumber(it) }
     }
 
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         val expressionAlteringObservable = merge(arrayOf(
                 view.onDigit0().doOnNext { calculator.digit0() },

@@ -40,7 +40,7 @@ class QuickTagsPresenterTest {
 
     @Test
     fun initiallyShowsAllTagsUnselected() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showSelectableTags(defaultSelectableTags)
     }
@@ -48,7 +48,7 @@ class QuickTagsPresenterTest {
     @Test
     fun showsAllSelectedTagsEvenIfTheyAreNotPartOfTagsProvider() {
         val extraTag = aTag()
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         updateSelectedTags(setOf(defaultTags[1], extraTag))
 
@@ -60,7 +60,7 @@ class QuickTagsPresenterTest {
     @Test
     fun canSelectTag() {
         val selectableTag = defaultSelectableTags[0]
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         toggleSelectableTag(selectableTag)
 
@@ -70,7 +70,7 @@ class QuickTagsPresenterTest {
     @Test
     fun canDeselectTag() {
         val selectableTag = defaultSelectableTags[0]
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
         toggleSelectableTag(selectableTag)
 
         toggleSelectableTag(selectableTag.withSelected(true))
@@ -82,11 +82,11 @@ class QuickTagsPresenterTest {
     fun tagSelectionStateIsRestoredAfterReattach() {
         val selectableTag = defaultSelectableTags[0]
         val expectedSelectableTags = defaultSelectableTags.map { if (it == selectableTag) it.toggled() else it }
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
         toggleSelectableTag(selectableTag)
 
-        presenter.onDetachView(view)
-        presenter.onAttachView(view)
+        presenter.onViewDetached(view)
+        presenter.onViewAttached(view)
 
         verify(view).showSelectableTags(expectedSelectableTags)
     }

@@ -19,8 +19,8 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Presenter
 
 class SplashPresenter(private val settings: Settings, private val session: Session) : Presenter<SplashPresenter.View>() {
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
         view.startMain()
     }
 

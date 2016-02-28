@@ -36,8 +36,8 @@ class TransactionsPresenter(
     private var endPage = Page(0, PAGE_SIZE)
     private var hasNextPage = true
 
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         view.showModelDisplayType(modelDisplayType)
 

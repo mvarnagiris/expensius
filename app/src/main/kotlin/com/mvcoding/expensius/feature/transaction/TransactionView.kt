@@ -116,12 +116,12 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onAttachView(this)
+        presenter.onViewAttached(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onDetachView(this)
+        presenter.onViewDetached(this)
     }
 
     override fun onTransactionStateChanged(): Observable<TransactionState> {

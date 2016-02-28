@@ -39,18 +39,18 @@ class IntroPresenterTest {
 
     @Test
     fun initiallyShowsIntroPagesWithActivePosition0() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showIntroPages(introPages, 0)
     }
 
     @Test
     fun showsIntroPagesWithPreservedPositionAfterReattach() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
         setActiveIntroPagePosition(1)
-        presenter.onDetachView(view)
+        presenter.onViewDetached(view)
 
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
 
         verify(view).showIntroPages(introPages, 1)
@@ -58,7 +58,7 @@ class IntroPresenterTest {
 
     @Test
     fun setsIntroductionAsSeenAndStartsMainWhenSkippingLogin() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         skipLogin()
 
@@ -68,7 +68,7 @@ class IntroPresenterTest {
 
     @Test
     fun setsIntroductionAsSeenAndStartsLoginWhenLoggingIn() {
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         login()
 

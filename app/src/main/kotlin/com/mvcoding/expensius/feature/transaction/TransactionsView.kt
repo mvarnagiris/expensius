@@ -55,12 +55,12 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onAttachView(this)
+        presenter.onViewAttached(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onDetachView(this)
+        presenter.onViewDetached(this)
     }
 
     override fun onTransactionSelected() = transactionsAdapter.itemPositionClicks().map { transactionsAdapter.getItem(it) }

@@ -21,8 +21,8 @@ import rx.Observable
 class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val settings: Settings) : Presenter<IntroPresenter.View<T>>() {
     var activeIntroPagePosition = 0
 
-    override fun onAttachView(view: View<T>) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View<T>) {
+        super.onViewAttached(view)
         view.showIntroPages(introPages, activeIntroPagePosition)
 
         unsubscribeOnDetach(view.onLogin()

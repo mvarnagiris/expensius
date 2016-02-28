@@ -46,7 +46,7 @@ class TagsPresenterTest {
     fun showsModelDisplayType() {
         val presenter = presenterWithModelDisplayTypeView()
 
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showModelDisplayType(VIEW_NOT_ARCHIVED)
     }
@@ -57,7 +57,7 @@ class TagsPresenterTest {
         val tags = listOf(aTag(), aTag(), aTag())
         whenever(tagsProvider.tags()).thenReturn(just(tags))
 
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showTags(tags)
     }
@@ -68,7 +68,7 @@ class TagsPresenterTest {
         val tags = listOf(aTag(), aTag(), aTag())
         whenever(tagsProvider.archivedTags()).thenReturn(just(tags))
 
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         verify(view).showTags(tags)
     }
@@ -77,7 +77,7 @@ class TagsPresenterTest {
     fun displaysTagEditWhenSelectingATagAndDisplayTypeIsView() {
         val presenter = presenterWithModelDisplayTypeView()
         val tag = aTag()
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         selectTag(tag)
 
@@ -87,7 +87,7 @@ class TagsPresenterTest {
     @Test
     fun displaysTagEditOnCreateTag() {
         val presenter = presenterWithModelDisplayTypeView()
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         createTag()
 
@@ -97,7 +97,7 @@ class TagsPresenterTest {
     @Test
     fun displaysArchivedTagsOnArchivedTags() {
         val presenter = presenterWithModelDisplayTypeView()
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
         archivedTags()
 
