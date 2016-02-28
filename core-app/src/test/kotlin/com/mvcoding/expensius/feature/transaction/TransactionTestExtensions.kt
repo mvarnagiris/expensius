@@ -18,8 +18,10 @@ import com.mvcoding.expensius.feature.tag.someTags
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import java.lang.System.currentTimeMillis
+import java.math.BigDecimal
 import java.math.BigDecimal.ONE
 import java.util.UUID.randomUUID
 
@@ -35,3 +37,6 @@ fun aTransaction() = Transaction(
         "note")
 
 fun aNewTransaction() = Transaction(currency = aCurrency())
+fun Transaction.withTimestamp(timestamp: Long) = copy(timestamp = timestamp)
+fun Transaction.withAmount(amount: BigDecimal) = copy(amount = amount)
+fun Transaction.withTags(vararg tags: Tag) = copy(tags = setOf(*tags))

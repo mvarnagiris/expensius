@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,15 +12,8 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: 'java'
-apply plugin: "kotlin"
+package com.mvcoding.expensius.feature.transaction
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'io.reactivex:rxkotlin:0.40.1'
-    compile 'io.reactivex:rxjava:1.1.0'
-    compile 'joda-time:joda-time:2.9.2'
-    testCompile 'junit:junit:4.12'
-    testCompile "com.nhaarman:mockito-kotlin:0.2.1"
-}
+import com.mvcoding.expensius.model.ModelState
+
+data class TransactionsFilter(val modelState: ModelState)

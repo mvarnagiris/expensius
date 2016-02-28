@@ -182,12 +182,8 @@ class TransactionsPresenterTest {
     private fun presenterWithModelDisplayTypeArchived() = TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_ARCHIVED)
 
     class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {
-        override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-            return pageLoader.load({ aTransaction() }, Any(), pages)
-        }
-
-        override fun archivedTransactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-            return pageLoader.load({ aTransaction().withModelState(ARCHIVED) }, Any(), pages)
+        override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
+            return pageLoader.load({ aTransaction().withModelState(transactionsFilter.modelState) }, Any(), pages)
         }
 
         override fun save(transactions: Set<Transaction>) {
