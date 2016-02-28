@@ -186,6 +186,10 @@ class TransactionsPresenterTest {
             return pageLoader.load({ aTransaction().withModelState(transactionsFilter.modelState) }, Any(), pages)
         }
 
+        override fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>> {
+            throw UnsupportedOperationException()
+        }
+
         override fun save(transactions: Set<Transaction>) {
             throw UnsupportedOperationException()
         }

@@ -21,3 +21,4 @@ import java.util.UUID.randomUUID
 fun aTag(): Tag = Tag(randomUUID().toString(), NONE, "title", 1)
 fun someTags() = setOf(aTag(), aTag())
 fun aNewTag(): Tag = Tag()
+fun Tag.withTitle(title: String) = copy(title = title)

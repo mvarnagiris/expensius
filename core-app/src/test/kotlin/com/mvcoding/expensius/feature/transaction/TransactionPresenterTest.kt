@@ -215,6 +215,10 @@ class TransactionPresenterTest {
             throw UnsupportedOperationException()
         }
 
+        override fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>> {
+            throw UnsupportedOperationException()
+        }
+
         override fun save(transactions: Set<Transaction>) {
             lastSavedTransactions = transactions
         }

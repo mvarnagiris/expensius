@@ -15,5 +15,6 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.model.ModelState
+import org.joda.time.Interval
 
-data class TransactionsFilter(val modelState: ModelState)
+data class TransactionsFilter(val modelState: ModelState, val interval: Interval? = null)
