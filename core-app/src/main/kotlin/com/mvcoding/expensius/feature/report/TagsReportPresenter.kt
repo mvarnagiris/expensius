@@ -72,7 +72,9 @@ class TagsReportPresenter(
         val last30Days = 0..29
         return last30Days.map {
             val amountsMap = resultMap.getOrElse(interval, { hashMapOf<Tag, BigDecimal>() })
-            amountsMap.apply { allTags.forEach { putIfAbsent(it, ZERO) } }
+            allTags.forEach {
+                if (!amountsMap.contains(it)) amountsMap.put(it, ZERO)
+            }
             val tagsReportItem = TagsReportItem(interval, amountsMap)
             interval = interval.withStart(interval.end).withPeriodAfterStart(period)
             tagsReportItem
