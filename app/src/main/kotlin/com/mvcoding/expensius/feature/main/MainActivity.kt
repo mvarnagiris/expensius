@@ -58,6 +58,7 @@ class MainActivity : BaseActivity() {
         val defaultTabColor = getColorFromTheme(tabLayout.context, R.attr.colorActionIcon)
         val selectedTabColor = getColorFromTheme(tabLayout.context, R.attr.colorAccent)
         val screens = listOf(
+                Screen(reportsInflater(), R.drawable.ic_navigation_reports),
                 Screen(transactionsInflater(), R.drawable.ic_navigation_transactions),
                 Screen(tagsInflater(), R.drawable.ic_navigation_tags)
         )
@@ -77,6 +78,11 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun reportsInflater() = {
+        layoutInflater: LayoutInflater, parent: ViewGroup ->
+        parent.inflate<View>(R.layout.view_reports)
+    }
+
     private fun transactionsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
         val transactionsView = parent.inflate<TransactionsView>(R.layout.view_transactions)
@@ -93,20 +99,33 @@ class MainActivity : BaseActivity() {
 
     private fun updateFloatingActionButtons(position: Int) {
         when (position) {
-            0 -> addTagFloatingActionButton.animate().setDuration(100).scaleX(0f).scaleY(0f).withEndAction {
-                addTransactionFloatingActionButton.scaleX = 0f;
-                addTransactionFloatingActionButton.scaleY = 0f;
-                addTransactionFloatingActionButton.visibility = VISIBLE
-                addTransactionFloatingActionButton.animate().scaleX(1f).scaleY(1f)
-                addTagFloatingActionButton.visibility = GONE
-            }
-            1 -> addTransactionFloatingActionButton.animate().setDuration(100).scaleX(0f).scaleY(0f).withEndAction {
-                addTagFloatingActionButton.scaleX = 0f;
-                addTagFloatingActionButton.scaleY = 0f;
-                addTagFloatingActionButton.visibility = VISIBLE
-                addTagFloatingActionButton.animate().scaleX(1f).scaleY(1f)
-                addTransactionFloatingActionButton.visibility = GONE
-            }
+            0 -> showTransactionFab()
+            1 -> showTransactionFab()
+            2 -> showTagFab()
+        }
+    }
+
+    private fun showTransactionFab() {
+        if (addTagFloatingActionButton.visibility == GONE) return
+
+        addTagFloatingActionButton.animate().setDuration(100).scaleX(0f).scaleY(0f).withEndAction {
+            addTransactionFloatingActionButton.scaleX = 0f;
+            addTransactionFloatingActionButton.scaleY = 0f;
+            addTransactionFloatingActionButton.visibility = VISIBLE
+            addTransactionFloatingActionButton.animate().scaleX(1f).scaleY(1f)
+            addTagFloatingActionButton.visibility = GONE
+        }
+    }
+
+    private fun showTagFab() {
+        if (addTransactionFloatingActionButton.visibility == GONE) return
+
+        addTransactionFloatingActionButton.animate().setDuration(100).scaleX(0f).scaleY(0f).withEndAction {
+            addTagFloatingActionButton.scaleX = 0f;
+            addTagFloatingActionButton.scaleY = 0f;
+            addTagFloatingActionButton.visibility = VISIBLE
+            addTagFloatingActionButton.animate().scaleX(1f).scaleY(1f)
+            addTransactionFloatingActionButton.visibility = GONE
         }
     }
 

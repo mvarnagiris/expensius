@@ -14,9 +14,9 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.model.Tag
 import rx.Observable
@@ -24,14 +24,15 @@ import rx.Observable.merge
 
 class TagsPresenter(
         private val tagsProvider: TagsProvider,
-        private val modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) : Presenter<TagsPresenter.View>() {
+        private val modelDisplayType: ModelDisplayType,
+        private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
         view.showModelDisplayType(modelDisplayType)
 
-        unsubscribeOnDetach(tags().subscribe { view.showTags(it) })
+        unsubscribeOnDetach(tags().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribe { view.showTags(it) })
         unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { Tag() }).subscribe { view.displayTagEdit(it) })
         unsubscribeOnDetach(view.onDisplayArchivedTags().subscribe { view.displayArchivedTags() })
     }

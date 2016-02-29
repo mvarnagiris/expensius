@@ -20,6 +20,7 @@ import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideDatabase
+import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provider.DatabaseTagsProvider
 import com.mvcoding.expensius.provider.database.table.TagsTable
 
@@ -36,7 +37,7 @@ class TagsModule : ShankModule {
     private fun tagPresenter() = registerFactory(TagPresenter::class.java, { tag: Tag -> TagPresenter(tag, provideTagsProvider()) })
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class.java, { modelDisplayType: ModelDisplayType ->
-        TagsPresenter(provideTagsProvider(), modelDisplayType)
+        TagsPresenter(provideTagsProvider(), modelDisplayType, provideRxSchedulers())
     })
 }
 

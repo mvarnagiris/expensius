@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
@@ -28,7 +29,8 @@ import rx.Observable.just
 
 class TransactionsPresenter(
         private val transactionsProvider: TransactionsProvider,
-        private val modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) : Presenter<TransactionsPresenter.View>() {
+        private val modelDisplayType: ModelDisplayType,
+        private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>() {
     internal companion object {
         const val PAGE_SIZE = 50
     }
@@ -57,7 +59,7 @@ class TransactionsPresenter(
                 if (modelDisplayType == VIEW_NOT_ARCHIVED) transactionsProvider.transactions(pages, TransactionsFilter(NONE))
                 else transactionsProvider.transactions(pages, TransactionsFilter(ARCHIVED))
 
-        unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
+        unsubscribeOnDetach(transactions.subscribeOn(schedulers.io).observeOn(schedulers.main).subscribe { showTransactions(view, it) })
         unsubscribeOnDetach(view.onCreateTransaction().subscribe { view.displayCreateTransaction() })
         unsubscribeOnDetach(view.onDisplayArchivedTransactions().subscribe { view.displayArchivedTransactions() })
         unsubscribeOnDetach(view.onTransactionSelected().subscribe { view.displayTransactionEdit(it) })

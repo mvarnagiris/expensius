@@ -15,11 +15,13 @@
 package com.mvcoding.expensius.provider
 
 import android.content.ContentValues
+import com.mvcoding.expensius.extension.map
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
@@ -54,16 +56,22 @@ class DatabaseTransactionsProvider(
         return transactions(pages, transactionsFilter.modelState)
     }
 
+    override fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>> {
+        return database.query(query(NONE)).map { it.map { it.toTransaction(transactionsTable, tagsTable) } }
+    }
+
     fun transactions(pages: Observable<Page>, modelState: ModelState): Observable<PageResult<Transaction>> {
-        return pageLoader.load({ it.toTransaction(transactionsTable, tagsTable) },
-                               select(arrayOf(*transactionsTable.columns(), tagsTable.transactionTags))
-                                       .from(transactionsTable)
-                                       .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
-                                       .leftJoin(tagsTable, "${transactionTagsTable.tagId}=${tagsTable.id}")
-                                       .where("${transactionsTable.modelState}=?", modelState.name)
-                                       .groupBy(transactionsTable.id)
-                                       .orderBy(Order(transactionsTable.timestamp, DESC)),
-                               pages)
+        return pageLoader.load({ it.toTransaction(transactionsTable, tagsTable) }, query(modelState), pages)
+    }
+
+    private fun query(modelState: ModelState): QueryRequest {
+        return select(arrayOf(*transactionsTable.columns(), tagsTable.transactionTags))
+                .from(transactionsTable)
+                .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
+                .leftJoin(tagsTable, "${transactionTagsTable.tagId}=${tagsTable.id}")
+                .where("${transactionsTable.modelState}=?", modelState.name)
+                .groupBy(transactionsTable.id)
+                .orderBy(Order(transactionsTable.timestamp, DESC))
     }
 
     private fun relationshipSaveRecord(transaction: Transaction, tag: Tag): SaveDatabaseAction {
