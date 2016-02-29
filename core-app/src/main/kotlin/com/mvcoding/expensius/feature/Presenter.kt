@@ -18,36 +18,29 @@ import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
 abstract class Presenter<V : Presenter.View> {
-    private val lifetimeSubscriptions: CompositeSubscription = CompositeSubscription()
     private lateinit var viewSubscriptions: CompositeSubscription
+    private val lifetimeSubscriptions = CompositeSubscription()
     private var view: View? = null
 
-    open fun onAttachView(view: V) {
-        if (this.view != null) {
-            throw IllegalStateException("Cannot attach $view, because ${this.view} is already attached")
-        }
+    open fun onViewAttached(view: V) {
+        if (this.view != null) throw IllegalStateException("Cannot attach $view, because ${this.view} is already attached")
 
         this.view = view
         this.viewSubscriptions = CompositeSubscription()
     }
 
-    open fun onDetachView(view: V) {
-        if (this.view == null) {
+    open fun onViewDetached(view: V) {
+        if (this.view == null)
             throw IllegalStateException("View is already detached.")
-        }
-
-        if (this.view != view) {
+        else if (this.view != view)
             throw IllegalStateException("Trying to detach different view. We have view: ${this.view}. Trying to detach view: $view")
-        }
 
         this.view = null;
         this.viewSubscriptions.unsubscribe()
     }
 
     open fun onDestroy() {
-        if (lifetimeSubscriptions.isUnsubscribed) {
-            throw IllegalStateException("Presenter $this has already been destroyed.")
-        }
+        if (lifetimeSubscriptions.isUnsubscribed) throw IllegalStateException("Presenter $this has already been destroyed.")
         lifetimeSubscriptions.unsubscribe()
     }
 

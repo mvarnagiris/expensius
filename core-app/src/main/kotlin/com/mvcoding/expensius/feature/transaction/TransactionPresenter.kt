@@ -29,8 +29,8 @@ class TransactionPresenter(
         private var transaction: Transaction,
         private val transactionsProvider: TransactionsProvider) : Presenter<TransactionPresenter.View>() {
 
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         view.showArchiveEnabled(transaction.isStored())
         view.showModelState(transaction.modelState)

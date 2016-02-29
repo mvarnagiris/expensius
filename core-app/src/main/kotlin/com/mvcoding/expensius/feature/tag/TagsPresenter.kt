@@ -26,8 +26,8 @@ class TagsPresenter(
         private val tagsProvider: TagsProvider,
         private val modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) : Presenter<TagsPresenter.View>() {
 
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         view.showModelDisplayType(modelDisplayType)
 

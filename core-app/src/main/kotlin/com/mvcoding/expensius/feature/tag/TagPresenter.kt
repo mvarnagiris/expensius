@@ -25,8 +25,8 @@ import rx.Observable.just
 import java.util.*
 
 class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider) : Presenter<TagPresenter.View>() {
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         view.showArchiveEnabled(tag.isStored())
         view.showModelState(tag.modelState)

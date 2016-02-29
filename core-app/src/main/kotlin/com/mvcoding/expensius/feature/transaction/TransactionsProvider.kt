@@ -20,7 +20,7 @@ import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
 
 interface TransactionsProvider {
-    fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>>
-    fun archivedTransactions(pages: Observable<Page>): Observable<PageResult<Transaction>>
+    fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>>
+    fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>>
     fun save(transactions: Set<Transaction>)
 }

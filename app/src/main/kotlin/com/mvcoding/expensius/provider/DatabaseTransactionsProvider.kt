@@ -17,10 +17,9 @@ package com.mvcoding.expensius.provider
 import android.content.ContentValues
 import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
+import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState
-import com.mvcoding.expensius.model.ModelState.ARCHIVED
-import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
@@ -51,12 +50,8 @@ class DatabaseTransactionsProvider(
         database.save(saveTransactions.plus(deleteRelationships).plus(saveRelationships))
     }
 
-    override fun transactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-        return transactions(pages, NONE)
-    }
-
-    override fun archivedTransactions(pages: Observable<Page>): Observable<PageResult<Transaction>> {
-        return transactions(pages, ARCHIVED)
+    override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
+        return transactions(pages, transactionsFilter.modelState)
     }
 
     fun transactions(pages: Observable<Page>, modelState: ModelState): Observable<PageResult<Transaction>> {

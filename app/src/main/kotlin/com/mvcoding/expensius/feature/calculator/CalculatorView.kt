@@ -83,12 +83,12 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onAttachView(this)
+        presenter.onViewAttached(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onDetachView(this)
+        presenter.onViewDetached(this)
     }
 
     override fun onDigit0() = number0Button.clicks()

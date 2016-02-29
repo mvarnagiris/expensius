@@ -18,6 +18,8 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
@@ -36,8 +38,8 @@ class TransactionsPresenter(
     private var endPage = Page(0, PAGE_SIZE)
     private var hasNextPage = true
 
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         view.showModelDisplayType(modelDisplayType)
 
@@ -52,8 +54,8 @@ class TransactionsPresenter(
                 .startWith(just(endPage).filter { transactionsCache.isEmpty() })
 
         val transactions =
-                if (modelDisplayType == VIEW_NOT_ARCHIVED ) transactionsProvider.transactions(pages)
-                else transactionsProvider.archivedTransactions(pages)
+                if (modelDisplayType == VIEW_NOT_ARCHIVED) transactionsProvider.transactions(pages, TransactionsFilter(NONE))
+                else transactionsProvider.transactions(pages, TransactionsFilter(ARCHIVED))
 
         unsubscribeOnDetach(transactions.subscribe { showTransactions(view, it) })
         unsubscribeOnDetach(view.onCreateTransaction().subscribe { view.displayCreateTransaction() })

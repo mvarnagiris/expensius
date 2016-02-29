@@ -49,12 +49,12 @@ class IntroView : LinearLayout, IntroPresenter.View<Int> {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onAttachView(this)
+        presenter.onViewAttached(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onDetachView(this)
+        presenter.onViewDetached(this)
     }
 
     override fun showIntroPages(introPages: List<IntroPage<Int>>, activeIntroPagePosition: Int) {

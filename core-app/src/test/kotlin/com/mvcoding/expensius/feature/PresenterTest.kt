@@ -22,33 +22,33 @@ class PresenterTest {
     @Test(expected = IllegalStateException::class)
     fun throwsIllegalStateExceptionWhenViewIsAlreadySet() {
         val view: Presenter.View = ViewForTest()
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
     }
 
     @Test(expected = IllegalStateException::class)
     fun throwsIllegalStateExceptionWhenViewWasNotAttached() {
         val view: Presenter.View = ViewForTest()
-        presenter.onDetachView(view)
+        presenter.onViewDetached(view)
     }
 
     @Test(expected = IllegalStateException::class)
     fun throwsIllegalStateExceptionWhenViewWasAlreadyDetached() {
         val view: Presenter.View = ViewForTest()
-        presenter.onAttachView(view)
-        presenter.onDetachView(view)
+        presenter.onViewAttached(view)
+        presenter.onViewDetached(view)
 
-        presenter.onDetachView(view)
+        presenter.onViewDetached(view)
     }
 
     @Test(expected = IllegalStateException::class)
     fun throwsIllegalStateExceptionWhenTryingToDetachDifferentView() {
         val view: Presenter.View = ViewForTest()
         val differentView: Presenter.View = ViewForTest()
-        presenter.onAttachView(view)
+        presenter.onViewAttached(view)
 
-        presenter.onDetachView(differentView)
+        presenter.onViewDetached(differentView)
     }
 
     class ViewForTest : Presenter.View;

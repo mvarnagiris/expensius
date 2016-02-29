@@ -18,8 +18,8 @@ import com.mvcoding.expensius.feature.Presenter
 import rx.Observable
 
 class OverviewPresenter : Presenter<OverviewPresenter.View>() {
-    override fun onAttachView(view: View) {
-        super.onAttachView(view)
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
 
         unsubscribeOnDetach(view.onAddNewTransaction().subscribe { view.startTransactionEdit() })
         unsubscribeOnDetach(view.onStartTags().subscribe { view.startTags() })
