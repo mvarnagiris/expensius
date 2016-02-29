@@ -64,7 +64,7 @@ class TagsReportPresenterTest {
         val transaction15DaysAgo2 = aTransaction()
                 .withAmount(BigDecimal("9"))
                 .withTags()
-                .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis - 1)
+                .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis + 1)
         val transaction0DaysAgo = aTransaction()
                 .withAmount(BigDecimal("10"))
                 .withTags(tag2, tag3)
@@ -78,33 +78,34 @@ class TagsReportPresenterTest {
                 transaction15DaysAgo2,
                 transaction0DaysAgo)))
 
-        val emptyTagsReportItemTagsWithAmount = mapOf(tag1 to ZERO, tag2 to ZERO, tag3 to ZERO)
+        val emptyTagsReportItemTagsWithAmount = mapOf(noTag to ZERO, tag1 to ZERO, tag2 to ZERO, tag3 to ZERO)
 
         val tagsReportItem30DaysAgo = TagsReportItem(
                 last30Days.withPeriodAfterStart(Period.days(1)),
-                mapOf(tag1 to BigDecimal("10.2"),
-                        tag2 to BigDecimal("9"),
-                        tag3 to BigDecimal("5.6"),
-                        noTag to ZERO))
+                mapOf(noTag to ZERO,
+                        tag1 to BigDecimal("10.2"),
+                        tag2 to BigDecimal("9.0"),
+                        tag3 to BigDecimal("5.6")))
+
         val tagsReportItem15DaysAgo = TagsReportItem(
-                last30Days.withEnd(startOfTomorrow.minusDays(15)).withPeriodBeforeEnd(Period.days(1)),
-                mapOf(tag1 to BigDecimal("7.8"),
+                last30Days.withEnd(startOfTomorrow.minusDays(14)).withPeriodBeforeEnd(Period.days(1)),
+                mapOf(noTag to BigDecimal("9"),
+                        tag1 to BigDecimal("7.8"),
                         tag2 to ZERO,
-                        tag3 to ZERO,
-                        noTag to BigDecimal("9")))
+                        tag3 to ZERO))
 
         val tagsReportItem0DaysAgo = TagsReportItem(
                 last30Days.withPeriodBeforeEnd(Period.days(1)),
-                mapOf(tag1 to ZERO,
+                mapOf(noTag to ZERO,
+                        tag1 to ZERO,
                         tag2 to BigDecimal("10"),
-                        tag3 to BigDecimal("10"),
-                        noTag to ZERO))
+                        tag3 to BigDecimal("10")))
 
 
         val expectedTagsReportItems = (0..29).map {
             when (it) {
                 0 -> tagsReportItem30DaysAgo
-                14 -> tagsReportItem15DaysAgo
+                15 -> tagsReportItem15DaysAgo
                 29 -> tagsReportItem0DaysAgo
                 else -> TagsReportItem(
                         last30Days.withEnd(startOfTomorrow.minusDays(29 - it)).withPeriodBeforeEnd(Period.days(1)),
