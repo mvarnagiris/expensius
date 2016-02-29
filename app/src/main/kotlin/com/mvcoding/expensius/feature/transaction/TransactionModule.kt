@@ -19,15 +19,37 @@ import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
+import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.DatabasePageLoader
+import com.mvcoding.expensius.provider.database.table.TagsTable
+import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
+import com.mvcoding.expensius.provider.database.table.TransactionsTable
 
 class TransactionModule : ShankModule {
     override fun registerFactories() {
-        registerFactory(TransactionsPresenter::class.java, { modelDisplayType: ModelDisplayType ->
-            TransactionsPresenter(provideSingleton(TransactionsProvider::class), modelDisplayType)
-        })
-        registerFactory(TransactionPresenter::class.java, {
-            transaction: Transaction ->
-            TransactionPresenter(transaction, provideSingleton(TransactionsProvider::class))
-        })
+        transactionsProvider()
+        transactionsPresenter()
+        transactionPresenter()
     }
+
+    private fun transactionsProvider() = registerFactory<TransactionsProvider>(TransactionsProvider::class.java, {
+        val database = provideSingleton(Database::class)
+        DatabaseTransactionsProvider(database,
+                DatabasePageLoader<Transaction>(database),
+                TransactionsTable(),
+                TransactionTagsTable(),
+                TagsTable())
+    })
+
+    private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class.java, { modelDisplayType: ModelDisplayType ->
+        TransactionsPresenter(provideTransactionsProvider(), modelDisplayType)
+    })
+
+    private fun transactionPresenter() = registerFactory(TransactionPresenter::class.java, {
+        transaction: Transaction ->
+        TransactionPresenter(transaction, provideTransactionsProvider())
+    })
 }
+
+fun provideTransactionsProvider() = provideSingleton(TransactionsProvider::class)

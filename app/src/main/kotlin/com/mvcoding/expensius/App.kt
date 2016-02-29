@@ -19,8 +19,9 @@ import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.intro.IntroModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
+import com.mvcoding.expensius.feature.report.ReportsModule
 import com.mvcoding.expensius.feature.splash.SplashModule
-import com.mvcoding.expensius.feature.tag.TagModule
+import com.mvcoding.expensius.feature.tag.TagsModule
 import com.mvcoding.expensius.feature.transaction.TransactionModule
 import net.danlew.android.joda.JodaTimeAndroid
 
@@ -28,12 +29,14 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         JodaTimeAndroid.init(this);
-        initializeModules(AppModule(this),
-                          SplashModule(),
-                          IntroModule(),
-                          CalculatorModule(),
-                          OverviewModule(),
-                          TagModule(),
-                          TransactionModule())
+        initializeModules(
+                AppModule(this),
+                SplashModule(),
+                IntroModule(),
+                CalculatorModule(),
+                OverviewModule(),
+                TagsModule(),
+                TransactionModule(),
+                ReportsModule())
     }
 }

@@ -25,15 +25,9 @@ import com.mvcoding.expensius.feature.CurrencyFormat.GroupSeparator.COMMA
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolDistance.CLOSE
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.START
 import com.mvcoding.expensius.feature.DateFormatter
-import com.mvcoding.expensius.feature.tag.TagsProvider
 import com.mvcoding.expensius.feature.transaction.Currency
-import com.mvcoding.expensius.feature.transaction.TransactionsProvider
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.provider.DatabaseTagsProvider
-import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
-import com.mvcoding.expensius.provider.database.DatabasePageLoader
 import com.mvcoding.expensius.provider.database.SqliteDatabase
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
@@ -43,57 +37,45 @@ import rx.schedulers.Schedulers
 import java.math.BigDecimal
 
 class AppModule(val context: Context) : ShankModule {
-    init {
-        registerFactory<Context>(Context::class.java, { context })
-    }
 
     override fun registerFactories() {
-        registerFactory<RxBus>(RxBus::class.java, { RxBus() })
-        registerFactory<Settings>(Settings::class.java, { UserSettings() })
-        registerFactory<Session>(Session::class.java, { UserSession() })
-        registerDatabase()
-        registerTagsProvider()
-        registerTransactionsProvider()
-        registerAmountFormatter()
-        registerDateFormatter()
+        appContext()
+        rxBus()
+        settings()
+        session()
+        dateFormatter()
+        database()
+        amountFormatter()
     }
 
-    private fun registerDatabase() {
+    private fun appContext() = registerFactory(Context::class.java, { -> context })
+    private fun rxBus() = registerFactory(RxBus::class.java, { -> RxBus() })
+    private fun settings() = registerFactory(Settings::class.java, { -> UserSettings() })
+    private fun session() = registerFactory(Session::class.java, { -> UserSession() })
+    private fun dateFormatter() = registerFactory(DateFormatter::class.java, { -> DateFormatter(context) })
+
+    private fun database() {
         val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(
                 context,
                 TagsTable(),
                 TransactionsTable(),
-                TransactionTagsTable()), Schedulers.io())
-        registerFactory<Database>(Database::class.java, { SqliteDatabase(briteDatabase) })
+                TransactionTagsTable()),
+                Schedulers.io())
+        registerFactory(Database::class.java, { -> SqliteDatabase(briteDatabase) })
     }
 
-    private fun registerTagsProvider() {
-        registerFactory<TagsProvider>(TagsProvider::class.java, { DatabaseTagsProvider(provideSingleton(Database::class), TagsTable()) })
-    }
-
-    private fun registerTransactionsProvider() {
-        registerFactory<TransactionsProvider>(TransactionsProvider::class.java, {
-            val database = provideSingleton(Database::class)
-            DatabaseTransactionsProvider(database,
-                                         DatabasePageLoader<Transaction>(database),
-                                         TransactionsTable(),
-                                         TransactionTagsTable(),
-                                         TagsTable())
-        })
-    }
-
-    private fun registerAmountFormatter() {
+    private fun amountFormatter() {
         // TODO: This is temporary
-        registerFactory<AmountFormatter>(AmountFormatter::class.java, {
+        registerFactory(AmountFormatter::class.java, { ->
             object : AmountFormatter {
                 private val currencyFormat = CurrencyFormat("£", START, CLOSE, DOT, COMMA, 2, 2)
-
                 override fun format(amount: BigDecimal, currency: Currency) = currencyFormat.format(amount)
             }
         })
     }
-
-    private fun registerDateFormatter() {
-        registerFactory<DateFormatter>(DateFormatter::class.java, { DateFormatter(context) })
-    }
 }
+
+fun provideContext() = provideSingleton(Context::class)
+fun provideSettings() = provideSingleton(Settings::class)
+fun provideSession() = provideSingleton(Session::class)
+fun provideDatabase() = provideSingleton(Database::class)

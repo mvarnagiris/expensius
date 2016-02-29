@@ -16,16 +16,15 @@ package com.mvcoding.expensius.feature.splash
 
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
-import com.mvcoding.expensius.Session
-import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.provideSession
+import com.mvcoding.expensius.provideSettings
 
 class SplashModule : ShankModule {
     override fun registerFactories() {
-        registerFactory(SplashPresenter::class.java, { ->
-            val userSettings = provideSingleton(Settings::class)
-            val session = provideSingleton(Session::class)
-            SplashPresenter(userSettings, session)
-        })
+        splashPresenter()
     }
+
+    private fun splashPresenter() = registerFactory(SplashPresenter::class.java, { ->
+        SplashPresenter(provideSettings(), provideSession())
+    })
 }

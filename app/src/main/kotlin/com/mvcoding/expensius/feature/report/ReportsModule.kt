@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,15 +12,22 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.overview
+package com.mvcoding.expensius.feature.report
 
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.feature.transaction.provideTransactionsProvider
+import org.joda.time.DateTime
+import org.joda.time.Interval
 
-class OverviewModule() : ShankModule {
+class ReportsModule : ShankModule {
     override fun registerFactories() {
-        overviewPresenter()
+        tagsReportPresenter()
     }
 
-    private fun overviewPresenter() = registerFactory(OverviewPresenter::class.java, { -> OverviewPresenter() })
+    private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class.java, { ->
+        val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
+        val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
+        TagsReportPresenter(last30Days, provideTransactionsProvider())
+    })
 }
