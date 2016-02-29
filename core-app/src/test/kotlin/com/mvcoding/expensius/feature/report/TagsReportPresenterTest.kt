@@ -20,6 +20,7 @@ import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.tag.withTitle
 import com.mvcoding.expensius.feature.transaction.*
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -39,45 +40,26 @@ class TagsReportPresenterTest {
     fun showsTagsReportForPast30Days() {
         val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
         val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
-
         val noTag = aNewTag()
         val tag1 = aTag().withTitle("tag1")
         val tag2 = aTag().withTitle("tag2")
         val tag3 = aTag().withTitle("tag3")
+        prepareTransactions(last30Days, startOfTomorrow, tag1, tag2, tag3)
+        val expectedTagsReportItems = expectedTagsReportItems(last30Days, noTag, startOfTomorrow, tag1, tag2, tag3)
+        val presenter = TagsReportPresenter(last30Days, transactionsProvider)
 
-        val transaction30DaysAgo1 = aTransaction()
-                .withAmount(BigDecimal("1.2"))
-                .withTags(tag1)
-                .withTimestamp(last30Days.startMillis)
-        val transaction30DaysAgo2 = aTransaction()
-                .withAmount(BigDecimal("3.4"))
-                .withTags(tag1, tag2)
-                .withTimestamp(last30Days.startMillis + 1)
-        val transaction30DaysAgo3 = aTransaction()
-                .withAmount(BigDecimal("5.6"))
-                .withTags(tag1, tag2, tag3)
-                .withTimestamp(last30Days.startMillis + 2)
-        val transaction15DaysAgo1 = aTransaction()
-                .withAmount(BigDecimal("7.8"))
-                .withTags(tag1)
-                .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis)
-        val transaction15DaysAgo2 = aTransaction()
-                .withAmount(BigDecimal("9"))
-                .withTags()
-                .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis + 1)
-        val transaction0DaysAgo = aTransaction()
-                .withAmount(BigDecimal("10"))
-                .withTags(tag2, tag3)
-                .withTimestamp(last30Days.endMillis - 1)
+        presenter.onViewAttached(view)
 
-        whenever(transactionsProvider.transactions(TransactionsFilter(NONE, last30Days))).thenReturn(just(listOf(
-                transaction30DaysAgo1,
-                transaction30DaysAgo2,
-                transaction30DaysAgo3,
-                transaction15DaysAgo1,
-                transaction15DaysAgo2,
-                transaction0DaysAgo)))
+        verify(view).showTagsReportItems(expectedTagsReportItems)
+    }
 
+    private fun expectedTagsReportItems(
+            last30Days: Interval,
+            noTag: Tag,
+            startOfTomorrow: DateTime,
+            tag1: Tag,
+            tag2: Tag,
+            tag3: Tag): List<TagsReportItem> {
         val emptyTagsReportItemTagsWithAmount = mapOf(noTag to ZERO, tag1 to ZERO, tag2 to ZERO, tag3 to ZERO)
 
         val tagsReportItem30DaysAgo = TagsReportItem(
@@ -113,10 +95,45 @@ class TagsReportPresenterTest {
                 )
             }
         }
-        val presenter = TagsReportPresenter(last30Days, transactionsProvider)
+        return expectedTagsReportItems
+    }
 
-        presenter.onViewAttached(view)
+    private fun prepareTransactions(last30Days: Interval,
+            startOfTomorrow: DateTime,
+            tag1: Tag,
+            tag2: Tag,
+            tag3: Tag) {
+        val transaction30DaysAgo1 = aTransaction()
+                .withAmount(BigDecimal("1.2"))
+                .withTags(tag1)
+                .withTimestamp(last30Days.startMillis)
+        val transaction30DaysAgo2 = aTransaction()
+                .withAmount(BigDecimal("3.4"))
+                .withTags(tag1, tag2)
+                .withTimestamp(last30Days.startMillis + 1)
+        val transaction30DaysAgo3 = aTransaction()
+                .withAmount(BigDecimal("5.6"))
+                .withTags(tag1, tag2, tag3)
+                .withTimestamp(last30Days.startMillis + 2)
+        val transaction15DaysAgo1 = aTransaction()
+                .withAmount(BigDecimal("7.8"))
+                .withTags(tag1)
+                .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis)
+        val transaction15DaysAgo2 = aTransaction()
+                .withAmount(BigDecimal("9"))
+                .withTags()
+                .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis + 1)
+        val transaction0DaysAgo = aTransaction()
+                .withAmount(BigDecimal("10"))
+                .withTags(tag2, tag3)
+                .withTimestamp(last30Days.endMillis - 1)
 
-        verify(view).showTagsReportItems(expectedTagsReportItems)
+        whenever(transactionsProvider.transactions(TransactionsFilter(NONE, last30Days))).thenReturn(just(listOf(
+                transaction30DaysAgo1,
+                transaction30DaysAgo2,
+                transaction30DaysAgo3,
+                transaction15DaysAgo1,
+                transaction15DaysAgo2,
+                transaction0DaysAgo)))
     }
 }
