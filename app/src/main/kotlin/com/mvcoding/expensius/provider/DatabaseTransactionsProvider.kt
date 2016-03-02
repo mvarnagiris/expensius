@@ -77,9 +77,9 @@ class DatabaseTransactionsProvider(
 
     private fun TransactionsFilter.whereClause() =
             "${transactionsTable.modelState}=?" +
-            "${interval?.let { " AND ${transactionsTable.timestamp}>=? AND ${transactionsTable.timestamp}<?" } }" +
-            "${transactionType?.let { " AND ${transactionsTable.transactionType}=?" }}" +
-            "${transactionState?.let { " AND ${transactionsTable.transactionState}=?" }}"
+            "${interval?.let { " AND ${transactionsTable.timestamp}>=? AND ${transactionsTable.timestamp}<?" } ?: "" }" +
+            "${transactionType?.let { " AND ${transactionsTable.transactionType}=?" } ?: "" }" +
+            "${transactionState?.let { " AND ${transactionsTable.transactionState}=?" } ?: "" }"
 
     private fun TransactionsFilter.whereArgs() = arrayOf(modelState.name)
             .let { args -> interval?.let { args.plus(it.start.millis.toString()).plus(it.end.millis.toString()) } ?: args }
