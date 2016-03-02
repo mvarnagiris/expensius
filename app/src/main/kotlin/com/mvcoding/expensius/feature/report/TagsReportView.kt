@@ -88,6 +88,7 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
             setDrawCubic(true)
             setDrawCircles(false)
             setDrawHighlightIndicators(false)
+            lineWidth = 2f
         }
     }
 

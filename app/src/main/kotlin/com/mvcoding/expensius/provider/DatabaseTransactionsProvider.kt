@@ -20,8 +20,6 @@ import com.mvcoding.expensius.extension.toContentValues
 import com.mvcoding.expensius.extension.toTransaction
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
-import com.mvcoding.expensius.model.ModelState
-import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
@@ -53,23 +51,19 @@ class DatabaseTransactionsProvider(
     }
 
     override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
-        return transactions(pages, transactionsFilter.modelState)
+        return pageLoader.load({ it.toTransaction(transactionsTable, tagsTable) }, query(transactionsFilter), pages)
     }
 
     override fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>> {
-        return database.query(query(NONE)).map { it.map { it.toTransaction(transactionsTable, tagsTable) } }
+        return database.query(query(transactionsFilter)).map { it.map { it.toTransaction(transactionsTable, tagsTable) } }
     }
 
-    fun transactions(pages: Observable<Page>, modelState: ModelState): Observable<PageResult<Transaction>> {
-        return pageLoader.load({ it.toTransaction(transactionsTable, tagsTable) }, query(modelState), pages)
-    }
-
-    private fun query(modelState: ModelState): QueryRequest {
+    private fun query(transactionsFilter: TransactionsFilter): QueryRequest {
         return select(arrayOf(*transactionsTable.columns(), tagsTable.transactionTags))
                 .from(transactionsTable)
                 .leftJoin(transactionTagsTable, "${transactionsTable.id}=${transactionTagsTable.transactionId}")
                 .leftJoin(tagsTable, "${transactionTagsTable.tagId}=${tagsTable.id}")
-                .where("${transactionsTable.modelState}=?", modelState.name)
+                .where(transactionsFilter.whereClause(), *transactionsFilter.whereArgs())
                 .groupBy(transactionsTable.id)
                 .orderBy(Order(transactionsTable.timestamp, DESC))
     }
@@ -80,4 +74,13 @@ class DatabaseTransactionsProvider(
         contentValues.put(transactionTagsTable.tagId.name, tag.id)
         return SaveDatabaseAction(transactionTagsTable, contentValues)
     }
+
+    private fun TransactionsFilter.whereClause() = "${transactionsTable.modelState}=?" +
+                                                   "${if (interval != null) " AND ${transactionsTable.timestamp}>=?" +
+                                                                            " AND ${transactionsTable.timestamp}<?" else "" }" +
+                                                   "${if (transactionType != null) " AND ${transactionsTable.transactionType}=?" else ""}"
+
+    private fun TransactionsFilter.whereArgs() = arrayOf(modelState.name)
+            .let { args -> interval?.let { args.plus(it.start.millis.toString()).plus(it.end.millis.toString()) } ?: args }
+            .let { args -> transactionType?.let { args.plus(it.name) } ?: args }
 }
