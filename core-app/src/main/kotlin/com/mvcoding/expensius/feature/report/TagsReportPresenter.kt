@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -35,7 +36,7 @@ class TagsReportPresenter(
         super.onViewAttached(view)
 
         unsubscribeOnDetach(transactionsProvider
-                .transactions(TransactionsFilter(NONE, interval))
+                .transactions(TransactionsFilter(NONE, interval, EXPENSE))
                 .map { convertToReportData(it) }
                 .subscribe { view.showTagsReportItems(it) })
     }

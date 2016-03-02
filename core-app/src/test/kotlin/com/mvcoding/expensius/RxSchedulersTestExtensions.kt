@@ -12,12 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius
 
-import com.mvcoding.expensius.model.ModelState
-import org.joda.time.Interval
+import rx.schedulers.Schedulers.immediate
 
-data class TransactionsFilter(
-        val modelState: ModelState,
-        val interval: Interval? = null,
-        val transactionType: TransactionType? = null)
+fun rxSchedulers() = RxSchedulers(immediate(), immediate())

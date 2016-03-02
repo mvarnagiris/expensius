@@ -19,6 +19,7 @@ import com.mvcoding.expensius.feature.tag.aNewTag
 import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.tag.withTitle
 import com.mvcoding.expensius.feature.transaction.*
+import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.nhaarman.mockito_kotlin.mock
@@ -128,7 +129,8 @@ class TagsReportPresenterTest {
                 .withTags(tag2, tag3)
                 .withTimestamp(last30Days.endMillis - 1)
 
-        whenever(transactionsProvider.transactions(TransactionsFilter(NONE, last30Days))).thenReturn(just(listOf(
+
+        whenever(transactionsProvider.transactions(TransactionsFilter(NONE, last30Days, EXPENSE))).thenReturn(just(listOf(
                 transaction30DaysAgo1,
                 transaction30DaysAgo2,
                 transaction30DaysAgo3,

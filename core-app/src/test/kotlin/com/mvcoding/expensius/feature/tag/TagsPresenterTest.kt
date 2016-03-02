@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -112,8 +113,8 @@ class TagsPresenterTest {
         tagCreateSubject.onNext(Unit)
     }
 
-    private fun presenterWithModelDisplayTypeView() = TagsPresenter(tagsProvider, VIEW_NOT_ARCHIVED)
+    private fun presenterWithModelDisplayTypeView() = TagsPresenter(tagsProvider, VIEW_NOT_ARCHIVED, rxSchedulers())
 
-    private fun presenterWithModelDisplayTypeArchived() = TagsPresenter(tagsProvider, VIEW_ARCHIVED)
+    private fun presenterWithModelDisplayTypeArchived() = TagsPresenter(tagsProvider, VIEW_ARCHIVED, rxSchedulers())
 }
 

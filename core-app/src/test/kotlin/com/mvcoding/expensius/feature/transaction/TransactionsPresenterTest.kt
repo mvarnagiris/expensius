@@ -23,6 +23,7 @@ import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageLoader
 import com.mvcoding.expensius.paging.PageResult
+import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
@@ -177,9 +178,11 @@ class TransactionsPresenterTest {
         displayArchivedTransactionsSubject.onNext(Unit)
     }
 
-    private fun presenterWithModelDisplayTypeView() = TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_NOT_ARCHIVED)
+    private fun presenterWithModelDisplayTypeView() =
+            TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_NOT_ARCHIVED, rxSchedulers())
 
-    private fun presenterWithModelDisplayTypeArchived() = TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_ARCHIVED)
+    private fun presenterWithModelDisplayTypeArchived() =
+            TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_ARCHIVED, rxSchedulers())
 
     class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {
         override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
