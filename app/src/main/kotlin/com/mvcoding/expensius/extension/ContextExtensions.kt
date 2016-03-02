@@ -39,3 +39,5 @@ fun Context.isActivity(): Boolean {
         else -> return false
     }
 }
+
+fun Context.getColorFromTheme(attrId: Int) = getColorFromTheme(this, attrId)

@@ -21,10 +21,10 @@ import com.mvcoding.expensius.feature.SnackbarBuilder.Companion.snackbar
 import kotlin.reflect.KClass
 
 fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>,
-                                                  arg1: Any? = null,
-                                                  arg2: Any? = null,
-                                                  arg3: Any? = null,
-                                                  arg4: Any? = null): T {
+        arg1: Any? = null,
+        arg2: Any? = null,
+        arg3: Any? = null,
+        arg4: Any? = null): T {
     return provideActivityScopedSingleton(cls, context, arg1, arg2, arg3, arg4)
 }
 
@@ -41,9 +41,11 @@ fun View.makeOutlineProviderOval() {
 fun View.snackbar(resId: Int, duration: Int) = snackbar(this, resId, duration)
 
 fun View.doInEditMode(action: () -> Unit) {
-    action.invoke()
+    if (isInEditMode) action()
 }
 
 fun View.doNotInEditMode(action: () -> Unit) {
-    action.invoke()
+    if (!isInEditMode) action()
 }
+
+fun View.getColorFromTheme(attrId: Int) = context.getColorFromTheme(attrId)

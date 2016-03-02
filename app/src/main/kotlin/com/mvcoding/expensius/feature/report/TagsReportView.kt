@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideAmountFormatter
@@ -52,6 +53,9 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
         lineChart.axisRight.setValueFormatter { value, yAxis ->
             amountFormatter.format(BigDecimal(value.toDouble()), settings.getMainCurrency())
         }
+        lineChart.axisRight.setDrawZeroLine(false)
+        lineChart.axisRight.setDrawAxisLine(false)
+        lineChart.axisRight.setDrawGridLines(false)
     }
 
     override fun onAttachedToWindow() {
@@ -76,8 +80,16 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun List<TagsReportPresenter.TagsReportItem>.allTags() = first().tagsWithAmount.keys.toTypedArray()
     private fun Array<Tag>.mapToEmptyEntriesArrayList() = mapOf(*map { it to arrayListOf<Entry>() }.toTypedArray())
-    private fun Map<Tag, ArrayList<Entry>>.toLineDataSets() = map { LineDataSet(it.value, it.key.title).apply { color = it.key.color } }
     private fun List<LineDataSet>.toLineData(xAxisValues: List<String>) = LineData(xAxisValues, this)
+
+    private fun Map<Tag, ArrayList<Entry>>.toLineDataSets() = map {
+        LineDataSet(it.value, it.key.title).apply {
+            color = if (it.key.color == 0) getColorFromTheme(R.attr.colorExpense) else it.key.color
+            setDrawCubic(true)
+            setDrawCircles(false)
+            setDrawHighlightIndicators(false)
+        }
+    }
 
     private fun LineData.withAmountFormatter() = apply {
         setValueFormatter { value, entry, position, viewPortHandler ->
