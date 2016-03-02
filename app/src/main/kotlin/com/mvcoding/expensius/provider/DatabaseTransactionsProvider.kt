@@ -75,12 +75,14 @@ class DatabaseTransactionsProvider(
         return SaveDatabaseAction(transactionTagsTable, contentValues)
     }
 
-    private fun TransactionsFilter.whereClause() = "${transactionsTable.modelState}=?" +
-                                                   "${if (interval != null) " AND ${transactionsTable.timestamp}>=?" +
-                                                                            " AND ${transactionsTable.timestamp}<?" else "" }" +
-                                                   "${if (transactionType != null) " AND ${transactionsTable.transactionType}=?" else ""}"
+    private fun TransactionsFilter.whereClause() =
+            "${transactionsTable.modelState}=?" +
+            "${interval?.let { " AND ${transactionsTable.timestamp}>=? AND ${transactionsTable.timestamp}<?" } }" +
+            "${transactionType?.let { " AND ${transactionsTable.transactionType}=?" }}" +
+            "${transactionState?.let { " AND ${transactionsTable.transactionState}=?" }}"
 
     private fun TransactionsFilter.whereArgs() = arrayOf(modelState.name)
             .let { args -> interval?.let { args.plus(it.start.millis.toString()).plus(it.end.millis.toString()) } ?: args }
             .let { args -> transactionType?.let { args.plus(it.name) } ?: args }
+            .let { args -> transactionState?.let { args.plus(it.name) } ?: args }
 }

@@ -20,4 +20,5 @@ import org.joda.time.Interval
 data class TransactionsFilter(
         val modelState: ModelState,
         val interval: Interval? = null,
-        val transactionType: TransactionType? = null)
+        val transactionType: TransactionType? = null,
+        val transactionState: TransactionState? = null)
