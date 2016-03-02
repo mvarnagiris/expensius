@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.model
 
 import java.io.Serializable
+import java.util.*
 
 interface Model : Serializable {
     val id: String
@@ -22,3 +23,5 @@ interface Model : Serializable {
 
     fun isStored() = id.isNotBlank()
 }
+
+fun generateModelId() = UUID.randomUUID().toString()

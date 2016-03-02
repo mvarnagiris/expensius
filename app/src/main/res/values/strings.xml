@@ -16,9 +16,6 @@
     <string name="app_name">Expensius</string>
     <string name="skip">Skip</string>
     <string name="login">Login</string>
-    <string name="fixed">Fixed</string>
-    <string name="essential">Essential</string>
-    <string name="non_essential">Non-essential</string>
     <string name="save">Save</string>
     <string name="tags">Tags</string>
     <string name="color">Color</string>
@@ -47,6 +44,17 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="more_options">More options</string>
     <string name="show_archived_tags">Show archived tags</string>
+
+    <string name="tag_fixed">Fixed</string>
+    <string name="tag_essential">Essential</string>
+    <string name="tag_non_essential">Non-essential</string>
+    <string name="tag_food">Food</string>
+    <string name="tag_leisure">Leisure</string>
+    <string name="tag_clothes">Clothes</string>
+    <string name="tag_transport">Transport</string>
+    <string name="tag_health_and_beauty">Health &amp; beauty</string>
+    <string name="tag_bills_and_utilities">Bills &amp; utilities</string>
+    <string name="tag_pets">Pets</string>
 
     <string name="intro_title_1">Intro title 1</string>
     <string name="intro_title_2">Intro title 2</string>

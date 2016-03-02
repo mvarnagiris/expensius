@@ -19,10 +19,10 @@ import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.generateModelId
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.Observable.just
-import java.util.*
 
 class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider) : Presenter<TagPresenter.View>() {
     override fun onViewAttached(view: View) {
@@ -31,7 +31,7 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
         view.showArchiveEnabled(tag.isStored())
         view.showModelState(tag.modelState)
 
-        val ids = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(UUID.randomUUID().toString())
+        val ids = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(generateModelId())
         val modelStates = just(tag.modelState)
         val titles = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.trim() }
         val colors = view.onColorChanged().startWith(if (tag.color == 0) color(0x607d8b) else tag.color).doOnNext { view.showColor(it) }
@@ -45,15 +45,15 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
                 .doOnNext { tag = it }
 
         unsubscribeOnDetach(view.onSave()
-                                    .withLatestFrom(tagObservable, { action, tag -> tag })
-                                    .filter { validate(it, view) }
-                                    .doOnNext { tagsProvider.save(setOf(it)) }
-                                    .subscribe { view.displayResult(it) })
+                .withLatestFrom(tagObservable, { action, tag -> tag })
+                .filter { validate(it, view) }
+                .doOnNext { tagsProvider.save(setOf(it)) }
+                .subscribe { view.displayResult(it) })
 
         unsubscribeOnDetach(view.onToggleArchive()
-                                    .map { tagWithToggledArchiveState() }
-                                    .doOnNext { tagsProvider.save(setOf(it)) }
-                                    .subscribe { view.displayResult(it) })
+                .map { tagWithToggledArchiveState() }
+                .doOnNext { tagsProvider.save(setOf(it)) }
+                .subscribe { view.displayResult(it) })
     }
 
     private fun tagWithToggledArchiveState() = tag.withModelState(if (tag.modelState == NONE) ARCHIVED else NONE)

@@ -20,10 +20,10 @@ import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.generateModelId
 import rx.Observable
 import rx.Observable.just
 import java.math.BigDecimal
-import java.util.UUID.randomUUID
 
 class TransactionPresenter(
         private var transaction: Transaction,
@@ -35,7 +35,7 @@ class TransactionPresenter(
         view.showArchiveEnabled(transaction.isStored())
         view.showModelState(transaction.modelState)
 
-        val ids = just(transaction.id).filter { !it.isBlank() }.defaultIfEmpty(randomUUID().toString())
+        val ids = just(transaction.id).filter { !it.isBlank() }.defaultIfEmpty(generateModelId())
         val modelStates = just(transaction.modelState)
         val transactionStates = view.onTransactionStateChanged().startWith(transaction.transactionState).doOnNext {
             view.showTransactionState(it)
@@ -65,14 +65,14 @@ class TransactionPresenter(
                 .doOnNext { transaction = it }
 
         unsubscribeOnDetach(view.onSave()
-                                    .withLatestFrom(transactionObservable, { action, transaction -> transaction })
-                                    .doOnNext { transactionsProvider.save(setOf(it)) }
-                                    .subscribe { view.displayResult(it) })
+                .withLatestFrom(transactionObservable, { action, transaction -> transaction })
+                .doOnNext { transactionsProvider.save(setOf(it)) }
+                .subscribe { view.displayResult(it) })
 
         unsubscribeOnDetach(view.onToggleArchive()
-                                    .map { transactionWithToggledArchiveState() }
-                                    .doOnNext { transactionsProvider.save(setOf(it)) }
-                                    .subscribe { view.displayResult(it) })
+                .map { transactionWithToggledArchiveState() }
+                .doOnNext { transactionsProvider.save(setOf(it)) }
+                .subscribe { view.displayResult(it) })
     }
 
     private fun transactionWithToggledArchiveState() = transaction.withModelState(if (transaction.modelState == NONE) ARCHIVED else NONE)
