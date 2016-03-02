@@ -56,6 +56,7 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
         lineChart.axisRight.setDrawZeroLine(false)
         lineChart.axisRight.setDrawAxisLine(false)
         lineChart.axisRight.setDrawGridLines(false)
+        lineChart.setDescription("")
     }
 
     override fun onAttachedToWindow() {
