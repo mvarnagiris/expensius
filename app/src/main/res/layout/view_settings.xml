@@ -16,4 +16,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/mainCurrencySettingsItemView"
+            layout="@layout/view_settings_item" />
+
+    </LinearLayout>
+
 </com.mvcoding.expensius.feature.settings.SettingsView>

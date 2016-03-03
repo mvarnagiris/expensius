@@ -20,6 +20,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.intro.IntroModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.report.ReportsModule
+import com.mvcoding.expensius.feature.settings.SettingsModule
 import com.mvcoding.expensius.feature.splash.SplashModule
 import com.mvcoding.expensius.feature.tag.TagsModule
 import com.mvcoding.expensius.feature.transaction.TransactionModule
@@ -37,6 +38,7 @@ class App : Application() {
                 OverviewModule(),
                 TagsModule(),
                 TransactionModule(),
-                ReportsModule())
+                ReportsModule(),
+                SettingsModule())
     }
 }

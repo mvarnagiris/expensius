@@ -44,6 +44,7 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="more_options">More options</string>
     <string name="show_archived_tags">Show archived tags</string>
+    <string name="main_currency">Main currency</string>
 
     <string name="tag_fixed">Fixed</string>
     <string name="tag_essential">Essential</string>

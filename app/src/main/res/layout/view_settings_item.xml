@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<com.mvcoding.expensius.feature.settings.SettingsItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:minHeight="?actionBarSize"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/space_normal"
+    android:paddingLeft="@dimen/keyline"
+    android:paddingRight="@dimen/keyline"
+    android:paddingTop="@dimen/space_normal">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        style="@style/Text.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/subtitleTextView"
+        style="@style/Text.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?android:textColorSecondary"
+        tools:text="Subtitle" />
+
+</com.mvcoding.expensius.feature.settings.SettingsItemView>

@@ -15,10 +15,33 @@
 package com.mvcoding.expensius.feature.settings
 
 import android.content.Context
+import android.support.v4.widget.NestedScrollView
 import android.util.AttributeSet
-import android.widget.FrameLayout
+import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.feature.transaction.Currency
+import kotlinx.android.synthetic.main.view_settings.view.*
 
 class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        FrameLayout(context, attrs, defStyleAttr) {
+        NestedScrollView(context, attrs, defStyleAttr), SettingsPresenter.View {
 
+    private val presenter by lazy { provideActivityScopedSingleton(SettingsPresenter::class) }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        doNotInEditMode { presenter.onViewAttached(this) }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        presenter.onViewDetached(this)
+    }
+
+    override fun showMainCurrency(mainCurrency: Currency) {
+        with(mainCurrencySettingsItemView as SettingsItemView) {
+            setTitle(context.getString(R.string.main_currency))
+            setSubtitle(mainCurrency.code)
+        }
+    }
 }
