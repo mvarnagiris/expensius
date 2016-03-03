@@ -17,7 +17,6 @@ package com.mvcoding.expensius
 import com.mvcoding.expensius.feature.transaction.Currency
 
 interface Settings {
-    fun isIntroductionSeen(): Boolean
-    fun setIsIntroductionSeen(isIntroductionSeen: Boolean)
-    fun getMainCurrency(): Currency
+    var isIntroductionSeen: Boolean
+    var mainCurrency: Currency
 }

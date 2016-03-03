@@ -15,6 +15,7 @@
 package com.mvcoding.expensius
 
 import android.content.Context
+import android.preference.PreferenceManager
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
@@ -34,7 +35,7 @@ import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.squareup.sqlbrite.SqlBrite
 import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import rx.schedulers.Schedulers.io
 import java.math.BigDecimal
 
 class AppModule(val context: Context) : ShankModule {
@@ -52,13 +53,13 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun appContext() = registerFactory(Context::class.java, { -> context })
     private fun rxBus() = registerFactory(RxBus::class.java, { -> RxBus() })
-    private fun settings() = registerFactory(Settings::class.java, { -> UserSettings() })
     private fun session() = registerFactory(Session::class.java, { -> UserSession() })
     private fun dateFormatter() = registerFactory(DateFormatter::class.java, { -> DateFormatter(context) })
+    private fun rxSchedulers() = registerFactory(RxSchedulers::class.java, { -> RxSchedulers(AndroidSchedulers.mainThread(), io()) })
 
-    private fun rxSchedulers() = registerFactory(RxSchedulers::class.java, { ->
-        RxSchedulers(AndroidSchedulers.mainThread(), Schedulers.io())
-    })
+    private fun settings() {
+        registerFactory(Settings::class.java, { -> UserSettings(PreferenceManager.getDefaultSharedPreferences(provideContext())) })
+    }
 
     private fun database() {
         val briteDatabase = SqlBrite.create().wrapDatabaseHelper(DBHelper(
@@ -66,7 +67,7 @@ class AppModule(val context: Context) : ShankModule {
                 TagsTable(),
                 TransactionsTable(),
                 TransactionTagsTable()),
-                Schedulers.io())
+                io())
         registerFactory(Database::class.java, { -> SqliteDatabase(briteDatabase) })
     }
 

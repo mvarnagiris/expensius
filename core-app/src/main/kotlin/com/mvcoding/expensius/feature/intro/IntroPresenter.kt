@@ -26,12 +26,12 @@ class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val 
         view.showIntroPages(introPages, activeIntroPagePosition)
 
         unsubscribeOnDetach(view.onLogin()
-                                    .doOnNext { settings.setIsIntroductionSeen(true) }
-                                    .subscribe { view.startLogin() })
+                .doOnNext { settings.isIntroductionSeen = true }
+                .subscribe { view.startLogin() })
 
         unsubscribeOnDetach(view.onSkipLogin()
-                                    .doOnNext { settings.setIsIntroductionSeen(true) }
-                                    .subscribe { view.startMain() })
+                .doOnNext { settings.isIntroductionSeen = true }
+                .subscribe { view.startMain() })
 
         unsubscribeOnDetach(view.onActiveIntroPagePositionChanged().subscribe { position -> activeIntroPagePosition = position })
     }

@@ -25,10 +25,10 @@ class IntroPresenterTest {
     val skipLoginSubject = PublishSubject.create<Unit>()
     val loginSubject = PublishSubject.create<Unit>()
     val activeIntroPageSubject = PublishSubject.create<Int>()
-    val userSettings = mock(Settings::class.java)
+    val settings = mock(Settings::class.java)
     val view = mock(ViewForTest::class.java)
     val introPages = arrayListOf(IntroPage(ImageForTest(), "title1", "message1"), IntroPage(ImageForTest(), "title2", "message2"), IntroPage(ImageForTest(), "title3", "message3"))
-    val presenter = IntroPresenter(introPages, userSettings)
+    val presenter = IntroPresenter(introPages, settings)
 
     @Before
     fun setUp() {
@@ -62,7 +62,7 @@ class IntroPresenterTest {
 
         skipLogin()
 
-        verify(userSettings).setIsIntroductionSeen(true)
+        verify(settings).isIntroductionSeen = true
         verify(view).startMain()
     }
 
@@ -72,7 +72,7 @@ class IntroPresenterTest {
 
         login()
 
-        verify(userSettings).setIsIntroductionSeen(true)
+        verify(settings).isIntroductionSeen = true
         verify(view).startLogin()
     }
 

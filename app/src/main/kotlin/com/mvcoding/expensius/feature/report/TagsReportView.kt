@@ -51,7 +51,7 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
         lineChart.legend.isEnabled = false
         lineChart.axisLeft.setDrawLabels(false)
         lineChart.axisRight.setValueFormatter { value, yAxis ->
-            amountFormatter.format(BigDecimal(value.toDouble()), settings.getMainCurrency())
+            amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency)
         }
         lineChart.axisRight.setDrawZeroLine(false)
         lineChart.axisRight.setDrawAxisLine(false)
@@ -95,7 +95,7 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun LineData.withAmountFormatter() = apply {
         setValueFormatter { value, entry, position, viewPortHandler ->
-            amountFormatter.format(BigDecimal(value.toDouble()), settings.getMainCurrency())
+            amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency)
         }
     }
 

@@ -77,7 +77,7 @@ class CalculatorPresenterTest {
         whenever(view.onClear()).thenReturn(clearObservable)
         whenever(view.onCalculate()).thenReturn(calculateObservable)
         whenever(view.onSave()).thenReturn(saveObservable)
-        whenever(settings.getMainCurrency()).thenReturn(Currency("GBP"))
+        whenever(settings.mainCurrency).thenReturn(Currency("GBP"))
     }
 
     @Test

@@ -63,14 +63,14 @@ class CalculatorPresenter(
                 .map { calculator.calculate() }
 
         unsubscribeOnDetach(view.onSave()
-                                    .withLatestFrom(expressionAlteringObservable, { unit, number -> number })
-                                    .subscribe {
-                                        if (resultDestination == TRANSACTION) {
-                                            view.startTransaction(Transaction(currency = settings.getMainCurrency(), amount = it))
-                                        } else {
-                                            view.startResult(it)
-                                        }
-                                    })
+                .withLatestFrom(expressionAlteringObservable, { unit, number -> number })
+                .subscribe {
+                    if (resultDestination == TRANSACTION) {
+                        view.startTransaction(Transaction(currency = settings.mainCurrency, amount = it))
+                    } else {
+                        view.startResult(it)
+                    }
+                })
     }
 
     enum class State { SAVE, CALCULATE }

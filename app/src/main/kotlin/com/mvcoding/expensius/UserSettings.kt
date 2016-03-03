@@ -14,15 +14,43 @@
 
 package com.mvcoding.expensius
 
+import android.content.SharedPreferences
+import com.mvcoding.expensius.extension.getObject
+import com.mvcoding.expensius.extension.putBoolean
+import com.mvcoding.expensius.extension.putObject
 import com.mvcoding.expensius.feature.transaction.Currency
+import java.util.*
 
-class UserSettings : Settings {
-    override fun isIntroductionSeen(): Boolean {
-        return false
+class UserSettings(private val sharedPreferences: SharedPreferences) : Settings {
+    private val KEY_IS_INTRODUCTION_SEEN = "${UserSettings::class.java.name}.KEY_IS_INTRODUCTION_SEEN"
+    private val KEY_MAIN_CURRENCY = "${UserSettings::class.java.name}.KEY_MAIN_CURRENCY"
+
+    override var isIntroductionSeen: Boolean = sharedPreferences.getBoolean(KEY_IS_INTRODUCTION_SEEN, false)
+        set(value) {
+            field = value
+            sharedPreferences.putBoolean(KEY_IS_INTRODUCTION_SEEN, value)
+        }
+
+    override var mainCurrency: Currency = sharedPreferences.getObject(
+            KEY_MAIN_CURRENCY,
+            PersistedCurrency::class,
+            defaultCurrency()).toCurrency()
+        set(value) {
+            field = value
+            sharedPreferences.putObject(KEY_MAIN_CURRENCY, value.toPersistedCurrency())
+        }
+
+    private fun defaultCurrency() = {
+        try {
+            java.util.Currency.getInstance(Locale.getDefault()).let { PersistedCurrency(it.currencyCode) }
+        } catch (e: Exception) {
+            PersistedCurrency("USD")
+        }
     }
 
-    override fun setIsIntroductionSeen(isIntroductionSeen: Boolean) {
-    }
+    private fun Currency.toPersistedCurrency() = PersistedCurrency(code)
 
-    override fun getMainCurrency() = Currency("GBP")
+    private data class PersistedCurrency(val code: String) {
+        fun toCurrency() = Currency(code)
+    }
 }
