@@ -80,5 +80,6 @@ dependencies {
     compile('net.danlew:android.joda:2.9.2') {
         exclude group: 'joda-time', module: 'joda-time'
     }
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile 'junit:junit:4.12'
 }
