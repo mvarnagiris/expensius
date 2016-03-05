@@ -29,6 +29,7 @@
             android:layout_height="?actionBarSize"
             android:theme="?themeInverse"
             app:layout_scrollFlags="scroll|enterAlways"
+            app:tabMinWidth="88dp"
             app:tabMode="fixed" />
 
     </android.support.design.widget.AppBarLayout>

@@ -33,6 +33,7 @@ class SettingsPresenter(
                 .flatMap { view.requestMainCurrency(it) }
                 .doOnNext { settings.mainCurrency = it }
                 .subscribe { view.showMainCurrency(it) })
+        // TODO: Things need to get a notification that main currency has been changed and update.
     }
 
     interface View : Presenter.View {

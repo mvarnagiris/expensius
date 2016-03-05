@@ -22,3 +22,10 @@ fun getColorFromTheme(context: Context, attrId: Int): Int {
     a.recycle();
     return color;
 }
+
+fun getDimensionFromTheme(context: Context, attrId: Int): Int {
+    val a = context.theme.obtainStyledAttributes(intArrayOf(attrId));
+    val color = a.getDimensionPixelSize(0, 0);
+    a.recycle();
+    return color;
+}

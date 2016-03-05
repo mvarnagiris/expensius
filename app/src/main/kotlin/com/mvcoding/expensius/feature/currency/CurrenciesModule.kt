@@ -12,19 +12,20 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.settings
+package com.mvcoding.expensius.feature.currency
 
+import com.memoizrlabs.Shank.provideNew
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
-import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
-import com.mvcoding.expensius.provideSettings
 
-class SettingsModule : ShankModule {
+class CurrenciesModule : ShankModule {
     override fun registerFactories() {
-        settingsPresenter()
+        currenciesProvider()
     }
 
-    private fun settingsPresenter() {
-        registerFactory(SettingsPresenter::class.java) { -> SettingsPresenter(provideSettings(), provideCurrenciesProvider()) }
+    private fun currenciesProvider() {
+        registerFactory(CurrenciesProvider::class.java) { -> SystemCurrenciesProvider() }
     }
 }
+
+fun provideCurrenciesProvider() = provideNew(CurrenciesProvider::class.java)

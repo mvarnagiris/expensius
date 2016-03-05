@@ -17,6 +17,7 @@ package com.mvcoding.expensius
 import android.app.Application
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
+import com.mvcoding.expensius.feature.currency.CurrenciesModule
 import com.mvcoding.expensius.feature.intro.IntroModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.report.ReportsModule
@@ -39,6 +40,7 @@ class App : Application() {
                 TagsModule(),
                 TransactionModule(),
                 ReportsModule(),
+                CurrenciesModule(),
                 SettingsModule())
     }
 }
