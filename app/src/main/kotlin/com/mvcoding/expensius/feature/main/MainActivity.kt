@@ -116,7 +116,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showTransactionFab() {
-        if (addTagFloatingActionButton.visibility == GONE) return
+        if (addTransactionFloatingActionButton.visibility == VISIBLE) return
 
         addTagFloatingActionButton.animate().setDuration(FAB_ANIMATION_DURATION).scaleX(0f).scaleY(0f).withEndAction {
             addTransactionFloatingActionButton.scaleX = 0f;
@@ -128,7 +128,8 @@ class MainActivity : BaseActivity() {
     }
 
     private fun showTagFab() {
-        if (addTransactionFloatingActionButton.visibility == GONE) return
+        if (addTagFloatingActionButton.visibility == VISIBLE) return
+
         addTransactionFloatingActionButton.animate().setDuration(FAB_ANIMATION_DURATION).scaleX(0f).scaleY(0f).withEndAction {
             addTagFloatingActionButton.scaleX = 0f;
             addTagFloatingActionButton.scaleY = 0f;
