@@ -18,7 +18,7 @@ import android.content.SharedPreferences
 import com.mvcoding.expensius.extension.getObject
 import com.mvcoding.expensius.extension.putBoolean
 import com.mvcoding.expensius.extension.putObject
-import com.mvcoding.expensius.feature.transaction.Currency
+import com.mvcoding.expensius.model.Currency
 import java.util.*
 
 class UserSettings(private val sharedPreferences: SharedPreferences) : Settings {

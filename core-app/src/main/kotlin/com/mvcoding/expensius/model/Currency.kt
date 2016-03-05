@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,11 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.Currency
-import java.math.BigDecimal
+import java.io.Serializable
 
-interface AmountFormatter {
-    fun format(amount: BigDecimal, currency: Currency): String
-}
+data class Currency(val code: String = "") : Serializable

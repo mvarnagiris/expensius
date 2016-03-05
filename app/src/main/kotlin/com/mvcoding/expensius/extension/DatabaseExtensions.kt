@@ -16,9 +16,9 @@ package com.mvcoding.expensius.extension
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.mvcoding.expensius.feature.transaction.Currency
 import com.mvcoding.expensius.feature.transaction.TransactionState
 import com.mvcoding.expensius.feature.transaction.TransactionType
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction

@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag

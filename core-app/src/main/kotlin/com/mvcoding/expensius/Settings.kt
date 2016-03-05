@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius
 
-import com.mvcoding.expensius.feature.transaction.Currency
+import com.mvcoding.expensius.model.Currency
 
 interface Settings {
     var isIntroductionSeen: Boolean

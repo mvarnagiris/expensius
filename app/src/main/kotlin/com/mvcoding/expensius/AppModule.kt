@@ -26,7 +26,7 @@ import com.mvcoding.expensius.feature.CurrencyFormat.GroupSeparator.COMMA
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolDistance.CLOSE
 import com.mvcoding.expensius.feature.CurrencyFormat.SymbolPosition.START
 import com.mvcoding.expensius.feature.DateFormatter
-import com.mvcoding.expensius.feature.transaction.Currency
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.SqliteDatabase

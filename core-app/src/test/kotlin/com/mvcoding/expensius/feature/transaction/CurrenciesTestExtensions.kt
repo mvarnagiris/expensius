@@ -14,4 +14,6 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.model.Currency
+
 fun aCurrency() = Currency("GBP")

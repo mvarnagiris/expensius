@@ -16,16 +16,28 @@ package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Presenter
-import com.mvcoding.expensius.feature.transaction.Currency
+import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.model.Currency
+import rx.Observable
 
-class SettingsPresenter(private val settings: Settings) : Presenter<SettingsPresenter.View>() {
+class SettingsPresenter(
+        private val settings: Settings,
+        private val currenciesProvider: CurrenciesProvider) : Presenter<SettingsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
         view.showMainCurrency(settings.mainCurrency)
+
+        unsubscribeOnDetach(view.onMainCurrencyRequested()
+                .flatMap { currenciesProvider.currencies() }
+                .flatMap { view.requestMainCurrency(it) }
+                .doOnNext { settings.mainCurrency = it }
+                .subscribe { view.showMainCurrency(it) })
     }
 
     interface View : Presenter.View {
+        fun onMainCurrencyRequested(): Observable<Unit>
+        fun requestMainCurrency(currencies: List<Currency>): Observable<Currency>
         fun showMainCurrency(mainCurrency: Currency)
     }
 }

@@ -40,6 +40,7 @@ import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
