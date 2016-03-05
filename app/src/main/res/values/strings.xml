@@ -53,6 +53,7 @@
     <string name="tag_leisure">Leisure</string>
     <string name="tag_clothes">Clothes</string>
     <string name="tag_transport">Transport</string>
+    <string name="tag_household">Household</string>
     <string name="tag_health_and_beauty">Health &amp; beauty</string>
     <string name="tag_bills_and_utilities">Bills &amp; utilities</string>
     <string name="tag_pets">Pets</string>

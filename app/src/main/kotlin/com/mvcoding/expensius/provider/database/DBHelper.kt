@@ -56,6 +56,7 @@ class DBHelper(
                     Tag(generateModelId(), NONE, getString(R.string.tag_leisure), getColor(context, R.color.light_blue_500)),
                     Tag(generateModelId(), NONE, getString(R.string.tag_clothes), getColor(context, R.color.orange_500)),
                     Tag(generateModelId(), NONE, getString(R.string.tag_transport), getColor(context, R.color.yellow_500)),
+                    Tag(generateModelId(), NONE, getString(R.string.tag_household), getColor(context, R.color.purple_500)),
                     Tag(generateModelId(), NONE, getString(R.string.tag_health_and_beauty), getColor(context, R.color.pink_500)),
                     Tag(generateModelId(), NONE, getString(R.string.tag_bills_and_utilities), getColor(context, R.color.brown_500)),
                     Tag(generateModelId(), NONE, getString(R.string.tag_pets), getColor(context, R.color.teal_500)))
