@@ -12,15 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.provider
 
-import java.io.Serializable
-import java.util.Currency
+import com.mvcoding.expensius.feature.currency.CurrencyFormatsProvider
+import com.mvcoding.expensius.model.CurrencyFormat
+import rx.Observable.empty
 
-data class Currency(val code: String = "") : Serializable {
-    fun toSystemCurrency(): Currency? = try {
-        Currency.getInstance(code)
-    } catch (e: Exception) {
-        null
-    }
+class DatabaseCurrencyFormatsProvider : CurrencyFormatsProvider {
+    override fun currencyFormats() = empty<List<CurrencyFormat>>()
 }

@@ -18,16 +18,16 @@ import android.content.Context
 import com.memoizrlabs.Shank
 import kotlin.reflect.KClass
 
-fun <T : Any> provideSingleton(cls: KClass<T>): T {
-    return Shank.provideSingleton(cls.java)
-}
+fun <T : Any> provideNew(cls: KClass<T>) = Shank.provideNew(cls.java)
+
+fun <T : Any> provideSingleton(cls: KClass<T>) = Shank.provideSingleton(cls.java)
 
 fun <T : Any> provideActivityScopedSingleton(cls: KClass<T>,
-                                             context: Context,
-                                             arg1: Any? = null,
-                                             arg2: Any? = null,
-                                             arg3: Any? = null,
-                                             arg4: Any? = null): T {
+        context: Context,
+        arg1: Any? = null,
+        arg2: Any? = null,
+        arg3: Any? = null,
+        arg4: Any? = null): T {
     val shank = Shank.with(context.toBaseActivity().scope)
     when {
         arg4 != null -> return shank.provideSingleton(cls.java, arg1, arg2, arg3, arg4)

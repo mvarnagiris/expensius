@@ -14,18 +14,26 @@
 
 package com.mvcoding.expensius.feature.currency
 
-import com.memoizrlabs.Shank.provideNew
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.extension.provideNew
+import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.provider.DatabaseCurrencyFormatsProvider
 
 class CurrenciesModule : ShankModule {
     override fun registerFactories() {
         currenciesProvider()
+        currencyFormatsProvider()
     }
 
     private fun currenciesProvider() {
-        registerFactory(CurrenciesProvider::class.java) { -> SystemCurrenciesProvider() }
+        registerFactory(CurrenciesProvider::class.java) { -> CurrenciesProvider() }
+    }
+
+    private fun currencyFormatsProvider() {
+        registerFactory(CurrencyFormatsProvider::class.java) { -> DatabaseCurrencyFormatsProvider() }
     }
 }
 
-fun provideCurrenciesProvider() = provideNew(CurrenciesProvider::class.java)
+fun provideCurrenciesProvider() = provideNew(CurrenciesProvider::class)
+fun provideCurrencyFormatsProvider() = provideSingleton(CurrencyFormatsProvider::class)

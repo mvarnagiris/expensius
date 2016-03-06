@@ -15,18 +15,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
-import com.mvcoding.expensius.extension.provideSingleton
-import com.mvcoding.expensius.feature.AmountFormatter
-import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.provideAmountFormatter
+import com.mvcoding.expensius.provideDateFormatter
 
 class TransactionItemView : LinearLayout {
     private val NON_BREAKABLE_SPACE = "\u00A0"
 
-    private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
-    private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
+    private val amountFormatter by lazy { provideAmountFormatter() }
+    private val dateFormatter by lazy { provideDateFormatter() }
     private val expenseTextColor by lazy { getColorFromTheme(context, R.attr.colorExpense) }
     private val incomeTextColor by lazy { getColorFromTheme(context, R.attr.colorIncome) }
     private val tagDrawable by lazy { getDrawable(context, R.drawable.oval) }
@@ -73,9 +72,9 @@ class TransactionItemView : LinearLayout {
             drawable.setColorFilter(it.color, SRC_ATOP)
             drawable.bounds = Rect(0, 0, drawableSize.toInt(), drawableSize.toInt())
             ssb.setSpan(ImageSpan(drawable, ALIGN_BASELINE),
-                        ssb.length - it.title.length - 2,
-                        ssb.length - it.title.length - 1,
-                        SPAN_EXCLUSIVE_EXCLUSIVE)
+                    ssb.length - it.title.length - 2,
+                    ssb.length - it.title.length - 1,
+                    SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return ssb
     }

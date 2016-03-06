@@ -21,12 +21,7 @@ import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
-import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.CurrencyFormat
-import com.mvcoding.expensius.model.CurrencyFormat.DecimalSeparator.DOT
-import com.mvcoding.expensius.model.CurrencyFormat.GroupSeparator.COMMA
-import com.mvcoding.expensius.model.CurrencyFormat.SymbolDistance.CLOSE
-import com.mvcoding.expensius.model.CurrencyFormat.SymbolPosition.START
+import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.SqliteDatabase
@@ -36,7 +31,6 @@ import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.squareup.sqlbrite.SqlBrite
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers.io
-import java.math.BigDecimal
 
 class AppModule(val context: Context) : ShankModule {
 
@@ -72,13 +66,7 @@ class AppModule(val context: Context) : ShankModule {
     }
 
     private fun amountFormatter() {
-        // TODO: This is temporary
-        registerFactory(AmountFormatter::class.java, { ->
-            object : AmountFormatter {
-                private val currencyFormat = CurrencyFormat("£", START, CLOSE, DOT, COMMA, 2, 2)
-                override fun format(amount: BigDecimal, currency: Currency) = currencyFormat.format(amount)
-            }
-        })
+        registerFactory(AmountFormatter::class.java) { -> AmountFormatter(provideCurrencyFormatsProvider()) }
     }
 }
 

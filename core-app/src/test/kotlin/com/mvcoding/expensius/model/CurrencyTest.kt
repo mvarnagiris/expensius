@@ -14,13 +14,20 @@
 
 package com.mvcoding.expensius.model
 
-import java.io.Serializable
-import java.util.Currency
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.nullValue
+import org.junit.Assert.assertThat
+import org.junit.Test
+import java.util.Currency.getInstance
 
-data class Currency(val code: String = "") : Serializable {
-    fun toSystemCurrency(): Currency? = try {
-        Currency.getInstance(code)
-    } catch (e: Exception) {
-        null
+class CurrencyTest {
+    @Test
+    fun convertsToSystemCurrency() {
+        assertThat(Currency("GBP").toSystemCurrency(), equalTo(getInstance("GBP")))
+    }
+
+    @Test
+    fun returnsNullWhenSystemCurrencyDoesNotExist() {
+        assertThat(Currency("Does not exist").toSystemCurrency(), nullValue(java.util.Currency::class.java))
     }
 }

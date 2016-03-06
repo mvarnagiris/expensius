@@ -16,7 +16,19 @@ package com.mvcoding.expensius.feature.currency
 
 import com.mvcoding.expensius.model.Currency
 import rx.Observable
+import java.util.*
 
-interface CurrenciesProvider {
-    fun currencies(): Observable<List<Currency>>
+class CurrenciesProvider {
+    fun currencies() = Locale.getAvailableLocales()
+            .map { it.toCurrency() }
+            .toSet()
+            .map { Currency(it.currencyCode) }
+            .sortedBy { it.code }
+            .let { Observable.just(it) }
+
+    private fun Locale.toCurrency() = try {
+        java.util.Currency.getInstance(this)
+    } catch(e: Exception) {
+        java.util.Currency.getInstance("USD")
+    }
 }

@@ -14,22 +14,9 @@
 
 package com.mvcoding.expensius.feature.currency
 
-import com.mvcoding.expensius.model.Currency
-import rx.Observable.just
-import java.util.*
-import java.util.Locale.getAvailableLocales
+import com.mvcoding.expensius.model.CurrencyFormat
+import rx.Observable
 
-class SystemCurrenciesProvider : CurrenciesProvider {
-    override fun currencies() = getAvailableLocales()
-            .map { it.toCurrency() }
-            .toSet()
-            .map { Currency(it.currencyCode) }
-            .sortedBy { it.code }
-            .let { just(it) }
-
-    private fun Locale.toCurrency() = try {
-        java.util.Currency.getInstance(this)
-    } catch(e: Exception) {
-        java.util.Currency.getInstance("USD")
-    }
+interface CurrencyFormatsProvider {
+    fun currencyFormats(): Observable<List<CurrencyFormat>>
 }

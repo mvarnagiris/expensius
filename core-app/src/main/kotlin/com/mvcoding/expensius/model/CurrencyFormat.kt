@@ -37,6 +37,7 @@ data class CurrencyFormat(
         decimalFormatSymbols.groupingSeparator = groupSeparator.symbol
         decimalFormatSymbols.decimalSeparator = decimalSeparator.symbol
 
+        decimalFormat.decimalFormatSymbols = decimalFormatSymbols
         decimalFormat.minimumFractionDigits = minFractionDigits
         decimalFormat.maximumFractionDigits = maxFractionDigits
         decimalFormat.positivePrefix = if (symbolPosition == START) symbol + (if (symbolDistance == FAR) " " else "") else ""
@@ -46,7 +47,7 @@ data class CurrencyFormat(
     }
 
     fun format(amount: BigDecimal): String {
-        return decimalFormat.format(amount);
+        return decimalFormat.format(amount)
     }
 
     enum class SymbolPosition {
