@@ -43,6 +43,7 @@ fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentVa
     contentValues.put(transactionsTable.transactionState.name, transactionState.name)
     contentValues.put(transactionsTable.timestamp.name, timestamp)
     contentValues.put(transactionsTable.currency.name, currency.code)
+    contentValues.put(transactionsTable.exchangeRate.name, exchangeRate.toPlainString())
     contentValues.put(transactionsTable.amount.name, amount.toPlainString())
     contentValues.put(transactionsTable.tags.name, tags.joinToString(separator = ",", transform = { it.id }))
     contentValues.put(transactionsTable.note.name, note)
@@ -64,6 +65,7 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTa
     val transactionState = TransactionState.valueOf(getString(this.getColumnIndex(transactionsTable.transactionState.name)))
     val timestamp = getLong(this.getColumnIndex(transactionsTable.timestamp.name))
     val currency = Currency(getString(this.getColumnIndex(transactionsTable.currency.name)))
+    val exchangeRate = BigDecimal(getString(this.getColumnIndex(transactionsTable.exchangeRate.name)))
     val amount = BigDecimal(getString(this.getColumnIndex(transactionsTable.amount.name)))
     val tagSplitRegex = Regex(TagsTable.COLUMN_SEPARATOR)
     val tagsString = getString(this.getColumnIndex(tagsTable.transactionTags.name))
@@ -72,7 +74,7 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTa
         Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt())
     }?.toSet() ?: setOf<Tag>()
     val note = getString(this.getColumnIndex(transactionsTable.note.name))
-    return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, tags, note)
+    return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, exchangeRate, tags, note)
 }
 
 fun <T> Cursor.map(mapper: ((Cursor) -> T)): List<T> {

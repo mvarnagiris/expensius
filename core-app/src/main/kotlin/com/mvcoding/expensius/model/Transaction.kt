@@ -21,6 +21,7 @@ import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.ModelState.NONE
 import java.lang.System.currentTimeMillis
 import java.math.BigDecimal
+import java.math.BigDecimal.ONE
 import java.math.BigDecimal.ZERO
 
 data class Transaction(
@@ -30,6 +31,7 @@ data class Transaction(
         val transactionState: TransactionState = CONFIRMED,
         val timestamp: Long = currentTimeMillis(),
         val currency: Currency,
+        val exchangeRate: BigDecimal = ONE,
         val amount: BigDecimal = ZERO,
         val tags: Set<Tag> = emptySet(),
         val note: String = "") : Model {

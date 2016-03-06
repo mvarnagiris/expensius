@@ -21,9 +21,10 @@ class TransactionsTable : ModelTable("transactions") {
     val transactionState = ValueColumn(this, "transactionState", TEXT)
     val timestamp = ValueColumn(this, "timestamp", DATE_TIME)
     val currency = ValueColumn(this, "currency", TEXT)
+    val exchangeRate = ValueColumn(this, "exchange_rate", REAL)
     val amount = ValueColumn(this, "amount", REAL)
     val tags = ValueColumn(this, "tags", TEXT)
     val note = ValueColumn(this, "note", TEXT)
 
-    override fun modelColumns() = arrayOf(transactionType, transactionState, timestamp, currency, amount, tags, note)
+    override fun modelColumns() = arrayOf(transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
 }

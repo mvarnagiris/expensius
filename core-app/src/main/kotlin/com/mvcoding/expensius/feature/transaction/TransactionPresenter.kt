@@ -16,7 +16,6 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.model.*
-import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import rx.Observable
@@ -43,6 +42,7 @@ class TransactionPresenter(
         }
         val timestamps = view.onTimestampChanged().startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
         val currencies = view.onCurrencyChanged().startWith(transaction.currency).doOnNext { view.showCurrency(it) }
+        val exchangeRates = just(BigDecimal.ONE)
         val amounts = view.onAmountChanged().startWith(transaction.amount).doOnNext { view.showAmount(it) }
         val tags = view.onTagsChanged().startWith(transaction.tags).doOnNext { view.showTags(it) }
         val notes = view.onNoteChanged().startWith(transaction.note).doOnNext { view.showNote(it) }
@@ -54,11 +54,12 @@ class TransactionPresenter(
                 transactionTypes,
                 timestamps,
                 currencies,
+                exchangeRates,
                 amounts,
                 tags,
                 notes,
-                { id, modelState, transactionState, transactionType, timestamp, currency, amount, tags, note ->
-                    Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, tags, note)
+                { id, modelState, transactionState, transactionType, timestamp, currency, exchangeRate, amount, tags, note ->
+                    Transaction(id, modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
                 })
                 .doOnNext { transaction = it }
 
