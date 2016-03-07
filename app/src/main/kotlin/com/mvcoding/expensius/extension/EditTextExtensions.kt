@@ -12,17 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.extension
 
-import java.io.Serializable
-import java.util.Currency
+import android.widget.EditText
 
-data class Currency(val code: String = "") : Serializable {
-    fun toSystemCurrency(): Currency? = try {
-        Currency.getInstance(code)
-    } catch (e: Exception) {
-        null
+fun EditText.setTextIfChanged(text: String) {
+    if (text.toString() != text) {
+        setText(text)
+        setSelection(text.length)
     }
-
-    fun displayName() = "${this.code}${toSystemCurrency()?.let { " - ${it.displayName}" }}"
 }

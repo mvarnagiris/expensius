@@ -29,6 +29,7 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.RxBus
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.extension.setTextIfChanged
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateDialogFragment
@@ -82,7 +83,6 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private var currency = Currency()
     private var timestamp = 0L
     private var allowTransactionStateChanges = false
-    private var allowNoteChanges = true
 
     constructor(context: Context?) : this(context, null)
 
@@ -96,9 +96,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
             amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
             dateButton.clicks().subscribe {
                 DateDialogFragment.show(context.toBaseActivity().supportFragmentManager,
-                                        REQUEST_DATE,
-                                        rxBus,
-                                        timestamp)
+                        REQUEST_DATE,
+                        rxBus,
+                        timestamp)
             }
         }
     }
@@ -139,24 +139,17 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
                 .map { if (transactionState == CONFIRMED) PENDING else CONFIRMED }
     }
 
-    override fun onTransactionTypeChanged() = transactionTypeFloatingActionButton.clicks().map { if (transactionType == EXPENSE) INCOME else EXPENSE }
+    override fun onTransactionTypeChanged() = transactionTypeFloatingActionButton.clicks()
+            .map { if (transactionType == EXPENSE) INCOME else EXPENSE }
 
-    override fun onTimestampChanged() = rxBus.observe(DateDialogResult::class).map {
-        DateTime(timestamp).withYear(it.year).withMonthOfYear(it.monthOfYear).withDayOfMonth(it.dayOfMonth).millis
-    }
+    override fun onTimestampChanged() = rxBus.observe(DateDialogResult::class)
+            .map { DateTime(timestamp).withYear(it.year).withMonthOfYear(it.monthOfYear).withDayOfMonth(it.dayOfMonth).millis }
 
     override fun onCurrencyChanged() = currencySubject.asObservable()
-
     override fun onAmountChanged() = amountSubject.asObservable()
-
     override fun onTagsChanged() = quickTagsView.selectedTagsChanges()
-
-    override fun onNoteChanged(): Observable<String> {
-        return noteEditText.textChanges().doOnNext { allowNoteChanges = false }.map { it.toString() }
-    }
-
+    override fun onNoteChanged() = noteEditText.textChanges().map { it.toString() }.distinctUntilChanged()
     override fun onToggleArchive() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
-
     override fun onSave() = saveButton.clicks()
 
     override fun showArchiveEnabled(archiveEnabled: Boolean) {
@@ -187,7 +180,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun showCurrency(currency: Currency) {
         this.currency = currency;
-        currencyButton.text = currency.code
+        currencyButton.text = currency.displayName()
         updateAmount()
     }
 
@@ -196,20 +189,9 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         updateAmount()
     }
 
-    override fun showTags(tags: Set<Tag>) {
-        quickTagsView.showSelectedTags(tags)
-    }
-
-    override fun showNote(note: String) {
-        if (allowNoteChanges) {
-            noteEditText.setText(note)
-        }
-        allowNoteChanges = true
-    }
-
-    override fun displayResult(transaction: Transaction) {
-        context.toBaseActivity().finish()
-    }
+    override fun showTags(tags: Set<Tag>) = quickTagsView.showSelectedTags(tags)
+    override fun showNote(note: String) = noteEditText.setTextIfChanged(note)
+    override fun displayResult(transaction: Transaction) = context.toBaseActivity().finish()
 
     private fun updateAmount() {
         amountTextView.text = amountFormatter.format(amount, currency)

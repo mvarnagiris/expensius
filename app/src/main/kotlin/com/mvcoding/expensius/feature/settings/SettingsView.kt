@@ -69,6 +69,4 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         setTitle(context.getString(R.string.main_currency))
         setSubtitle(mainCurrency.displayName())
     }
-
-    private fun Currency.displayName() = "${this.code} - ${java.util.Currency.getInstance(this.code).displayName}"
 }
