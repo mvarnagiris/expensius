@@ -15,12 +15,9 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.Presenter
-import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.generateModelId
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.Observable.just
@@ -36,14 +33,26 @@ class TransactionPresenter(
         view.showArchiveEnabled(transaction.isStored())
         view.showModelState(transaction.modelState)
 
+        unsubscribeOnDetach(view.onSave()
+                .withLatestFrom(transactionObservable(view), { action, transaction -> transaction })
+                .doOnNext { transactionsProvider.save(setOf(it)) }
+                .subscribe { view.displayResult(it) })
+
+        unsubscribeOnDetach(view.onToggleArchive()
+                .map { transactionWithToggledArchiveState() }
+                .doOnNext { transactionsProvider.save(setOf(it)) }
+                .subscribe { view.displayResult(it) })
+    }
+
+    private fun transactionObservable(view: View): Observable<Transaction>? {
         val ids = just(transaction.id).filter { !it.isBlank() }.defaultIfEmpty(generateModelId())
         val modelStates = just(transaction.modelState)
-        val transactionStates = view.onTransactionStateChanged().startWith(transaction.transactionState).doOnNext {
-            view.showTransactionState(it)
-        }
-        val transactionTypes = view.onTransactionTypeChanged().startWith(transaction.transactionType).doOnNext {
-            view.showTransactionType(it)
-        }
+        val transactionTypes = view.onTransactionTypeChanged()
+                .startWith(transaction.transactionType)
+                .doOnNext { view.showTransactionType(it) }
+        val transactionStates = view.onTransactionStateChanged()
+                .startWith(transaction.transactionState)
+                .doOnNext { view.showTransactionState(it) }
         val timestamps = view.onTimestampChanged().startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
         val currencies = view.onCurrencyChanged().startWith(transaction.currency).doOnNext { view.showCurrency(it) }
         val exchangeRates = just(BigDecimal.ONE)
@@ -51,17 +60,20 @@ class TransactionPresenter(
         val tags = view.onTagsChanged().startWith(transaction.tags).doOnNext { view.showTags(it) }
         val notes = view.onNoteChanged().startWith(transaction.note).doOnNext { view.showNote(it) }
 
-        combineLatest(listOf(
+        val values = listOf(
                 ids,
                 modelStates,
-                transactionStates,
                 transactionTypes,
+                transactionStates,
                 timestamps,
                 currencies,
                 exchangeRates,
                 amounts,
                 tags,
-                notes)) {
+                notes)
+
+        return combineLatest(values) {
+            @Suppress("UNCHECKED_CAST")
             Transaction(
                     it[0] as String,
                     it[1] as ModelState,
@@ -74,33 +86,7 @@ class TransactionPresenter(
                     it[8] as Set<Tag>,
                     it[9] as String
             )
-        }
-
-        val transactionObservable = Observable.combineLatest(
-                ids,
-                modelStates,
-                transactionStates,
-                transactionTypes,
-                timestamps,
-                currencies,
-                exchangeRates,
-                amounts,
-                tags,
-                notes,
-                { id, modelState, transactionState, transactionType, timestamp, currency, exchangeRate, amount, tags, note ->
-                    Transaction(id, modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
-                })
-                .doOnNext { transaction = it }
-
-        unsubscribeOnDetach(view.onSave()
-                .withLatestFrom(transactionObservable, { action, transaction -> transaction })
-                .doOnNext { transactionsProvider.save(setOf(it)) }
-                .subscribe { view.displayResult(it) })
-
-        unsubscribeOnDetach(view.onToggleArchive()
-                .map { transactionWithToggledArchiveState() }
-                .doOnNext { transactionsProvider.save(setOf(it)) }
-                .subscribe { view.displayResult(it) })
+        }.doOnNext { transaction = it }
     }
 
     private fun transactionWithToggledArchiveState() = transaction.withModelState(if (transaction.modelState == NONE) ARCHIVED else NONE)

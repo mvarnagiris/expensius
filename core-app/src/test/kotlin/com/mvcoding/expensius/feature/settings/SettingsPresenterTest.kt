@@ -23,15 +23,15 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.lang.kotlin.PublishSubject
+import rx.observers.TestSubscriber.create
 
 class SettingsPresenterTest {
     val mainCurrencyRequestedSubject = PublishSubject<Unit>()
     val requestMainCurrencySubject = PublishSubject<Currency>()
 
     val settings = mock<Settings>()
-    val currenciesProvider = mock<CurrenciesProvider>()
+    val currenciesProvider = CurrenciesProvider()
     val view = mock<SettingsPresenter.View>()
     val presenter = SettingsPresenter(settings, currenciesProvider)
 
@@ -55,9 +55,7 @@ class SettingsPresenterTest {
     fun canSelectNewMainCurrency() {
         val oldCurrency = Currency("GBP")
         val newCurrency = Currency("EUR")
-        val anotherCurrency = Currency("USD")
-        val allCurrencies = listOf(oldCurrency, newCurrency, anotherCurrency)
-        whenever(currenciesProvider.currencies()).thenReturn(Observable.just(allCurrencies))
+        val allCurrencies = create<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
         whenever(settings.mainCurrency).thenReturn(oldCurrency)
         presenter.onViewAttached(view)
 

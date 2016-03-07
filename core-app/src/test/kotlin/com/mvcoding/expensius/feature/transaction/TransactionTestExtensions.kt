@@ -20,18 +20,19 @@ import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.generateModelId
 import java.lang.System.currentTimeMillis
 import java.math.BigDecimal
 import java.math.BigDecimal.ONE
-import java.util.UUID.randomUUID
 
 fun aTransaction() = Transaction(
-        randomUUID().toString(),
+        generateModelId(),
         NONE,
         EXPENSE,
         CONFIRMED,
         currentTimeMillis(),
         aCurrency(),
+        ONE,
         ONE,
         someTags(),
         "note")
