@@ -15,10 +15,14 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.Presenter
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.generateModelId
 import rx.Observable
+import rx.Observable.combineLatest
 import rx.Observable.just
 import java.math.BigDecimal
 
@@ -46,6 +50,31 @@ class TransactionPresenter(
         val amounts = view.onAmountChanged().startWith(transaction.amount).doOnNext { view.showAmount(it) }
         val tags = view.onTagsChanged().startWith(transaction.tags).doOnNext { view.showTags(it) }
         val notes = view.onNoteChanged().startWith(transaction.note).doOnNext { view.showNote(it) }
+
+        combineLatest(listOf(
+                ids,
+                modelStates,
+                transactionStates,
+                transactionTypes,
+                timestamps,
+                currencies,
+                exchangeRates,
+                amounts,
+                tags,
+                notes)) {
+            Transaction(
+                    it[0] as String,
+                    it[1] as ModelState,
+                    it[2] as TransactionType,
+                    it[3] as TransactionState,
+                    it[4] as Long,
+                    it[5] as Currency,
+                    it[6] as BigDecimal,
+                    it[7] as BigDecimal,
+                    it[8] as Set<Tag>,
+                    it[9] as String
+            )
+        }
 
         val transactionObservable = Observable.combineLatest(
                 ids,
