@@ -50,12 +50,14 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
         lineChart.isScaleYEnabled = false
         lineChart.legend.isEnabled = false
         lineChart.axisLeft.setDrawLabels(false)
+        lineChart.axisLeft.setDrawGridLines(false)
+        lineChart.axisLeft.setDrawAxisLine(false)
         lineChart.axisRight.setValueFormatter { value, yAxis ->
             amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency)
         }
-        lineChart.axisRight.setDrawZeroLine(false)
-        lineChart.axisRight.setDrawAxisLine(false)
-        lineChart.axisRight.setDrawGridLines(false)
+        lineChart.axisRight.setDrawZeroLine(true)
+        lineChart.axisRight.setDrawAxisLine(true)
+        lineChart.axisRight.setDrawGridLines(true)
         lineChart.setDescription("")
     }
 
