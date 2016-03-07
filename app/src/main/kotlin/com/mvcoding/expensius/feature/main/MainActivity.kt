@@ -14,9 +14,9 @@
 
 package com.mvcoding.expensius.feature.main
 
+import android.animation.ArgbEvaluator
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
@@ -38,6 +38,7 @@ import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.settings.SettingsView
 import com.mvcoding.expensius.feature.tag.TagsView
 import com.mvcoding.expensius.feature.transaction.TransactionsView
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
     companion object {
@@ -51,12 +52,11 @@ class MainActivity : BaseActivity() {
     private val addTransactionFloatingActionButton by lazy { findViewById(R.id.addTransactionFloatingActionButton) }
     private val addTagFloatingActionButton by lazy { findViewById(R.id.addTagFloatingActionButton) }
 
+    private val argbEvaluator = ArgbEvaluator()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val viewPager = findViewById(R.id.viewPager) as ViewPager
-        val tabLayout = findViewById(R.id.tabLayout) as TabLayout
 
         val defaultTabColor = getColorFromTheme(tabLayout.context, R.attr.colorActionIcon)
         val selectedTabColor = getColorFromTheme(tabLayout.context, R.attr.colorAccent)
@@ -71,15 +71,24 @@ class MainActivity : BaseActivity() {
         tabLayout.setupWithViewPager(viewPager)
         tabLayout.forEachTabIndexed { index, tab ->
             tab.icon = ContextCompat.getDrawable(this, screens[index].iconResId).mutate().apply {
-                DrawableCompat.setTint(this, getColorFromTheme(tabLayout.context, R.attr.colorActionIcon))
+                DrawableCompat.setTint(this, defaultTabColor)
             }
         }
         viewPager.pageSelections().subscribe { position ->
             updateFloatingActionButtons(position)
-            tabLayout.forEachTabIndexed { tabIndex, tab ->
-                tab.icon?.let { DrawableCompat.setTint(it, if (tabIndex == position) selectedTabColor else defaultTabColor) }
-            }
         }
+        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                tabLayout.forEachTabIndexed { tabPosition, tab ->
+                    val color = when (tabPosition) {
+                        position -> argbEvaluator.evaluate(positionOffset, selectedTabColor, defaultTabColor) as Int
+                        position + 1 -> argbEvaluator.evaluate(positionOffset, defaultTabColor, selectedTabColor) as Int
+                        else -> defaultTabColor
+                    }
+                    tab.icon?.let { DrawableCompat.setTint(it, color) }
+                }
+            }
+        })
     }
 
     private fun reportsInflater() = {
