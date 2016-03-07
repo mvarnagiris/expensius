@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
@@ -21,16 +23,12 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.paging.Page
-import com.mvcoding.expensius.paging.PageResult
-import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Assert.assertThat
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
-import rx.Observable
+import org.mockito.Mockito.times
 import rx.lang.kotlin.PublishSubject
+import rx.observers.TestSubscriber.create
 import java.math.BigDecimal
 import java.math.BigDecimal.TEN
 
@@ -38,28 +36,34 @@ class TransactionPresenterTest {
     val transactionTypeSubject = PublishSubject<TransactionType>()
     val transactionStateSubject = PublishSubject<TransactionState>()
     val timestampSubject = PublishSubject<Long>()
+    val requestCurrencyChangeSubject = PublishSubject<Unit>()
     val currencySubject = PublishSubject<Currency>()
+    val exchangeRateSubject = PublishSubject<BigDecimal>()
     val amountSubject = PublishSubject<BigDecimal>()
     val tagsSubject = PublishSubject<Set<Tag>>()
     val noteSubject = PublishSubject<String>()
     val toggleArchiveSubject = PublishSubject<Unit>()
     val saveSubject = PublishSubject<Unit>()
-    val view = mock(TransactionPresenter.View::class.java)
+    val view = mock<TransactionPresenter.View>()
     val transaction = aTransaction()
-    val transactionsProvider = TransactionsProviderForTest()
-    val presenter = TransactionPresenter(transaction, transactionsProvider)
+    val transactionsProvider = mock<TransactionsProvider>()
+    val currenciesProvider = CurrenciesProvider()
+    val settings = mock<Settings>()
+    val presenter = TransactionPresenter(transaction, transactionsProvider, currenciesProvider, settings)
 
     @Before
     fun setUp() {
-        given(view.onTransactionTypeChanged()).willReturn(transactionTypeSubject)
-        given(view.onTransactionStateChanged()).willReturn(transactionStateSubject)
-        given(view.onTimestampChanged()).willReturn(timestampSubject)
-        given(view.onCurrencyChanged()).willReturn(currencySubject)
-        given(view.onAmountChanged()).willReturn(amountSubject)
-        given(view.onTagsChanged()).willReturn(tagsSubject)
-        given(view.onNoteChanged()).willReturn(noteSubject)
-        given(view.onToggleArchive()).willReturn(toggleArchiveSubject)
-        given(view.onSave()).willReturn(saveSubject)
+        whenever(view.onTransactionTypeChanged()).thenReturn(transactionTypeSubject)
+        whenever(view.onTransactionStateChanged()).thenReturn(transactionStateSubject)
+        whenever(view.onTimestampChanged()).thenReturn(timestampSubject)
+        whenever(view.onCurrencyChangeRequested()).thenReturn(requestCurrencyChangeSubject)
+        whenever(view.requestCurrency(any())).thenReturn(currencySubject)
+        whenever(view.onExchangeRateChanged()).thenReturn(exchangeRateSubject)
+        whenever(view.onAmountChanged()).thenReturn(amountSubject)
+        whenever(view.onTagsChanged()).thenReturn(tagsSubject)
+        whenever(view.onNoteChanged()).thenReturn(noteSubject)
+        whenever(view.onToggleArchive()).thenReturn(toggleArchiveSubject)
+        whenever(view.onSave()).thenReturn(saveSubject)
     }
 
     @Test
@@ -70,6 +74,7 @@ class TransactionPresenterTest {
         verify(view).showTransactionState(transaction.transactionState)
         verify(view).showTimestamp(transaction.timestamp)
         verify(view).showCurrency(transaction.currency)
+        verify(view).showExchangeRate(transaction.exchangeRate)
         verify(view).showAmount(transaction.amount)
         verify(view).showTags(transaction.tags)
         verify(view).showNote(transaction.note)
@@ -85,7 +90,9 @@ class TransactionPresenterTest {
         updateTransactionType(INCOME)
         updateTransactionState(PENDING)
         updateTimestamp(1)
+        requestCurrencyChange()
         updateCurrency(currency)
+        updateExchangeRate(TEN)
         updateAmount(TEN)
         updateTags(tags)
         updateNote("Updated note")
@@ -93,7 +100,9 @@ class TransactionPresenterTest {
         verify(view).showTransactionType(INCOME)
         verify(view).showTransactionState(PENDING)
         verify(view).showTimestamp(1)
+        verify(view).requestCurrency(allCurrencies())
         verify(view).showCurrency(currency)
+        verify(view).showExchangeRate(TEN)
         verify(view).showAmount(TEN)
         verify(view).showTags(tags)
         verify(view).showNote("Updated note")
@@ -108,7 +117,9 @@ class TransactionPresenterTest {
         updateTransactionType(INCOME)
         updateTransactionState(PENDING)
         updateTimestamp(1)
+        requestCurrencyChange()
         updateCurrency(currency)
+        updateExchangeRate(TEN)
         updateAmount(TEN)
         updateTags(tags)
         updateNote("Updated note")
@@ -119,6 +130,7 @@ class TransactionPresenterTest {
         verify(view, times(2)).showTransactionState(PENDING)
         verify(view, times(2)).showTimestamp(1)
         verify(view, times(2)).showCurrency(currency)
+        verify(view, times(2)).showExchangeRate(TEN)
         verify(view, times(2)).showAmount(TEN)
         verify(view, times(2)).showTags(tags)
         verify(view, times(2)).showNote("Updated note")
@@ -130,12 +142,12 @@ class TransactionPresenterTest {
 
         save()
 
-        assertThat(transactionsProvider.lastSavedTransactions?.first(), equalTo(transaction))
+        verify(transactionsProvider).save(argThat { first() == transaction })
     }
 
     @Test
     fun archiveIsDisabledForNewTransaction() {
-        val presenter = TransactionPresenter(aNewTransaction(), transactionsProvider)
+        val presenter = TransactionPresenter(aNewTransaction(), transactionsProvider, currenciesProvider, settings)
 
         presenter.onViewAttached(view)
 
@@ -156,7 +168,7 @@ class TransactionPresenterTest {
 
         toggleArchive()
 
-        assertThat(transactionsProvider.lastSavedTransactions?.first(), equalTo(archivedTransaction))
+        verify(transactionsProvider).save(argThat { first() == archivedTransaction })
         verify(view).displayResult(archivedTransaction)
     }
 
@@ -164,64 +176,36 @@ class TransactionPresenterTest {
     fun restoresTagAndDisplaysResult() {
         val archivedTransaction = transaction.withModelState(ARCHIVED)
         val restoredTransaction = transaction.withModelState(NONE)
-        val presenter = TransactionPresenter(archivedTransaction, transactionsProvider)
+        val presenter = TransactionPresenter(archivedTransaction, transactionsProvider, currenciesProvider, settings)
         presenter.onViewAttached(view)
 
         toggleArchive()
 
-        assertThat(transactionsProvider.lastSavedTransactions?.first(), equalTo(restoredTransaction))
+        verify(transactionsProvider).save(argThat { first() == restoredTransaction })
         verify(view).displayResult(restoredTransaction)
     }
 
-    private fun toggleArchive() {
-        toggleArchiveSubject.onNext(Unit)
+    @Test
+    fun showsExchangeRateOnlyWhenCurrencyIsNotMain() {
+        whenever(settings.mainCurrency).thenReturn(transaction.currency)
+        presenter.onViewAttached(view)
+        verify(view).showExchangeRateVisible(false)
+
+        requestCurrencyChange()
+        updateCurrency(Currency("OTHER"))
+        verify(view).showExchangeRateVisible(true)
     }
 
-    fun updateTransactionType(transactionType: TransactionType) {
-        transactionTypeSubject.onNext(transactionType)
-    }
-
-    fun updateTransactionState(transactionState: TransactionState) {
-        transactionStateSubject.onNext(transactionState)
-    }
-
-    fun updateTimestamp(timestamp: Long) {
-        timestampSubject.onNext(timestamp)
-    }
-
-    fun updateCurrency(currency: Currency) {
-        currencySubject.onNext(currency)
-    }
-
-    fun updateAmount(amount: BigDecimal) {
-        amountSubject.onNext(amount)
-    }
-
-    fun updateTags(tags: Set<Tag>) {
-        tagsSubject.onNext(tags)
-    }
-
-    fun updateNote(note: String) {
-        noteSubject.onNext(note)
-    }
-
-    fun save() {
-        saveSubject.onNext(Unit)
-    }
-
-    class TransactionsProviderForTest : TransactionsProvider {
-        var lastSavedTransactions: Set<Transaction>? = null
-
-        override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
-            throw UnsupportedOperationException()
-        }
-
-        override fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>> {
-            throw UnsupportedOperationException()
-        }
-
-        override fun save(transactions: Set<Transaction>) {
-            lastSavedTransactions = transactions
-        }
-    }
+    private fun toggleArchive() = toggleArchiveSubject.onNext(Unit)
+    private fun updateTransactionType(transactionType: TransactionType) = transactionTypeSubject.onNext(transactionType)
+    private fun updateTransactionState(transactionState: TransactionState) = transactionStateSubject.onNext(transactionState)
+    private fun updateTimestamp(timestamp: Long) = timestampSubject.onNext(timestamp)
+    private fun requestCurrencyChange() = requestCurrencyChangeSubject.onNext(Unit)
+    private fun updateCurrency(currency: Currency) = currencySubject.onNext(currency)
+    private fun updateExchangeRate(exchangeRate: BigDecimal) = exchangeRateSubject.onNext(exchangeRate)
+    private fun updateAmount(amount: BigDecimal) = amountSubject.onNext(amount)
+    private fun updateTags(tags: Set<Tag>) = tagsSubject.onNext(tags)
+    private fun updateNote(note: String) = noteSubject.onNext(note)
+    private fun save() = saveSubject.onNext(Unit)
+    private fun allCurrencies() = create<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
 }

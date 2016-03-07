@@ -14,7 +14,9 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -25,7 +27,9 @@ import java.math.BigDecimal
 
 class TransactionPresenter(
         private var transaction: Transaction,
-        private val transactionsProvider: TransactionsProvider) : Presenter<TransactionPresenter.View>() {
+        private val transactionsProvider: TransactionsProvider,
+        private val currenciesProvider: CurrenciesProvider,
+        private val settings: Settings) : Presenter<TransactionPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -54,8 +58,13 @@ class TransactionPresenter(
                 .startWith(transaction.transactionState)
                 .doOnNext { view.showTransactionState(it) }
         val timestamps = view.onTimestampChanged().startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
-        val currencies = view.onCurrencyChanged().startWith(transaction.currency).doOnNext { view.showCurrency(it) }
-        val exchangeRates = just(BigDecimal.ONE)
+        val currencies = view.onCurrencyChangeRequested()
+                .flatMap { currenciesProvider.currencies() }
+                .flatMap { view.requestCurrency(it) }
+                .startWith(transaction.currency)
+                .doOnNext { view.showCurrency(it) }
+                .doOnNext { view.showExchangeRateVisible(it != settings.mainCurrency) }
+        val exchangeRates = view.onExchangeRateChanged().startWith(transaction.exchangeRate).doOnNext { view.showExchangeRate(it) }
         val amounts = view.onAmountChanged().startWith(transaction.amount).doOnNext { view.showAmount(it) }
         val tags = view.onTagsChanged().startWith(transaction.tags).doOnNext { view.showTags(it) }
         val notes = view.onNoteChanged().startWith(transaction.note).doOnNext { view.showNote(it) }
@@ -95,12 +104,14 @@ class TransactionPresenter(
         fun onTransactionStateChanged(): Observable<TransactionState>
         fun onTransactionTypeChanged(): Observable<TransactionType>
         fun onTimestampChanged(): Observable<Long>
-        fun onCurrencyChanged(): Observable<Currency>
+        fun onCurrencyChangeRequested(): Observable<Unit>
+        fun onExchangeRateChanged(): Observable<BigDecimal>
         fun onAmountChanged(): Observable<BigDecimal>
         fun onTagsChanged(): Observable<Set<Tag>>
         fun onNoteChanged(): Observable<String>
         fun onToggleArchive(): Observable<Unit>
         fun onSave(): Observable<Unit>
+        fun requestCurrency(currencies: List<Currency>): Observable<Currency>
 
         fun showArchiveEnabled(archiveEnabled: Boolean)
         fun showModelState(modelState: ModelState)
@@ -108,6 +119,8 @@ class TransactionPresenter(
         fun showTransactionType(transactionType: TransactionType)
         fun showTimestamp(timestamp: Long)
         fun showCurrency(currency: Currency)
+        fun showExchangeRate(exchangeRate: BigDecimal)
+        fun showExchangeRateVisible(visible: Boolean)
         fun showAmount(amount: BigDecimal)
         fun showTags(tags: Set<Tag>)
         fun showNote(note: String)

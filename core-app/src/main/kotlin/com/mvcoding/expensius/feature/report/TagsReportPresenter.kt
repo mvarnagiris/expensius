@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.report
 
+import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
@@ -31,7 +32,8 @@ import java.util.*
 
 class TagsReportPresenter(
         private val interval: Interval,
-        private val transactionsProvider: TransactionsProvider) : Presenter<TagsReportPresenter.View>() {
+        private val transactionsProvider: TransactionsProvider,
+        private val settings: Settings) : Presenter<TagsReportPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -60,7 +62,9 @@ class TagsReportPresenter(
             val interval = transaction.timestampToInterval()
             val amountsMap = outResultMap.getOrPut(interval, { hashMapOf<Tag, BigDecimal>() })
             tags.forEach { tag ->
-                val newAmount = amountsMap.getOrElse(tag, { ZERO }).plus(transaction.amount)
+                val newAmount = amountsMap.getOrElse(tag, { ZERO })
+                        .plus(if (settings.mainCurrency == transaction.currency) transaction.amount
+                        else transaction.amount.multiply(transaction.exchangeRate))
                 amountsMap.put(tag, newAmount)
             }
         }

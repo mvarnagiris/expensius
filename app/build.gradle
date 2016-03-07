@@ -74,7 +74,7 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4-kotlin:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-design-kotlin:0.4.0'
-    compile 'com.squareup.sqlbrite:sqlbrite:0.6.0'
+    compile 'com.squareup.sqlbrite:sqlbrite:0.6.2'
     compile 'com.larswerkman:lobsterpicker:1.0.1'
     compile 'me.grantland:autofittextview:0.2.1'
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.2'

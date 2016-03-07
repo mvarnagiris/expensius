@@ -180,14 +180,24 @@
                 <Button
                     android:id="@+id/currencyButton"
                     style="@style/Button.Flat"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="-12dp"
                     android:layout_marginStart="-12dp"
+                    android:layout_weight="1"
                     android:gravity="start|center_vertical"
                     android:textAllCaps="false"
                     android:textAppearance="@style/Text.Subhead"
                     tools:text="USD ($)" />
+
+                <Button
+                    android:id="@+id/exchangeRateButton"
+                    style="@style/Button.Flat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-12dp"
+                    android:gravity="end|center_vertical"
+                    android:textAppearance="@style/Text.Subhead"
+                    tools:text="1.23" />
 
             </LinearLayout>
         </LinearLayout>

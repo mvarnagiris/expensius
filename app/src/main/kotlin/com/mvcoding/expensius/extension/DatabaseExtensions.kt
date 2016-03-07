@@ -74,7 +74,7 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTa
         Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt())
     }?.toSet() ?: setOf<Tag>()
     val note = getString(this.getColumnIndex(transactionsTable.note.name))
-    return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, amount, exchangeRate, tags, note)
+    return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
 }
 
 fun <T> Cursor.map(mapper: ((Cursor) -> T)): List<T> {

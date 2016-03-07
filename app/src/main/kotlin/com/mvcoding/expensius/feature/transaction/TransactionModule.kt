@@ -18,8 +18,10 @@ import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideSettings
 import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.DatabasePageLoader
@@ -49,7 +51,7 @@ class TransactionModule : ShankModule {
 
     private fun transactionPresenter() = registerFactory(TransactionPresenter::class.java, {
         transaction: Transaction ->
-        TransactionPresenter(transaction, provideTransactionsProvider())
+        TransactionPresenter(transaction, provideTransactionsProvider(), provideCurrenciesProvider(), provideSettings())
     })
 }
 

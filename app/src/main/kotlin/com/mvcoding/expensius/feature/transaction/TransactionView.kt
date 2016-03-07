@@ -18,6 +18,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.ListPopupWindow
 import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
 import android.widget.*
@@ -27,10 +28,7 @@ import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.RxBus
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.extension.provideSingleton
-import com.mvcoding.expensius.extension.setTextIfChanged
-import com.mvcoding.expensius.extension.toBaseActivity
+import com.mvcoding.expensius.extension.*
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateDialogFragment
 import com.mvcoding.expensius.feature.DateDialogFragment.DateDialogResult
@@ -45,16 +43,19 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import kotlinx.android.synthetic.main.view_transaction.view.*
 import org.joda.time.DateTime
 import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
+import java.math.BigDecimal.ONE
 import java.math.BigDecimal.ZERO
 
 class TransactionView : LinearLayout, TransactionPresenter.View {
     companion object {
         private const val REQUEST_AMOUNT = 1
         private const val REQUEST_DATE = 2
+        private const val REQUEST_EXCHANGE_RATE = 3
     }
 
     var isArchiveToggleVisible = true
@@ -63,8 +64,8 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
     private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
-    private val currencySubject by lazy { PublishSubject<Currency>() }
     private val amountSubject by lazy { PublishSubject<BigDecimal>() }
+    private val exchangeRateSubject by lazy { PublishSubject<BigDecimal>() }
     private val rxBus by lazy { provideSingleton(RxBus::class) }
 
     private val transactionTypeFloatingActionButton by lazy { findViewById(R.id.transactionTypeFloatingActionButton) as FloatingActionButton }
@@ -81,6 +82,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private var transactionType = EXPENSE
     private var amount = ZERO
     private var currency = Currency()
+    private var exchangeRate = ONE
     private var timestamp = 0L
     private var allowTransactionStateChanges = false
 
@@ -92,14 +94,12 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        if (!isInEditMode) {
+        doNotInEditMode {
             amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_AMOUNT, amount) }
-            dateButton.clicks().subscribe {
-                DateDialogFragment.show(context.toBaseActivity().supportFragmentManager,
-                        REQUEST_DATE,
-                        rxBus,
-                        timestamp)
-            }
+            exchangeRateButton.clicks()
+                    .subscribe { CalculatorActivity.startWithInitialNumberForResult(context, REQUEST_EXCHANGE_RATE, exchangeRate) }
+            dateButton.clicks()
+                    .subscribe { DateDialogFragment.show(context.toBaseActivity().supportFragmentManager, REQUEST_DATE, rxBus, timestamp) }
         }
     }
 
@@ -108,11 +108,12 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode != REQUEST_AMOUNT || resultCode != RESULT_OK) {
-            return
-        }
+        if (resultCode != RESULT_OK) return
 
-        amountSubject.onNext(CalculatorActivity.resultExtraAmount(data!!))
+        when (requestCode) {
+            REQUEST_AMOUNT -> amountSubject.onNext(CalculatorActivity.resultExtraAmount(data!!))
+            REQUEST_EXCHANGE_RATE -> exchangeRateSubject.onNext(CalculatorActivity.resultExtraAmount(data!!))
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -145,12 +146,30 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     override fun onTimestampChanged() = rxBus.observe(DateDialogResult::class)
             .map { DateTime(timestamp).withYear(it.year).withMonthOfYear(it.monthOfYear).withDayOfMonth(it.dayOfMonth).millis }
 
-    override fun onCurrencyChanged() = currencySubject.asObservable()
+    override fun onCurrencyChangeRequested() = currencyButton.clicks()
+    override fun onExchangeRateChanged() = exchangeRateSubject.asObservable()
     override fun onAmountChanged() = amountSubject.asObservable()
     override fun onTagsChanged() = quickTagsView.selectedTagsChanges()
     override fun onNoteChanged() = noteEditText.textChanges().map { it.toString() }.distinctUntilChanged()
     override fun onToggleArchive() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
     override fun onSave() = saveButton.clicks()
+
+    override fun requestCurrency(currencies: List<Currency>): Observable<Currency> = Observable.create {
+        val displayCurrencies = currencies.map { it.displayName() }
+        val itemHeight = getDimensionFromTheme(context, R.attr.actionBarSize)
+        val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
+        val keylineHalf = resources.getDimensionPixelOffset(R.dimen.keyline_half)
+        val popupWindow = ListPopupWindow(context)
+        popupWindow.anchorView = currencyButton
+        popupWindow.setAdapter(ArrayAdapter<String>(context, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
+        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(currencies[position]); popupWindow.dismiss() }
+        popupWindow.setOnDismissListener { it.onCompleted() }
+        popupWindow.width = width - keyline
+        popupWindow.height = Math.min(height - buttonBarView.height - currencyButton.height - keylineHalf, itemHeight * 7)
+        popupWindow.isModal = true
+        popupWindow.horizontalOffset = keylineHalf
+        popupWindow.show()
+    }
 
     override fun showArchiveEnabled(archiveEnabled: Boolean) {
         isArchiveToggleVisible = archiveEnabled
@@ -182,6 +201,15 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
         this.currency = currency;
         currencyButton.text = currency.displayName()
         updateAmount()
+    }
+
+    override fun showExchangeRate(exchangeRate: BigDecimal) {
+        this.exchangeRate = exchangeRate
+        exchangeRateButton.text = exchangeRate.toPlainString()
+    }
+
+    override fun showExchangeRateVisible(visible: Boolean) {
+        exchangeRateButton.visibility = if (visible) VISIBLE else GONE
     }
 
     override fun showAmount(amount: BigDecimal) {

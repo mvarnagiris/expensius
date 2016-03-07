@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.report
 
+import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagsReportItem
 import com.mvcoding.expensius.feature.tag.aNewTag
 import com.mvcoding.expensius.feature.tag.aTag
@@ -21,6 +22,7 @@ import com.mvcoding.expensius.feature.tag.withTitle
 import com.mvcoding.expensius.feature.transaction.*
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.nhaarman.mockito_kotlin.mock
@@ -32,14 +34,18 @@ import org.joda.time.Period
 import org.junit.Test
 import rx.Observable.just
 import java.math.BigDecimal
+import java.math.BigDecimal.TEN
 import java.math.BigDecimal.ZERO
 
 class TagsReportPresenterTest {
+    val mainCurrency = Currency("GBP")
     val transactionsProvider = mock<TransactionsProvider>()
+    val settings = mock<Settings>()
     val view = mock<TagsReportPresenter.View>()
 
     @Test
     fun showsTagsReportForPast30Days() {
+        whenever(settings.mainCurrency).thenReturn(mainCurrency)
         val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
         val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
         val noTag = aNewTag()
@@ -48,7 +54,7 @@ class TagsReportPresenterTest {
         val tag3 = aTag().withTitle("tag3")
         prepareTransactions(last30Days, startOfTomorrow, tag1, tag2, tag3)
         val expectedTagsReportItems = expectedTagsReportItems(last30Days, noTag, startOfTomorrow, tag1, tag2, tag3)
-        val presenter = TagsReportPresenter(last30Days, transactionsProvider)
+        val presenter = TagsReportPresenter(last30Days, transactionsProvider, settings)
 
         presenter.onViewAttached(view)
 
@@ -67,7 +73,7 @@ class TagsReportPresenterTest {
         val tagsReportItem30DaysAgo = TagsReportItem(
                 last30Days.withPeriodAfterStart(Period.days(1)),
                 mapOf(noTag to ZERO,
-                        tag1 to BigDecimal("10.2"),
+                        tag1 to BigDecimal("21.0"),
                         tag2 to BigDecimal("9.0"),
                         tag3 to BigDecimal("5.6")))
 
@@ -107,26 +113,38 @@ class TagsReportPresenterTest {
             tag3: Tag) {
         val transaction30DaysAgo1 = aTransaction()
                 .withAmount(BigDecimal("1.2"))
+                .withCurrency(Currency("USD"))
+                .withExchangeRate(TEN)
                 .withTags(tag1)
                 .withTimestamp(last30Days.startMillis)
         val transaction30DaysAgo2 = aTransaction()
                 .withAmount(BigDecimal("3.4"))
+                .withCurrency(mainCurrency)
+                .withExchangeRate(TEN)
                 .withTags(tag1, tag2)
                 .withTimestamp(last30Days.startMillis + 1)
         val transaction30DaysAgo3 = aTransaction()
                 .withAmount(BigDecimal("5.6"))
+                .withCurrency(mainCurrency)
+                .withExchangeRate(TEN)
                 .withTags(tag1, tag2, tag3)
                 .withTimestamp(last30Days.startMillis + 2)
         val transaction15DaysAgo1 = aTransaction()
                 .withAmount(BigDecimal("7.8"))
+                .withCurrency(mainCurrency)
+                .withExchangeRate(TEN)
                 .withTags(tag1)
                 .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis)
         val transaction15DaysAgo2 = aTransaction()
                 .withAmount(BigDecimal("9"))
+                .withCurrency(mainCurrency)
+                .withExchangeRate(TEN)
                 .withTags()
                 .withTimestamp(last30Days.withEnd(startOfTomorrow.minusDays(15)).endMillis + 1)
         val transaction0DaysAgo = aTransaction()
                 .withAmount(BigDecimal("10"))
+                .withCurrency(mainCurrency)
+                .withExchangeRate(TEN)
                 .withTags(tag2, tag3)
                 .withTimestamp(last30Days.endMillis - 1)
 
