@@ -22,8 +22,8 @@ abstract class PageLoader<T, Q, D, DI> {
 
     fun load(converter: (DI) -> T, query: Q, pageObservable: Observable<Page>): Observable<PageResult<T>> {
         return combineLatest(pageObservable, load(query).doOnNext { isNewDataLoad = true }, { page, data ->
-            val wasNewDataLoad = isNewDataLoad;
-            isNewDataLoad = false;
+            val wasNewDataLoad = isNewDataLoad
+            isNewDataLoad = false
 
             val range = page.rangeTo(sizeOf(data))
             if (range.isEmpty()) {
