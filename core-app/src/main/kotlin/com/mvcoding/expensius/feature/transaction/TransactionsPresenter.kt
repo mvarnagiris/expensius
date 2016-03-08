@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
@@ -26,19 +27,32 @@ import com.mvcoding.expensius.paging.Page
 import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
 import rx.Observable.just
+import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenter(
         private val transactionsProvider: TransactionsProvider,
         private val modelDisplayType: ModelDisplayType,
         private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>() {
     internal companion object {
-        const val PAGE_SIZE = 50
+        const val PAGE_SIZE = 5
     }
 
     private val transactionsCache = arrayListOf<Transaction>()
+    private val pagingEdgeSubject = PublishSubject<PagingEdge>()
+    private val transactions: Observable<PageResult<Transaction>>
 
     private var endPage = Page(0, PAGE_SIZE)
     private var hasNextPage = true
+
+    init {
+        val pages = pagingEdgeSubject
+                .filter { it == END && hasNextPage }
+                .map { endPage.nextPage() }
+                .doOnNext { endPage = it }
+                .startWith(just(endPage).filter { transactionsCache.isEmpty() })
+
+        transactions = transactionsProvider.transactions(pages, modelDisplayType.toTransactionsFilter()).cache()
+    }
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -49,16 +63,7 @@ class TransactionsPresenter(
             view.showTransactions(transactionsCache)
         }
 
-        val pages = view.onPagingEdgeReached()
-                .filter { it == END && hasNextPage }
-                .map { endPage.nextPage() }
-                .doOnNext { endPage = it }
-                .startWith(just(endPage).filter { transactionsCache.isEmpty() })
-
-        val transactions =
-                if (modelDisplayType == VIEW_NOT_ARCHIVED) transactionsProvider.transactions(pages, TransactionsFilter(NONE))
-                else transactionsProvider.transactions(pages, TransactionsFilter(ARCHIVED))
-
+        unsubscribeOnDetach(view.onPagingEdgeReached().subscribe(pagingEdgeSubject))
         unsubscribeOnDetach(transactions.subscribeOn(schedulers.io).observeOn(schedulers.main).subscribe { showTransactions(view, it) })
         unsubscribeOnDetach(view.onCreateTransaction().subscribe { view.displayCreateTransaction() })
         unsubscribeOnDetach(view.onDisplayArchivedTransactions().subscribe { view.displayArchivedTransactions() })
@@ -67,7 +72,7 @@ class TransactionsPresenter(
 
     private fun showTransactions(view: View, pageResult: PageResult<Transaction>) {
         if (pageResult.isInvalidated) {
-            transactionsCache.clear();
+            transactionsCache.clear()
             view.showTransactions(pageResult.items)
         } else if (pageResult.items.isNotEmpty()) {
             view.addTransactions(pageResult.items, transactionsCache.size)
@@ -75,6 +80,11 @@ class TransactionsPresenter(
 
         transactionsCache.addAll(pageResult.items)
         hasNextPage = pageResult.hasNextPage()
+    }
+
+    private fun ModelDisplayType.toTransactionsFilter() = when (this) {
+        VIEW_NOT_ARCHIVED -> TransactionsFilter(NONE)
+        VIEW_ARCHIVED -> TransactionsFilter(ARCHIVED)
     }
 
     enum class PagingEdge {

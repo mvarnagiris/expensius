@@ -32,7 +32,9 @@ import org.mockito.Matchers.anyListOf
 import org.mockito.Mockito.times
 import rx.Observable
 import rx.Observable.just
+import rx.lang.kotlin.BehaviourSubject
 import rx.lang.kotlin.PublishSubject
+import kotlin.test.assertEquals
 
 class TransactionsPresenterTest {
     val createTransactionSubject = PublishSubject<Unit>()
@@ -40,6 +42,7 @@ class TransactionsPresenterTest {
     val displayArchivedTransactionsSubject = PublishSubject<Unit>()
     val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
     val pageLoader = PageLoaderForTest()
+    val transactionsProvider = TransactionsProviderForTest(pageLoader)
     val view = mock<TransactionsPresenter.View>()
 
     @Before
@@ -132,6 +135,20 @@ class TransactionsPresenterTest {
         presenter.onViewAttached(view)
 
         verify(view).showTransactions(argThat { size == PAGE_SIZE + 1 })
+        assertEquals(1, transactionsProvider.loadCount)
+    }
+
+    @Test
+    fun showsFirstPageWithNewTransactionWhenNewTransactionIsCreated() {
+        pageLoader.size = PAGE_SIZE + 1
+        val presenter = presenterWithModelDisplayTypeView()
+        presenter.onViewAttached(view)
+        pagingEdgeEnd()
+
+        pageLoader.reloadData()
+
+        verify(view, times(2)).showTransactions(argThat { size == PAGE_SIZE })
+        assertEquals(1, transactionsProvider.loadCount)
     }
 
     @Test
@@ -178,14 +195,18 @@ class TransactionsPresenterTest {
         displayArchivedTransactionsSubject.onNext(Unit)
     }
 
-    private fun presenterWithModelDisplayTypeView() =
-            TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_NOT_ARCHIVED, rxSchedulers())
+    private fun presenterWithModelDisplayTypeView(): TransactionsPresenter {
+        return TransactionsPresenter(transactionsProvider, VIEW_NOT_ARCHIVED, rxSchedulers())
+    }
 
     private fun presenterWithModelDisplayTypeArchived() =
-            TransactionsPresenter(TransactionsProviderForTest(pageLoader), VIEW_ARCHIVED, rxSchedulers())
+            TransactionsPresenter(transactionsProvider, VIEW_ARCHIVED, rxSchedulers())
 
     class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {
+        var loadCount = 0
+
         override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
+            loadCount++
             return pageLoader.load({ aTransaction().withModelState(transactionsFilter.modelState) }, Any(), pages)
         }
 
@@ -199,10 +220,15 @@ class TransactionsPresenterTest {
     }
 
     class PageLoaderForTest : PageLoader<Transaction, Any, Any, Any>() {
+        private val refreshes = BehaviourSubject(Unit)
         var size = 0;
 
-        override fun load(query: Any) = just(Any())
+        override fun load(query: Any) = refreshes.flatMap { just(Any()) }
         override fun sizeOf(data: Any) = size;
         override fun dataItemAtPosition(data: Any, position: Int) = Any()
+
+        fun reloadData() {
+            refreshes.onNext(Unit)
+        }
     }
 }

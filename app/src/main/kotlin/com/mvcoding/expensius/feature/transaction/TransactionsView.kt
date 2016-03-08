@@ -24,15 +24,22 @@ import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.DividerItemDecoration
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.Paging
+import com.mvcoding.expensius.feature.PagingOnScrollListener
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.model.Transaction
 import rx.Observable
 import rx.Observable.never
+import rx.lang.kotlin.PublishSubject
 
 class TransactionsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View {
+        RecyclerView(context, attrs, defStyleAttr), TransactionsPresenter.View, PagingOnScrollListener.PagingListener {
+
+    private val PAGING_THRESHOLD = 5
 
     private val transactionsAdapter = TransactionsAdapter()
+    private val paging = PagingOnScrollListener(this, Paging(PAGING_THRESHOLD))
+    private val pagingSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
 
     private lateinit var presenter: TransactionsPresenter
     private lateinit var createTransactionObservable: Observable<Unit>
@@ -45,6 +52,7 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
         addItemDecoration(DividerItemDecoration(
                 getColorFromTheme(context, R.attr.colorDivider),
                 resources.getDimensionPixelSize(R.dimen.divider)))
+        addOnScrollListener(paging)
         adapter = transactionsAdapter
     }
 
@@ -66,7 +74,7 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun onTransactionSelected() = transactionsAdapter.itemPositionClicks().map { transactionsAdapter.getItem(it) }
     override fun onCreateTransaction() = createTransactionObservable
     override fun onDisplayArchivedTransactions() = never<Unit>() // TODO Implement
-    override fun onPagingEdgeReached() = never<TransactionsPresenter.PagingEdge>() // TODO Implement
+    override fun onPagingEdgeReached() = pagingSubject
 
     override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {
         // TODO Implement
@@ -74,6 +82,7 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun showTransactions(transactions: List<Transaction>) {
         transactionsAdapter.setItems(transactions)
+        paging.reset()
     }
 
     override fun addTransactions(transactions: List<Transaction>, position: Int) {
@@ -90,5 +99,12 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     override fun displayArchivedTransactions() {
         TransactionsActivity.startArchived(context)
+    }
+
+    override fun onEnteredPagingArea(pagingEdge: TransactionsPresenter.PagingEdge) {
+        pagingSubject.onNext(pagingEdge)
+    }
+
+    override fun onLeftPagingArea(pagingEdge: TransactionsPresenter.PagingEdge) {
     }
 }
