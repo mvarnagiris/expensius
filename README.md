@@ -6,6 +6,9 @@
 CRASHLYTICS=your_id_goes_here
 ```
 
+# Links
+- [Google+ community](https://plus.google.com/communities/101485799420505987783)
+
 # License
 ```
 Copyright (C) 2015 Mantas Varnagiris.
