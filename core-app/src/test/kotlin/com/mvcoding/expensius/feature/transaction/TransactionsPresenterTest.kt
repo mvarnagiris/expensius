@@ -16,56 +16,46 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.Companion.PAGE_SIZE
-import com.mvcoding.expensius.feature.transaction.TransactionsPresenter.PagingEdge.END
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.paging.Page
-import com.mvcoding.expensius.paging.PageLoader
-import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.rxSchedulers
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Matchers.anyInt
-import org.mockito.Matchers.anyListOf
-import org.mockito.Mockito.times
-import rx.Observable
 import rx.Observable.just
-import rx.lang.kotlin.BehaviourSubject
 import rx.lang.kotlin.PublishSubject
-import kotlin.test.assertEquals
 
 class TransactionsPresenterTest {
     val createTransactionSubject = PublishSubject<Unit>()
     val selectTransactionSubject = PublishSubject<Transaction>()
     val displayArchivedTransactionsSubject = PublishSubject<Unit>()
-    val pagingEdgeSubject = PublishSubject<TransactionsPresenter.PagingEdge>()
-    val pageLoader = PageLoaderForTest()
-    val transactionsProvider = TransactionsProviderForTest(pageLoader)
+
+    val transactionsProvider = mock<TransactionsProvider>()
     val view = mock<TransactionsPresenter.View>()
 
     @Before
     fun setUp() {
+        whenever(transactionsProvider.transactions(argThat { modelState == NONE })).thenReturn(just(listOf(aTransaction())))
+        whenever(transactionsProvider.transactions(argThat { modelState == ARCHIVED }))
+                .thenReturn(just(listOf(aTransaction().withModelState(ARCHIVED))))
         whenever(view.onCreateTransaction()).thenReturn(createTransactionSubject)
         whenever(view.onTransactionSelected()).thenReturn(selectTransactionSubject)
         whenever(view.onDisplayArchivedTransactions()).thenReturn(displayArchivedTransactionsSubject)
-        whenever(view.onPagingEdgeReached()).thenReturn(pagingEdgeSubject)
     }
 
     @Test
     fun showsModelDisplayType() {
-        val presenter = presenterWithModelDisplayTypeArchived()
-
-        presenter.onViewAttached(view)
+        presenterWithModelDisplayTypeArchived().onViewAttached(view)
 
         verify(view).showModelDisplayType(VIEW_ARCHIVED)
     }
 
     @Test
     fun showsTransactions() {
-        pageLoader.size = 1
-
         presenterWithModelDisplayTypeView().onViewAttached(view)
 
         verify(view).showTransactions(argThat { size == 1 })
@@ -73,82 +63,9 @@ class TransactionsPresenterTest {
 
     @Test
     fun showsArchivedTransactions() {
-        pageLoader.size = 1
-        val presenter = presenterWithModelDisplayTypeArchived()
+        presenterWithModelDisplayTypeArchived().onViewAttached(view)
 
-        presenter.onViewAttached(view)
-
-        verify(view).showTransactions(argThat { size == 1 && get(0).modelState == ARCHIVED })
-    }
-
-    @Test
-    fun addsNextPageWhenEndEdgeIsReached() {
-        pageLoader.size = PAGE_SIZE + 1
-        presenterWithModelDisplayTypeView().onViewAttached(view)
-
-        pagingEdgeEnd()
-
-        verify(view).addTransactions(argThat { size == 1 }, eq(PAGE_SIZE))
-    }
-
-    @Test
-    fun addsNextPageWhenEndEdgeIsReachedMoreThanOnce() {
-        pageLoader.size = PAGE_SIZE * 2 + 1
-        presenterWithModelDisplayTypeView().onViewAttached(view)
-
-        pagingEdgeEnd()
-        pagingEdgeEnd()
-
-        verify(view).addTransactions(argThat { size == 1 }, eq(PAGE_SIZE * 2))
-    }
-
-    @Test
-    fun doesNotAddNextPageWhenCurrentPageIsTheLastOne() {
-        pageLoader.size = PAGE_SIZE * 2 - 1
-        presenterWithModelDisplayTypeView().onViewAttached(view)
-
-        pagingEdgeEnd()
-        pagingEdgeEnd()
-
-        verify(view, times(1)).addTransactions(anyListOf(Transaction::class.java), anyInt())
-    }
-
-    @Test
-    fun doesNotAddNextPageWhenNextPageIsEmpty() {
-        pageLoader.size = PAGE_SIZE * 2
-        presenterWithModelDisplayTypeView().onViewAttached(view)
-
-        pagingEdgeEnd()
-        pagingEdgeEnd()
-
-        verify(view).addTransactions(anyListOf(Transaction::class.java), anyInt())
-    }
-
-    @Test
-    fun showsCachedTransactionsAfterReattach() {
-        pageLoader.size = PAGE_SIZE + 1
-        val presenter = presenterWithModelDisplayTypeView()
-        presenter.onViewAttached(view)
-        pagingEdgeEnd()
-
-        presenter.onViewDetached(view)
-        presenter.onViewAttached(view)
-
-        verify(view).showTransactions(argThat { size == PAGE_SIZE + 1 })
-        assertEquals(1, transactionsProvider.loadCount)
-    }
-
-    @Test
-    fun showsFirstPageWithNewTransactionWhenNewTransactionIsCreated() {
-        pageLoader.size = PAGE_SIZE + 1
-        val presenter = presenterWithModelDisplayTypeView()
-        presenter.onViewAttached(view)
-        pagingEdgeEnd()
-
-        pageLoader.reloadData()
-
-        verify(view, times(2)).showTransactions(argThat { size == PAGE_SIZE })
-        assertEquals(1, transactionsProvider.loadCount)
+        verify(view).showTransactions(argThat { size == 1 && first().modelState == ARCHIVED })
     }
 
     @Test
@@ -179,56 +96,9 @@ class TransactionsPresenterTest {
         verify(view).displayArchivedTransactions()
     }
 
-    private fun pagingEdgeEnd() {
-        pagingEdgeSubject.onNext(END)
-    }
-
-    private fun selectTransaction(transaction: Transaction) {
-        selectTransactionSubject.onNext(transaction)
-    }
-
-    private fun createTransaction() {
-        createTransactionSubject.onNext(Unit)
-    }
-
-    private fun displayArchivedTransactions() {
-        displayArchivedTransactionsSubject.onNext(Unit)
-    }
-
-    private fun presenterWithModelDisplayTypeView(): TransactionsPresenter {
-        return TransactionsPresenter(transactionsProvider, VIEW_NOT_ARCHIVED, rxSchedulers())
-    }
-
-    private fun presenterWithModelDisplayTypeArchived() =
-            TransactionsPresenter(transactionsProvider, VIEW_ARCHIVED, rxSchedulers())
-
-    class TransactionsProviderForTest(private val pageLoader: PageLoaderForTest) : TransactionsProvider {
-        var loadCount = 0
-
-        override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
-            loadCount++
-            return pageLoader.load({ aTransaction().withModelState(transactionsFilter.modelState) }, Any(), pages)
-        }
-
-        override fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>> {
-            throw UnsupportedOperationException()
-        }
-
-        override fun save(transactions: Set<Transaction>) {
-            throw UnsupportedOperationException()
-        }
-    }
-
-    class PageLoaderForTest : PageLoader<Transaction, Any, Any, Any>() {
-        private val refreshes = BehaviourSubject(Unit)
-        var size = 0;
-
-        override fun load(query: Any) = refreshes.flatMap { just(Any()) }
-        override fun sizeOf(data: Any) = size;
-        override fun dataItemAtPosition(data: Any, position: Int) = Any()
-
-        fun reloadData() {
-            refreshes.onNext(Unit)
-        }
-    }
+    private fun selectTransaction(transaction: Transaction) = selectTransactionSubject.onNext(transaction)
+    private fun createTransaction() = createTransactionSubject.onNext(Unit)
+    private fun displayArchivedTransactions() = displayArchivedTransactionsSubject.onNext(Unit)
+    private fun presenterWithModelDisplayTypeView() = TransactionsPresenter(transactionsProvider, VIEW_NOT_ARCHIVED, rxSchedulers())
+    private fun presenterWithModelDisplayTypeArchived() = TransactionsPresenter(transactionsProvider, VIEW_ARCHIVED, rxSchedulers())
 }

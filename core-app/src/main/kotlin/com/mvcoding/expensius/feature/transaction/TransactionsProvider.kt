@@ -15,12 +15,9 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.paging.Page
-import com.mvcoding.expensius.paging.PageResult
 import rx.Observable
 
 interface TransactionsProvider {
-    fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>>
     fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>>
     fun save(transactions: Set<Transaction>)
 }

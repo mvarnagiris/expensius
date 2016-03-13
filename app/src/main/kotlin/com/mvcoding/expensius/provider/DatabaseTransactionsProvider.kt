@@ -22,8 +22,6 @@ import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.paging.Page
-import com.mvcoding.expensius.paging.PageResult
 import com.mvcoding.expensius.provider.database.*
 import com.mvcoding.expensius.provider.database.OrderDirection.DESC
 import com.mvcoding.expensius.provider.database.table.TagsTable
@@ -33,7 +31,6 @@ import rx.Observable
 
 class DatabaseTransactionsProvider(
         private val database: Database,
-        private val pageLoader: DatabasePageLoader<Transaction>,
         private val transactionsTable: TransactionsTable,
         private val transactionTagsTable: TransactionTagsTable,
         private val tagsTable: TagsTable) : TransactionsProvider {
@@ -48,10 +45,6 @@ class DatabaseTransactionsProvider(
         }
 
         database.save(saveTransactions.plus(deleteRelationships).plus(saveRelationships))
-    }
-
-    override fun transactions(pages: Observable<Page>, transactionsFilter: TransactionsFilter): Observable<PageResult<Transaction>> {
-        return pageLoader.load({ it.toTransaction(transactionsTable, tagsTable) }, query(transactionsFilter), pages)
     }
 
     override fun transactions(transactionsFilter: TransactionsFilter): Observable<List<Transaction>> {

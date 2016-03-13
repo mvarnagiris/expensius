@@ -24,7 +24,6 @@ import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provideSettings
 import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
 import com.mvcoding.expensius.provider.database.Database
-import com.mvcoding.expensius.provider.database.DatabasePageLoader
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
@@ -39,7 +38,6 @@ class TransactionModule : ShankModule {
     private fun transactionsProvider() = registerFactory<TransactionsProvider>(TransactionsProvider::class.java, {
         val database = provideSingleton(Database::class)
         DatabaseTransactionsProvider(database,
-                DatabasePageLoader<Transaction>(database),
                 TransactionsTable(),
                 TransactionTagsTable(),
                 TagsTable())
