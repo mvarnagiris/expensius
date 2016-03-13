@@ -14,12 +14,20 @@
 
 buildscript {
     ext.kotlin_version = '1.0.0'
+    ext.privateProperties = new Properties()
+    privateProperties.load(new FileInputStream("private.properties"))
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0-alpha1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+
+    file("private.properties").withReader { reader ->
+        def userProps = new Properties()
+        userProps.load(reader)
+        properties.putAll(userProps)
     }
 }
 

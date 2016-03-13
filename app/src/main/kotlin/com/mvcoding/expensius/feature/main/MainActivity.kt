@@ -48,10 +48,6 @@ class MainActivity : BaseActivity() {
     }
 
     private val FAB_ANIMATION_DURATION = 100L
-
-    private val addTransactionFloatingActionButton by lazy { findViewById(R.id.addTransactionFloatingActionButton) }
-    private val addTagFloatingActionButton by lazy { findViewById(R.id.addTagFloatingActionButton) }
-
     private val argbEvaluator = ArgbEvaluator()
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,9 +1,9 @@
 # Expensius
 # Project setup
-- Create a file `expensius.properties` in root directory.
+- Create a file `private.properties` in root directory.
 
 ```
-endpoint_web_client_id=your_id_goes_here
+CRASHLYTICS=your_id_goes_here
 ```
 
 # License

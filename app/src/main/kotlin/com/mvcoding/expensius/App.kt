@@ -15,6 +15,7 @@
 package com.mvcoding.expensius
 
 import android.app.Application
+import com.crashlytics.android.Crashlytics
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.currency.CurrenciesModule
@@ -25,12 +26,14 @@ import com.mvcoding.expensius.feature.settings.SettingsModule
 import com.mvcoding.expensius.feature.splash.SplashModule
 import com.mvcoding.expensius.feature.tag.TagsModule
 import com.mvcoding.expensius.feature.transaction.TransactionModule
+import io.fabric.sdk.android.Fabric
 import net.danlew.android.joda.JodaTimeAndroid
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        JodaTimeAndroid.init(this);
+        JodaTimeAndroid.init(this)
+        Fabric.with(this, Crashlytics())
         initializeModules(
                 AppModule(this),
                 SplashModule(),
