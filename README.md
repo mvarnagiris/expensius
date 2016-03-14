@@ -6,9 +6,12 @@
 CRASHLYTICS=your_id_goes_here
 ```
 
+# Links
+- [Google+ community](https://plus.google.com/communities/101485799420505987783)
+
 # License
 ```
-Copyright (C) 2015 Mantas Varnagiris.
+Copyright (C) 2016 Mantas Varnagiris.
  
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
