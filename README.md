@@ -9,6 +9,9 @@ CRASHLYTICS=your_id_goes_here
 # Links
 - [Google+ community](https://plus.google.com/communities/101485799420505987783)
 
+# Contribution
+Pull requests are welcome. Before starting any work, make sure to create new issue and discuss it there.
+
 # License
 ```
 Copyright (C) 2016 Mantas Varnagiris.
