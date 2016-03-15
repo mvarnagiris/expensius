@@ -30,6 +30,8 @@ import rx.lang.kotlin.PublishSubject
 class TagsPresenterTest {
     val tagSelectedSubject = PublishSubject<Tag>()
     val tagCreateSubject = PublishSubject<Unit>()
+    val tagMoveSubject = PublishSubject<TagsPresenter.TagMove>()
+
     val displayArchivedTagsSubject = PublishSubject<Unit>()
     val tagsProvider = mock<TagsProvider>()
     val view = mock<TagsPresenter.View>()
@@ -39,6 +41,7 @@ class TagsPresenterTest {
         whenever(view.onTagSelected()).thenReturn(tagSelectedSubject)
         whenever(view.onCreateTag()).thenReturn(tagCreateSubject)
         whenever(view.onDisplayArchivedTags()).thenReturn(displayArchivedTagsSubject)
+        whenever(view.onTagMoved()).thenReturn(tagMoveSubject)
         whenever(tagsProvider.tags()).thenReturn(empty())
         whenever(tagsProvider.archivedTags()).thenReturn(empty())
     }
@@ -105,16 +108,35 @@ class TagsPresenterTest {
         verify(view).displayArchivedTags()
     }
 
-    private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
+    @Test
+    fun reordersAllTagsWhenOneTagWasMovedUp() {
+        val tags = listOf(aTag(), aTag(), aTag(), aTag())
+        val reorderedTags = listOf(tags[2].withOrder(0), tags[0].withOrder(1), tags[1].withOrder(2), tags[3].withOrder(3))
+        whenever(tagsProvider.tags()).thenReturn(just(tags))
+        presenterWithModelDisplayTypeView().onViewAttached(view)
 
-    private fun archivedTags() = displayArchivedTagsSubject.onNext(Unit)
+        moveTag(2, 0)
 
-    private fun createTag() {
-        tagCreateSubject.onNext(Unit)
+        verify(tagsProvider).save(reorderedTags.toSet())
     }
 
-    private fun presenterWithModelDisplayTypeView() = TagsPresenter(tagsProvider, VIEW_NOT_ARCHIVED, rxSchedulers())
+    @Test
+    fun reordersAllTagsWhenOneTagWasMovedDown() {
+        val tags = listOf(aTag(), aTag(), aTag(), aTag())
+        val reorderedTags = listOf(tags[1].withOrder(0), tags[2].withOrder(1), tags[0].withOrder(2), tags[3].withOrder(3))
+        whenever(tagsProvider.tags()).thenReturn(just(tags))
+        presenterWithModelDisplayTypeView().onViewAttached(view)
 
+        moveTag(0, 2)
+
+        verify(tagsProvider).save(reorderedTags.toSet())
+    }
+
+    private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
+    private fun archivedTags() = displayArchivedTagsSubject.onNext(Unit)
+    private fun createTag() = tagCreateSubject.onNext(Unit)
+    private fun moveTag(fromPosition: Int, toPosition: Int) = tagMoveSubject.onNext(TagsPresenter.TagMove(fromPosition, toPosition))
+    private fun presenterWithModelDisplayTypeView() = TagsPresenter(tagsProvider, VIEW_NOT_ARCHIVED, rxSchedulers())
     private fun presenterWithModelDisplayTypeArchived() = TagsPresenter(tagsProvider, VIEW_ARCHIVED, rxSchedulers())
 }
 

@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature
 
 import android.support.v7.widget.RecyclerView
+import java.util.Collections.swap
 
 abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Adapter<VH>() {
     private val items = arrayListOf<T>()
@@ -47,5 +48,10 @@ abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Ada
         val removedItemPosition = items.indexOf(item)
         items.remove(item)
         notifyItemRemoved(removedItemPosition)
+    }
+
+    fun move(fromPosition: Int, toPosition: Int) {
+        swap(items, fromPosition, toPosition)
+        notifyItemMoved(fromPosition, toPosition)
     }
 }

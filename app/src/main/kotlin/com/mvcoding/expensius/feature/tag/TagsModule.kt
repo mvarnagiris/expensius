@@ -33,7 +33,11 @@ class TagsModule : ShankModule {
     }
 
     private fun tagsProvider() = registerFactory(TagsProvider::class.java, { -> DatabaseTagsProvider(provideDatabase(), TagsTable()) })
-    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class.java, { -> QuickTagsPresenter(provideTagsProvider()) })
+
+    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class.java) { ->
+        QuickTagsPresenter(provideTagsProvider(), provideRxSchedulers())
+    }
+
     private fun tagPresenter() = registerFactory(TagPresenter::class.java, { tag: Tag -> TagPresenter(tag, provideTagsProvider()) })
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class.java, { modelDisplayType: ModelDisplayType ->

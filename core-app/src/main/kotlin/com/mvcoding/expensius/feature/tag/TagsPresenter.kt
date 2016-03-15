@@ -21,6 +21,8 @@ import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.model.Tag
 import rx.Observable
 import rx.Observable.merge
+import java.lang.Math.max
+import java.lang.Math.min
 
 class TagsPresenter(
         private val tagsProvider: TagsProvider,
@@ -32,18 +34,38 @@ class TagsPresenter(
 
         view.showModelDisplayType(modelDisplayType)
 
-        unsubscribeOnDetach(tags().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribe { view.showTags(it) })
+        val tags = if (modelDisplayType == VIEW_ARCHIVED) tagsProvider.archivedTags().cache() else tagsProvider.tags().cache()
+
+        unsubscribeOnDetach(view.onTagMoved()
+                .withLatestFrom(tags, { tagMove, tags -> reorderTags(tagMove, tags) })
+                .subscribe { tagsProvider.save(it.toSet()) })
+        unsubscribeOnDetach(tags.subscribeOn(schedulers.io).observeOn(schedulers.main).subscribe { view.showTags(it) })
         unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { Tag() }).subscribe { view.displayTagEdit(it) })
         unsubscribeOnDetach(view.onDisplayArchivedTags().subscribe { view.displayArchivedTags() })
     }
 
-    private fun tags() = if (modelDisplayType == VIEW_ARCHIVED) tagsProvider.archivedTags() else tagsProvider.tags()
+    private fun reorderTags(tagMove: TagMove, tags: List<Tag>): List<Tag> {
+        val fromPosition = tagMove.fromPosition
+        val toPosition = tagMove.toPosition
+        val minPosition = min(fromPosition, toPosition)
+        val maxPosition = max(fromPosition, toPosition)
+        return tags.mapIndexed { position, tag ->
+            when {
+                position == fromPosition -> tag.withOrder(toPosition)
+                position >= minPosition && position <= maxPosition -> tag.withOrder(position + if (fromPosition > toPosition) 1 else -1)
+                else -> tag.withOrder(position)
+            }
+        }
+    }
+
+    data class TagMove(val fromPosition: Int, val toPosition: Int)
 
     interface View : Presenter.View {
         fun showModelDisplayType(modelDisplayType: ModelDisplayType)
         fun showTags(tags: List<Tag>)
 
         fun onTagSelected(): Observable<Tag>
+        fun onTagMoved(): Observable<TagMove>
         fun onCreateTag(): Observable<Unit>
         fun onDisplayArchivedTags(): Observable<Unit>
 

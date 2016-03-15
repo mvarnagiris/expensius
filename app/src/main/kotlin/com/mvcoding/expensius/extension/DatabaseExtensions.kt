@@ -32,6 +32,7 @@ fun Tag.toContentValues(tagsTable: TagsTable): ContentValues {
     contentValues.put(tagsTable.modelState.name, modelState.name)
     contentValues.put(tagsTable.title.name, title)
     contentValues.put(tagsTable.color.name, color)
+    contentValues.put(tagsTable.order.name, order)
     return contentValues
 }
 
@@ -55,7 +56,8 @@ fun Cursor.toTag(tagsTable: TagsTable): Tag {
     val modelState = ModelState.valueOf(getString(this.getColumnIndex(tagsTable.modelState.name)))
     val title = getString(this.getColumnIndex(tagsTable.title.name))
     val color = getInt(this.getColumnIndex(tagsTable.color.name))
-    return Tag(id, modelState, title, color)
+    val order = getInt(this.getColumnIndex(tagsTable.order.name))
+    return Tag(id, modelState, title, color, order)
 }
 
 fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTable): Transaction {

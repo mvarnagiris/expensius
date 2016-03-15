@@ -25,11 +25,12 @@ class TagsTable : ModelTable("tags") {
 
     val title = ValueColumn(this, "title", TEXT);
     val color = ValueColumn(this, "color", INTEGER, "0");
+    val order = ValueColumn(this, "order", INTEGER, "0")
 
     val transactionTags = CalculatedColumn(
             "group_concat(${columns().joinToString(separator = "||\"$COLUMN_SEPARATOR\"||",
                                                    transform = { it.toString() })}, '$TAG_SEPARATOR')",
             "tags")
 
-    override fun modelColumns() = arrayOf(title, color)
+    override fun modelColumns() = arrayOf(title, color, order)
 }

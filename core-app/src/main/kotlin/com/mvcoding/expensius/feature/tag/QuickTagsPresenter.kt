@@ -14,12 +14,16 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.model.Tag
 import rx.Observable
 import rx.Observable.combineLatest
 
-class QuickTagsPresenter(private val tagsProvider: TagsProvider) : Presenter<QuickTagsPresenter.View>() {
+class QuickTagsPresenter(
+        private val tagsProvider: TagsProvider,
+        private val rxSchedulers: RxSchedulers) : Presenter<QuickTagsPresenter.View>() {
+
     private val toggledTags = hashMapOf<Tag, Boolean>()
 
     override fun onViewAttached(view: View) {
@@ -28,13 +32,17 @@ class QuickTagsPresenter(private val tagsProvider: TagsProvider) : Presenter<Qui
         val selectedTags = view.onShowSelectedTags().doOnNext { it.forEach { toggledTags.put(it, true) } }
         val allTags = combineLatest(tagsProvider.tags(), selectedTags, {
             providerTags, selectedTags ->
-            providerTags.plus(selectedTags.filterNot { providerTags.contains(it) })
+            providerTags.plus(selectedTags.filterNot { providerTags.contains(it) }).sortedBy { it.order }
         })
 
-        unsubscribeOnDetach(allTags.map { toSelectableTags(it) }.subscribe { view.showSelectableTags(it) })
+        unsubscribeOnDetach(allTags
+                .subscribeOn(rxSchedulers.io)
+                .map { toSelectableTags(it) }
+                .observeOn(rxSchedulers.main)
+                .subscribe { view.showSelectableTags(it) })
         unsubscribeOnDetach(view.onSelectableTagToggled()
-                                    .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
-                                    .subscribe { view.showUpdatedSelectableTag(it, it.toggled()) })
+                .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
+                .subscribe { view.showUpdatedSelectableTag(it, it.toggled()) })
     }
 
     private fun toSelectableTags(tags: List<Tag>) = tags.map { SelectableTag(it, toggledTags.getOrElse(it, { false })) }

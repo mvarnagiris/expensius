@@ -43,7 +43,7 @@ class QueryRequestTest {
                 .sql()
 
         assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=?",
-                     sql)
+                sql)
     }
 
     @Test
@@ -57,7 +57,21 @@ class QueryRequestTest {
                 .sql()
 
         assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=? GROUP BY tableFirst_id, tableSecond_id",
-                     sql)
+                sql)
+    }
+
+    @Test
+    fun selectWhereOrderBy() {
+        val sql = select(tableFirst)
+                .from(tableFirst)
+                .where("${tableFirst.id.name}=1")
+                .or("${tableFirst.id.name}=2")
+                .and("${tableFirst.value.name}=?")
+                .orderBy(Order(tableFirst.id, ASC), Order(tableSecond.id, DESC))
+                .sql()
+
+        assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=? ORDER BY tableFirst_id ASC, tableSecond_id DESC",
+                sql)
     }
 
     @Test
@@ -72,7 +86,7 @@ class QueryRequestTest {
                 .sql()
 
         assertEquals("SELECT tableFirst_id, tableFirst_value FROM tableFirst WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=? GROUP BY tableFirst_id, tableSecond_id ORDER BY tableFirst_id ASC, tableSecond_id DESC",
-                     sql)
+                sql)
     }
 
     @Test
@@ -83,7 +97,7 @@ class QueryRequestTest {
                 .sql()
 
         assertEquals("SELECT tableFirst_id, tableFirst_value, tableSecond_id, tableSecond_value FROM tableFirst LEFT JOIN tableSecond ON tableFirst_id=tableSecond_id",
-                     sql)
+                sql)
     }
 
     @Test
@@ -97,7 +111,7 @@ class QueryRequestTest {
                 .sql()
 
         assertEquals("SELECT tableFirst_id, tableFirst_value, tableSecond_id, tableSecond_value FROM tableFirst LEFT JOIN tableSecond ON tableFirst_id=tableSecond_id WHERE tableFirst_id=1 OR tableFirst_id=2 AND tableFirst_value=?",
-                     sql)
+                sql)
     }
 
     @Test

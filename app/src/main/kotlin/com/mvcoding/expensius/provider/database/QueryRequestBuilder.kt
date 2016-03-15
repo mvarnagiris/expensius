@@ -98,6 +98,7 @@ class Where(
                                                                             clause)
 
     fun groupBy(vararg groupByColumns: Column) = GroupBy(this, columns, tables, arguments, groupByColumns.toList().toTypedArray())
+    fun orderBy(vararg orderByColumns: Order) = OrderBy(this, columns, tables, arguments, orderByColumns.toList().toTypedArray())
 }
 
 class GroupBy(
@@ -121,7 +122,7 @@ class OrderBy(
     override fun elementPartSql() = "ORDER BY ${orders.joinToString { it.toString() }}"
 }
 
-class Order(private val column: Column, private val orderDirection: OrderDirection) {
+data class Order(private val column: Column, private val orderDirection: OrderDirection) {
     override fun toString() = "${column.name} $orderDirection"
 }
 

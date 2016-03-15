@@ -20,7 +20,9 @@ data class Tag(
         override val id: String = "",
         override val modelState: ModelState = NONE,
         val title: String = "",
-        val color: Int = 0) : Model {
+        val color: Int = 0,
+        val order: Int = 0) : Model {
 
     fun withModelState(modelState: ModelState) = copy(modelState = modelState)
+    fun withOrder(order: Int) = copy(order = order)
 }

@@ -23,6 +23,8 @@ import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.Order
+import com.mvcoding.expensius.provider.database.OrderDirection.ASC
 import com.mvcoding.expensius.provider.database.SaveDatabaseAction
 import com.mvcoding.expensius.provider.database.select
 import com.mvcoding.expensius.provider.database.table.TagsTable
@@ -43,7 +45,8 @@ class DatabaseTagsProvider(private val database: Database, private val tagsTable
 
     private fun queryTags(modelState: ModelState) =
             database.query(select(tagsTable)
-                                   .from(tagsTable)
-                                   .where("${tagsTable.modelState}=?", modelState.name))
+                    .from(tagsTable)
+                    .where("${tagsTable.modelState}=?", modelState.name)
+                    .orderBy(Order(tagsTable.order, ASC)))
                     .map { it.map { it.toTag(tagsTable) } }
 }

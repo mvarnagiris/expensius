@@ -31,7 +31,7 @@ class DBHelper(
         private val context: Context,
         private val tagsTable: TagsTable,
         private val transactionsTable: TransactionsTable,
-        private val transactionTagsTable: TransactionTagsTable) : SQLiteOpenHelper(context, "expensius.db", null, 1) {
+        private val transactionTagsTable: TransactionTagsTable) : SQLiteOpenHelper(context, "expensius.db", null, 2) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(tagsTable.createScript())
@@ -41,9 +41,12 @@ class DBHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        when (oldVersion) {
+            1 -> upgradeTo2(db)
+        }
     }
 
-    fun insertDefaultValues(db: SQLiteDatabase) {
+    private fun insertDefaultValues(db: SQLiteDatabase) {
         db.beginTransaction();
 
         try {
@@ -60,6 +63,7 @@ class DBHelper(
                     Tag(generateModelId(), NONE, getString(R.string.tag_health_and_beauty), getColor(context, R.color.pink_500)),
                     Tag(generateModelId(), NONE, getString(R.string.tag_bills_and_utilities), getColor(context, R.color.brown_500)),
                     Tag(generateModelId(), NONE, getString(R.string.tag_pets), getColor(context, R.color.teal_500)))
+                    .mapIndexed { position, tag -> tag.withOrder(position) }
                     .forEach { db.insert(tagsTable.name, null, it.toContentValues(tagsTable)) }
 
             db.setTransactionSuccessful();
@@ -69,4 +73,8 @@ class DBHelper(
     }
 
     private fun getString(resId: Int) = context.getString(resId)
+
+    private fun upgradeTo2(db: SQLiteDatabase) {
+        db.execSQL("ALTER TABLE ${tagsTable.name} ADD COLUMN ${tagsTable.order.createScript()}")
+    }
 }
