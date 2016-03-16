@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.rxSchedulers
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
@@ -29,7 +30,7 @@ class QuickTagsPresenterTest {
     val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }
     val tagsCache = mock(TagsProvider::class.java)
     val view = mock(QuickTagsPresenter.View::class.java)
-    val presenter = QuickTagsPresenter(tagsCache)
+    val presenter = QuickTagsPresenter(tagsCache, rxSchedulers())
 
     @Before
     fun setUp() {
@@ -53,8 +54,8 @@ class QuickTagsPresenterTest {
         updateSelectedTags(setOf(defaultTags[1], extraTag))
 
         verify(view).showSelectableTags(listOf(SelectableTag(defaultTags[0], false),
-                                               SelectableTag(defaultTags[1], true),
-                                               SelectableTag(extraTag, true)))
+                SelectableTag(defaultTags[1], true),
+                SelectableTag(extraTag, true)))
     }
 
     @Test

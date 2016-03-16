@@ -22,26 +22,29 @@ import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.generateModelId
 import rx.Observable
 import rx.Observable.combineLatest
-import rx.Observable.just
 
 class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider) : Presenter<TagPresenter.View>() {
+    companion object {
+        internal val VERY_HIGH_ORDER = 1000
+    }
+
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
         view.showArchiveEnabled(tag.isStored())
         view.showModelState(tag.modelState)
 
-        val ids = just(tag.id).filter { !it.isBlank() }.defaultIfEmpty(generateModelId())
-        val modelStates = just(tag.modelState)
+        val id = tag.let { if (it.isStored()) it.id else generateModelId() }
+        val modelState = tag.modelState
+        val order = tag.let { if (it.isStored()) it.order else VERY_HIGH_ORDER }
+
         val titles = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.trim() }
         val colors = view.onColorChanged().startWith(if (tag.color == 0) color(0x607d8b) else tag.color).doOnNext { view.showColor(it) }
 
         val tagObservable = combineLatest(
-                ids,
-                modelStates,
                 titles,
                 colors,
-                { id, modelState, title, color -> Tag(id, modelState, title, color) })
+                { title, color -> Tag(id, modelState, title, color, order) })
                 .doOnNext { tag = it }
 
         unsubscribeOnDetach(view.onSave()

@@ -14,16 +14,15 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.feature.tag.TagPresenter.Companion.VERY_HIGH_ORDER
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Tag
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.nullValue
-import org.junit.Assert.assertThat
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.mock
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
-import rx.Observable
 import rx.lang.kotlin.PublishSubject
 
 class TagPresenterTest {
@@ -33,7 +32,7 @@ class TagPresenterTest {
     val saveSubject = PublishSubject<Unit>()
     val tag = aTag()
     val newTag = aNewTag()
-    val tagsProvider = TagsProviderForTest()
+    val tagsProvider = mock<TagsProvider>()
     val view = mock(TagPresenter.View::class.java)
     val presenter = TagPresenter(tag, tagsProvider)
 
@@ -58,8 +57,8 @@ class TagPresenterTest {
     fun showsUpdateValuesWhenValuesAreUpdated() {
         presenter.onViewAttached(view)
 
-        updateTitle("updatedTitle")
-        updateColor(10)
+        setTitle("updatedTitle")
+        setColor(10)
 
         verify(view).showTitle("updatedTitle")
         verify(view).showColor(10)
@@ -69,8 +68,8 @@ class TagPresenterTest {
     fun showsUpdatedValuesAfterReattach() {
         presenter.onViewAttached(view)
 
-        updateTitle("updatedTitle")
-        updateColor(10)
+        setTitle("updatedTitle")
+        setColor(10)
         presenter.onViewDetached(view)
         presenter.onViewAttached(view)
 
@@ -90,11 +89,11 @@ class TagPresenterTest {
     @Test
     fun doesNotTryToSaveAndShowsErrorWhenTitleIsEmptyOnSave() {
         presenter.onViewAttached(view)
-        updateTitle("")
+        setTitle("")
 
         save()
 
-        assertThat(tagsProvider.lastSavedTags, nullValue())
+        verify(tagsProvider, never()).save(any())
         verify(view).showTitleCannotBeEmptyError()
     }
 
@@ -104,17 +103,28 @@ class TagPresenterTest {
 
         save()
 
-        assertThat(tagsProvider.lastSavedTags!!.first(), equalTo(tag))
+        verify(tagsProvider).save(argThat { first() == tag })
+    }
+
+    @Test
+    fun savesNewTagWithVeryHighOrder() {
+        TagPresenter(newTag, tagsProvider).onViewAttached(view)
+        setTitle("Updated title")
+        setColor(10)
+
+        save()
+
+        verify(tagsProvider).save(argThat { first().order == VERY_HIGH_ORDER })
     }
 
     @Test
     fun trimsTitleWhenSaving() {
         presenter.onViewAttached(view)
-        updateTitle(" title ")
+        setTitle(" title ")
 
         save()
 
-        assertThat(tagsProvider.lastSavedTags!!.first().title, equalTo("title"))
+        verify(tagsProvider).save(argThat { first().title == "title" })
     }
 
     @Test
@@ -149,7 +159,7 @@ class TagPresenterTest {
 
         toggleArchive()
 
-        assertThat(tagsProvider.lastSavedTags?.first(), equalTo(archivedTag))
+        verify(tagsProvider).save(argThat { first() == archivedTag })
         verify(view).displayResult(archivedTag)
     }
 
@@ -162,15 +172,15 @@ class TagPresenterTest {
 
         toggleArchive()
 
-        assertThat(tagsProvider.lastSavedTags?.first(), equalTo(restoredTag))
+        verify(tagsProvider).save(argThat { first() == restoredTag })
         verify(view).displayResult(restoredTag)
     }
 
-    private fun updateTitle(title: String) {
+    private fun setTitle(title: String) {
         titleSubject.onNext(title)
     }
 
-    private fun updateColor(color: Int) {
+    private fun setColor(color: Int) {
         colorSubject.onNext(color)
     }
 
@@ -180,21 +190,5 @@ class TagPresenterTest {
 
     private fun save() {
         saveSubject.onNext(Unit)
-    }
-
-    class TagsProviderForTest : TagsProvider {
-        var lastSavedTags: Set<Tag>? = null
-
-        override fun tags(): Observable<List<Tag>> {
-            throw UnsupportedOperationException()
-        }
-
-        override fun archivedTags(): Observable<List<Tag>> {
-            throw UnsupportedOperationException()
-        }
-
-        override fun save(tags: Set<Tag>) {
-            lastSavedTags = tags
-        }
     }
 }

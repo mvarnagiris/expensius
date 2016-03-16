@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
