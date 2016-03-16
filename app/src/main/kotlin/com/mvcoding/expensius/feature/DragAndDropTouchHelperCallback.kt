@@ -22,7 +22,9 @@ import rx.subjects.PublishSubject
 
 class DragAndDropTouchHelperCallback(
         private val adapter: BaseAdapter<*, *>,
-        private val itemMovedSubject: PublishSubject<ItemMoved>) : ItemTouchHelper.SimpleCallback(UP or DOWN, 0) {
+        private val itemMovedSubject: PublishSubject<ItemMoved>,
+        private val canDropOver: (RecyclerView.ViewHolder, RecyclerView.ViewHolder) -> Boolean = { current, target -> true }) :
+        ItemTouchHelper.SimpleCallback(UP or DOWN, 0) {
 
     private var fromPosition: Int = -1
     private var toPosition: Int = -1
@@ -46,6 +48,10 @@ class DragAndDropTouchHelperCallback(
             fromPosition = -1
             toPosition = -1
         }
+    }
+
+    override fun canDropOver(recyclerView: RecyclerView, current: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        return canDropOver(current, target)
     }
 
     data class ItemMoved(val fromPosition: Int, val toPosition: Int)

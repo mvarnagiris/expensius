@@ -48,7 +48,11 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.adapter = adapter
-        ItemTouchHelper(DragAndDropTouchHelperCallback(adapter, tagMoveSubject)).attachToRecyclerView(recyclerView)
+        val touchCallback = DragAndDropTouchHelperCallback(
+                adapter,
+                tagMoveSubject,
+                { current, target -> target.adapterPosition == adapter.itemCount - 1 })
+        ItemTouchHelper(touchCallback).attachToRecyclerView(recyclerView)
     }
 
     override fun onAttachedToWindow() {
