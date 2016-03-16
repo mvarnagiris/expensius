@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/Text.Caption"
-            tools:text="Essential - Food - Lunch" />
+            tools:text="• Essential  • Food  • Lunch" />
 
     </LinearLayout>
 

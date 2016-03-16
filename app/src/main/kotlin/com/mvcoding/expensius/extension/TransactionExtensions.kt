@@ -11,7 +11,6 @@ import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import java.math.BigDecimal
-import java.util.*
 
 fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentValues {
     val contentValues = ContentValues()
@@ -29,20 +28,20 @@ fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentVa
 }
 
 fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTable): Transaction {
-    val id = getString(this.getColumnIndex(transactionsTable.id.name))
-    val modelState = ModelState.valueOf(getString(this.getColumnIndex(transactionsTable.modelState.name)))
-    val transactionType = TransactionType.valueOf(getString(this.getColumnIndex(transactionsTable.transactionType.name)))
-    val transactionState = TransactionState.valueOf(getString(this.getColumnIndex(transactionsTable.transactionState.name)))
-    val timestamp = getLong(this.getColumnIndex(transactionsTable.timestamp.name))
-    val currency = Currency(getString(this.getColumnIndex(transactionsTable.currency.name)))
-    val exchangeRate = BigDecimal(getString(this.getColumnIndex(transactionsTable.exchangeRate.name)))
-    val amount = BigDecimal(getString(this.getColumnIndex(transactionsTable.amount.name)))
+    val id = getString(getColumnIndex(transactionsTable.id.name))
+    val modelState = ModelState.valueOf(getString(getColumnIndex(transactionsTable.modelState.name)))
+    val transactionType = TransactionType.valueOf(getString(getColumnIndex(transactionsTable.transactionType.name)))
+    val transactionState = TransactionState.valueOf(getString(getColumnIndex(transactionsTable.transactionState.name)))
+    val timestamp = getLong(getColumnIndex(transactionsTable.timestamp.name))
+    val currency = Currency(getString(getColumnIndex(transactionsTable.currency.name)))
+    val exchangeRate = BigDecimal(getString(getColumnIndex(transactionsTable.exchangeRate.name)))
+    val amount = BigDecimal(getString(getColumnIndex(transactionsTable.amount.name)))
     val tagSplitRegex = Regex(TagsTable.COLUMN_SEPARATOR)
-    val tagsString = getString(this.getColumnIndex(tagsTable.transactionTags.name))
+    val tagsString = getString(getColumnIndex(tagsTable.transactionTags.name))
     val tags = tagsString?.split(Regex(TagsTable.TAG_SEPARATOR))?.map {
         val tagValues = it.split(tagSplitRegex)
-        Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt())
-    }?.toSortedSet(Comparator { leftTag, rightTag -> leftTag.order.compareTo(rightTag.order) }) ?: emptySet<Tag>()
-    val note = getString(this.getColumnIndex(transactionsTable.note.name))
+        Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt(), tagValues[4].toInt())
+    }?.toSet() ?: emptySet<Tag>()
+    val note = getString(getColumnIndex(transactionsTable.note.name))
     return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
 }

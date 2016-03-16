@@ -25,4 +25,4 @@ fun ViewGroup.forEachChild(action: (View) -> Unit) {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <V : View> ViewGroup.inflate(layoutId: Int) = LayoutInflater.from(this.context).inflate(layoutId, this, false) as V
+fun <V : View> ViewGroup.inflate(layoutId: Int) = LayoutInflater.from(context).inflate(layoutId, this, false) as V

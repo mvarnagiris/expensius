@@ -11,7 +11,6 @@ import android.text.style.ImageSpan.ALIGN_BASELINE
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.inflate
@@ -20,9 +19,11 @@ import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
+import kotlinx.android.synthetic.main.item_view_transaction.view.*
 
-class TransactionItemView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class TransactionItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr) {
+
     private val NON_BREAKABLE_SPACE = "\u00A0"
 
     private val amountFormatter by lazy { provideAmountFormatter() }
@@ -30,11 +31,6 @@ class TransactionItemView(context: Context, attrs: AttributeSet? = null, defStyl
     private val expenseTextColor by lazy { getColorFromTheme(context, R.attr.colorExpense) }
     private val incomeTextColor by lazy { getColorFromTheme(context, R.attr.colorIncome) }
     private val tagDrawable by lazy { getDrawable(context, R.drawable.oval) }
-
-    private val tagsTextView by lazy { findViewById(R.id.tagsTextView) as TextView }
-    private val noteTextView by lazy { findViewById(R.id.noteTextView) as TextView }
-    private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
-    private val dateTextView by lazy { findViewById(R.id.dateTextView) as TextView }
 
     companion object {
         fun inflate(parent: ViewGroup) = parent.inflate<TransactionItemView>(R.layout.item_view_transaction)
@@ -55,7 +51,7 @@ class TransactionItemView(context: Context, attrs: AttributeSet? = null, defStyl
 
     private fun formatTags(tags: Set<Tag>): CharSequence {
         val ssb = SpannableStringBuilder()
-        tags.forEach {
+        tags.sortedBy { it.order }.forEach {
             if (ssb.length > 0) ssb.append("  ")
 
             ssb.append("$NON_BREAKABLE_SPACE$NON_BREAKABLE_SPACE")

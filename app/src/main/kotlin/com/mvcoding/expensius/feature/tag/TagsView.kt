@@ -51,7 +51,7 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         val touchCallback = DragAndDropTouchHelperCallback(
                 adapter,
                 tagMoveSubject,
-                { current, target -> target.adapterPosition == adapter.itemCount - 1 })
+                { current, target -> target.adapterPosition < adapter.itemCount - 1 })
         ItemTouchHelper(touchCallback).attachToRecyclerView(recyclerView)
     }
 
