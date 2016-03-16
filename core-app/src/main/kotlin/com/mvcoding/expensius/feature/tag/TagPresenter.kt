@@ -58,12 +58,9 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
 
     private fun tagWithToggledArchiveState() = tag.withModelState(if (tag.modelState == NONE) ARCHIVED else NONE)
 
-    private fun validate(tag: Tag, view: View) = if (tag.title.isBlank()) {
-        view.showTitleCannotBeEmptyError()
-        false
-    } else {
-        true
-    }
+    private fun validate(tag: Tag, view: View) =
+            if (tag.title.isBlank()) view.showTitleCannotBeEmptyError().let { false }
+            else true
 
     interface View : Presenter.View {
         fun showTitle(title: String)

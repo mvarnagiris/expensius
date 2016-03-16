@@ -11,6 +11,7 @@ import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import java.math.BigDecimal
+import java.util.*
 
 fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentValues {
     val contentValues = ContentValues()
@@ -41,7 +42,7 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTa
     val tags = tagsString?.split(Regex(TagsTable.TAG_SEPARATOR))?.map {
         val tagValues = it.split(tagSplitRegex)
         Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt())
-    }?.toSet() ?: setOf<Tag>()
+    }?.toSortedSet(Comparator { leftTag, rightTag -> leftTag.order.compareTo(rightTag.order) }) ?: emptySet<Tag>()
     val note = getString(this.getColumnIndex(transactionsTable.note.name))
     return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
 }
