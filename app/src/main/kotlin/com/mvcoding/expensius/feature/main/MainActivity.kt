@@ -57,10 +57,10 @@ class MainActivity : BaseActivity() {
         val defaultTabColor = getColorFromTheme(tabLayout.context, R.attr.colorActionIcon)
         val selectedTabColor = getColorFromTheme(tabLayout.context, R.attr.colorAccent)
         val screens = listOf(
-                Screen(reportsInflater(), R.drawable.ic_navigation_reports),
-                Screen(transactionsInflater(), R.drawable.ic_navigation_transactions),
-                Screen(tagsInflater(), R.drawable.ic_navigation_tags),
-                Screen(settingsInflater(), R.drawable.ic_navigation_settings)
+                Screen(reportsInflater(), R.drawable.ic_action_reports),
+                Screen(transactionsInflater(), R.drawable.ic_action_transactions),
+                Screen(tagsInflater(), R.drawable.ic_action_tag),
+                Screen(settingsInflater(), R.drawable.ic_action_settings)
         )
 
         viewPager.adapter = ScreensAdapter(screens)

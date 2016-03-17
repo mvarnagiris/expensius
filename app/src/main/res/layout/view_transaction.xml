@@ -130,7 +130,7 @@
                     android:layout_marginEnd="@dimen/keyline"
                     android:contentDescription="@string/date"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_calendar"
+                    android:src="@drawable/ic_action_date"
                     android:tint="?colorActionIcon" />
 
                 <Button

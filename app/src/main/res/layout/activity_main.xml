@@ -46,7 +46,7 @@
         style="@style/Button.Fab"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/keyline"
-        android:src="@drawable/ic_action_add" />
+        app:srcCompat="@drawable/ic_action_add" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addTagFloatingActionButton"

@@ -30,7 +30,6 @@
         android:id="@+id/floatingActionButton"
         style="@style/Button.Fab"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/keyline"
-        android:src="@drawable/ic_action_add" />
+        android:layout_margin="@dimen/keyline" />
 
 </com.mvcoding.expensius.feature.overview.OverviewView>
