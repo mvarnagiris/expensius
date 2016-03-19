@@ -22,6 +22,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Transaction
 import rx.Observable
 import rx.Observable.merge
+import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorPresenter(
@@ -30,6 +31,8 @@ class CalculatorPresenter(
         private val settings: Settings,
         private val initialNumber: BigDecimal? = null) : Presenter<CalculatorPresenter.View>() {
 
+    private var canSave = true
+
     init {
         initialNumber?.let { calculator.setNumber(it) }
     }
@@ -37,7 +40,9 @@ class CalculatorPresenter(
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        val expressionAlteringObservable = merge(arrayOf(
+        val saves = PublishSubject<Unit>()
+        unsubscribeOnDetach(view.onSave().subscribe(saves))
+        val expressionChanges = merge(arrayOf(
                 view.onDigit0().doOnNext { calculator.digit0() },
                 view.onDigit1().doOnNext { calculator.digit1() },
                 view.onDigit2().doOnNext { calculator.digit2() },
@@ -55,23 +60,29 @@ class CalculatorPresenter(
                 view.onDivide().doOnNext { calculator.divide() },
                 view.onClear().doOnNext { calculator.clear() },
                 view.onDelete().doOnNext { calculator.delete() },
-                view.onCalculate().map { calculator.calculate() }.doOnNext { calculator.setNumber(it) }))
+                saves
+                        .filter { getCurrentState() == CALCULATE }
+                        .map { calculator.calculate() }
+                        .doOnNext { calculator.setNumber(it); canSave = false }))
+
+        val alteredExpressions = expressionChanges
                 .startWith(Unit)
                 .map { calculator.getExpression() }
-                .doOnNext { view.showState(if (calculator.isEmptyOrSingleNumber()) SAVE else CALCULATE) }
+                .doOnNext { view.showState(getCurrentState()) }
                 .doOnNext { view.showExpression(it) }
                 .map { calculator.calculate() }
 
-        unsubscribeOnDetach(view.onSave()
-                .withLatestFrom(expressionAlteringObservable, { unit, number -> number })
-                .subscribe {
-                    if (resultDestination == TRANSACTION) {
-                        view.startTransaction(Transaction(currency = settings.mainCurrency, amount = it))
-                    } else {
-                        view.startResult(it)
-                    }
-                })
+        unsubscribeOnDetach(saves.filter { val result = canSave; canSave = true; result }
+                .withLatestFrom(alteredExpressions, { unit, number -> number })
+                .subscribe { displayResult(view, it) })
     }
+
+    private fun getCurrentState() = if (calculator.isEmptyOrSingleNumber()) SAVE else CALCULATE
+    private fun prepareTransaction(it: BigDecimal) = Transaction(currency = settings.mainCurrency, amount = it)
+
+    private fun displayResult(view: View, amount: BigDecimal) =
+            if (resultDestination == TRANSACTION) view.startTransaction(prepareTransaction(amount))
+            else view.startResult(amount)
 
     enum class State { SAVE, CALCULATE }
 
@@ -95,7 +106,6 @@ class CalculatorPresenter(
         fun onDivide(): Observable<Unit>
         fun onDelete(): Observable<Unit>
         fun onClear(): Observable<Unit>
-        fun onCalculate(): Observable<Unit>
         fun onSave(): Observable<Unit>
         fun showExpression(expression: String)
         fun showState(state: State)

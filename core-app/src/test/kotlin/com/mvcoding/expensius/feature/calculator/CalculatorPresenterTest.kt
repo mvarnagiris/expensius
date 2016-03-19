@@ -20,10 +20,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Currency
-import com.nhaarman.mockito_kotlin.argThat
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.times
@@ -49,7 +46,6 @@ class CalculatorPresenterTest {
     val divideObservable = PublishSubject<Unit>()
     val deleteObservable = PublishSubject<Unit>()
     val clearObservable = PublishSubject<Unit>()
-    val calculateObservable = PublishSubject<Unit>()
     val saveObservable = PublishSubject<Unit>()
     val settings = mock<Settings>()
     val view = mock<CalculatorPresenter.View>()
@@ -75,7 +71,6 @@ class CalculatorPresenterTest {
         whenever(view.onDivide()).thenReturn(divideObservable)
         whenever(view.onDelete()).thenReturn(deleteObservable)
         whenever(view.onClear()).thenReturn(clearObservable)
-        whenever(view.onCalculate()).thenReturn(calculateObservable)
         whenever(view.onSave()).thenReturn(saveObservable)
         whenever(settings.mainCurrency).thenReturn(Currency("GBP"))
     }
@@ -621,9 +616,11 @@ class CalculatorPresenterTest {
         add()
         digit1()
 
-        calculate()
+        save()
 
         verify(view).showExpression("2")
+        verify(view, never()).startResult(any())
+        verify(view, never()).startTransaction(any())
     }
 
     @Test
@@ -632,7 +629,7 @@ class CalculatorPresenterTest {
         digit1()
         add()
         digit1()
-        calculate()
+        save()
 
         save()
 
@@ -646,11 +643,18 @@ class CalculatorPresenterTest {
         digit1()
         add()
         digit1()
-        calculate()
+        save()
 
         save()
 
         verify(view).startTransaction(argThat { amount == BigDecimal(2) })
+    }
+
+    @Test
+    fun savesAreOnlySubscribedOnce() {
+        presenter.onViewAttached(view)
+
+        verify(view, times(1)).onSave()
     }
 
     fun digit0() {
@@ -719,10 +723,6 @@ class CalculatorPresenterTest {
 
     fun clear() {
         clearObservable.onNext(Unit)
-    }
-
-    fun calculate() {
-        calculateObservable.onNext(Unit)
     }
 
     fun save() {
