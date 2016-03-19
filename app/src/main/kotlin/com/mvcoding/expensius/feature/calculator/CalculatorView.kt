@@ -20,11 +20,13 @@ import android.content.Intent
 import android.support.design.widget.FloatingActionButton
 import android.util.AttributeSet
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.view.longClicks
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
@@ -48,7 +50,7 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
     private val number8Button by lazy { findViewById(R.id.number8Button) as Button }
     private val number9Button by lazy { findViewById(R.id.number9Button) as Button }
     private val decimalButton by lazy { findViewById(R.id.decimalButton) as Button }
-    private val deleteButton by lazy { findViewById(R.id.deleteButton) as Button }
+    private val deleteImageButton by lazy { findViewById(R.id.deleteImageButton) as ImageButton }
     private val addButton by lazy { findViewById(R.id.addButton) as Button }
     private val subtractButton by lazy { findViewById(R.id.subtractButton) as Button }
     private val multiplyButton by lazy { findViewById(R.id.multiplyButton) as Button }
@@ -83,7 +85,7 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onViewAttached(this)
+        doNotInEditMode { presenter.onViewAttached(this) }
     }
 
     override fun onDetachedFromWindow() {
@@ -121,9 +123,9 @@ class CalculatorView : LinearLayout, CalculatorPresenter.View {
 
     override fun onDivide() = divideButton.clicks()
 
-    override fun onDelete() = deleteButton.clicks()
+    override fun onDelete() = deleteImageButton.clicks()
 
-    override fun onClear() = deleteButton.longClicks()
+    override fun onClear() = deleteImageButton.longClicks()
 
     override fun onCalculate() = floatingActionButtonClicks.flatMap {
         just(state)

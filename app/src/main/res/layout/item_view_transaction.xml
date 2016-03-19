@@ -18,10 +18,10 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:minHeight="?actionBarSize"
-    android:paddingBottom="@dimen/space_normal"
+    android:paddingBottom="@dimen/space_large"
     android:paddingLeft="@dimen/keyline"
     android:paddingRight="@dimen/keyline"
-    android:paddingTop="@dimen/space_normal">
+    android:paddingTop="@dimen/space_large">
 
     <LinearLayout
         android:layout_width="0dp"

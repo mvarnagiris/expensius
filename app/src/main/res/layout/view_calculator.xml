@@ -64,11 +64,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3" />
 
-            <Button
-                android:id="@+id/deleteButton"
+            <ImageButton
+                android:id="@+id/deleteImageButton"
                 style="@style/Button.Flat.Borderless.Calc.Action"
-                android:text="@string/calculator_delete"
-                android:textAppearance="@style/Text.Title" />
+                android:contentDescription="@string/delete"
+                android:src="@drawable/ic_action_delete"
+                android:textAppearance="@style/Text.Title"
+                android:tint="?colorActionIcon" />
 
         </LinearLayout>
 

@@ -29,5 +29,4 @@
     <string name="calculator_minus">-</string>
     <string name="calculator_divide">÷</string>
     <string name="calculator_multiply">×</string>
-    <string name="calculator_delete">\u232B</string>
 </resources>

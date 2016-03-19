@@ -218,14 +218,16 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/deleteButton"
+            <ImageButton
+                android:id="@+id/deleteImageButton"
                 style="@style/Button.Flat.Borderless.Calc.Action"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="@string/calculator_delete"
-                android:textAppearance="@style/Text.Title" />
+                android:contentDescription="@string/delete"
+                android:src="@drawable/ic_action_delete"
+                android:textAppearance="@style/Text.Title"
+                android:tint="?colorActionIcon" />
 
             <Space
                 android:layout_width="match_parent"
