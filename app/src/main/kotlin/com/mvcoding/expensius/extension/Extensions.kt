@@ -16,6 +16,5 @@ package com.mvcoding.expensius.extension
 
 import android.os.Build
 
-fun supportsLollipop(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-}
+fun supportsLollipop() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+fun doesNotSupportLollipop() = supportsLollipop().not()

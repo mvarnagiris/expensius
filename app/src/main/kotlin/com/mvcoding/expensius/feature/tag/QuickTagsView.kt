@@ -21,6 +21,7 @@ import android.view.View
 import android.view.View.MeasureSpec.getSize
 import android.view.ViewGroup
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.QuickTagView.QuickTag
 import com.mvcoding.expensius.model.Tag
@@ -28,7 +29,9 @@ import rx.lang.kotlin.BehaviourSubject
 import rx.lang.kotlin.PublishSubject
 import java.lang.Math.max
 
-class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
+class QuickTagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        ViewGroup(context, attrs, defStyleAttr), QuickTagsPresenter.View {
+
     private val presenter by lazy { provideActivityScopedSingleton(QuickTagsPresenter::class) }
 
     private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
@@ -38,22 +41,17 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
 
     private var allowShowSelectedTags = true
 
-    constructor(context: Context?) : this(context, null)
-
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
     override fun generateLayoutParams(attrs: AttributeSet?) = MarginLayoutParams(context, attrs)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         if (isInEditMode) {
-            setQuickTags(listOf(QuickTag("Non-essential", getColor(context, R.color.red_500)),
-                                QuickTag("Food", getColor(context, R.color.lime_500)),
-                                QuickTag("Going out", getColor(context, R.color.blue_500)),
-                                QuickTag("Some other very long tag that can take up a few lines, but how?",
-                                         getColor(context, R.color.orange_500))))
+            setQuickTags(listOf(
+                    QuickTag("Non-essential", getColor(context, R.color.red_500)),
+                    QuickTag("Food", getColor(context, R.color.lime_500)),
+                    QuickTag("Going out", getColor(context, R.color.blue_500)),
+                    QuickTag("Some other very long tag that can take up a few lines, but how?",
+                            getColor(context, R.color.orange_500))))
 
             getChildAt(1).isSelected = true
             getChildAt(2).isSelected = true
@@ -62,7 +60,7 @@ class QuickTagsView : ViewGroup, QuickTagsPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onViewAttached(this)
+        doNotInEditMode { presenter.onViewAttached(this) }
     }
 
     override fun onDetachedFromWindow() {

@@ -34,12 +34,14 @@
 
     <dimen name="elevation_toolbar">4dp</dimen>
     <dimen name="elevation_fab">6dp</dimen>
-    <dimen name="elevation_fab_pressed">12dp</dimen>
+    <dimen name="elevation_fab_pressed">6dp</dimen>
     <dimen name="elevation_card">2dp</dimen>
 
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_size_half_negative">-28dp</dimen>
-    <dimen name="fab_mini_size_half_negative">-20dp</dimen>
+    <dimen name="fab_mini_height_half_negative">-40dp</dimen>
+    <dimen name="fab_mini_vertical_padding_negative">-19dp</dimen>
+    <dimen name="fab_mini_horizontal_margin">2dp</dimen>
     <dimen name="fab_size_plus_keyline_2x">88dp</dimen>
 
     <dimen name="divider">0.67dp</dimen>

@@ -17,24 +17,19 @@ package com.mvcoding.expensius.feature.transaction
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.ListPopupWindow
-import android.support.v7.widget.Toolbar
 import android.util.AttributeSet
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.RxBus
 import com.mvcoding.expensius.extension.*
-import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateDialogFragment
 import com.mvcoding.expensius.feature.DateDialogFragment.DateDialogResult
-import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
-import com.mvcoding.expensius.feature.tag.QuickTagsView
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
@@ -43,6 +38,10 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.provideAmountFormatter
+import com.mvcoding.expensius.provideDateFormatter
+import com.mvcoding.expensius.provideRxBus
+import kotlinx.android.synthetic.main.toolbar.view.*
 import kotlinx.android.synthetic.main.view_transaction.view.*
 import org.joda.time.DateTime
 import rx.Observable
@@ -51,7 +50,9 @@ import java.math.BigDecimal
 import java.math.BigDecimal.ONE
 import java.math.BigDecimal.ZERO
 
-class TransactionView : LinearLayout, TransactionPresenter.View {
+class TransactionView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        LinearLayout(context, attrs, defStyleAttr), TransactionPresenter.View {
+
     companion object {
         private const val REQUEST_AMOUNT = 1
         private const val REQUEST_DATE = 2
@@ -61,21 +62,11 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     var isArchiveToggleVisible = true
     var archiveToggleTitle = resources.getString(R.string.archive)
 
-    private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
-    private val amountFormatter by lazy { provideSingleton(AmountFormatter::class) }
-    private val dateFormatter by lazy { provideSingleton(DateFormatter::class) }
+    private val amountFormatter by lazy { provideAmountFormatter() }
+    private val dateFormatter by lazy { provideDateFormatter() }
     private val amountSubject by lazy { PublishSubject<BigDecimal>() }
     private val exchangeRateSubject by lazy { PublishSubject<BigDecimal>() }
-    private val rxBus by lazy { provideSingleton(RxBus::class) }
-
-    private val transactionTypeFloatingActionButton by lazy { findViewById(R.id.transactionTypeFloatingActionButton) as FloatingActionButton }
-    private val amountTextView by lazy { findViewById(R.id.amountTextView) as TextView }
-    private val quickTagsView by lazy { findViewById(R.id.quickTagsView) as QuickTagsView }
-    private val dateButton by lazy { findViewById(R.id.dateButton) as Button }
-    private val noteEditText by lazy { findViewById(R.id.noteEditText) as EditText }
-    private val transactionStateCheckBox by lazy { findViewById(R.id.transactionStateCheckBox) as CheckBox }
-    private val currencyButton by lazy { findViewById(R.id.currencyButton) as Button }
-    private val saveButton by lazy { findViewById(R.id.saveButton) as Button }
+    private val rxBus by lazy { provideRxBus() }
 
     private lateinit var presenter: TransactionPresenter
     private var transactionState = CONFIRMED
@@ -85,12 +76,6 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
     private var exchangeRate = ONE
     private var timestamp = 0L
     private var allowTransactionStateChanges = false
-
-    constructor(context: Context?) : this(context, null)
-
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -118,7 +103,7 @@ class TransactionView : LinearLayout, TransactionPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onViewAttached(this)
+        doNotInEditMode { presenter.onViewAttached(this) }
     }
 
     override fun onDetachedFromWindow() {

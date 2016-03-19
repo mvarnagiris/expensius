@@ -19,27 +19,21 @@ import android.support.v4.content.ContextCompat.getColor
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.ViewGroup
-import android.widget.TextView
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.extension.pickForegroundColor
+import kotlinx.android.synthetic.main.view_quick_tag.view.*
 
-class QuickTagView : CardView {
-    private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
+class QuickTagView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        CardView(context, attrs, defStyleAttr) {
 
-    private val darkTextColor by lazy { getColor(context, R.color.text_primary) }
-    private val lightTextColor by lazy { getColor(context, R.color.text_primary_inverse) }
-    private val unselectedBackgroundColor by lazy { getColorFromTheme(context, R.attr.colorBackgroundPrimary) }
+    private val darkTextColor = getColorFromTheme(context, android.R.attr.textColorPrimary)
+    private val lightTextColor = getColorFromTheme(context, android.R.attr.textColorPrimaryInverse)
+    private val unselectedBackgroundColor = getColorFromTheme(context, R.attr.colorBackgroundPrimary)
 
     private var color = 0
-
-    constructor(context: Context?) : this(context, null)
-
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     companion object {
         fun inflate(parent: ViewGroup) = parent.inflate<QuickTagView>(R.layout.view_quick_tag)

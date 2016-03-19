@@ -63,8 +63,9 @@
                 style="@style/Button.Fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/keyline"
-                android:layout_marginTop="@dimen/fab_mini_size_half_negative"
+                android:layout_marginBottom="@dimen/fab_mini_vertical_padding_negative"
+                android:layout_marginStart="@dimen/fab_mini_horizontal_margin"
+                android:layout_marginTop="@dimen/fab_mini_height_half_negative"
                 android:src="@drawable/ic_action_transaction_type"
                 app:backgroundTint="@color/transaction_type"
                 app:fabSize="mini" />

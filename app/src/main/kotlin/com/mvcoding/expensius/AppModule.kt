@@ -71,6 +71,7 @@ class AppModule(val context: Context) : ShankModule {
 }
 
 fun provideContext() = provideSingleton(Context::class)
+fun provideRxBus() = provideSingleton(RxBus::class)
 fun provideRxSchedulers() = provideSingleton(RxSchedulers::class)
 fun provideSettings() = provideSingleton(Settings::class)
 fun provideSession() = provideSingleton(Session::class)
