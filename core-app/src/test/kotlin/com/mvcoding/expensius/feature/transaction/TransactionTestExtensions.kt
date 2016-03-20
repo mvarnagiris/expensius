@@ -41,6 +41,7 @@ fun aTransaction() = Transaction(
 fun aNewTransaction() = Transaction(currency = aCurrency())
 fun Transaction.withTimestamp(timestamp: Long) = copy(timestamp = timestamp)
 fun Transaction.withCurrency(currency: Currency) = copy(currency = currency)
+fun Transaction.withCurrency(currency: String) = copy(currency = Currency(currency))
 fun Transaction.withExchangeRate(exchangeRate: BigDecimal) = copy(exchangeRate = exchangeRate)
 fun Transaction.withAmount(amount: BigDecimal) = copy(amount = amount)
 fun Transaction.withTags(vararg tags: Tag) = copy(tags = setOf(*tags))

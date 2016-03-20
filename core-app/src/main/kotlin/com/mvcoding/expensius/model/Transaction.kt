@@ -37,4 +37,5 @@ data class Transaction(
         val note: String = "") : Model {
 
     fun withModelState(modelState: ModelState) = copy(modelState = modelState)
+    fun getAmountForCurrency(currency: Currency) = if (this.currency == currency) amount else amount.multiply(exchangeRate)
 }

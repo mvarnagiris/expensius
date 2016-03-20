@@ -15,27 +15,23 @@
 package com.mvcoding.expensius.feature.report
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.mvcoding.expensius.R
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
 import com.mvcoding.expensius.provideSettings
+import kotlinx.android.synthetic.main.view_tags_report.view.*
 import java.math.BigDecimal
-import java.util.*
 
 class TagsReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         CardView(context, attrs, defStyleAttr), TagsReportPresenter.View {
 
-    private val lineChart by lazy { findViewById(R.id.lineChart) as LineChart }
     private val dateFormatter by lazy { provideDateFormatter() }
     private val amountFormatter by lazy { provideAmountFormatter() }
     private val settings by lazy { provideSettings() }
@@ -43,22 +39,20 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        lineChart.setPinchZoom(false)
-        lineChart.isDoubleTapToZoomEnabled = false
-        lineChart.isDragEnabled = false
-        lineChart.isScaleXEnabled = false
-        lineChart.isScaleYEnabled = false
-        lineChart.legend.isEnabled = false
-        lineChart.axisLeft.setDrawLabels(false)
-        lineChart.axisLeft.setDrawGridLines(false)
-        lineChart.axisLeft.setDrawAxisLine(false)
-        lineChart.axisRight.setValueFormatter { value, yAxis ->
-            amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency)
-        }
-        lineChart.axisRight.setDrawZeroLine(true)
-        lineChart.axisRight.setDrawAxisLine(true)
-        lineChart.axisRight.setDrawGridLines(true)
-        lineChart.setDescription("")
+        barChart.setPinchZoom(false)
+        barChart.isDoubleTapToZoomEnabled = false
+        barChart.isDragEnabled = false
+        barChart.isScaleXEnabled = false
+        barChart.isScaleYEnabled = false
+        barChart.legend.isEnabled = false
+        barChart.axisLeft.setDrawLabels(false)
+        barChart.axisLeft.setDrawGridLines(false)
+        barChart.axisLeft.setDrawAxisLine(false)
+        barChart.axisRight.setValueFormatter { value, yAxis -> amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency) }
+        barChart.axisRight.setDrawZeroLine(true)
+        barChart.axisRight.setDrawAxisLine(true)
+        barChart.axisRight.setDrawGridLines(true)
+        barChart.setDescription("")
     }
 
     override fun onAttachedToWindow() {
@@ -73,41 +67,14 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun showTagsReportItems(tagsReportItems: List<TagsReportPresenter.TagsReportItem>) {
         val xAxis = tagsReportItems.map { dateFormatter.formatDateShort(it.interval.start) }
-        lineChart.data = tagsReportItems.allTags()
-                .mapToEmptyEntriesArrayList()
-                .fillWith(tagsReportItems)
-                .toLineDataSets()
-                .toLineData(xAxis)
-                .withAmountFormatter()
-    }
-
-    private fun List<TagsReportPresenter.TagsReportItem>.allTags() = first().tagsWithAmount.keys.toTypedArray()
-    private fun Array<Tag>.mapToEmptyEntriesArrayList() = mapOf(*map { it to arrayListOf<Entry>() }.toTypedArray())
-    private fun List<LineDataSet>.toLineData(xAxisValues: List<String>) = LineData(xAxisValues, this)
-
-    private fun Map<Tag, ArrayList<Entry>>.toLineDataSets() = map {
-        LineDataSet(it.value, it.key.title).apply {
-            color = if (it.key.color == 0) getColorFromTheme(R.attr.colorExpense) else it.key.color
-            setDrawCubic(true)
-            setDrawCircles(false)
-            setDrawHighlightIndicators(false)
-            lineWidth = 2f
-        }
-    }
-
-    private fun LineData.withAmountFormatter() = apply {
-        setValueFormatter { value, entry, position, viewPortHandler ->
-            amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency)
-        }
-    }
-
-    private fun Map<Tag, ArrayList<Entry>>.fillWith(tagsReportItems: List<TagsReportPresenter.TagsReportItem>) = apply {
-        tagsReportItems.forEachIndexed { index, tagsReportItem ->
-            tagsReportItem.tagsWithAmount.forEach {
-                val tag = it.key
-                val amount = it.value.toFloat()
-                get(tag)!!.add(Entry(amount, index))
-            }
-        }
+        barChart.data = tagsReportItems
+                .map { it.tagsWithAmount }
+                .mapIndexed { index, tagsWithAmount ->
+                    BarEntry(tagsWithAmount.map { it.amount.toFloat() }.toFloatArray(), index)
+                }
+                .let {
+                    BarDataSet(it, "TEMP TEST").apply { colors = listOf(Color.RED, Color.BLUE) }
+                }
+                .let { BarData(xAxis, it) }
     }
 }

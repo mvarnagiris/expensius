@@ -45,52 +45,42 @@ class TagsReportPresenter(
     }
 
     private fun convertToReportData(transactions: List<Transaction>): List<TagsReportItem> {
-        val allTags = hashSetOf<Tag>()
         val resultMap = hashMapOf<Interval, HashMap<Tag, BigDecimal>>()
-        collectReportData(transactions, resultMap, allTags)
-        return normalizeToLast30Days(resultMap, allTags)
-    }
-
-    private fun collectReportData(
-            transactions: List<Transaction>,
-            outResultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>,
-            outAllTags: HashSet<Tag>) {
         transactions.forEach { transaction ->
-            val tags = tagsOrNoTag(transaction)
-            outAllTags.addAll(tags)
-
             val interval = transaction.timestampToInterval()
-            val amountsMap = outResultMap.getOrPut(interval, { hashMapOf<Tag, BigDecimal>() })
-            tags.forEach { tag ->
-                val newAmount = amountsMap.getOrElse(tag, { ZERO })
-                        .plus(if (settings.mainCurrency == transaction.currency) transaction.amount
-                        else transaction.amount.multiply(transaction.exchangeRate))
+            val amountsMap = resultMap.getOrPut(interval, { hashMapOf<Tag, BigDecimal>() })
+            transaction.tagsOrNoTag().forEach { tag ->
+                val newAmount = amountsMap.getOrElse(tag, { ZERO }).plus(transaction.getAmountForCurrency(settings.mainCurrency))
                 amountsMap.put(tag, newAmount)
             }
         }
+
+        return normalizeToLast30Days(resultMap)
     }
 
-    private fun normalizeToLast30Days(
-            resultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>,
-            allTags: HashSet<Tag>): List<TagsReportItem> {
+    private fun normalizeToLast30Days(resultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>): List<TagsReportItem> {
         val period = Period.days(1)
         var interval = interval.withPeriodAfterStart(period)
         val last30Days = 0..29
         return last30Days.map {
-            val amountsMap = resultMap.getOrElse(interval, { hashMapOf<Tag, BigDecimal>() })
-            allTags.forEach {
-                if (!amountsMap.contains(it)) amountsMap.put(it, ZERO)
-            }
-            val tagsReportItem = TagsReportItem(interval, amountsMap)
-            interval = interval.withStart(interval.end).withPeriodAfterStart(period)
-            tagsReportItem
+            resultMap
+                    .getOrElse(interval, { emptyMap<Tag, BigDecimal>() })
+                    .toSortedMap(Comparator { tagLeft, tagRight -> tagLeft.order.compareTo(tagRight.order) })
+                    .toList()
+                    .map { TagWithAmount(it.first, it.second) }
+                    .let {
+                        val tagsReportItem = TagsReportItem(interval, it)
+                        interval = interval.withStart(interval.end).withPeriodAfterStart(period)
+                        tagsReportItem
+                    }
         }
     }
 
-    private fun tagsOrNoTag(transaction: Transaction) = transaction.tags.let { tags -> if (tags.isEmpty()) setOf(Tag()) else tags }
+    private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(Tag()) else tags }
     private fun Transaction.timestampToInterval() = DateTime(timestamp).withTimeAtStartOfDay().let { Interval(it, it.plusDays(1)) }
 
-    data class TagsReportItem(val interval: Interval, val tagsWithAmount: Map<Tag, BigDecimal>)
+    data class TagWithAmount(val tag: Tag, val amount: BigDecimal)
+    data class TagsReportItem(val interval: Interval, val tagsWithAmount: List<TagWithAmount>)
 
     interface View : Presenter.View {
         fun showTagsReportItems(tagsReportItems: List<TagsReportItem>)
