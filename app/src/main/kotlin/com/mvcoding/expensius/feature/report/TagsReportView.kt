@@ -15,19 +15,22 @@
 package com.mvcoding.expensius.feature.report
 
 import android.content.Context
-import android.graphics.Color
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
 import com.mvcoding.expensius.provideSettings
 import kotlinx.android.synthetic.main.view_tags_report.view.*
 import java.math.BigDecimal
+import java.util.*
 
 class TagsReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         CardView(context, attrs, defStyleAttr), TagsReportPresenter.View {
@@ -39,20 +42,23 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        barChart.setPinchZoom(false)
-        barChart.isDoubleTapToZoomEnabled = false
-        barChart.isDragEnabled = false
-        barChart.isScaleXEnabled = false
-        barChart.isScaleYEnabled = false
-        barChart.legend.isEnabled = false
-        barChart.axisLeft.setDrawLabels(false)
-        barChart.axisLeft.setDrawGridLines(false)
-        barChart.axisLeft.setDrawAxisLine(false)
-        barChart.axisRight.setValueFormatter { value, yAxis -> amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency) }
-        barChart.axisRight.setDrawZeroLine(true)
-        barChart.axisRight.setDrawAxisLine(true)
-        barChart.axisRight.setDrawGridLines(true)
-        barChart.setDescription("")
+        lineChart.setPinchZoom(false)
+        lineChart.isDoubleTapToZoomEnabled = false
+        lineChart.isDragEnabled = false
+        lineChart.isScaleXEnabled = false
+        lineChart.isScaleYEnabled = false
+        lineChart.legend.isEnabled = false
+        lineChart.axisLeft.setDrawLabels(false)
+        lineChart.axisLeft.setDrawGridLines(false)
+        lineChart.axisLeft.setDrawAxisLine(false)
+        lineChart.axisRight.setValueFormatter { value, yAxis ->
+            amountFormatter.format(BigDecimal(value.toDouble()), settings.mainCurrency)
+        }
+        lineChart.axisRight.setDrawZeroLine(true)
+        lineChart.axisRight.setDrawAxisLine(false)
+        lineChart.axisRight.setDrawGridLines(false)
+        lineChart.axisRight.setDrawLabels(true)
+        lineChart.setDescription("")
     }
 
     override fun onAttachedToWindow() {
@@ -67,14 +73,27 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun showTagsReportItems(tagsReportItems: List<TagsReportPresenter.TagsReportItem>) {
         val xAxis = tagsReportItems.map { dateFormatter.formatDateShort(it.interval.start) }
-        barChart.data = tagsReportItems
+        lineChart.data = tagsReportItems
                 .map { it.tagsWithAmount }
-                .mapIndexed { index, tagsWithAmount ->
-                    BarEntry(tagsWithAmount.map { it.amount.toFloat() }.toFloatArray(), index)
-                }
-                .let {
-                    BarDataSet(it, "TEMP TEST").apply { colors = listOf(Color.RED, Color.BLUE) }
-                }
-                .let { BarData(xAxis, it) }
+                .collectToTagEntries()
+                .map { it.toLineDataSet() }
+                .let { LineData(xAxis, it).apply { setDrawValues(false) } }
+    }
+
+    private fun List<List<TagsReportPresenter.TagWithAmount>>.collectToTagEntries() = foldIndexed(hashMapOf<Tag, ArrayList<Entry>>(), {
+        index, tagsEntries, tagsWithAmount ->
+        tagsEntries.apply {
+            tagsWithAmount.forEach { getOrPut(it.tag, { arrayListOf<Entry>() }).apply { add(Entry(it.amount.toFloat(), index)) } }
+        }
+    })
+
+    private fun Map.Entry<Tag, List<Entry>>.toLineDataSet() = LineDataSet(value, key.title).apply {
+        color = if (key.color == 0) getColorFromTheme(R.attr.colorExpense) else key.color
+        setCircleColor(color)
+        setDrawHighlightIndicators(false)
+        setDrawFilled(true)
+        fillColor = color
+        fillAlpha = 100
+        lineWidth = 2f
     }
 }
