@@ -15,19 +15,22 @@
 package com.mvcoding.expensius.feature.settings
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.support.customtabs.CustomTabsIntent
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.ListPopupWindow
 import android.util.AttributeSet
 import android.widget.ArrayAdapter
 import com.jakewharton.rxbinding.view.clicks
+import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.R.id.currencyCodeTextView
 import com.mvcoding.expensius.R.layout.item_view_currency
-import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.extension.getDimensionFromTheme
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.extension.*
 import com.mvcoding.expensius.model.Currency
 import kotlinx.android.synthetic.main.view_settings.view.*
+import org.chromium.customtabsclient.CustomTabsActivityHelper
 import rx.Observable
 import java.lang.Math.min
 
@@ -35,6 +38,27 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         NestedScrollView(context, attrs, defStyleAttr), SettingsPresenter.View {
 
     private val presenter by lazy { provideActivityScopedSingleton(SettingsPresenter::class) }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+
+        with(versionSettingsItemView as SettingsItemView) {
+            setTitle(context.getString(R.string.about))
+            setSubtitle("v${BuildConfig.VERSION_NAME}")
+        }
+        versionSettingsItemView.clicks().subscribe {
+            CustomTabsActivityHelper.openCustomTab(
+                    context.toBaseActivity(),
+                    CustomTabsIntent.Builder()
+                            .setToolbarColor(getColorFromTheme(R.attr.colorPrimary))
+                            .setSecondaryToolbarColor(getColorFromTheme(R.attr.colorAccent))
+                            .setShowTitle(false)
+                            .enableUrlBarHiding()
+                            .build(),
+                    Uri.parse("https://github.com/mvarnagiris/expensius/blob/dev/CHANGELOG.md"),
+                    { activity, uri -> openUrl(uri) })
+        }
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -69,4 +93,6 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         setTitle(context.getString(R.string.main_currency))
         setSubtitle(mainCurrency.displayName())
     }
+
+    private fun openUrl(uri: Uri) = context.startActivity(Intent(Intent.ACTION_VIEW, uri))
 }

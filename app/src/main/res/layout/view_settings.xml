@@ -25,6 +25,12 @@
             android:id="@+id/mainCurrencySettingsItemView"
             layout="@layout/view_settings_item" />
 
+        <View style="@style/Divider" />
+
+        <include
+            android:id="@+id/versionSettingsItemView"
+            layout="@layout/view_settings_item" />
+
     </LinearLayout>
 
 </com.mvcoding.expensius.feature.settings.SettingsView>

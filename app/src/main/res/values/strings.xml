@@ -46,6 +46,7 @@
     <string name="show_archived_tags">Show archived tags</string>
     <string name="main_currency">Main currency</string>
     <string name="delete">Delete</string>
+    <string name="about">About</string>
 
     <string name="tag_fixed">Fixed</string>
     <string name="tag_essential">Essential</string>

@@ -76,6 +76,8 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:percent:23.2.1'
     compile 'com.android.support:cardview-v7:23.2.1'
+    compile 'com.android.support:customtabs:23.2.1'
+    compile 'me.zhanghai.android.customtabshelper:library:1.0.1'
     compile 'com.google.code.gson:gson:2.6.2'
     compile "com.github.memoizr:shank:v1.2.0-beta"
     compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.4.0'
