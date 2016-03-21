@@ -13,7 +13,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.0.0'
+    ext.kotlin_version = '1.0.1'
     ext.privateProperties = new Properties()
     privateProperties.load(new FileInputStream("private.properties"))
     repositories {
