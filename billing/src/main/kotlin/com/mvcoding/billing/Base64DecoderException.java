@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,4 +12,21 @@
  * GNU General Public License for more details.
  */
 
-include ':app', ':core-app', ':billing'
+package com.mvcoding.billing;
+
+/**
+ * Exception thrown when encountering an invalid Base64 input character.
+ *
+ * @author nelson
+ */
+public class Base64DecoderException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    public Base64DecoderException() {
+        super();
+    }
+
+    public Base64DecoderException(String s) {
+        super(s);
+    }
+}
