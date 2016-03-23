@@ -17,23 +17,20 @@ package com.mvcoding.billing
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 
-/**
- * Represents an in-app billing purchase.
- */
-data class Purchase(
+data class BillingPurchase(
         val itemType: String,
         val signature: String,
         val orderId: String,
         val packageName: String,
-        val sku: String,
-        val purchaseTime: Long = 0,
-        val purchaseState: Int = 0,
+        val productId: String,
+        val purchaseTime: Long,
+        val purchaseState: Int,
         val developerPayload: String,
         val token: String) {
 
     companion object {
-        @JvmStatic fun fromJson(itemType: String, signature: String, json: String) = Gson().fromJson(json, JsonObject::class.java).let {
-            Purchase(
+        fun fromJson(itemType: String, signature: String, json: String) = Gson().fromJson(json, JsonObject::class.java).let {
+            BillingPurchase(
                     itemType,
                     signature,
                     it.get("orderId").asString,

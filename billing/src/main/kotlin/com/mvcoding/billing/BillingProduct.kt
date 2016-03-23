@@ -17,20 +17,17 @@ package com.mvcoding.billing
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 
-/**
- * Represents an in-app product's listing details.
- */
-data class SkuDetails(
+data class BillingProduct(
         val itemType: String,
-        val sku: String,
+        val productId: String,
         val type: String,
         val price: String,
         val title: String,
         val description: String) {
 
     companion object {
-        @JvmStatic fun fromJson(itemType: String, json: String) = Gson().fromJson(json, JsonObject::class.java).let {
-            SkuDetails(
+        fun fromJson(itemType: String, json: String) = Gson().fromJson(json, JsonObject::class.java).let {
+            BillingProduct(
                     itemType,
                     it.get("productId").asString,
                     it.get("type").asString,
