@@ -14,8 +14,6 @@
 
 package com.mvcoding.billing
 
-import android.util.Base64
-
 // This code was converted from code at http://iharder.sourceforge.net/base64/
 // Lots of extraneous features were removed.
 /* The original code said:
@@ -252,7 +250,6 @@ private object BillingBase64 {
             destination: ByteArray,
             destOffset: Int,
             alphabet: ByteArray): ByteArray {
-        Base64
         //           1         2         3
         // 01234567890123456789012345678901 Bit position
         // --------000000001111111122222222 Array position from threeBytes
@@ -264,7 +261,7 @@ private object BillingBase64 {
         // significant bytes passed in the array.
         // We have to shift left 24 in order to flush out the 1's that appear
         // when Java treats a value as negative that is cast from a byte to an int.
-        val inBuff = if (numSigBytes > 0) (source[srcOffset] shl 24).ushr(8) else 0
+        val inBuff = if (numSigBytes > 0) (source[srcOffset] shl 24).ushr(8) else 0 shl
         or (if (numSigBytes > 1) (source[srcOffset + 1] shl 24).ushr(16) else 0)
         or (if (numSigBytes > 2) (source[srcOffset + 2] shl 24).ushr(24) else 0)
 

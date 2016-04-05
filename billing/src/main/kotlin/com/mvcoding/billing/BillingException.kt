@@ -14,4 +14,10 @@
 
 package com.mvcoding.billing
 
-class BillingException(val result: BillingResult, cause: Exception) : Exception(result.message, cause)
+import com.mvcoding.billing.BillingResult.Companion.billingResult
+
+class BillingException(val result: BillingResult, cause: Exception? = null) : Exception(result.message, cause) {
+    companion object {
+        fun billingException(response: Int, message: String?) = BillingException(billingResult(response, message))
+    }
+}
