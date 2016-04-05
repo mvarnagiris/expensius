@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,15 +12,6 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: 'java'
-apply plugin: "kotlin"
+package com.mvcoding.billing
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'io.reactivex:rxkotlin:0.55.0'
-    compile 'io.reactivex:rxjava:1.1.2'
-    compile 'joda-time:joda-time:2.9.2'
-    testCompile 'junit:junit:4.12'
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "com.nhaarman:mockito-kotlin:0.3.1"
-}
+data class BillingPurchaseResult(val billingResult: BillingResult, val billingPurchase: BillingPurchase)

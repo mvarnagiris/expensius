@@ -14,36 +14,46 @@
 
 package com.mvcoding.billing
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.app.Activity
+import android.content.*
+import android.os.Bundle
 import android.os.IBinder
 import android.os.RemoteException
 import android.util.Log
 import com.android.vending.billing.IInAppBillingService
 import com.mvcoding.billing.BillingException.Companion.billingException
+import com.mvcoding.billing.BillingResult.Companion.billingResult
+import rx.Observable
+import rx.Subscriber
+import rx.lang.kotlin.PublishSubject
 
-class BillingHelper(private val context: Context, private val loggingEnabled: Boolean = false) {
+class BillingHelper(private val context: Context, private val base64PublicKey: String, private val loggingEnabled: Boolean = false) {
+    private val API_VERSION = 3
+
     private val BILLING_RESPONSE_RESULT_OK = 0
-    private val BILLING_HELPER_REMOTE_EXCEPTION = -1001
     private val BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE = 3
 
-    private val ITEM_TYPE_INAPP = "inapp"
-    private val ITEM_TYPE_SUBS = "subs"
+    private val BILLING_HELPER_REMOTE_EXCEPTION = -1001
+    private val BILLING_HELPER_SUBSCRIPTIONS_NOT_AVAILABLE = -1009
+
+    private val RESPONSE_CODE = "RESPONSE_CODE"
+
+    private val ITEM_TYPE_SINGLE = "inapp"
+    private val ITEM_TYPE_SUBSCRIPTION = "subs"
 
     private var isDisposed = false
     private var isSetupDone = false
     private var isSubscriptionsSupported = false
+    private var purchaseSubject = PublishSubject<BillingPurchaseResult>()
 
     private lateinit var serviceConnection: ServiceConnection
     private lateinit var billingService: IInAppBillingService
 
-    fun startSetup() {
+    fun startSetup(): Observable<BillingResult> {
         makeSureItIsNotDisposed()
         makeSureSetupIsNotDone()
 
-        Observable.defer {
+        return Observable.defer {
             Observable.create<BillingResult> {
                 log("Starting in-app billing setup.")
                 serviceConnection = createServiceConnection(it)
@@ -60,10 +70,85 @@ class BillingHelper(private val context: Context, private val loggingEnabled: Bo
     }
 
     fun dispose() {
-
+        makeSureSetupIsDone()
+        makeSureItIsNotDisposed()
+        isSetupDone = false
+        context.unbindService(serviceConnection)
+        isDisposed = true
     }
 
-    private fun createServiceConnection(it: Subscriber<in BillingResult>): ServiceConnection {
+    fun isSubscriptionsSupported() = isSubscriptionsSupported
+
+    fun launchPurchaseFlow(
+            activity: Activity,
+            requestCode: Int,
+            productId: String,
+            itemType: String,
+            developerPayload: String): Observable<BillingPurchaseResult> {
+
+        makeSureItIsNotDisposed()
+        makeSureSetupIsDone()
+        return purchaseSubject.doOnSubscribe {
+            if (itemType == ITEM_TYPE_SUBSCRIPTION && !isSubscriptionsSupported) {
+                purchaseSubject.onError(billingException(BILLING_HELPER_SUBSCRIPTIONS_NOT_AVAILABLE, "Subscriptions are not available."))
+                purchaseSubject = PublishSubject()
+                return@doOnSubscribe
+            }
+
+            try {
+                log("Constructing buy intent for $productId, item type: $itemType")
+                val buyIntentBundle = billingService.getBuyIntent(API_VERSION, context.packageName, productId, itemType, developerPayload)
+                val response = buyIntentBundle.getResponseCode()
+                if (response != BILLING_RESPONSE_RESULT_OK) {
+                    logError("Unable to buy item, Error response: " + getResponseDescription(response))
+                    flagEndAsync()
+                    result = BillingResult(response, "Unable to buy item")
+                    if (listener != null) listener!!.onIabPurchaseFinished(result, null)
+                    return
+                }
+
+                val pendingIntent = buyIntentBundle.getParcelable(RESPONSE_BUY_INTENT)
+                logDebug("Launching buy intent for $productId. Request code: $requestCode")
+                this.requestCode = requestCode
+                purchaseListener = listener
+                purchasingItemType = itemType
+                activity.startIntentSenderForResult(pendingIntent.getIntentSender(),
+                        requestCode, Intent(),
+                        Integer.valueOf(0)!!, Integer.valueOf(0)!!,
+                        Integer.valueOf(0)!!)
+            } catch (e: IntentSender.SendIntentException) {
+                logError("SendIntentException while launching purchase flow for sku " + productId)
+                e.printStackTrace()
+                flagEndAsync()
+
+                result = BillingResult(IABHELPER_SEND_INTENT_FAILED, "Failed to send intent.")
+                if (listener != null) listener!!.onIabPurchaseFinished(result, null)
+            } catch (e: RemoteException) {
+                logError("RemoteException while launching purchase flow for sku " + productId)
+                e.printStackTrace()
+                flagEndAsync()
+
+                result = BillingResult(IABHELPER_REMOTE_EXCEPTION, "Remote exception while starting purchase flow")
+                if (listener != null) listener!!.onIabPurchaseFinished(result, null)
+            }
+        }
+    }
+
+    private fun Bundle.getResponseCode() = get(RESPONSE_CODE).let {
+        if (it == null) {
+            log("Bundle with null response code, assuming OK (known issue)")
+            BILLING_RESPONSE_RESULT_OK
+        } else if (it is Int)
+            it.toInt()
+        else if (it is Long)
+            it.toLong().toInt()
+        else {
+            log("Unexpected type for bundle response code: ${it.javaClass.name}.")
+            throw RuntimeException("Unexpected type for bundle response code: ${it.javaClass.name}")
+        }
+    }
+
+    private fun createServiceConnection(subscriber: Subscriber<in BillingResult>): ServiceConnection {
         return object : ServiceConnection {
             override fun onServiceDisconnected(name: ComponentName) {
                 log("Billing service disconnected.")
@@ -78,9 +163,9 @@ class BillingHelper(private val context: Context, private val loggingEnabled: Bo
                 log("Checking for in-app billing 3 support.")
                 val packageName = context.packageName
                 try {
-                    var response = billingService.isBillingSupported(3, packageName, ITEM_TYPE_INAPP)
+                    var response = billingService.isBillingSupported(API_VERSION, packageName, ITEM_TYPE_SINGLE)
                     if (response != BILLING_RESPONSE_RESULT_OK) {
-                        it.onError(billingException(response, "Error checking for billing v3 support."))
+                        subscriber.onError(billingException(response, "Error checking for billing v3 support."))
                         isSubscriptionsSupported = false
                         return
                     }
@@ -88,7 +173,7 @@ class BillingHelper(private val context: Context, private val loggingEnabled: Bo
                     log("In-app billing version 3 supported for " + packageName)
 
 
-                    response = billingService.isBillingSupported(3, packageName, ITEM_TYPE_SUBS)
+                    response = billingService.isBillingSupported(API_VERSION, packageName, ITEM_TYPE_SUBSCRIPTION)
                     if (response == BILLING_RESPONSE_RESULT_OK) {
                         log("Subscriptions AVAILABLE.")
                         isSubscriptionsSupported = true
@@ -98,19 +183,25 @@ class BillingHelper(private val context: Context, private val loggingEnabled: Bo
 
                     isSetupDone = true
                 } catch (e: RemoteException) {
-                    it.onError(
-                            billingException(BILLING_HELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."))
+                    subscriber.onError(billingException(
+                            BILLING_HELPER_REMOTE_EXCEPTION,
+                            "RemoteException while setting up in-app billing."))
                     e.printStackTrace()
                     return
                 }
 
-                it.onNext(BillingResult.billingResult(BILLING_RESPONSE_RESULT_OK, "Setup successful."))
+                subscriber.onNext(billingResult(BILLING_RESPONSE_RESULT_OK, "Setup successful."))
+                subscriber.onCompleted()
             }
         }
     }
 
     private fun makeSureItIsNotDisposed() {
         if (isDisposed) throw IllegalStateException("${BillingHelper::class.java.simpleName} was disposed of, so it cannot be used.")
+    }
+
+    private fun makeSureSetupIsDone() {
+        if (!isSetupDone) throw IllegalStateException("${BillingHelper::class.java.simpleName} has not been set up yet.")
     }
 
     private fun makeSureSetupIsNotDone() {
