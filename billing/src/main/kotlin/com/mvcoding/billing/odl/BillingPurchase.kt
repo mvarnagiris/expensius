@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing
+package com.mvcoding.billing.odl
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject

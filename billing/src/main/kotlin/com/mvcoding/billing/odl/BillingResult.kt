@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing
+package com.mvcoding.billing.odl
 
-import com.mvcoding.billing.IabHelper.getResponseDescription
+import com.mvcoding.billing.odl.IabHelper.getResponseDescription
 
 class BillingResult private constructor(val response: Int, val message: String) {
     val isSuccess = response == IabHelper.BILLING_RESPONSE_RESULT_OK

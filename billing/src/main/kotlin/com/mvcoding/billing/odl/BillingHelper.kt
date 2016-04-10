@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing
+package com.mvcoding.billing.odl
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
@@ -23,8 +23,8 @@ import android.os.IBinder
 import android.os.RemoteException
 import android.util.Log
 import com.android.vending.billing.IInAppBillingService
-import com.mvcoding.billing.BillingException.Companion.billingException
-import com.mvcoding.billing.BillingResult.Companion.billingResult
+import com.mvcoding.billing.odl.BillingException.Companion.billingException
+import com.mvcoding.billing.odl.BillingResult.Companion.billingResult
 import rx.Observable
 import rx.Subscriber
 import rx.lang.kotlin.PublishSubject

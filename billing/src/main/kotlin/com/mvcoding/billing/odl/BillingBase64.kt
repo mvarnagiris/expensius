@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing
+package com.mvcoding.billing.odl
 
 // This code was converted from code at http://iharder.sourceforge.net/base64/
 // Lots of extraneous features were removed.

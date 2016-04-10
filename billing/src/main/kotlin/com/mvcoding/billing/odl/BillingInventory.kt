@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing
+package com.mvcoding.billing.odl
 
 class BillingInventory {
     val billingProducts = hashMapOf<String, BillingProduct>()

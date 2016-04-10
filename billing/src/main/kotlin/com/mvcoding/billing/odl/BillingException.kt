@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing
+package com.mvcoding.billing.odl
 
-import com.mvcoding.billing.BillingResult.Companion.billingResult
+import com.mvcoding.billing.odl.BillingResult.Companion.billingResult
 
 class BillingException(val result: BillingResult, cause: Exception? = null) : Exception(result.message, cause) {
     companion object {
