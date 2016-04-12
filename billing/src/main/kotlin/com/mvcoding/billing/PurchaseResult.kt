@@ -12,21 +12,6 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing.odl;
+package com.mvcoding.billing
 
-/**
- * Exception thrown when encountering an invalid Base64 input character.
- *
- * @author nelson
- */
-class Base64DecoderException extends Exception {
-    private static final long serialVersionUID = 1L;
-
-    public Base64DecoderException() {
-        super();
-    }
-
-    public Base64DecoderException(String s) {
-        super(s);
-    }
-}
+data class PurchaseResult(val billingResult: BillingResult, val purchase: Purchase)

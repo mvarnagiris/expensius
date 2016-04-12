@@ -12,12 +12,17 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing.odl
+package com.mvcoding.billing
 
-import com.mvcoding.billing.odl.BillingResult.Companion.billingResult
+class BillingResult private constructor(val response: Int, val message: String) {
+    val isSuccess = response == IabHelper.BILLING_RESPONSE_RESULT_OK
+    val isFailure = !isSuccess
 
-class BillingException(val result: BillingResult, cause: Exception? = null) : Exception(result.message, cause) {
     companion object {
-        fun billingException(response: Int, message: String?) = BillingException(billingResult(response, message))
+        fun billingResult(response: Int, message: String?) = BillingResult(response, buildMessage(response, message))
+
+        private fun buildMessage(response: Int, message: String?) =
+                "${if (!message.isNullOrBlank()) "$message " else ""} (response: ${getResponseDescription(response)})"
     }
 }
+

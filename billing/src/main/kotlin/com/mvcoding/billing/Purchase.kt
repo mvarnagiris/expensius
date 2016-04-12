@@ -12,34 +12,37 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing.odl
+package com.mvcoding.billing
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import java.io.Serializable
 
-data class BillingPurchase(
-        val itemType: String,
-        val signature: String,
-        val orderId: String,
+data class Purchase(
+        val productId: ProductId,
+        val productType: ProductType,
+        val orderId: OrderId,
         val packageName: String,
-        val productId: String,
-        val purchaseTime: Long,
+        val purchaseTimestamp: Long,
         val purchaseState: Int,
         val developerPayload: String,
-        val token: String) {
+        val token: String,
+        val signature: String,
+        val isAutoRenewing: Boolean) : Serializable {
 
     companion object {
-        fun fromJson(itemType: String, signature: String, json: String) = Gson().fromJson(json, JsonObject::class.java).let {
-            BillingPurchase(
-                    itemType,
-                    signature,
-                    it.get("orderId").asString,
+        fun fromJson(productType: ProductType, signature: String, json: String) = Gson().fromJson(json, JsonObject::class.java).let {
+            Purchase(
+                    ProductId(it.get("productId").asString),
+                    productType,
+                    OrderId(it.get("orderId").asString),
                     it.get("packageName").asString,
-                    it.get("productId").asString,
                     it.get("purchaseTime").asLong,
                     it.get("purchaseState").asInt,
                     it.get("developerPayload").asString,
-                    if (it.has("token")) it.get("token").asString else it.get("purchaseToken").asString)
+                    if (it.has("token")) it.get("token").asString else it.get("purchaseToken").asString,
+                    signature,
+                    it.get("autoRenewing").asBoolean)
         }
     }
 }

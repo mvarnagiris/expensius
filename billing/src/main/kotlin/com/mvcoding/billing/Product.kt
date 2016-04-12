@@ -14,5 +14,29 @@
 
 package com.mvcoding.billing
 
-class Product {
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import java.io.Serializable
+
+data class Product(
+        val productId: ProductId,
+        val productType: ProductType,
+        val type: String,
+        val title: String,
+        val description: String,
+        val price: Price) : Serializable {
+
+    companion object {
+        fun fromJson(productType: ProductType, json: String) = Gson().fromJson(json, JsonObject::class.java).let {
+            Product(
+                    ProductId(it.get("productId").asString),
+                    productType,
+                    it.get("type").asString,
+                    it.get("title").asString,
+                    it.get("description").asString,
+                    Price(it.get("price").asString, it.get("price_amount_micros").asLong, it.get("price_currency_code").asString))
+        }
+    }
 }
+
+data class Price(val price: String, val priceAmountMicros: Long, val currencyCode: String) : Serializable

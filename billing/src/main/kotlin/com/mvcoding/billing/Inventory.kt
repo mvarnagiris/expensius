@@ -12,6 +12,14 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing.odl
+package com.mvcoding.billing
 
-data class BillingPurchaseResult(val billingResult: BillingResult, val billingPurchase: BillingPurchase)
+class Inventory {
+    private val products = mapOf<ProductId, Product>()
+    private val purchases = mapOf<ProductId, Product>()
+
+    fun getProduct(productId: ProductId) = products[productId]
+    fun getPurchase(productId: ProductId) = purchases[productId]
+    fun hasProduct(productId: ProductId) = products.containsKey(productId)
+    fun hasPurchase(productId: ProductId) = purchases.containsKey(productId)
+}

@@ -12,10 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.billing.odl
+package com.mvcoding.billing
 
 import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.app.PendingIntent
 import android.content.*
 import android.os.Bundle
@@ -23,11 +22,12 @@ import android.os.IBinder
 import android.os.RemoteException
 import android.util.Log
 import com.android.vending.billing.IInAppBillingService
-import com.mvcoding.billing.odl.BillingException.Companion.billingException
-import com.mvcoding.billing.odl.BillingResult.Companion.billingResult
+import com.mvcoding.billing.BillingException.Companion.billingException
+import com.mvcoding.billing.BillingResult.Companion.billingResult
+import com.mvcoding.billing.ProductType.SINGLE
+import com.mvcoding.billing.ProductType.SUBSCRIPTION
 import rx.Observable
 import rx.Subscriber
-import rx.lang.kotlin.PublishSubject
 
 class BillingHelper(private val context: Context, private val base64PublicKey: String, private val loggingEnabled: Boolean = false) {
     private val API_VERSION = 3
@@ -49,15 +49,12 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     private val RESPONSE_PURCHASE_DATA = "INAPP_PURCHASE_DATA"
     private val RESPONSE_DATA_SIGNATURE = "INAPP_DATA_SIGNATURE"
 
-    private val ITEM_TYPE_SINGLE = "inapp"
-    private val ITEM_TYPE_SUBSCRIPTION = "subs"
-
     private var isDisposed = false
     private var isSetupDone = false
     private var isSubscriptionsSupported = false
-    private var purchaseSubject = PublishSubject<BillingPurchaseResult>()
+    private var purchaseSubscriber: Subscriber<in PurchaseResult>? = null
     private var purchaseRequestCode = 0
-    private var purchaseItemType = ITEM_TYPE_SINGLE
+    private var purchaseProductType = SINGLE
 
     private lateinit var serviceConnection: ServiceConnection
     private lateinit var billingService: IInAppBillingService
@@ -68,17 +65,21 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
         return Observable.defer {
             Observable.create<BillingResult> {
-                log("Starting in-app billing setup.")
-                serviceConnection = createServiceConnection(it)
-
-                val serviceIntent = Intent("com.android.vending.billing.InAppBillingService.BIND")
-                serviceIntent.`package` = "com.android.vending"
-                if (!context.packageManager.queryIntentServices(serviceIntent, 0).isEmpty()) {
-                    context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-                } else {
-                    it.onError(billingException(BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."))
-                }
+                connectToBillingService(it)
             }
+        }
+    }
+
+    private fun connectToBillingService(it: Subscriber<in BillingResult>) {
+        log("Starting in-app billing setup.")
+        serviceConnection = createServiceConnection(it)
+
+        val serviceIntent = Intent("com.android.vending.billing.InAppBillingService.BIND")
+        serviceIntent.`package` = "com.android.vending"
+        if (!context.packageManager.queryIntentServices(serviceIntent, 0).isEmpty()) {
+            context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+        } else {
+            it.onError(billingException(BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."))
         }
     }
 
@@ -95,51 +96,69 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     fun launchPurchaseFlow(
             activity: Activity,
             requestCode: Int,
-            productId: String,
-            itemType: String,
-            developerPayload: String): Observable<BillingPurchaseResult> {
+            productId: ProductId,
+            productType: ProductType,
+            developerPayload: String): Observable<PurchaseResult> {
 
         makeSureItIsNotDisposed()
         makeSureSetupIsDone()
-        return purchaseSubject.doOnSubscribe {
-            if (itemType == ITEM_TYPE_SUBSCRIPTION && !isSubscriptionsSupported) {
-                purchaseSubject.onError(billingException(BILLING_HELPER_SUBSCRIPTIONS_NOT_AVAILABLE, "Subscriptions are not available."))
-                purchaseSubject = PublishSubject()
-                return@doOnSubscribe
-            }
+        return Observable.create {
+            purchaseSubscriber = it
 
-            try {
-                log("Constructing buy intent for $productId, item type: $itemType")
-                val buyIntentBundle = billingService.getBuyIntent(API_VERSION, context.packageName, productId, itemType, developerPayload)
-                val response = buyIntentBundle.getResponseCode()
-                if (response != BILLING_RESPONSE_RESULT_OK) {
-                    log("Unable to buy item, Error response: ${getResponseDescription(response)}")
-                    purchaseSubject.onError(billingException(response, "Unable to buy item."))
-                    purchaseSubject = PublishSubject()
-                    return@doOnSubscribe
-                }
-
-                val pendingIntent: PendingIntent = buyIntentBundle.getParcelable(RESPONSE_BUY_INTENT)
-                log("Launching buy intent for $productId. Request code: $requestCode")
-                purchaseRequestCode = requestCode
-                purchaseItemType = itemType
-                activity.startIntentSenderForResult(pendingIntent.intentSender, requestCode, Intent(), 0, 0, 0)
-            } catch (e: IntentSender.SendIntentException) {
-                log("SendIntentException while launching purchase flow for sku $productId")
-                e.printStackTrace()
-
-                purchaseSubject.onError(billingException(BILLING_HELPER_SEND_INTENT_FAILED, "Failed to send intent."))
-                purchaseSubject = PublishSubject()
-            } catch (e: RemoteException) {
-                log("RemoteException while launching purchase flow for sku $productId")
-                e.printStackTrace()
-
-                purchaseSubject.onError(billingException(
-                        BILLING_HELPER_SEND_INTENT_FAILED,
-                        "Remote exception while starting purchase flow."))
-                purchaseSubject = PublishSubject()
+            if (productType == SUBSCRIPTION && !isSubscriptionsSupported) {
+                it.onError(billingException(BILLING_HELPER_SUBSCRIPTIONS_NOT_AVAILABLE, "Subscriptions are not available."))
+            } else {
+                tryToStartBuyActivity(it, activity, requestCode, productId, productType, developerPayload)
             }
         }
+    }
+
+    private fun tryToStartBuyActivity(
+            subscriber: Subscriber<in PurchaseResult>,
+            activity: Activity,
+            requestCode: Int,
+            productId: ProductId,
+            productType: ProductType,
+            developerPayload: String) {
+        try {
+            startBuyActivity(subscriber, activity, requestCode, productId, productType, developerPayload)
+        } catch (e: IntentSender.SendIntentException) {
+            log("SendIntentException while launching purchase flow for sku $productId")
+            e.printStackTrace()
+            subscriber.onError(billingException(BILLING_HELPER_SEND_INTENT_FAILED, "Failed to send intent."))
+        } catch (e: RemoteException) {
+            log("RemoteException while launching purchase flow for sku $productId")
+            e.printStackTrace()
+            subscriber.onError(billingException(BILLING_HELPER_SEND_INTENT_FAILED, "Remote exception while starting purchase flow."))
+        }
+    }
+
+    private fun startBuyActivity(
+            subscriber: Subscriber<in PurchaseResult>,
+            activity: Activity,
+            requestCode: Int,
+            productId: ProductId,
+            productType: ProductType,
+            developerPayload: String) {
+        log("Constructing buy intent for $productId, item type: $productType")
+        val buyIntentBundle = billingService.getBuyIntent(
+                API_VERSION,
+                context.packageName,
+                productId.id,
+                productType.value,
+                developerPayload)
+        val response = buyIntentBundle.getResponseCode()
+        if (response != BILLING_RESPONSE_RESULT_OK) {
+            log("Unable to buy item, Error response: ${getResponseDescription(response)}")
+            subscriber.onError(billingException(response, "Unable to buy item."))
+            return
+        }
+
+        val pendingIntent: PendingIntent = buyIntentBundle.getParcelable(RESPONSE_BUY_INTENT)
+        log("Launching buy intent for $productId. Request code: $requestCode")
+        purchaseRequestCode = requestCode
+        purchaseProductType = productType
+        activity.startIntentSenderForResult(pendingIntent.intentSender, requestCode, Intent(), 0, 0, 0)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
@@ -150,8 +169,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
         if (data == null) {
             log("Null data in IAB activity result.")
-            purchaseSubject.onError(billingException(BILLING_HELPER_BAD_RESPONSE, "Null data in IAB result."))
-            purchaseSubject = PublishSubject()
+            purchaseSubscriber?.onError(billingException(BILLING_HELPER_BAD_RESPONSE, "Null data in IAB result."))
             return true
         }
 
@@ -159,59 +177,56 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
         val purchaseData = data.getStringExtra(RESPONSE_PURCHASE_DATA)
         val dataSignature = data.getStringExtra(RESPONSE_DATA_SIGNATURE)
 
-        if (resultCode == RESULT_OK && responseCode == BILLING_RESPONSE_RESULT_OK) {
-            log("Successful result code from purchase activity.")
-            log("Purchase data: $purchaseData")
-            log("Data signature: $dataSignature")
-            log("Extras: ${data.extras}")
-            log("Expected item type: $purchaseItemType")
+        if (resultCode == Activity.RESULT_OK && responseCode == BILLING_RESPONSE_RESULT_OK) {
+            logPurchaseActivityResult(data, dataSignature, purchaseData)
 
             if (purchaseData == null || dataSignature == null) {
                 log("BUG: either purchaseData or dataSignature is null.")
-                purchaseSubject.onError(billingException(BILLING_HELPER_UNKNOWN_ERROR, "IAB returned null purchaseData or dataSignature."))
-                purchaseSubject = PublishSubject()
+                purchaseSubscriber?.onError(
+                        billingException(BILLING_HELPER_UNKNOWN_ERROR, "IAB returned null purchaseData or dataSignature."))
                 return true
             }
 
-            val billingPurchase: BillingPurchase
+            val purchase: Purchase
             try {
-                billingPurchase = BillingPurchase.fromJson(purchaseItemType, dataSignature, purchaseData)
-                val productId = billingPurchase.productId
+                purchase = Purchase.fromJson(purchaseProductType, dataSignature, purchaseData)
+                val productId = purchase.productId
 
-                if (!BillingSecurity.verifyPurchase(base64PublicKey, purchaseData, dataSignature)) {
+                if (!Security.verifyPurchase(base64PublicKey, purchaseData, dataSignature)) {
                     log("Purchase signature verification FAILED for productId $productId")
-                    purchaseSubject.onError(billingException(
-                            BILLING_HELPER_VERIFICATION_FAILED,
-                            "Signature verification failed for productId $productId"))
-                    purchaseSubject = PublishSubject()
+                    purchaseSubscriber?.onError(
+                            billingException(BILLING_HELPER_VERIFICATION_FAILED, "Signature verification failed for productId $productId"))
                     return true
                 }
                 log("Purchase signature successfully verified.")
             } catch (e: Exception) {
                 log("Failed to parse purchase data.")
                 e.printStackTrace()
-                purchaseSubject.onError(billingException(BILLING_HELPER_BAD_RESPONSE, "Failed to parse purchase data."))
-                purchaseSubject = PublishSubject()
+                purchaseSubscriber?.onError(billingException(BILLING_HELPER_BAD_RESPONSE, "Failed to parse purchase data."))
                 return true
             }
 
-            purchaseSubject.onNext(BillingPurchaseResult(billingResult(BILLING_RESPONSE_RESULT_OK, "Success"), billingPurchase))
-            purchaseSubject.onCompleted()
-            purchaseSubject = PublishSubject()
-        } else if (resultCode == RESULT_OK) {
+            purchaseSubscriber?.onNext(PurchaseResult(billingResult(BILLING_RESPONSE_RESULT_OK, "Success"), purchase))
+            purchaseSubscriber?.onCompleted()
+        } else if (resultCode == Activity.RESULT_OK) {
             log("Result code was OK but in-app billing response was not OK: ${getResponseDescription(responseCode)}")
-            purchaseSubject.onError(billingException(responseCode, "Problem purchasing item."))
-            purchaseSubject = PublishSubject()
+            purchaseSubscriber?.onError(billingException(responseCode, "Problem purchasing item."))
         } else if (resultCode == Activity.RESULT_CANCELED) {
             log("Purchase canceled - Response: ${getResponseDescription(responseCode)}")
-            purchaseSubject.onError(billingException(BILLING_HELPER_USER_CANCELLED, "User canceled."))
-            purchaseSubject = PublishSubject()
+            purchaseSubscriber?.onError(billingException(BILLING_HELPER_USER_CANCELLED, "User canceled."))
         } else {
             log("Purchase failed. Result code: $resultCode. Response: ${getResponseDescription(responseCode)}")
-            purchaseSubject.onError(billingException(BILLING_HELPER_UNKNOWN_PURCHASE_RESPONSE, "Unknown purchase response."))
-            purchaseSubject = PublishSubject()
+            purchaseSubscriber?.onError(billingException(BILLING_HELPER_UNKNOWN_PURCHASE_RESPONSE, "Unknown purchase response."))
         }
         return true
+    }
+
+    private fun logPurchaseActivityResult(data: Intent, dataSignature: String?, purchaseData: String?) {
+        log("Successful result code from purchase activity.")
+        log("Purchase data: $purchaseData")
+        log("Data signature: $dataSignature")
+        log("Extras: ${data.extras}")
+        log("Expected item type: $purchaseProductType")
     }
 
     private fun Bundle.getResponseCode() = get(RESPONSE_CODE).let {
@@ -269,7 +284,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                 log("Checking for in-app billing 3 support.")
                 val packageName = context.packageName
                 try {
-                    var response = billingService.isBillingSupported(API_VERSION, packageName, ITEM_TYPE_SINGLE)
+                    var response = billingService.isBillingSupported(API_VERSION, packageName, SINGLE.value)
                     if (response != BILLING_RESPONSE_RESULT_OK) {
                         subscriber.onError(billingException(response, "Error checking for billing v3 support."))
                         isSubscriptionsSupported = false
@@ -279,7 +294,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                     log("In-app billing version 3 supported for " + packageName)
 
 
-                    response = billingService.isBillingSupported(API_VERSION, packageName, ITEM_TYPE_SUBSCRIPTION)
+                    response = billingService.isBillingSupported(API_VERSION, packageName, SUBSCRIPTION.value)
                     if (response == BILLING_RESPONSE_RESULT_OK) {
                         log("Subscriptions AVAILABLE.")
                         isSubscriptionsSupported = true
