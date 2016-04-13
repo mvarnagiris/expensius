@@ -25,7 +25,7 @@ import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.QuickTagView.QuickTag
 import com.mvcoding.expensius.model.Tag
-import rx.lang.kotlin.BehaviourSubject
+import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 import java.lang.Math.max
 
@@ -36,7 +36,7 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
     private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }
-    private val selectedTagsUpdatedSubject by lazy { BehaviourSubject<Set<Tag>>() }
+    private val selectedTagsUpdatedSubject by lazy { BehaviorSubject<Set<Tag>>() }
     private val selectableTags = arrayListOf<SelectableTag>()
 
     private var allowShowSelectedTags = true
