@@ -29,12 +29,13 @@ import com.mvcoding.billing.BillingResult.Companion.billingResult
 import com.mvcoding.billing.BillingResult.Companion.getResponseDescription
 import com.mvcoding.billing.ProductType.SINGLE
 import com.mvcoding.billing.ProductType.SUBSCRIPTION
+import org.json.JSONException
 import rx.Observable
 import rx.Subscriber
 
 class BillingHelper(private val context: Context, private val base64PublicKey: String, private val loggingEnabled: Boolean = false) {
     private val API_VERSION = 3
-    private val API_VERSION_FOR_SUBSCRIBTION_UPDATE = 5
+    private val API_VERSION_FOR_SUBSCRIPTION_UPDATE = 5
 
     private val BILLING_HELPER_REMOTE_EXCEPTION = -1001
     private val BILLING_HELPER_BAD_RESPONSE = -1002
@@ -53,13 +54,12 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     private val RESPONSE_PURCHASE_DATA = "INAPP_PURCHASE_DATA"
     private val RESPONSE_DATA_SIGNATURE = "INAPP_DATA_SIGNATURE"
     private val RESPONSE_GET_SKU_DETAILS_LIST = "DETAILS_LIST";
-    private val RESPONSE_INAPP_ITEM_LIST = "INAPP_PURCHASE_ITEM_LIST"
-    private val RESPONSE_INAPP_PURCHASE_DATA_LIST = "INAPP_PURCHASE_DATA_LIST"
-    private val RESPONSE_INAPP_SIGNATURE_LIST = "INAPP_DATA_SIGNATURE_LIST"
-    private val RESPONSE_INAPP_CONTINUATION_TOKEN = "INAPP_CONTINUATION_TOKEN"
+    private val RESPONSE_IN_APP_ITEM_LIST = "INAPP_PURCHASE_ITEM_LIST"
+    private val RESPONSE_IN_APP_PURCHASE_DATA_LIST = "INAPP_PURCHASE_DATA_LIST"
+    private val RESPONSE_IN_APP_SIGNATURE_LIST = "INAPP_DATA_SIGNATURE_LIST"
+    private val RESPONSE_IN_APP_CONTINUATION_TOKEN = "INAPP_CONTINUATION_TOKEN"
 
     private val GET_SKU_DETAILS_ITEM_LIST = "ITEM_ID_LIST";
-    private val GET_SKU_DETAILS_ITEM_TYPE_LIST = "ITEM_TYPE_LIST";
 
     private var isDisposed = false
     private var isSetupDone = false
@@ -174,7 +174,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             }
 
             buyIntentBundle = billingService.getBuyIntentToReplaceSkus(
-                    API_VERSION_FOR_SUBSCRIBTION_UPDATE,
+                    API_VERSION_FOR_SUBSCRIPTION_UPDATE,
                     context.packageName,
                     productIdsToReplace.map { it.id },
                     productId.id,
@@ -256,52 +256,78 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
         return true
     }
 
-    //    fun queryInventory(
-    //            queryProductDetails: Boolean,
-    //            additionalProductIdsToQuery: List<ProductId>,
-    //            additionalSubscribtionProductIdsToQuery: List<ProductId>): Inventory {
-    //
-    //        makeSureItIsNotDisposed()
-    //        makeSureSetupIsDone()
-    //
-    //        try {
-    ////            Inventory inv = new Inventory();
-    //            val response = queryPurchases(inv, ITEM_TYPE_INAPP);
-    //            if (r != BILLING_RESPONSE_RESULT_OK) {
-    //                throw new IabException(r, "Error refreshing inventory (querying owned items).");
-    //            }
-    //
-    //            if (querySkuDetails) {
-    //                r = querySkuDetails(ITEM_TYPE_INAPP, inv, moreItemSkus);
-    //                if (r != BILLING_RESPONSE_RESULT_OK) {
-    //                    throw new IabException(r, "Error refreshing inventory (querying prices of items).");
-    //                }
-    //            }
-    //
-    //            // if subscriptions are supported, then also query for subscriptions
-    //            if (mSubscriptionsSupported) {
-    //                r = queryPurchases(inv, ITEM_TYPE_SUBS);
-    //                if (r != BILLING_RESPONSE_RESULT_OK) {
-    //                    throw new IabException(r, "Error refreshing inventory (querying owned subscriptions).");
-    //                }
-    //
-    //                if (querySkuDetails) {
-    //                    r = querySkuDetails(ITEM_TYPE_SUBS, inv, moreSubsSkus);
-    //                    if (r != BILLING_RESPONSE_RESULT_OK) {
-    //                        throw new IabException(r, "Error refreshing inventory (querying prices of subscriptions).");
-    //                    }
-    //                }
-    //            }
-    //
-    //            return inv;
-    //        } catch (e: RemoteException) {
-    //            throw billingException(BILLING_HELPER_REMOTE_EXCEPTION, "Remote exception while refreshing inventory.");
-    //        } catch (e: JSONException) {
-    //            throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error parsing JSON response while refreshing inventory.")
-    //        }
-    //    }
+    fun queryInventory(
+            queryProductDetails: Boolean,
+            additionalProductIdsToQuery: List<ProductId>,
+            additionalSubscriptionProductIdsToQuery: List<ProductId>): Inventory {
 
-    fun queryPurchases(productType: ProductType): List<Purchase> {
+        makeSureItIsNotDisposed()
+        makeSureSetupIsDone()
+
+        try {
+            val singlePurchases = queryPurchases(SINGLE)
+
+            val singleProducts: List<Product>
+            if (queryProductDetails) {
+                singleProducts = queryProducts(SINGLE, singlePurchases.map { it.productId }, additionalProductIdsToQuery)
+            } else {
+                singleProducts = emptyList()
+            }
+
+            val subscriptionPurchases: List<Purchase>
+            val subscriptionProducts: List<Product>
+            if (isSubscriptionsSupported) {
+                subscriptionPurchases = queryPurchases(SUBSCRIPTION)
+
+                if (queryProductDetails) {
+                    subscriptionProducts = queryProducts(
+                            SUBSCRIPTION,
+                            subscriptionPurchases.map { it.productId },
+                            additionalSubscriptionProductIdsToQuery)
+                } else {
+                    subscriptionProducts = emptyList()
+                }
+            } else {
+                subscriptionPurchases = emptyList()
+                subscriptionProducts = emptyList()
+            }
+
+            return Inventory(singleProducts.plus(subscriptionProducts), singlePurchases.plus(subscriptionPurchases))
+        } catch (e: RemoteException) {
+            throw billingException(BILLING_HELPER_REMOTE_EXCEPTION, "Remote exception while refreshing inventory.");
+        } catch (e: JSONException) {
+            throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error parsing JSON response while refreshing inventory.")
+        }
+    }
+
+    fun consume(purchase: Purchase) {
+        makeSureItIsNotDisposed()
+        makeSureSetupIsDone()
+
+        if (purchase.productType != SINGLE) {
+            throw billingException(BILLING_HELPER_INVALID_CONSUMPTION, "Items of type ${purchase.productType} cannot be consumed.")
+        }
+
+        try {
+            if (purchase.token.isNullOrEmpty()) {
+                log("Cannot consume $purchase. No token.")
+                throw billingException(BILLING_HELPER_MISSING_TOKEN, "$purchase is missing token.")
+            }
+
+            log("Consuming purchase: $purchase")
+            val response = billingService.consumePurchase(API_VERSION, context.packageName, purchase.token)
+            if (response == BILLING_RESPONSE_RESULT_OK) {
+                log("Successfully consumed $purchase")
+            } else {
+                log("Error consuming consuming $purchase. ${getResponseDescription(response)}")
+                throw billingException(response, "Error consuming consuming $purchase")
+            }
+        } catch (e: RemoteException) {
+            throw billingException(BILLING_HELPER_REMOTE_EXCEPTION, "Remote exception while consuming $purchase")
+        }
+    }
+
+    private fun queryPurchases(productType: ProductType): List<Purchase> {
         log("Querying owned items, item type: $productType")
         var continueToken: String? = null
 
@@ -317,16 +343,16 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                 throw billingException(response, "Error getting owned items.")
             }
 
-            if (!ownedItemsBundle.containsKey(RESPONSE_INAPP_ITEM_LIST)
-                || !ownedItemsBundle.containsKey(RESPONSE_INAPP_PURCHASE_DATA_LIST)
-                || !ownedItemsBundle.containsKey(RESPONSE_INAPP_SIGNATURE_LIST)) {
+            if (!ownedItemsBundle.containsKey(RESPONSE_IN_APP_ITEM_LIST)
+                || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_PURCHASE_DATA_LIST)
+                || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_SIGNATURE_LIST)) {
                 log("Bundle returned from getPurchases() doesn't contain required fields.")
                 throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error getting owned items.")
             }
 
-            val ownedProductIds = ownedItemsBundle.getStringArrayList(RESPONSE_INAPP_ITEM_LIST)
-            val purchases = ownedItemsBundle.getStringArrayList(RESPONSE_INAPP_PURCHASE_DATA_LIST)
-            val signatures = ownedItemsBundle.getStringArrayList(RESPONSE_INAPP_SIGNATURE_LIST)
+            val ownedProductIds = ownedItemsBundle.getStringArrayList(RESPONSE_IN_APP_ITEM_LIST)
+            val purchases = ownedItemsBundle.getStringArrayList(RESPONSE_IN_APP_PURCHASE_DATA_LIST)
+            val signatures = ownedItemsBundle.getStringArrayList(RESPONSE_IN_APP_SIGNATURE_LIST)
 
             allPurchases.addAll(
                     purchases.mapIndexed { i, purchaseData ->
@@ -351,14 +377,14 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                         }
                     })
 
-            continueToken = ownedItemsBundle.getString(RESPONSE_INAPP_CONTINUATION_TOKEN)
+            continueToken = ownedItemsBundle.getString(RESPONSE_IN_APP_CONTINUATION_TOKEN)
             log("Continuation token: $continueToken")
         } while (!continueToken.isNullOrEmpty())
 
         return allPurchases
     }
 
-    fun queryProducts(
+    private fun queryProducts(
             productType: ProductType,
             ownedProductIds: List<ProductId>,
             additionalProductIdsToQuery: List<ProductId>): List<Product> {
@@ -446,7 +472,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                     log("In-app billing version 3 supported for " + packageName)
 
                     log("Checking for in-app billing 5 support for subscriptions.")
-                    response = billingService.isBillingSupported(API_VERSION_FOR_SUBSCRIBTION_UPDATE, packageName, SUBSCRIPTION.value)
+                    response = billingService.isBillingSupported(API_VERSION_FOR_SUBSCRIPTION_UPDATE, packageName, SUBSCRIPTION.value)
                     if (response == BILLING_RESPONSE_RESULT_OK) {
                         log("Subscription re-signup AVAILABLE.")
                         isSubscriptionsUpdateSupported = true
@@ -498,233 +524,4 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     private fun log(message: String) {
         if (loggingEnabled) Log.d(BillingHelper::class.java.simpleName, message)
     }
-
-
-    //    // Keys for the responses from InAppBillingService
-    //    public static final String RESPONSE_CODE = "RESPONSE_CODE";
-    //    public static final String RESPONSE_GET_SKU_DETAILS_LIST = "DETAILS_LIST";
-    //    public static final String RESPONSE_BUY_INTENT = "BUY_INTENT";
-    //
-    //
-    //    // some fields on the getSkuDetails response bundle
-    //
-    //
-    //
-    //    /**
-    //     * Consumes a given in-app product. Consuming can only be done on an item
-    //     * that's owned, and as a result of consumption, the user will no longer own it.
-    //     * This method may block or take long to return. Do not call from the UI thread.
-    //     * For that, see {@link #consumeAsync}.
-    //     *
-    //     * @param itemInfo The PurchaseInfo that represents the item to consume.
-    //     * @throws IabException if there is a problem during consumption.
-    //     */
-    //    void consume(Purchase itemInfo) throws IabException {
-    //        checkNotDisposed();
-    //        checkSetupDone("consume");
-    //
-    //        if (!itemInfo.mItemType.equals(ITEM_TYPE_INAPP)) {
-    //            throw new IabException(IABHELPER_INVALID_CONSUMPTION,
-    //            "Items of type '" + itemInfo.mItemType + "' can't be consumed.");
-    //        }
-    //
-    //        try {
-    //            String token = itemInfo.getToken();
-    //            String sku = itemInfo.getSku();
-    //            if (token == null || token.equals("")) {
-    //                logError("Can't consume "+ sku + ". No token.");
-    //                throw new IabException(IABHELPER_MISSING_TOKEN, "PurchaseInfo is missing token for sku: "
-    //                + sku + " " + itemInfo);
-    //            }
-    //
-    //            logDebug("Consuming sku: " + sku + ", token: " + token);
-    //            int response = mService.consumePurchase(3, mContext.getPackageName(), token);
-    //            if (response == BILLING_RESPONSE_RESULT_OK) {
-    //                logDebug("Successfully consumed sku: " + sku);
-    //            }
-    //            else {
-    //                logDebug("Error consuming consuming sku " + sku + ". " + getResponseDesc(response));
-    //                throw new IabException(response, "Error consuming sku " + sku);
-    //            }
-    //        }
-    //        catch (RemoteException e) {
-    //            throw new IabException(IABHELPER_REMOTE_EXCEPTION, "Remote exception while consuming. PurchaseInfo: " + itemInfo, e);
-    //        }
-    //    }
-    //
-    //    /**
-    //     * Callback that notifies when a consumption operation finishes.
-    //     */
-    //    public interface OnConsumeFinishedListener {
-    //        /**
-    //         * Called to notify that a consumption has finished.
-    //         *
-    //         * @param purchase The purchase that was (or was to be) consumed.
-    //         * @param result The result of the consumption operation.
-    //         */
-    //        void onConsumeFinished(Purchase purchase, IabResult result);
-    //    }
-    //
-    //    /**
-    //     * Callback that notifies when a multi-item consumption operation finishes.
-    //     */
-    //    public interface OnConsumeMultiFinishedListener {
-    //        /**
-    //         * Called to notify that a consumption of multiple items has finished.
-    //         *
-    //         * @param purchases The purchases that were (or were to be) consumed.
-    //         * @param results The results of each consumption operation, corresponding to each
-    //         *     sku.
-    //         */
-    //        void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results);
-    //    }
-    //
-    //    /**
-    //     * Asynchronous wrapper to item consumption. Works like {@link #consume}, but
-    //     * performs the consumption in the background and notifies completion through
-    //     * the provided listener. This method is safe to call from a UI thread.
-    //     *
-    //     * @param purchase The purchase to be consumed.
-    //     * @param listener The listener to notify when the consumption operation finishes.
-    //     */
-    //    public void consumeAsync(Purchase purchase, OnConsumeFinishedListener listener)
-    //    throws IabAsyncInProgressException {
-    //        checkNotDisposed();
-    //        checkSetupDone("consume");
-    //        java.util.List<Purchase> purchases = new ArrayList<Purchase>();
-    //        purchases.add(purchase);
-    //        consumeAsyncInternal(purchases, listener, null);
-    //    }
-    //
-    //    /**
-    //     * Same as {@link #consumeAsync}, but for multiple items at once.
-    //     * @param purchases The list of PurchaseInfo objects representing the purchases to consume.
-    //     * @param listener The listener to notify when the consumption operation finishes.
-    //     */
-    //    public void consumeAsync(List<Purchase> purchases, OnConsumeMultiFinishedListener listener)
-    //    throws IabAsyncInProgressException {
-    //        checkNotDisposed();
-    //        checkSetupDone("consume");
-    //        consumeAsyncInternal(purchases, null, listener);
-    //    }
-    //
-    //
-    //
-    //    int querySkuDetails(String itemType, Inventory inv, List<String> moreSkus)
-    //    throws RemoteException, JSONException {
-    //        logDebug("Querying SKU details.");
-    //        ArrayList<String> skuList = new ArrayList<String>();
-    //        skuList.addAll(inv.getAllOwnedSkus(itemType));
-    //        if (moreSkus != null) {
-    //            for (String sku : moreSkus) {
-    //                if (!skuList.contains(sku)) {
-    //                    skuList.add(sku);
-    //                }
-    //            }
-    //        }
-    //
-    //        if (skuList.size() == 0) {
-    //            logDebug("queryPrices: nothing to do because there are no SKUs.");
-    //            return BILLING_RESPONSE_RESULT_OK;
-    //        }
-    //
-    //        // Split the sku list in blocks of no more than 20 elements.
-    //        ArrayList<ArrayList<String>> packs = new ArrayList<ArrayList<String>>();
-    //        ArrayList<String> tempList;
-    //        int n = skuList.size() / 20;
-    //        int mod = skuList.size() % 20;
-    //        for (int i = 0; i < n; i++) {
-    //            tempList = new ArrayList<String>();
-    //            for (String s : skuList.subList(i * 20, i * 20 + 20)) {
-    //            tempList.add(s);
-    //        }
-    //            packs.add(tempList);
-    //        }
-    //        if (mod != 0) {
-    //            tempList = new ArrayList<String>();
-    //            for (String s : skuList.subList(n * 20, n * 20 + mod)) {
-    //                tempList.add(s);
-    //            }
-    //            packs.add(tempList);
-    //        }
-    //
-    //        for (ArrayList<String> skuPartList : packs) {
-    //            Bundle querySkus = new Bundle();
-    //            querySkus.putStringArrayList(GET_SKU_DETAILS_ITEM_LIST, skuPartList);
-    //            Bundle skuDetails = mService.getSkuDetails(3, mContext.getPackageName(),
-    //            itemType, querySkus);
-    //
-    //            if (!skuDetails.containsKey(RESPONSE_GET_SKU_DETAILS_LIST)) {
-    //                int response = getResponseCodeFromBundle(skuDetails);
-    //                if (response != BILLING_RESPONSE_RESULT_OK) {
-    //                    logDebug("getSkuDetails() failed: " + getResponseDesc(response));
-    //                    return response;
-    //                } else {
-    //                    logError("getSkuDetails() returned a bundle with neither an error nor a detail list.");
-    //                    return IABHELPER_BAD_RESPONSE;
-    //                }
-    //            }
-    //
-    //            ArrayList<String> responseList = skuDetails.getStringArrayList(
-    //                    RESPONSE_GET_SKU_DETAILS_LIST);
-    //
-    //            for (String thisResponse : responseList) {
-    //            SkuDetails d = new SkuDetails(itemType, thisResponse);
-    //            logDebug("Got sku details: " + d);
-    //            inv.addSkuDetails(d);
-    //        }
-    //        }
-    //
-    //        return BILLING_RESPONSE_RESULT_OK;
-    //    }
-    //
-    //    void consumeAsyncInternal(final List<Purchase> purchases,
-    //    final OnConsumeFinishedListener singleListener,
-    //    final OnConsumeMultiFinishedListener multiListener)
-    //    throws IabAsyncInProgressException {
-    //        final Handler handler = new Handler();
-    //        flagStartAsync("consume");
-    //        (new Thread(new Runnable() {
-    //            public void run() {
-    //                final List<IabResult> results = new ArrayList<IabResult>();
-    //                for (Purchase purchase : purchases) {
-    //                try {
-    //                    consume(purchase);
-    //                    results.add(new IabResult(BILLING_RESPONSE_RESULT_OK, "Successful consume of sku " + purchase.getSku()));
-    //                }
-    //                catch (IabException ex) {
-    //                    results.add(ex.getResult());
-    //                }
-    //            }
-    //
-    //                flagEndAsync();
-    //                if (!mDisposed && singleListener != null) {
-    //                    handler.post(new Runnable() {
-    //                        public void run() {
-    //                            singleListener.onConsumeFinished(purchases.get(0), results.get(0));
-    //                        }
-    //                    });
-    //                }
-    //                if (!mDisposed && multiListener != null) {
-    //                    handler.post(new Runnable() {
-    //                        public void run() {
-    //                            multiListener.onConsumeMultiFinished(purchases, results);
-    //                        }
-    //                    });
-    //                }
-    //            }
-    //        })).start();
-    //    }
-    //
-    //    void logDebug(String msg) {
-    //        if (mDebugLog) Log.d(mDebugTag, msg);
-    //    }
-    //
-    //    void logError(String msg) {
-    //        Log.e(mDebugTag, "In-app billing error: " + msg);
-    //    }
-    //
-    //    void logWarn(String msg) {
-    //        Log.w(mDebugTag, "In-app billing warning: " + msg);
-    //    }
 }

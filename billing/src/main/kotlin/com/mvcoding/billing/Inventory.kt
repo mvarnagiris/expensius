@@ -14,9 +14,9 @@
 
 package com.mvcoding.billing
 
-class Inventory {
-    private val products = mapOf<ProductId, Product>()
-    private val purchases = mapOf<ProductId, Product>()
+class Inventory(products: List<Product>, purchases: List<Purchase>) {
+    private val products = products.associateBy { it.productId }
+    private val purchases = purchases.associateBy { it.productId }
 
     fun getProduct(productId: ProductId) = products[productId]
     fun getPurchase(productId: ProductId) = purchases[productId]
