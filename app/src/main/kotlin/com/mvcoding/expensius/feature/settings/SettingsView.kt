@@ -27,6 +27,9 @@ import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.R.id.currencyCodeTextView
 import com.mvcoding.expensius.R.layout.item_view_currency
+import com.mvcoding.expensius.SubscriptionType
+import com.mvcoding.expensius.SubscriptionType.FREE
+import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.extension.*
 import com.mvcoding.expensius.model.Currency
 import kotlinx.android.synthetic.main.view_settings.view.*
@@ -42,21 +45,15 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
     override fun onFinishInflate() {
         super.onFinishInflate()
 
+        with(mainCurrencySettingsItemView as SettingsItemView) {
+            setTitle(context.getString(R.string.main_currency))
+        }
+        with(supportDeveloperSettingsItemView as SettingsItemView) {
+            setTitle(context.getString(R.string.support_developer))
+        }
         with(versionSettingsItemView as SettingsItemView) {
             setTitle(context.getString(R.string.about))
             setSubtitle("v${BuildConfig.VERSION_NAME}")
-        }
-        versionSettingsItemView.clicks().subscribe {
-            CustomTabsActivityHelper.openCustomTab(
-                    context.toBaseActivity(),
-                    CustomTabsIntent.Builder()
-                            .setToolbarColor(getColorFromTheme(R.attr.colorPrimary))
-                            .setSecondaryToolbarColor(getColorFromTheme(R.attr.colorAccent))
-                            .setShowTitle(false)
-                            .enableUrlBarHiding()
-                            .build(),
-                    Uri.parse("https://github.com/mvarnagiris/expensius/blob/dev/CHANGELOG.md"),
-                    { activity, uri -> openUrl(uri) })
         }
     }
 
@@ -71,6 +68,8 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     override fun onMainCurrencyRequested() = mainCurrencySettingsItemView.clicks()
+    override fun onSupportDeveloperRequested() = supportDeveloperSettingsItemView.clicks()
+    override fun onAboutRequested() = versionSettingsItemView.clicks()
 
     override fun requestMainCurrency(currencies: List<Currency>): Observable<Currency> = Observable.create {
         val displayCurrencies = currencies.map { it.displayName() }
@@ -90,8 +89,31 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
     }
 
     override fun showMainCurrency(mainCurrency: Currency) = with(mainCurrencySettingsItemView as SettingsItemView) {
-        setTitle(context.getString(R.string.main_currency))
         setSubtitle(mainCurrency.displayName())
+    }
+
+    override fun showSubscriptionType(subscriptionType: SubscriptionType) = with(supportDeveloperSettingsItemView as SettingsItemView) {
+        setSubtitle(when (subscriptionType) {
+            FREE -> getString(R.string.long_user_is_using_free_version)
+            PREMIUM_PAID -> getString(R.string.long_user_is_using_premium_version)
+        })
+    }
+
+    override fun displaySupportDeveloper() {
+        // TODO: Implement
+    }
+
+    override fun displayAbout() {
+        CustomTabsActivityHelper.openCustomTab(
+                context.toBaseActivity(),
+                CustomTabsIntent.Builder()
+                        .setToolbarColor(getColorFromTheme(R.attr.colorPrimary))
+                        .setSecondaryToolbarColor(getColorFromTheme(R.attr.colorAccent))
+                        .setShowTitle(false)
+                        .enableUrlBarHiding()
+                        .build(),
+                Uri.parse("https://github.com/mvarnagiris/expensius/blob/dev/CHANGELOG.md"),
+                { activity, uri -> openUrl(uri) })
     }
 
     private fun openUrl(uri: Uri) = context.startActivity(Intent(Intent.ACTION_VIEW, uri))

@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.Currency
@@ -28,17 +29,26 @@ class SettingsPresenter(
         super.onViewAttached(view)
         view.showMainCurrency(settings.mainCurrency)
 
-        unsubscribeOnDetach(view.onMainCurrencyRequested()
+        view.onMainCurrencyRequested()
                 .flatMap { currenciesProvider.currencies() }
                 .flatMap { view.requestMainCurrency(it) }
                 .doOnNext { settings.mainCurrency = it }
-                .subscribe { view.showMainCurrency(it) })
+                .subscribeUntilDetached { view.showMainCurrency(it) }
         // TODO: Things need to get a notification that main currency has been changed and update.
+
+        settings.subscriptionTypes().subscribeUntilDetached { view.showSubscriptionType(it) }
+        view.onSupportDeveloperRequested().subscribeUntilDetached { view.displaySupportDeveloper() }
+        view.onAboutRequested().subscribeUntilDetached { view.displayAbout() }
     }
 
     interface View : Presenter.View {
         fun onMainCurrencyRequested(): Observable<Unit>
+        fun onSupportDeveloperRequested(): Observable<Unit>
+        fun onAboutRequested(): Observable<Unit>
         fun requestMainCurrency(currencies: List<Currency>): Observable<Currency>
         fun showMainCurrency(mainCurrency: Currency)
+        fun showSubscriptionType(subscriptionType: SubscriptionType)
+        fun displaySupportDeveloper()
+        fun displayAbout()
     }
 }

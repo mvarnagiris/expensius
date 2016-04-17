@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature
 
+import rx.Observable
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
@@ -51,6 +52,8 @@ abstract class Presenter<V : Presenter.View> {
     protected fun unsubscribeOnDestroy(subscription: Subscription) {
         lifetimeSubscriptions.add(subscription)
     }
+
+    protected fun <T> Observable<T>.subscribeUntilDetached(onNext: (T) -> Unit) = subscribe(onNext).apply { unsubscribeOnDetach(this) }
 
     interface View
 }

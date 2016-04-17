@@ -49,3 +49,4 @@ fun View.doNotInEditMode(action: () -> Unit) {
 }
 
 fun View.getColorFromTheme(attrId: Int) = context.getColorFromTheme(attrId)
+fun View.getString(resId: Int) = context.getString(resId)

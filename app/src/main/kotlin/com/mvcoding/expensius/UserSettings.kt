@@ -19,11 +19,13 @@ import com.mvcoding.expensius.extension.getObject
 import com.mvcoding.expensius.extension.putBoolean
 import com.mvcoding.expensius.extension.putObject
 import com.mvcoding.expensius.model.Currency
+import rx.lang.kotlin.BehaviorSubject
 import java.util.*
 
 class UserSettings(private val sharedPreferences: SharedPreferences) : Settings {
-    private val KEY_IS_INTRODUCTION_SEEN = "${UserSettings::class.java.name}.KEY_IS_INTRODUCTION_SEEN"
-    private val KEY_MAIN_CURRENCY = "${UserSettings::class.java.name}.KEY_MAIN_CURRENCY"
+    private val KEY_IS_INTRODUCTION_SEEN = "KEY_IS_INTRODUCTION_SEEN"
+    private val KEY_SUBSCRIPTION_TYPE = "KEY_IS_INTRODUCTION_SEEN"
+    private val KEY_MAIN_CURRENCY = "KEY_MAIN_CURRENCY"
 
     override var isIntroductionSeen: Boolean = sharedPreferences.getBoolean(KEY_IS_INTRODUCTION_SEEN, false)
         set(value) {
@@ -31,14 +33,24 @@ class UserSettings(private val sharedPreferences: SharedPreferences) : Settings 
             sharedPreferences.putBoolean(KEY_IS_INTRODUCTION_SEEN, value)
         }
 
-    override var mainCurrency: Currency = sharedPreferences.getObject(
-            KEY_MAIN_CURRENCY,
-            PersistedCurrency::class,
-            defaultCurrency()).toCurrency()
+    override var subscriptionType: SubscriptionType =
+            sharedPreferences.getObject(KEY_SUBSCRIPTION_TYPE, SubscriptionType::class, { SubscriptionType.FREE })
+        set(value) {
+            field = value
+            subscriptionTypes.onNext(value)
+            sharedPreferences.putObject(KEY_SUBSCRIPTION_TYPE, value)
+        }
+
+    override var mainCurrency: Currency =
+            sharedPreferences.getObject(KEY_MAIN_CURRENCY, PersistedCurrency::class, defaultCurrency()).toCurrency()
         set(value) {
             field = value
             sharedPreferences.putObject(KEY_MAIN_CURRENCY, value.toPersistedCurrency())
         }
+
+    private val subscriptionTypes = BehaviorSubject(subscriptionType)
+
+    override fun subscriptionTypes() = subscriptionTypes
 
     private fun defaultCurrency() = {
         try {

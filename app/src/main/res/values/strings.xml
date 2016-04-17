@@ -47,6 +47,9 @@
     <string name="main_currency">Main currency</string>
     <string name="delete">Delete</string>
     <string name="about">About</string>
+    <string name="support_developer">Support developer</string>
+    <string name="long_user_is_using_free_version">You are using free version</string>
+    <string name="long_user_is_using_premium_version">Than you for using premium version</string>
 
     <string name="tag_fixed">Fixed</string>
     <string name="tag_essential">Essential</string>

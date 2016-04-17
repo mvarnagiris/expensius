@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,12 +14,6 @@
 
 package com.mvcoding.expensius
 
-import com.mvcoding.expensius.model.Currency
-import rx.Observable
-
-interface Settings {
-    var isIntroductionSeen: Boolean
-    var subscriptionType: SubscriptionType
-    var mainCurrency: Currency
-    fun subscriptionTypes(): Observable<SubscriptionType>
+enum class SubscriptionType {
+    FREE, PREMIUM_PAID
 }
