@@ -20,12 +20,12 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
 import rx.Observable.just
-import rx.lang.kotlin.BehaviourSubject
+import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class QuickTagsPresenterTest {
     val toggleSelectableTagSubject = PublishSubject<SelectableTag>()
-    val selectedTagsUpdatedSubject = BehaviourSubject<Set<Tag>>(setOf())
+    val selectedTagsUpdatedSubject = BehaviorSubject<Set<Tag>>(setOf())
     val defaultTags = listOf(aTag(), aTag())
     val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }
     val tagsCache = mock(TagsProvider::class.java)

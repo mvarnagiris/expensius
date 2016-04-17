@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature.report
 
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.provideTransactionsProvider
 import com.mvcoding.expensius.provideSettings
 import org.joda.time.DateTime
@@ -26,9 +27,9 @@ class ReportsModule : ShankModule {
         tagsReportPresenter()
     }
 
-    private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class.java, { ->
+    private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class.java, { transactionType: TransactionType ->
         val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
         val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
-        TagsReportPresenter(last30Days, provideTransactionsProvider(), provideSettings())
+        TagsReportPresenter(transactionType, last30Days, provideTransactionsProvider(), provideSettings())
     })
 }

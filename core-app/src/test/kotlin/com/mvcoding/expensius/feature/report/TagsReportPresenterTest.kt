@@ -60,7 +60,7 @@ class TagsReportPresenterTest {
         val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
         prepareTransactions(last30Days)
         val expectedTagsReportItems = expectedTagsReportItems(last30Days)
-        val presenter = TagsReportPresenter(last30Days, transactionsProvider, settings)
+        val presenter = TagsReportPresenter(EXPENSE, last30Days, transactionsProvider, settings)
 
         presenter.onViewAttached(view)
 

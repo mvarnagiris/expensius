@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.report
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -31,6 +31,7 @@ import java.math.BigDecimal.ZERO
 import java.util.*
 
 class TagsReportPresenter(
+        private val transactionType: TransactionType,
         private val interval: Interval,
         private val transactionsProvider: TransactionsProvider,
         private val settings: Settings) : Presenter<TagsReportPresenter.View>() {
@@ -39,7 +40,7 @@ class TagsReportPresenter(
         super.onViewAttached(view)
 
         unsubscribeOnDetach(transactionsProvider
-                .transactions(TransactionsFilter(NONE, interval, EXPENSE, CONFIRMED))
+                .transactions(TransactionsFilter(NONE, interval, transactionType, CONFIRMED))
                 .map { convertToReportData(it) }
                 .subscribe { view.showTagsReportItems(it) })
     }

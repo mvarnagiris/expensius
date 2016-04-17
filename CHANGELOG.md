@@ -1,3 +1,6 @@
+### v0.2.2
+- `new` Income report.
+
 ### v0.2.1
 - `fix` Calculator delete button on pre-Lollipop.
 - `fix` Transaction view on pre-Lollipop.

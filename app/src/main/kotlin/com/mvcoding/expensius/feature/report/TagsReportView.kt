@@ -24,6 +24,8 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.feature.transaction.TransactionType
+import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
@@ -38,7 +40,14 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
     private val dateFormatter by lazy { provideDateFormatter() }
     private val amountFormatter by lazy { provideAmountFormatter() }
     private val settings by lazy { provideSettings() }
-    private val presenter by lazy { provideActivityScopedSingleton(TagsReportPresenter::class) }
+
+    private lateinit var presenter: TagsReportPresenter
+    private var defaultColor = 0
+
+    fun initialize(transactionType: TransactionType) {
+        presenter = provideActivityScopedSingleton(TagsReportPresenter::class, transactionType)
+        defaultColor = if (transactionType == EXPENSE) getColorFromTheme(R.attr.colorExpense) else getColorFromTheme(R.attr.colorIncome)
+    }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -88,7 +97,7 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
     })
 
     private fun Map.Entry<Tag, List<Entry>>.toLineDataSet() = LineDataSet(value, key.title).apply {
-        color = if (key.color == 0) getColorFromTheme(R.attr.colorExpense) else key.color
+        color = if (key.color == 0) defaultColor else key.color
         setCircleColor(color)
         setDrawHighlightIndicators(false)
         setDrawFilled(true)
