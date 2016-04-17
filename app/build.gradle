@@ -40,8 +40,8 @@ android {
         applicationId "com.mvcoding.expensius"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 4
-        versionName "0.2.2"
+        versionCode 5
+        versionName "0.2.3"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 
