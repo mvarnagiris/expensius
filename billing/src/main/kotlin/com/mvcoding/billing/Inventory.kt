@@ -22,4 +22,5 @@ class Inventory(products: List<Product>, purchases: List<Purchase>) {
     fun getPurchase(productId: ProductId) = purchases[productId]
     fun hasProduct(productId: ProductId) = products.containsKey(productId)
     fun hasPurchase(productId: ProductId) = purchases.containsKey(productId)
+    fun products() = products.values.toList()
 }

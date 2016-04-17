@@ -22,8 +22,7 @@ import rx.Observable.merge
 
 class PremiumPresenter(
         private val settings: Settings,
-        private val premiumPurchasesProvider: PremiumPurchasesProvider,
-        private val donationPurchasesProvider: DonationPurchasesProvider) : Presenter<PremiumPresenter.View>() {
+        private val billingProductsProvider: BillingProductsProvider) : Presenter<PremiumPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -44,19 +43,19 @@ class PremiumPresenter(
             else showPremiumUser()
 
     private fun refresh(subscriptionType: SubscriptionType) =
-            if (subscriptionType == FREE) premiumPurchasesProvider.refresh()
+            if (subscriptionType == FREE) billingProductsProvider.refresh()
             else donationPurchasesProvider.refresh()
 
     private fun purchases(view: View, subscriptionType: SubscriptionType) =
-            if (subscriptionType == FREE) premiumPurchasesProvider.data(view)
+            if (subscriptionType == FREE) billingProductsProvider.data(view)
             else donationPurchasesProvider.data(view)
 
-    private fun loadingStates() = merge(premiumPurchasesProvider.loadingStates(), donationPurchasesProvider.loadingStates())
-    private fun emptyStates() = merge(premiumPurchasesProvider.emptyStates(), donationPurchasesProvider.emptyStates())
+    private fun loadingStates() = merge(billingProductsProvider.loadingStates(), donationPurchasesProvider.loadingStates())
+    private fun emptyStates() = merge(billingProductsProvider.emptyStates(), donationPurchasesProvider.emptyStates())
 
     interface View : Presenter.View, RefreshableView, EmptyView, ErrorView {
         fun showFreeUser()
         fun showPremiumUser()
-        fun showPurchases(purchases: List<Purchase>)
+        fun showPurchases(billingProducts: List<BillingProduct>)
     }
 }

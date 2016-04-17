@@ -32,7 +32,7 @@ class PremiumPresenterTest {
     val refreshSubject = PublishSubject<Unit>()
     val subscriptionTypeSubject = BehaviorSubject(FREE)
 
-    val remotePremiumService = mock<RemotePremiumService>()
+    val remotePremiumService = mock<RemoteBillingProductsService>()
     val premiumPurchasesProvider = PremiumPurchasesProvider(remotePremiumService)
     val donationPurchasesProvider = DonationPurchasesProvider(remotePremiumService)
     val settings = mock<Settings>()

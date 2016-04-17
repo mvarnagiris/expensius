@@ -258,8 +258,8 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
     fun queryInventory(
             queryProductDetails: Boolean,
-            additionalProductIdsToQuery: List<ProductId>,
-            additionalSubscriptionProductIdsToQuery: List<ProductId>): Inventory {
+            additionalProductIdsToQuery: List<ProductId> = emptyList(),
+            additionalSubscriptionProductIdsToQuery: List<ProductId> = emptyList()): Inventory {
 
         makeSureItIsNotDisposed()
         makeSureSetupIsDone()

@@ -14,9 +14,13 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import rx.Observable
+import android.content.Context
+import android.util.AttributeSet
+import android.widget.LinearLayout
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 
-interface RemotePremiumService {
-    fun premiumPurchases(): Observable<List<Purchase>>
-    fun donationPurchases(): Observable<List<Purchase>>
+class PremiumView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        LinearLayout(context, attrs, defStyleAttr) {
+
+    private val presenter by lazy { provideActivityScopedSingleton(PremiumPresenter::class) }
 }

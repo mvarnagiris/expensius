@@ -17,5 +17,8 @@ package com.mvcoding.expensius.feature.premium
 import com.mvcoding.expensius.CachedDataProvider
 import com.mvcoding.expensius.CachedDataService
 
-class PremiumPurchasesProvider(remotePremiumService: RemotePremiumService) :
-        CachedDataProvider<List<Purchase>>(CachedDataService { remotePremiumService.premiumPurchases() })
+class BillingProductsProvider(private val remoteBillingProductsService: RemoteBillingProductsService) :
+        CachedDataProvider<List<BillingProduct>>(CachedDataService { remoteBillingProductsService.billingProducts() }) {
+
+    fun dispose() = remoteBillingProductsService.dispose()
+}

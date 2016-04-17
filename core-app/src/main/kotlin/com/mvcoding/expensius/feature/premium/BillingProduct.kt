@@ -14,4 +14,12 @@
 
 package com.mvcoding.expensius.feature.premium
 
-data class Purchase(val id: String, val title: String, val description: String, val price: String)
+import com.mvcoding.expensius.SubscriptionType
+
+data class BillingProduct(
+        val id: String,
+        val subscriptionType: SubscriptionType,
+        val title: String,
+        val description: String,
+        val price: String,
+        val isOwned: Boolean)

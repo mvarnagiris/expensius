@@ -21,6 +21,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.currency.CurrenciesModule
 import com.mvcoding.expensius.feature.intro.IntroModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
+import com.mvcoding.expensius.feature.premium.PremiumModule
 import com.mvcoding.expensius.feature.report.ReportsModule
 import com.mvcoding.expensius.feature.settings.SettingsModule
 import com.mvcoding.expensius.feature.splash.SplashModule
@@ -44,6 +45,7 @@ class App : Application() {
                 TransactionModule(),
                 ReportsModule(),
                 CurrenciesModule(),
-                SettingsModule())
+                SettingsModule(),
+                PremiumModule())
     }
 }

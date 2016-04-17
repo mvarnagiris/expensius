@@ -14,8 +14,9 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import com.mvcoding.expensius.CachedDataProvider
-import com.mvcoding.expensius.CachedDataService
+import rx.Observable
 
-class DonationPurchasesProvider(remotePremiumService: RemotePremiumService) :
-        CachedDataProvider<List<Purchase>>(CachedDataService { remotePremiumService.donationPurchases() })
+interface RemoteBillingProductsService {
+    fun billingProducts(): Observable<List<BillingProduct>>
+    fun dispose()
+}

@@ -16,4 +16,4 @@ package com.mvcoding.expensius.feature.premium
 
 import com.mvcoding.expensius.aString
 
-fun aPurchase() = Purchase(aString(), aString(), aString(), aString())
+fun aPurchase() = BillingProduct(aString(), aString(), aString(), aString())
