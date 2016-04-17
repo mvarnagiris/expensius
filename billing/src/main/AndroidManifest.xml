@@ -19,7 +19,6 @@
 
     <application
         android:allowBackup="true"
-        android:label="Billing"
         android:supportsRtl="true" />
 
 </manifest>

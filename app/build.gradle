@@ -70,6 +70,7 @@ android {
 
 dependencies {
     compile project(':core-app')
+    compile project(':billing')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
