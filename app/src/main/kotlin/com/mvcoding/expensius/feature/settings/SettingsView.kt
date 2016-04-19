@@ -31,6 +31,7 @@ import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.extension.*
+import com.mvcoding.expensius.feature.premium.PremiumActivity
 import com.mvcoding.expensius.model.Currency
 import kotlinx.android.synthetic.main.view_settings.view.*
 import org.chromium.customtabsclient.CustomTabsActivityHelper
@@ -99,9 +100,7 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         })
     }
 
-    override fun displaySupportDeveloper() {
-        // TODO: Implement
-    }
+    override fun displaySupportDeveloper() = PremiumActivity.start(context)
 
     override fun displayAbout() {
         CustomTabsActivityHelper.openCustomTab(

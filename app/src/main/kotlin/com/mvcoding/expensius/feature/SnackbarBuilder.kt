@@ -20,20 +20,20 @@ import com.jakewharton.rxbinding.support.design.widget.dismisses
 
 class SnackbarBuilder(private val view: View, private val resId: Int, private val duration: Int) {
     var actionResId: Int = 0
-    var action: Runnable? = null
-    var onDismiss: Runnable? = null
+    var action: (() -> Unit)? = null
+    var onDismiss: (() -> Unit)? = null
 
     companion object {
         fun snackbar(view: View, resId: Int, duration: Int) = SnackbarBuilder(view, resId, duration)
     }
 
-    fun action(resId: Int, action: Runnable): SnackbarBuilder {
+    fun action(resId: Int, action: () -> Unit): SnackbarBuilder {
         this.actionResId = resId
         this.action = action
         return this
     }
 
-    fun onDismiss(onDismiss: Runnable): SnackbarBuilder {
+    fun onDismiss(onDismiss: () -> Unit): SnackbarBuilder {
         this.onDismiss = onDismiss
         return this
     }
@@ -42,11 +42,11 @@ class SnackbarBuilder(private val view: View, private val resId: Int, private va
         val snackbar = Snackbar.make(view, resId, duration)
 
         if (actionResId != 0) {
-            snackbar.setAction(actionResId, { action!!.run() })
+            snackbar.setAction(actionResId, { action!!.invoke() })
         }
 
         if (onDismiss != null) {
-            snackbar.dismisses().subscribe { onDismiss!!.run() }
+            snackbar.dismisses().subscribe { onDismiss!!.invoke() }
         }
 
         snackbar.show();

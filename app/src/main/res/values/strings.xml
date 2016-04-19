@@ -49,7 +49,9 @@
     <string name="about">About</string>
     <string name="support_developer">Support developer</string>
     <string name="long_user_is_using_free_version">You are using free version</string>
-    <string name="long_user_is_using_premium_version">Than you for using premium version</string>
+    <string name="long_user_is_using_premium_version">Thank you for using premium version</string>
+    <string name="long_no_purchases_available">At the moment there is nothing you can buy. Check back later.</string>
+    <string name="error_refreshing_purchases">Cannot get products to buy at the moment. Check back later.</string>
 
     <string name="tag_fixed">Fixed</string>
     <string name="tag_essential">Essential</string>

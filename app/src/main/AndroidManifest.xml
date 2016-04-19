@@ -51,6 +51,9 @@
         <activity
             android:name=".feature.transaction.TransactionActivity"
             android:label="@string/transaction" />
+        <activity
+            android:name=".feature.premium.PremiumActivity"
+            android:label="@string/support_developer" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
