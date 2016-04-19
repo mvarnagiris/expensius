@@ -17,3 +17,7 @@ package com.mvcoding.expensius
 import java.util.*
 
 fun aString() = UUID.randomUUID().toString()
+fun anInt() = anInt(Int.MAX_VALUE)
+fun anInt(max: Int) = (Math.random() * max).toInt()
+fun aBoolean() = Math.random() >= 0.5
+fun <T> Array<T>.aRandomItem() = get(anInt(size - 1))

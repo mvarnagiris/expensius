@@ -18,7 +18,6 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.feature.*
-import rx.Observable.merge
 
 class PremiumPresenter(
         private val settings: Settings,
@@ -27,35 +26,33 @@ class PremiumPresenter(
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        view.onRefresh()
-                .withLatestFrom(settings.subscriptionTypes(), { unit, subscriptionType -> subscriptionType })
-                .subscribeUntilDetached { refresh(it) }
-        loadingStates().subscribeUntilDetached { view.showLoadingState(it) }
-        emptyStates().subscribeUntilDetached { view.showEmptyState(it) }
-        settings.subscriptionTypes()
-                .doOnNext { view.showSubscriptionType(it) }
-                .flatMap { purchases(view, it) }
-                .subscribeUntilDetached { view.showPurchases(it) }
+        settings.subscriptionTypes().subscribeUntilDetached { view.showSubscriptionType(it) }
+        view.onRefresh().subscribeUntilDetached { billingProductsProvider.refresh() }
+        billingProductsProvider.loadingStates().subscribeUntilDetached { view.showLoadingState(it) }
+        billingProductsProvider.emptyStates().subscribeUntilDetached { view.showEmptyState(it) }
+        billingProductsProvider.data(view)
+                .withLatestFrom(settings.subscriptionTypes(), { billingProducts, subscriptionType ->
+                    BillingData(subscriptionType, billingProducts)
+                })
+                .subscribeUntilDetached {
+                    view.showBillingData(it)
+                }
     }
 
     private fun View.showSubscriptionType(subscriptionType: SubscriptionType) =
             if (subscriptionType == FREE) showFreeUser()
             else showPremiumUser()
 
-    private fun refresh(subscriptionType: SubscriptionType) =
-            if (subscriptionType == FREE) billingProductsProvider.refresh()
-            else donationPurchasesProvider.refresh()
+    private fun View.showBillingData(billingData: BillingData) {
+        val billingProducts = billingData.billingProducts.filter { it.subscriptionType == billingData.subscriptionType }
+        showBillingProducts(billingProducts)
+    }
 
-    private fun purchases(view: View, subscriptionType: SubscriptionType) =
-            if (subscriptionType == FREE) billingProductsProvider.data(view)
-            else donationPurchasesProvider.data(view)
-
-    private fun loadingStates() = merge(billingProductsProvider.loadingStates(), donationPurchasesProvider.loadingStates())
-    private fun emptyStates() = merge(billingProductsProvider.emptyStates(), donationPurchasesProvider.emptyStates())
+    private data class BillingData(val subscriptionType: SubscriptionType, val billingProducts: List<BillingProduct>)
 
     interface View : Presenter.View, RefreshableView, EmptyView, ErrorView {
         fun showFreeUser()
         fun showPremiumUser()
-        fun showPurchases(billingProducts: List<BillingProduct>)
+        fun showBillingProducts(billingProducts: List<BillingProduct>)
     }
 }

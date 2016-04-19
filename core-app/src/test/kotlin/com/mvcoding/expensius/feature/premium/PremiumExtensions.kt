@@ -14,6 +14,20 @@
 
 package com.mvcoding.expensius.feature.premium
 
+import com.mvcoding.expensius.SubscriptionType
+import com.mvcoding.expensius.SubscriptionType.FREE
+import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.aBoolean
+import com.mvcoding.expensius.aRandomItem
 import com.mvcoding.expensius.aString
 
-fun aPurchase() = BillingProduct(aString(), aString(), aString(), aString())
+fun aBillingProduct() = BillingProduct(aString(), aSubscriptionType(), aString(), aString(), aString(), aBoolean())
+fun BillingProduct.withSubscriptionType(subscriptionType: SubscriptionType) = copy(subscriptionType = subscriptionType)
+fun BillingProduct.withIsOwned(isOwned: Boolean) = copy(isOwned = isOwned)
+
+fun BillingProduct.asPremium() = withSubscriptionType(FREE)
+fun BillingProduct.asDonation() = withSubscriptionType(PREMIUM_PAID)
+fun BillingProduct.owned() = withIsOwned(true)
+fun BillingProduct.notOwned() = withIsOwned(false)
+
+fun aSubscriptionType() = SubscriptionType.values().aRandomItem()
