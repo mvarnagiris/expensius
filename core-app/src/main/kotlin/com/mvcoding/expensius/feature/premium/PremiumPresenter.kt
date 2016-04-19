@@ -40,6 +40,11 @@ class PremiumPresenter(
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        billingProductsProvider.dispose()
+    }
+
     private fun View.showSubscriptionType(subscriptionType: SubscriptionType) =
             if (subscriptionType == FREE) showFreeUser()
             else showPremiumUser()

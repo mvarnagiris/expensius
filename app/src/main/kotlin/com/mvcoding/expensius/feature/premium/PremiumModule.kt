@@ -14,8 +14,9 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import com.memoizrlabs.Shank
+import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.provideContext
 import com.mvcoding.expensius.provideSettings
 
 class PremiumModule : ShankModule {
@@ -24,11 +25,10 @@ class PremiumModule : ShankModule {
     }
 
     private fun premiumPresenter() {
-        Shank.registerFactory(PremiumPresenter::class.java) { ->
-            val remotePremiumService = BillingRemoteBillingProductsService()
-            val premiumPurchasesProvider = PremiumPurchasesProvider(remotePremiumService)
-            val donationPurchasesProvider = DonationPurchasesProvider(remotePremiumService)
-            PremiumPresenter(provideSettings(), premiumPurchasesProvider, donationPurchasesProvider)
+        registerFactory(PremiumPresenter::class.java) { ->
+            val remotePremiumService = BillingRemoteBillingProductsService(provideContext())
+            val billingProductsProvider = BillingProductsProvider(remotePremiumService)
+            PremiumPresenter(provideSettings(), billingProductsProvider)
         }
     }
 }

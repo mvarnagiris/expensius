@@ -168,6 +168,16 @@ class PremiumPresenterTest {
         inOrder.verify(view).showBillingProducts(updatedBillingProducts)
     }
 
+    @Test
+    fun billingProductsProviderIsDisposedOnDestroy() {
+        setSubscriptionType(FREE)
+        presenter.onViewAttached(view)
+
+        presenter.onDestroy()
+
+        verify(remoteBillingProductsService).dispose()
+    }
+
     private fun setSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypeSubject.onNext(subscriptionType)
     private fun refresh() = refreshSubject.onNext(Unit)
 }
