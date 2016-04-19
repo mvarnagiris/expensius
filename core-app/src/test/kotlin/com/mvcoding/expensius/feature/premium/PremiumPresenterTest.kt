@@ -18,10 +18,7 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
-import com.nhaarman.mockito_kotlin.inOrder
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import rx.Observable.just
@@ -102,7 +99,10 @@ class PremiumPresenterTest {
     @Test
     fun showsDonationBillingProductsWhenUserIsUsingPremiumPaidVersion() {
         setSubscriptionType(PREMIUM_PAID)
-        val billingProducts = listOf(aBillingProduct().asPremium(), aBillingProduct().asDonation(), aBillingProduct().asPremium())
+        val billingProducts = listOf(
+                aBillingProduct().asPremium().owned(),
+                aBillingProduct().asDonation(),
+                aBillingProduct().asPremium().notOwned())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
 
         presenter.onViewAttached(view)
@@ -111,63 +111,62 @@ class PremiumPresenterTest {
         inOrder.verify(view).hideLoading()
         inOrder.verify(view).hideEmptyView()
         inOrder.verify(view).showBillingProducts(billingProducts.filter { it.subscriptionType == PREMIUM_PAID })
+        verify(settings, never()).subscriptionType = any()
     }
 
-    //    @Test
-    //    fun donationsAreLoadedAfterSuccessfulPremiumPurchase() {
-    //        setSubscriptionType(FREE)
-    //        val premiumPurchases = listOf(aBillingProduct(), aBillingProduct(), aBillingProduct())
-    //        val donationPurchases = listOf(aBillingProduct(), aBillingProduct())
-    //        whenever(remoteBillingProductsService.premiumPurchases()).thenReturn(just(premiumPurchases))
-    //        whenever(remoteBillingProductsService.donationPurchases()).thenReturn(just(donationPurchases))
-    //        presenter.onViewAttached(view)
-    //
-    //        setSubscriptionType(PREMIUM_PAID)
-    //
-    //        inOrder.verify(view).showFreeUser()
-    //        inOrder.verify(view).showLoading()
-    //        inOrder.verify(view).hideLoading()
-    //        inOrder.verify(view).hideEmptyView()
-    //        inOrder.verify(view).showBillingProducts(premiumPurchases)
-    //        inOrder.verify(view).showPremiumUser()
-    //        inOrder.verify(view).showLoading()
-    //        inOrder.verify(view).hideLoading()
-    //        inOrder.verify(view).hideEmptyView()
-    //        inOrder.verify(view).showBillingProducts(donationPurchases)
-    //    }
-    //
-    //    @Test
-    //    fun showsEmptyViewWhenThereAreNoPurchases() {
-    //        setSubscriptionType(FREE)
-    //        whenever(remoteBillingProductsService.premiumPurchases()).thenReturn(just(emptyList()))
-    //
-    //        presenter.onViewAttached(view)
-    //
-    //        inOrder.verify(view).showLoading()
-    //        inOrder.verify(view).hideLoading()
-    //        inOrder.verify(view).showEmptyView()
-    //        inOrder.verify(view).showBillingProducts(emptyList())
-    //    }
-    //
-    //    @Test
-    //    fun showsUpdatedPurchasesAfterRefresh() {
-    //        setSubscriptionType(FREE)
-    //        val purchases = listOf(aBillingProduct(), aBillingProduct(), aBillingProduct())
-    //        val updatedPurchases = listOf(aBillingProduct(), aBillingProduct())
-    //        whenever(remoteBillingProductsService.premiumPurchases()).thenReturn(just(purchases), just(updatedPurchases))
-    //        presenter.onViewAttached(view)
-    //
-    //        refresh()
-    //
-    //        inOrder.verify(view).showLoading()
-    //        inOrder.verify(view).hideLoading()
-    //        inOrder.verify(view).hideEmptyView()
-    //        inOrder.verify(view).showBillingProducts(purchases)
-    //        inOrder.verify(view).showLoading()
-    //        inOrder.verify(view).hideLoading()
-    //        inOrder.verify(view).hideEmptyView()
-    //        inOrder.verify(view).showBillingProducts(updatedPurchases)
-    //    }
+    @Test
+    fun donationsAreLoadedAfterSuccessfulPremiumPurchase() {
+        setSubscriptionType(FREE)
+        val billingProducts = listOf(
+                aBillingProduct().asPremium().notOwned(),
+                aBillingProduct().asDonation(),
+                aBillingProduct().asPremium().notOwned())
+        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        presenter.onViewAttached(view)
+
+        setSubscriptionType(PREMIUM_PAID)
+
+        inOrder.verify(view).showFreeUser()
+        inOrder.verify(view).showLoading()
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).hideEmptyView()
+        inOrder.verify(view).showBillingProducts(billingProducts.filter { it.subscriptionType == FREE })
+        inOrder.verify(view).showPremiumUser()
+        inOrder.verify(view).showBillingProducts(billingProducts.filter { it.subscriptionType == PREMIUM_PAID })
+    }
+
+    @Test
+    fun showsEmptyViewWhenThereAreNoPurchases() {
+        setSubscriptionType(FREE)
+        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(emptyList()))
+
+        presenter.onViewAttached(view)
+
+        inOrder.verify(view).showLoading()
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).showEmptyView()
+        inOrder.verify(view).showBillingProducts(emptyList())
+    }
+
+    @Test
+    fun showsUpdatedPurchasesAfterRefresh() {
+        setSubscriptionType(FREE)
+        val billingProducts = listOf(aBillingProduct().asPremium().notOwned(), aBillingProduct().asPremium().notOwned())
+        val updatedBillingProducts = listOf(aBillingProduct().asPremium().notOwned())
+        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts), just(updatedBillingProducts))
+        presenter.onViewAttached(view)
+
+        refresh()
+
+        inOrder.verify(view).showLoading()
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).hideEmptyView()
+        inOrder.verify(view).showBillingProducts(billingProducts)
+        inOrder.verify(view).showLoading()
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).hideEmptyView()
+        inOrder.verify(view).showBillingProducts(updatedBillingProducts)
+    }
 
     private fun setSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypeSubject.onNext(subscriptionType)
     private fun refresh() = refreshSubject.onNext(Unit)

@@ -17,7 +17,9 @@ package com.mvcoding.expensius.feature.premium
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
+import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.feature.*
+import rx.Observable.combineLatest
 
 class PremiumPresenter(
         private val settings: Settings,
@@ -30,25 +32,33 @@ class PremiumPresenter(
         view.onRefresh().subscribeUntilDetached { billingProductsProvider.refresh() }
         billingProductsProvider.loadingStates().subscribeUntilDetached { view.showLoadingState(it) }
         billingProductsProvider.emptyStates().subscribeUntilDetached { view.showEmptyState(it) }
-        billingProductsProvider.data(view)
-                .withLatestFrom(settings.subscriptionTypes(), { billingProducts, subscriptionType ->
-                    BillingData(subscriptionType, billingProducts)
-                })
-                .subscribeUntilDetached {
-                    view.showBillingData(it)
-                }
+        combineLatest(billingProductsProvider.data(view), settings.subscriptionTypes(), { billingProducts, subscriptionType ->
+            BillingData(subscriptionType, billingProducts)
+        }).subscribeUntilDetached {
+            settings.updateToPremiumPaidIfNecessary(it, view)
+            view.showBillingProducts(it.billingProducts())
+        }
     }
 
     private fun View.showSubscriptionType(subscriptionType: SubscriptionType) =
             if (subscriptionType == FREE) showFreeUser()
             else showPremiumUser()
 
-    private fun View.showBillingData(billingData: BillingData) {
-        val billingProducts = billingData.billingProducts.filter { it.subscriptionType == billingData.subscriptionType }
-        showBillingProducts(billingProducts)
+    private fun Settings.updateToPremiumPaidIfNecessary(billingData: BillingData, view: View) {
+        if (billingData.shouldUpdateToPremiumPaid()) {
+            subscriptionType = PREMIUM_PAID
+            view.showPremiumUser()
+        }
     }
 
-    private data class BillingData(val subscriptionType: SubscriptionType, val billingProducts: List<BillingProduct>)
+    private data class BillingData(private val subscriptionType: SubscriptionType, private val billingProducts: List<BillingProduct>) {
+        fun subscriptionType() =
+                if (subscriptionType == PREMIUM_PAID || billingProducts.any { it.isOwned && it.subscriptionType == FREE }) PREMIUM_PAID
+                else FREE
+
+        fun shouldUpdateToPremiumPaid() = subscriptionType != PREMIUM_PAID && subscriptionType() == PREMIUM_PAID
+        fun billingProducts() = billingProducts.filter { it.subscriptionType == subscriptionType() }
+    }
 
     interface View : Presenter.View, RefreshableView, EmptyView, ErrorView {
         fun showFreeUser()
