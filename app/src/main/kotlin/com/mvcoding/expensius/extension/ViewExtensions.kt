@@ -28,6 +28,8 @@ fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>,
     return provideActivityScopedSingleton(cls, context, arg1, arg2, arg3, arg4)
 }
 
+fun View.scope() = context.toBaseActivity().scope
+
 fun View.makeOutlineProviderOval() {
     if (supportsLollipop()) {
         outlineProvider = object : ViewOutlineProvider() {

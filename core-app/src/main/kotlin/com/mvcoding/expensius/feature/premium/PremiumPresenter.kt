@@ -19,7 +19,9 @@ import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.feature.*
+import rx.Observable
 import rx.Observable.combineLatest
+import rx.Observable.empty
 
 class PremiumPresenter(
         private val settings: Settings,
@@ -29,16 +31,22 @@ class PremiumPresenter(
         super.onViewAttached(view)
 
         settings.subscriptionTypes().subscribeUntilDetached { view.showSubscriptionType(it) }
+        view.onBillingProductSelected()
+                .flatMap { view.displayBuyProcess(it.id).onErrorResumeNext { empty() } }
+                .subscribeUntilDetached { settings.subscriptionType = PREMIUM_PAID }
         view.onRefresh().subscribeUntilDetached { billingProductsProvider.refresh() }
         billingProductsProvider.loadingStates().subscribeUntilDetached { view.showLoadingState(it) }
         billingProductsProvider.emptyStates().subscribeUntilDetached { view.showEmptyState(it) }
-        combineLatest(billingProductsProvider.data(view), settings.subscriptionTypes(), { billingProducts, subscriptionType ->
-            BillingData(subscriptionType, billingProducts)
-        }).subscribeUntilDetached {
+        billingData(view).subscribeUntilDetached {
             settings.updateToPremiumPaidIfNecessary(it, view)
             view.showBillingProducts(it.billingProducts())
         }
     }
+
+    private fun billingData(view: View): Observable<BillingData> = combineLatest(
+            billingProductsProvider.data(view),
+            settings.subscriptionTypes(),
+            { billingProducts, subscriptionType -> BillingData(subscriptionType, billingProducts) })
 
     override fun onDestroy() {
         super.onDestroy()
@@ -66,8 +74,10 @@ class PremiumPresenter(
     }
 
     interface View : Presenter.View, RefreshableView, EmptyView, ErrorView {
+        fun onBillingProductSelected(): Observable<BillingProduct>
         fun showFreeUser()
         fun showPremiumUser()
         fun showBillingProducts(billingProducts: List<BillingProduct>)
+        fun displayBuyProcess(productId: String): Observable<Unit>
     }
 }

@@ -15,10 +15,12 @@
 package com.mvcoding.expensius.feature.premium
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import kotlinx.android.synthetic.main.view_premium.*
 
 class PremiumActivity : BaseActivity() {
     companion object {
@@ -28,5 +30,10 @@ class PremiumActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_premium)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        premiumView.onActivityResult(requestCode, resultCode, data)
     }
 }

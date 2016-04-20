@@ -28,6 +28,8 @@ import rx.lang.kotlin.PublishSubject
 class PremiumPresenterTest {
     val refreshSubject = PublishSubject<Unit>()
     val subscriptionTypeSubject = BehaviorSubject(FREE)
+    val billingProductSubject = PublishSubject<BillingProduct>()
+    var purchaseSubject = PublishSubject<Unit>()
 
     val remoteBillingProductsService = mock<RemoteBillingProductsService>()
     val billingProductsProvider = BillingProductsProvider(remoteBillingProductsService)
@@ -39,6 +41,8 @@ class PremiumPresenterTest {
     @Before
     fun setUp() {
         whenever(view.onRefresh()).thenReturn(refreshSubject)
+        whenever(view.onBillingProductSelected()).thenReturn(billingProductSubject)
+        whenever(view.displayBuyProcess(any())).thenReturn(purchaseSubject)
         whenever(settings.subscriptionTypes()).thenReturn(subscriptionTypeSubject)
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(emptyList()))
     }
@@ -178,6 +182,61 @@ class PremiumPresenterTest {
         verify(remoteBillingProductsService).dispose()
     }
 
+    @Test
+    fun successfulPremiumPurchaseSwitchesToPremiumPaid() {
+        setSubscriptionType(FREE)
+        val billingProducts = listOf(
+                aBillingProduct().asPremium().notOwned(),
+                aBillingProduct().asDonation())
+        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        presenter.onViewAttached(view)
+
+        selectBillingProduct(billingProducts.first())
+        makeSuccessfulPurchase()
+
+        verify(view).displayBuyProcess(billingProducts.first().id)
+        verify(settings).subscriptionType = PREMIUM_PAID
+    }
+
+    @Test
+    fun failedPremiumPurchaseDoesNotSwitchToPremiumPaid() {
+        setSubscriptionType(FREE)
+        val billingProducts = listOf(
+                aBillingProduct().asPremium().notOwned(),
+                aBillingProduct().asDonation())
+        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        presenter.onViewAttached(view)
+
+        selectBillingProduct(billingProducts.first())
+        makeFailedPurchase()
+
+        verify(view).displayBuyProcess(billingProducts.first().id)
+        verify(settings, never()).subscriptionType = any()
+    }
+
+    @Test
+    fun canMakeAnotherPurchaseAfterAFailedOne() {
+        setSubscriptionType(FREE)
+        val billingProducts = listOf(
+                aBillingProduct().asPremium().notOwned(),
+                aBillingProduct().asDonation())
+        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        presenter.onViewAttached(view)
+        selectBillingProduct(billingProducts.first())
+        makeFailedPurchase()
+
+        selectBillingProduct(billingProducts.first())
+        makeSuccessfulPurchase()
+
+        verify(settings).subscriptionType = PREMIUM_PAID
+    }
+
     private fun setSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypeSubject.onNext(subscriptionType)
+    private fun selectBillingProduct(billingProduct: BillingProduct) = billingProductSubject.onNext(billingProduct)
     private fun refresh() = refreshSubject.onNext(Unit)
+    private fun makeSuccessfulPurchase() = purchaseSubject.onNext(Unit)
+    private fun makeFailedPurchase() = purchaseSubject.onError(Throwable()).run {
+        purchaseSubject = PublishSubject()
+        whenever(view.displayBuyProcess(any())).thenReturn(purchaseSubject)
+    }
 }

@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.premium
 
 import android.content.Context
+import android.content.Intent
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
@@ -24,10 +25,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.support.v4.widget.refreshes
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.extension.inflate
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.extension.snackbar
+import com.mvcoding.expensius.extension.*
 import com.mvcoding.expensius.feature.BaseClickableAdapter
 import com.mvcoding.expensius.feature.ClickableViewHolder
 import com.mvcoding.expensius.feature.Error
@@ -37,14 +35,19 @@ import rx.subjects.PublishSubject
 class PremiumView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr), PremiumPresenter.View {
 
-    private val presenter by lazy { provideActivityScopedSingleton(PremiumPresenter::class) }
+    private val REQUEST_BILLING = 1
+
+    private val presenter by lazy { providePremiumPresenter(context) }
+    private val billingFlow by lazy { provideBillingFlow(scope()) }
     private val adapter by lazy { Adapter() }
+
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) = billingFlow.onActivityResult(requestCode, resultCode, data)
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = adapter
+        doNotInEditMode { recyclerView.adapter = adapter }
     }
 
     override fun onAttachedToWindow() {
@@ -60,10 +63,9 @@ class PremiumView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     override fun showFreeUser() = subscriptionTextView.setText(R.string.long_user_is_using_free_version)
     override fun showPremiumUser() = subscriptionTextView.setText(R.string.long_user_is_using_premium_version)
     override fun onRefresh() = swipeRefreshLayout.refreshes()
-
-    override fun showBillingProducts(billingProducts: List<BillingProduct>) {
-        adapter.setItems(billingProducts)
-    }
+    override fun onBillingProductSelected() = adapter.itemPositionClicks().map { adapter.getItem(it) }
+    override fun showBillingProducts(billingProducts: List<BillingProduct>) = adapter.setItems(billingProducts)
+    override fun displayBuyProcess(productId: String) = billingFlow.startPurchase(context.toBaseActivity(), REQUEST_BILLING, productId)
 
     override fun showLoading() {
         swipeRefreshLayout.isRefreshing = true

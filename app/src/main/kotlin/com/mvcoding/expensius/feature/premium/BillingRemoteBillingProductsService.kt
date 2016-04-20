@@ -14,15 +14,19 @@
 
 package com.mvcoding.expensius.feature.premium
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import com.mvcoding.billing.BillingHelper
 import com.mvcoding.billing.Inventory
 import com.mvcoding.billing.Product
 import com.mvcoding.billing.ProductId
+import com.mvcoding.billing.ProductType.SINGLE
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
 
-class BillingRemoteBillingProductsService(context: Context) : RemoteBillingProductsService {
+class BillingRemoteBillingProductsService(context: Context) : RemoteBillingProductsService, BillingFlow {
+
     private val premiumItemsIds = listOf("premium_1", "premium_2", "premium_3")
 
     private val billingHelper = BillingHelper(
@@ -38,6 +42,12 @@ class BillingRemoteBillingProductsService(context: Context) : RemoteBillingProdu
     }
 
     override fun dispose() = billingHelper.dispose()
+
+    override fun startPurchase(activity: Activity, requestCode: Int, productId: String) =
+            billingHelper.launchPurchaseFlow(activity, requestCode, ProductId(productId), SINGLE, emptyList(), "").map { Unit }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) =
+            billingHelper.onActivityResult(requestCode, resultCode, data)
 
     private fun ProductId.toSubscriptionType() = if (id.startsWith("premium")) FREE else PREMIUM_PAID
     private fun Product.toBillingProduct(inventory: Inventory) = BillingProduct(productId.id,

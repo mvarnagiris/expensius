@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.extension
 
 import android.content.Context
+import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
 import kotlin.reflect.KClass
 
@@ -28,12 +29,22 @@ fun <T : Any> provideActivityScopedSingleton(cls: KClass<T>,
         arg2: Any? = null,
         arg3: Any? = null,
         arg4: Any? = null): T {
-    val shank = Shank.with(context.toBaseActivity().scope)
-    when {
-        arg4 != null -> return shank.provideSingleton(cls.java, arg1, arg2, arg3, arg4)
-        arg3 != null -> return shank.provideSingleton(cls.java, arg1, arg2, arg3)
-        arg2 != null -> return shank.provideSingleton(cls.java, arg1, arg2)
-        arg1 != null -> return shank.provideSingleton(cls.java, arg1)
-        else -> return shank.provideSingleton(cls.java)
+    return provideScopedSingleton(cls, context.toBaseActivity().scope, arg1, arg2, arg3, arg4)
+}
+
+fun <T : Any> provideScopedSingleton(
+        cls: KClass<T>,
+        scope: Scope,
+        arg1: Any? = null,
+        arg2: Any? = null,
+        arg3: Any? = null,
+        arg4: Any? = null): T {
+    val shank = Shank.with(scope)
+    return when {
+        arg4 != null -> shank.provideSingleton(cls.java, arg1, arg2, arg3, arg4)
+        arg3 != null -> shank.provideSingleton(cls.java, arg1, arg2, arg3)
+        arg2 != null -> shank.provideSingleton(cls.java, arg1, arg2)
+        arg1 != null -> shank.provideSingleton(cls.java, arg1)
+        else -> shank.provideSingleton(cls.java)
     }
 }

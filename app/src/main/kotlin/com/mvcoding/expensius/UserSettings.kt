@@ -24,7 +24,7 @@ import java.util.*
 
 class UserSettings(private val sharedPreferences: SharedPreferences) : Settings {
     private val KEY_IS_INTRODUCTION_SEEN = "KEY_IS_INTRODUCTION_SEEN"
-    private val KEY_SUBSCRIPTION_TYPE = "KEY_IS_INTRODUCTION_SEEN"
+    private val KEY_SUBSCRIPTION_TYPE = "KEY_SUBSCRIPTION_TYPE"
     private val KEY_MAIN_CURRENCY = "KEY_MAIN_CURRENCY"
 
     override var isIntroductionSeen: Boolean = sharedPreferences.getBoolean(KEY_IS_INTRODUCTION_SEEN, false)
