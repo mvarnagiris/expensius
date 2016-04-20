@@ -41,7 +41,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 6
-        versionName "0.2.4"
+        versionName "0.3.0"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 

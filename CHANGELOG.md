@@ -1,3 +1,9 @@
+### v0.3.0
+- `new` Added ability to buy premium version.
+
+### v0.2.3
+- `new` Added permissions for in-app billing.
+
 ### v0.2.2
 - `new` Income report.
 
