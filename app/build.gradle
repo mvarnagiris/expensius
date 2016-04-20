@@ -79,7 +79,7 @@ dependencies {
     compile 'com.android.support:customtabs:23.3.0'
     compile 'me.zhanghai.android.customtabshelper:library:1.0.1'
     compile 'com.google.code.gson:gson:2.6.2'
-    compile "com.github.memoizr:shank:v1.3.1"
+    compile 'com.github.memoizr:shank:v1.3.1'
     compile 'com.jakewharton.rxbinding:rxbinding-kotlin:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4-kotlin:0.4.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:0.4.0'

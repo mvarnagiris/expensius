@@ -32,6 +32,7 @@ import com.mvcoding.billing.ProductType.SUBSCRIPTION
 import org.json.JSONException
 import rx.Observable
 import rx.Subscriber
+import rx.lang.kotlin.BehaviorSubject
 
 class BillingHelper(private val context: Context, private val base64PublicKey: String, private val loggingEnabled: Boolean = false) {
     private val API_VERSION = 3
@@ -59,7 +60,9 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     private val RESPONSE_IN_APP_SIGNATURE_LIST = "INAPP_DATA_SIGNATURE_LIST"
     private val RESPONSE_IN_APP_CONTINUATION_TOKEN = "INAPP_CONTINUATION_TOKEN"
 
-    private val GET_SKU_DETAILS_ITEM_LIST = "ITEM_ID_LIST";
+    private val GET_SKU_DETAILS_ITEM_LIST = "ITEM_ID_LIST"
+
+    private var setupCompleteSubject = BehaviorSubject<BillingResult>()
 
     private var isDisposed = false
     private var isSetupDone = false
@@ -73,32 +76,32 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     private lateinit var billingService: IInAppBillingService
 
     fun startSetup(): Observable<BillingResult> {
-        makeSureItIsNotDisposed()
-        makeSureSetupIsNotDone()
-
-        return Observable.defer {
-            Observable.create<BillingResult> {
-                connectToBillingService(it)
-            }
+        return setupCompleteSubject.apply {
+            if (setupCompleteSubject.hasValue()) log("Billing is already set up")
+            else connectToBillingService()
         }
     }
 
-    private fun connectToBillingService(it: Subscriber<in BillingResult>) {
-        log("Starting in-app billing setup.")
-        serviceConnection = createServiceConnection(it)
+    private fun connectToBillingService() {
+        log("Starting billing setup")
+        serviceConnection = createServiceConnection()
 
         val serviceIntent = Intent("com.android.vending.billing.InAppBillingService.BIND")
         serviceIntent.`package` = "com.android.vending"
         if (!context.packageManager.queryIntentServices(serviceIntent, 0).isEmpty()) {
             context.bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         } else {
-            it.onError(billingException(BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."))
+            setupCompleteSubject.onError(
+                    billingException(BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."))
+            setupCompleteSubject = BehaviorSubject()
         }
     }
 
     fun dispose() {
+        log("Disposing.")
         makeSureSetupIsDone()
         makeSureItIsNotDisposed()
+        setupCompleteSubject = BehaviorSubject<BillingResult>()
         isSetupDone = false
         context.unbindService(serviceConnection)
         isDisposed = true
@@ -294,9 +297,9 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
             return Inventory(singleProducts.plus(subscriptionProducts), singlePurchases.plus(subscriptionPurchases))
         } catch (e: RemoteException) {
-            throw billingException(BILLING_HELPER_REMOTE_EXCEPTION, "Remote exception while refreshing inventory.");
+            throw billingException(BILLING_HELPER_REMOTE_EXCEPTION, "Remote exception while refreshing inventory");
         } catch (e: JSONException) {
-            throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error parsing JSON response while refreshing inventory.")
+            throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error parsing JSON response while refreshing inventory")
         }
     }
 
@@ -339,15 +342,15 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             val response = ownedItemsBundle.getResponseCode()
             log("Owned items response: $response")
             if (response != BILLING_RESPONSE_RESULT_OK) {
-                log("getPurchases() failed: ${getResponseDescription(response)}")
-                throw billingException(response, "Error getting owned items.")
+                log("getPurchases failed: ${getResponseDescription(response)}")
+                throw billingException(response, "Error getting owned items")
             }
 
             if (!ownedItemsBundle.containsKey(RESPONSE_IN_APP_ITEM_LIST)
                 || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_PURCHASE_DATA_LIST)
                 || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_SIGNATURE_LIST)) {
-                log("Bundle returned from getPurchases() doesn't contain required fields.")
-                throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error getting owned items.")
+                log("Bundle returned from getPurchases doesn't contain required fields")
+                throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error getting owned items")
             }
 
             val ownedProductIds = ownedItemsBundle.getStringArrayList(RESPONSE_IN_APP_ITEM_LIST)
@@ -389,11 +392,10 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             ownedProductIds: List<ProductId>,
             additionalProductIdsToQuery: List<ProductId>): List<Product> {
 
-        log("Querying SKU details.")
         val productIdsToQuery = ownedProductIds.toSet().plus(additionalProductIdsToQuery).toList()
 
+        log("Querying product details: $productIdsToQuery")
         if (productIdsToQuery.isEmpty()) {
-            log("queryProducts(): nothing to do because there are no SKUs.")
             return emptyList()
         }
 
@@ -406,8 +408,8 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             if (!productsBundle.containsKey(RESPONSE_GET_SKU_DETAILS_LIST)) {
                 val response = productsBundle.getResponseCode()
                 if (response != BILLING_RESPONSE_RESULT_OK) {
-                    log("queryProducts() failed: ${getResponseDescription(response)}")
-                    throw billingException(response, "Failed to get product details.")
+                    log("getSkuDetails failed: ${getResponseDescription(response)}")
+                    throw billingException(response, "Failed to get product details")
                 } else {
                     log("queryProducts() returned a bundle with neither an error nor a detail list.")
                     throw billingException(BILLING_HELPER_BAD_RESPONSE, "Failed to get product details.")
@@ -417,7 +419,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             val responseList = productsBundle.getStringArrayList(RESPONSE_GET_SKU_DETAILS_LIST)
             responseList.map {
                 val product = Product.fromJson(productType, it)
-                log("Got sku details: $product")
+                log("Got product details: $product")
                 product
             }
         }.flatten()
@@ -447,64 +449,64 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
     private fun Intent.getResponseCode() = extras.getResponseCode()
 
-    private fun createServiceConnection(subscriber: Subscriber<in BillingResult>): ServiceConnection {
+    private fun createServiceConnection(): ServiceConnection {
         return object : ServiceConnection {
             override fun onServiceDisconnected(name: ComponentName) {
-                log("Billing service disconnected.")
+                log("Billing service disconnected")
             }
 
             override fun onServiceConnected(name: ComponentName, service: IBinder) {
                 if (isDisposed) return
 
-                log("Billing service connected.")
+                log("Billing service connected")
                 billingService = IInAppBillingService.Stub.asInterface(service)
 
                 val packageName = context.packageName
                 try {
-                    log("Checking for in-app billing 3 support.")
                     var response = billingService.isBillingSupported(API_VERSION, packageName, SINGLE.value)
                     if (response != BILLING_RESPONSE_RESULT_OK) {
-                        subscriber.onError(billingException(response, "Error checking for billing v3 support."))
+                        setupCompleteSubject.onError(billingException(response, "Error checking for billing v3 support."))
+                        setupCompleteSubject = BehaviorSubject()
                         isSubscriptionsSupported = false
                         isSubscriptionsUpdateSupported = false
                         return
                     }
-                    log("In-app billing version 3 supported for " + packageName)
+                    log("Billing supported")
 
-                    log("Checking for in-app billing 5 support for subscriptions.")
                     response = billingService.isBillingSupported(API_VERSION_FOR_SUBSCRIPTION_UPDATE, packageName, SUBSCRIPTION.value)
                     if (response == BILLING_RESPONSE_RESULT_OK) {
-                        log("Subscription re-signup AVAILABLE.")
+                        log("Subscription re-signup supported")
                         isSubscriptionsUpdateSupported = true
                     } else {
-                        log("Subscription re-signup not available.")
+                        log("Subscription re-signup NOT supported. Response: $response")
                         isSubscriptionsUpdateSupported = false
                     }
 
                     if (isSubscriptionsUpdateSupported) {
+                        log("Subscriptions supported")
                         isSubscriptionsSupported = true
                     } else {
                         response = billingService.isBillingSupported(API_VERSION, packageName, SUBSCRIPTION.value)
                         if (response == BILLING_RESPONSE_RESULT_OK) {
-                            log("Subscriptions AVAILABLE.")
+                            log("Subscriptions supported")
                             isSubscriptionsSupported = true
                         } else {
                             isSubscriptionsSupported = false
                             isSubscriptionsUpdateSupported = false
-                            log("Subscriptions NOT AVAILABLE. Response: " + response)
+                            log("Subscriptions NOT supported. Response: $response")
                         }
                     }
 
                     isSetupDone = true
                 } catch (e: RemoteException) {
-                    subscriber.onError(
-                            billingException(BILLING_HELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."))
+                    setupCompleteSubject.onError(
+                            billingException(BILLING_HELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing"))
+                    setupCompleteSubject = BehaviorSubject()
                     e.printStackTrace()
                     return
                 }
 
-                subscriber.onNext(billingResult(BILLING_RESPONSE_RESULT_OK, "Setup successful."))
-                subscriber.onCompleted()
+                setupCompleteSubject.onNext(billingResult(BILLING_RESPONSE_RESULT_OK, "Setup successful"))
             }
         }
     }
@@ -515,10 +517,6 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
     private fun makeSureSetupIsDone() {
         if (!isSetupDone) throw IllegalStateException("${BillingHelper::class.java.simpleName} has not been set up yet.")
-    }
-
-    private fun makeSureSetupIsNotDone() {
-        if (isSetupDone) throw IllegalStateException("${BillingHelper::class.java.simpleName} is already set up.")
     }
 
     private fun log(message: String) {
