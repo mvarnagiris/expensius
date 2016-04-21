@@ -227,6 +227,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
             val purchase: Purchase
             try {
+                log("Got purchase response: $purchaseData")
                 purchase = Purchase.fromJson(purchaseProductType, dataSignature, purchaseData)
                 val productId = purchase.productId
 
@@ -363,7 +364,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                         val productId = ownedProductIds[i];
 
                         if (Security.verifyPurchase(base64PublicKey, purchaseData, signature)) {
-                            log("Product id is owned: $productId")
+                            log("Product id is owned: $productId: $purchaseData")
                             val purchase = Purchase.fromJson(productType, signature, purchaseData)
 
                             if (purchase.token.isNullOrEmpty()) {

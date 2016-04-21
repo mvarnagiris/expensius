@@ -1,3 +1,6 @@
+### v0.3.1
+- `fix` Fixed premium version purchase and restore purchase.
+
 ### v0.3.0
 - `new` Added ability to buy premium version.
 

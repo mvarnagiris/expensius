@@ -34,7 +34,7 @@ class BillingRemoteBillingProductsService(context: Context) : RemoteBillingProdu
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm5OUB6qySEUQnCDvVKEq3CXOvr2Pm7voQftfe2keqsk/0CsGFKJOzcaSwwI459cl65O3ns/DROvMGPRtyb"
             + "5WJz0nTinj/STPlBTb1DptOniIx/ex5+gXDyvVcxjC4A67bJcy12Wm6fWh10xKoBEWyKBIao5zM1Z5ZJnD4lgh6XyylhvwBZvL2jIKE27hTPSpnglfqlZbqH6SaV"
             + "4Rs+8Jscq72xUPJffrj8M8gFosLgsyNLZ0Ci7ubSpfuKEfkUiCq30R8A0vbeFsXaevu0Luv9BlaUxYBEgMTg4Qt+emVqWfrMYqc0k9IEmd0/hRapCSPMhYHY9Gfy"
-            + "LU7pyUkMYmsQIDAQAB", true)
+            + "LU7pyUkMYmsQIDAQAB")
 
     override fun billingProducts() = billingHelper.startSetup().map {
         val inventory = billingHelper.queryInventory(true, premiumItemsIds.map { ProductId(it) })

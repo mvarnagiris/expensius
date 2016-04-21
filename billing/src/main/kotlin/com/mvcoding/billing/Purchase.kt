@@ -39,10 +39,10 @@ data class Purchase(
                     it.get("packageName").asString,
                     it.get("purchaseTime").asLong,
                     it.get("purchaseState").asInt,
-                    it.get("developerPayload").asString,
+                    if (it.has("developerPayload")) it.get("developerPayload").asString else "",
                     if (it.has("token")) it.get("token").asString else it.get("purchaseToken").asString,
                     signature,
-                    it.get("autoRenewing").asBoolean)
+                    if (it.has("autoRenewing")) it.get("autoRenewing").asBoolean else false)
         }
     }
 }
