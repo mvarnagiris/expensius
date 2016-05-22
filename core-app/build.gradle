@@ -17,10 +17,10 @@ apply plugin: "kotlin"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'io.reactivex:rxkotlin:0.55.0'
-    compile 'io.reactivex:rxjava:1.1.3'
+    compile "io.reactivex:rxkotlin:$rxkotlin_version"
+    compile "io.reactivex:rxjava:$rxjava_version"
     compile 'joda-time:joda-time:2.9.2'
-    testCompile 'junit:junit:4.12'
+    testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "com.nhaarman:mockito-kotlin:0.4.0"
+    testCompile "com.nhaarman:mockito-kotlin:0.4.1"
 }
