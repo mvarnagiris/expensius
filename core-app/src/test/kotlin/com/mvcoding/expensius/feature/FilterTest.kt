@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import org.joda.time.Interval
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -26,5 +28,32 @@ class FilterTest {
         filter.filterData().subscribe(subscriber)
 
         subscriber.assertValue(FilterData())
+    }
+
+    @Test
+    fun changingFilterValuesEmitsUpdatedFilter() {
+        filter.filterData().subscribe(subscriber)
+
+        filter.setTransactionType(EXPENSE)
+        filter.setInterval(Interval(0, 1))
+
+        subscriber.assertValues(FilterData(), FilterData(EXPENSE), FilterData(EXPENSE, Interval(0, 1)))
+    }
+
+    @Test
+    fun clearingFilterValuesEmitsUpdatedFilter() {
+        filter.filterData().subscribe(subscriber)
+
+        filter.setTransactionType(EXPENSE)
+        filter.setInterval(Interval(0, 1))
+        filter.clearTransactionType()
+        filter.clearInterval()
+
+        subscriber.assertValues(
+                FilterData(),
+                FilterData(EXPENSE),
+                FilterData(EXPENSE, Interval(0, 1)),
+                FilterData(interval = Interval(0, 1)),
+                FilterData())
     }
 }

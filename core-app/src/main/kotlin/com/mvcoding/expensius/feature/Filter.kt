@@ -14,11 +14,36 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.feature.transaction.TransactionType
+import org.joda.time.Interval
 import rx.Observable
+import rx.lang.kotlin.BehaviorSubject
 
 class Filter {
+    private var filterData: FilterData = FilterData()
+    private val filterDataSubject = BehaviorSubject(filterData)
 
     fun filterData(): Observable<FilterData> {
-        return Observable.empty()
+        return filterDataSubject
+    }
+
+    fun setTransactionType(transactionType: TransactionType) {
+        filterData = filterData.copy(transactionType = transactionType)
+        filterDataSubject.onNext(filterData)
+    }
+
+    fun clearTransactionType() {
+        filterData = filterData.copy(transactionType = null)
+        filterDataSubject.onNext(filterData)
+    }
+
+    fun setInterval(interval: Interval) {
+        filterData = filterData.copy(interval = interval)
+        filterDataSubject.onNext(filterData)
+    }
+
+    fun clearInterval() {
+        filterData = filterData.copy(interval = null)
+        filterDataSubject.onNext(filterData)
     }
 }
