@@ -15,6 +15,9 @@
 package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.feature.ReportStep
+import com.mvcoding.expensius.feature.ReportStep.Step.DAY
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagWithAmount
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagsReportItem
 import com.mvcoding.expensius.feature.tag.aNewTag
@@ -48,6 +51,8 @@ class TagsReportPresenterTest {
     val transactionsProvider = mock<TransactionsProvider>()
     val settings = mock<Settings>()
     val view = mock<TagsReportPresenter.View>()
+    val filter = Filter()
+    val reportStep = ReportStep()
 
     @Before
     fun setUp() {
@@ -55,27 +60,27 @@ class TagsReportPresenterTest {
     }
 
     @Test
-    fun showsTagsReportForPast30Days() {
+    fun showsTagsReportForGivenFilterAndReportStep() {
         val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
         val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
         prepareTransactions(last30Days)
-        val expectedTagsReportItems = expectedTagsReportItems(last30Days)
-        val presenter = TagsReportPresenter(EXPENSE, last30Days, transactionsProvider, settings)
+        val expectedTagsReportItems = expectedTagsReportItems(last30Days, DAY)
+        val presenter = TagsReportPresenter(filter, reportStep, transactionsProvider, settings)
 
         presenter.onViewAttached(view)
 
         verify(view).showTagsReportItems(expectedTagsReportItems)
     }
 
-    private fun prepareTransactions(last30Days: Interval) {
+    private fun prepareTransactions(interval: Interval) {
         val transactions = listOf(
-                aTransaction("1.2", last30Days.startMillis, tag1).withCurrency("USD"),
-                aTransaction("3.4", last30Days.startMillis + 1, tag1, tag2),
-                aTransaction("5.6", last30Days.startMillis + 2, tag1, tag2, tag3),
-                aTransaction("7.8", last30Days.withEnd(last30Days.end.minusDays(15)).endMillis, tag1),
-                aTransaction("9", last30Days.withEnd(last30Days.end.minusDays(15)).endMillis + 1),
-                aTransaction("10", last30Days.endMillis - 1, tag2, tag3))
-        whenever(transactionsProvider.transactions(TransactionsFilter(NONE, last30Days, EXPENSE, CONFIRMED))).thenReturn(just(transactions))
+                aTransaction("1.2", interval.startMillis, tag1).withCurrency("USD"),
+                aTransaction("3.4", interval.startMillis + 1, tag1, tag2),
+                aTransaction("5.6", interval.startMillis + 2, tag1, tag2, tag3),
+                aTransaction("7.8", interval.withEnd(interval.end.minusDays(15)).endMillis, tag1),
+                aTransaction("9", interval.withEnd(interval.end.minusDays(15)).endMillis + 1),
+                aTransaction("10", interval.endMillis - 1, tag2, tag3))
+        whenever(transactionsProvider.transactions(TransactionsFilter(NONE, interval, EXPENSE, CONFIRMED))).thenReturn(just(transactions))
     }
 
     private fun aTransaction(amount: String, timestamp: Long, vararg tags: Tag): Transaction {
@@ -87,22 +92,25 @@ class TagsReportPresenterTest {
                 .withTimestamp(timestamp)
     }
 
-    private fun expectedTagsReportItems(last30Days: Interval): List<TagsReportItem> {
-        val interval30DaysAgo = last30Days.withPeriodAfterStart(Period.days(1))
-        val tagsReportItem30DaysAgo = TagsReportItem(interval30DaysAgo, listOf(
+    private fun expectedTagsReportItems(interval: Interval, step: ReportStep.Step): List<TagsReportItem> {
+        val stepPeriod = step.toPeriod()
+//        val numberOfSteps =
+
+        val intervalAtTheBeginning = interval.withPeriodAfterStart(stepPeriod)
+        val tagsReportItem30DaysAgo = TagsReportItem(intervalAtTheBeginning, listOf(
                 TagWithAmount(tag2, BigDecimal("9.0")),
                 TagWithAmount(tag1, BigDecimal("21.0")),
                 TagWithAmount(tag3, BigDecimal("5.6"))
         ))
 
-        val interval15DaysAgo = last30Days.withEnd(last30Days.end.minusDays(14)).withPeriodBeforeEnd(Period.days(1))
-        val tagsReportItem15DaysAgo = TagsReportItem(interval15DaysAgo, listOf(
+        val intervalInTheMiddle = interval.withEnd(interval.end.minusDays(14)).withPeriodBeforeEnd(Period.days(1))
+        val tagsReportItem15DaysAgo = TagsReportItem(intervalInTheMiddle, listOf(
                 TagWithAmount(noTag, BigDecimal("9")),
                 TagWithAmount(tag1, BigDecimal("7.8"))
         ))
 
-        val intervalToday = last30Days.withPeriodBeforeEnd(Period.days(1))
-        val tagsReportItemToday = TagsReportItem(intervalToday, listOf(
+        val intervalAtTheEnd = interval.withPeriodBeforeEnd(Period.days(1))
+        val tagsReportItemToday = TagsReportItem(intervalAtTheEnd, listOf(
                 TagWithAmount(tag2, BigDecimal("10")),
                 TagWithAmount(tag3, BigDecimal("10"))
         ))
@@ -113,7 +121,7 @@ class TagsReportPresenterTest {
                 15 -> tagsReportItem15DaysAgo
                 29 -> tagsReportItemToday
                 else -> TagsReportItem(
-                        last30Days.withEnd(last30Days.end.minusDays(29 - it)).withPeriodBeforeEnd(Period.days(1)), emptyList())
+                        interval.withEnd(interval.end.minusDays(29 - it)).withPeriodBeforeEnd(Period.days(1)), emptyList())
             }
         }
         return expectedTagsReportItems

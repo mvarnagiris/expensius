@@ -15,9 +15,11 @@
 package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.feature.FilterData
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
-import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -26,27 +28,35 @@ import com.mvcoding.expensius.model.Transaction
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.Period
+import rx.Observable
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 import java.util.*
 
 class TagsReportPresenter(
-        private val transactionType: TransactionType,
-        private val interval: Interval,
+        private val filter: Filter,
+        private val reportStep: ReportStep,
         private val transactionsProvider: TransactionsProvider,
         private val settings: Settings) : Presenter<TagsReportPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        unsubscribeOnDetach(transactionsProvider
-                .transactions(TransactionsFilter(NONE, interval, transactionType, CONFIRMED))
+        filter.filterData()
+                .flatMap { queryTransactions(it) }
                 .map { convertToReportData(it) }
-                .subscribe { view.showTagsReportItems(it) })
+                .subscribeUntilDetached { view.showTagsReportItems(it) }
     }
 
-    private fun convertToReportData(transactions: List<Transaction>): List<TagsReportItem> {
+    private fun queryTransactions(filterData: FilterData): Observable<FilterDataWithTransactions> {
+        val transactionsFilter = TransactionsFilter(NONE, filterData.interval, filterData.transactionType, CONFIRMED)
+        return transactionsProvider.transactions(transactionsFilter)
+                .map { FilterDataWithTransactions(filterData, it) }
+    }
+
+    private fun convertToReportData(filterDataWithTransactions: FilterDataWithTransactions): List<TagsReportItem> {
         val resultMap = hashMapOf<Interval, HashMap<Tag, BigDecimal>>()
+        val transactions = filterDataWithTransactions.transactions
         transactions.forEach { transaction ->
             val interval = transaction.timestampToInterval()
             val amountsMap = resultMap.getOrPut(interval, { hashMapOf<Tag, BigDecimal>() })
@@ -56,12 +66,13 @@ class TagsReportPresenter(
             }
         }
 
-        return normalizeToLast30Days(resultMap)
+        return normalizeToLast30Days(resultMap, filterDataWithTransactions.filterData)
     }
 
-    private fun normalizeToLast30Days(resultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>): List<TagsReportItem> {
+    private fun normalizeToLast30Days(resultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>,
+            filterData: FilterData): List<TagsReportItem> {
         val period = Period.days(1)
-        var interval = interval.withPeriodAfterStart(period)
+        var interval = filterData.interval!!.withPeriodAfterStart(period)
         val last30Days = 0..29
         return last30Days.map {
             resultMap
@@ -82,6 +93,7 @@ class TagsReportPresenter(
 
     data class TagWithAmount(val tag: Tag, val amount: BigDecimal)
     data class TagsReportItem(val interval: Interval, val tagsWithAmount: List<TagWithAmount>)
+    private data class FilterDataWithTransactions(val filterData: FilterData, val transactions: List<Transaction>)
 
     interface View : Presenter.View {
         fun showTagsReportItems(tagsReportItems: List<TagsReportItem>)

@@ -23,9 +23,7 @@ class Filter {
     private var filterData: FilterData = FilterData()
     private val filterDataSubject = BehaviorSubject(filterData)
 
-    fun filterData(): Observable<FilterData> {
-        return filterDataSubject
-    }
+    fun filterData(): Observable<FilterData> = filterDataSubject
 
     fun setTransactionType(transactionType: TransactionType) {
         filterData = filterData.copy(transactionType = transactionType)
