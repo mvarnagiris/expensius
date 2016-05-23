@@ -16,4 +16,4 @@ package com.mvcoding.expensius
 
 import rx.Scheduler
 
-data class RxSchedulers(val main: Scheduler, val io: Scheduler)
+data class RxSchedulers(val main: Scheduler, val io: Scheduler, val computation: Scheduler)

@@ -45,3 +45,4 @@ fun Transaction.withCurrency(currency: String) = copy(currency = Currency(curren
 fun Transaction.withExchangeRate(exchangeRate: BigDecimal) = copy(exchangeRate = exchangeRate)
 fun Transaction.withAmount(amount: BigDecimal) = copy(amount = amount)
 fun Transaction.withTags(vararg tags: Tag) = copy(tags = setOf(*tags))
+fun Transaction.withTransactionType(transactionType: TransactionType) = copy(transactionType = transactionType)

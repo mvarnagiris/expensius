@@ -26,28 +26,45 @@ class ReportStep {
     fun setStep(step: Step) = stepSubject.onNext(step)
 
     enum class Step {
-        HOUR, DAY, WEEK, FORTNIGHT, MONTH, QUARTER_YEAR, HALF_YEAR, YEAR;
+        DAY, WEEK, MONTH, YEAR;
 
         fun toPeriod() = when (this) {
-            HOUR -> Period.hours(1)
             DAY -> Period.days(1)
             WEEK -> Period.weeks(1)
-            FORTNIGHT -> Period.weeks(2)
             MONTH -> Period.months(1)
-            QUARTER_YEAR -> Period.months(3)
-            HALF_YEAR -> Period.months(6)
             YEAR -> Period.years(1)
         }
 
         fun toNumberOfSteps(interval: Interval) = when (this) {
-            HOUR -> Hours.hoursIn(interval).hours
             DAY -> Days.daysIn(interval).days
             WEEK -> Weeks.weeksIn(interval).weeks
-            FORTNIGHT -> Weeks.weeksIn(interval).weeks / 2
             MONTH -> Months.monthsIn(interval).months
-            QUARTER_YEAR -> Months.monthsIn(interval).months / 3
-            HALF_YEAR -> Months.monthsIn(interval).months / 6
             YEAR -> Years.yearsIn(interval).years
         }
+
+        // TODO: Write tests for this method.
+        fun splitIntoStepIntervals(interval: Interval): List<Interval> {
+            // TODO: Normalize start if not beginning of period.
+            // TODO: Normalize end if not end of period.
+            val normalizedInterval = when (this) {
+                DAY -> interval.withStart(interval.start.withDay)
+                WEEK -> Weeks.weeksIn(interval).weeks
+                MONTH -> Months.monthsIn(interval).months
+                YEAR -> Years.yearsIn(interval).years
+            }
+            val period = toPeriod()
+            val numberOfSteps = toNumberOfSteps(interval)
+            val stepIntervals = (0..numberOfSteps).map { }
+        }
+
+        // TODO: Write tests for this method.
+        fun toInterval(timestamp: Long) = DateTime(timestamp).let {
+            when (this) {
+                DAY -> it.withTimeAtStartOfDay()
+                WEEK -> it.withDayOfWeek(1).withTimeAtStartOfDay()
+                MONTH -> it.withDayOfMonth(1).withTimeAtStartOfDay()
+                YEAR -> it.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay()
+            }
+        }.let { Interval(it, toPeriod()) }
     }
 }

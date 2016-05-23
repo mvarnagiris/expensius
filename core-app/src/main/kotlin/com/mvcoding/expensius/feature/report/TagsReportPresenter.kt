@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.report
 
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.FilterData
@@ -25,10 +26,9 @@ import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
-import org.joda.time.DateTime
 import org.joda.time.Interval
-import org.joda.time.Period
 import rx.Observable
+import rx.Observable.combineLatest
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 import java.util.*
@@ -37,65 +37,89 @@ class TagsReportPresenter(
         private val filter: Filter,
         private val reportStep: ReportStep,
         private val transactionsProvider: TransactionsProvider,
-        private val settings: Settings) : Presenter<TagsReportPresenter.View>() {
+        private val settings: Settings,
+        private val rxSchedulers: RxSchedulers) : Presenter<TagsReportPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        filter.filterData()
+        val filteredTransactions = filter.filterData()
+                .doOnNext { updateIntervalState(view, it) }
+                .filter { it.interval != null }
+                .observeOn(rxSchedulers.io)
                 .flatMap { queryTransactions(it) }
-                .map { convertToReportData(it) }
+
+        combineFilteredTransactionsAndReportStep(filteredTransactions)
+                .observeOn(rxSchedulers.computation)
+                .map { convertToReportData(it.interval, it.transactions, it.step) }
+                .subscribeOn(rxSchedulers.main)
+                .observeOn(rxSchedulers.main)
                 .subscribeUntilDetached { view.showTagsReportItems(it) }
     }
 
-    private fun queryTransactions(filterData: FilterData): Observable<FilterDataWithTransactions> {
-        val transactionsFilter = TransactionsFilter(NONE, filterData.interval, filterData.transactionType, CONFIRMED)
-        return transactionsProvider.transactions(transactionsFilter)
-                .map { FilterDataWithTransactions(filterData, it) }
+    private fun updateIntervalState(view: View, filterData: FilterData) {
+        if (filterData.interval == null) view.showIntervalIsRequired() else view.hideIntervalIsRequired()
     }
 
-    private fun convertToReportData(filterDataWithTransactions: FilterDataWithTransactions): List<TagsReportItem> {
+    private fun queryTransactions(filterData: FilterData): Observable<IntervalAndTransactions> {
+        val transactionsFilter = TransactionsFilter(NONE, filterData.interval, filterData.transactionType, CONFIRMED)
+        return transactionsProvider.transactions(transactionsFilter).map { IntervalAndTransactions(filterData.interval!!, it) }
+    }
+
+    private fun combineFilteredTransactionsAndReportStep(filteredTransactions: Observable<IntervalAndTransactions>) =
+            combineLatest(filteredTransactions, reportStep.step(), { intervalAndTransactions, step ->
+                IntervalAndTransactionsAndStep(intervalAndTransactions.interval, intervalAndTransactions.transactions, step)
+            })
+
+    private fun convertToReportData(interval: Interval, transactions: List<Transaction>, step: ReportStep.Step): List<TagsReportItem> {
         val resultMap = hashMapOf<Interval, HashMap<Tag, BigDecimal>>()
-        val transactions = filterDataWithTransactions.transactions
+        0..step.toNumberOfSteps(interval)
+
         transactions.forEach { transaction ->
-            val interval = transaction.timestampToInterval()
-            val amountsMap = resultMap.getOrPut(interval, { hashMapOf<Tag, BigDecimal>() })
+            val stepInterval = step.toInterval(transaction.timestamp)
+            val amountsMap = resultMap.getOrPut(stepInterval, { hashMapOf<Tag, BigDecimal>() })
             transaction.tagsOrNoTag().forEach { tag ->
                 val newAmount = amountsMap.getOrElse(tag, { ZERO }).plus(transaction.getAmountForCurrency(settings.mainCurrency))
                 amountsMap.put(tag, newAmount)
             }
         }
 
-        return normalizeToLast30Days(resultMap, filterDataWithTransactions.filterData)
+        return fillEmptyIntervals(resultMap, filterDataAndTransactions.filterData)
     }
 
-    private fun normalizeToLast30Days(resultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>,
-            filterData: FilterData): List<TagsReportItem> {
-        val period = Period.days(1)
-        var interval = filterData.interval!!.withPeriodAfterStart(period)
-        val last30Days = 0..29
-        return last30Days.map {
+    private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(Tag()) else tags }
+
+    private fun fillEmptyIntervals(resultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>,
+            interval: Interval,
+            step: ReportStep.Step): List<TagsReportItem> {
+        val period = step.toPeriod()
+        var stepInterval = step.toInterval(interval.startMillis)
+        val intervalsRange = 0..step.toNumberOfSteps(interval)
+        return intervalsRange.map {
             resultMap
-                    .getOrElse(interval, { emptyMap<Tag, BigDecimal>() })
+                    .getOrElse(stepInterval, { emptyMap<Tag, BigDecimal>() })
                     .toSortedMap(Comparator { tagLeft, tagRight -> tagLeft.order.compareTo(tagRight.order) })
                     .toList()
                     .map { TagWithAmount(it.first, it.second) }
                     .let {
                         val tagsReportItem = TagsReportItem(interval, it)
-                        interval = interval.withStart(interval.end).withPeriodAfterStart(period)
+                        stepInterval = interval.withStart(interval.end).withPeriodAfterStart(period)
                         tagsReportItem
                     }
         }
     }
 
-    private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(Tag()) else tags }
-    private fun Transaction.timestampToInterval() = DateTime(timestamp).withTimeAtStartOfDay().let { Interval(it, it.plusDays(1)) }
-
     data class TagWithAmount(val tag: Tag, val amount: BigDecimal)
     data class TagsReportItem(val interval: Interval, val tagsWithAmount: List<TagWithAmount>)
-    private data class FilterDataWithTransactions(val filterData: FilterData, val transactions: List<Transaction>)
+    private data class IntervalAndTransactions(val interval: Interval, val transactions: List<Transaction>)
+    private data class IntervalAndTransactionsAndStep(
+            val interval: Interval,
+            val transactions: List<Transaction>,
+            val step: ReportStep.Step)
 
     interface View : Presenter.View {
+        fun showIntervalIsRequired()
+        fun hideIntervalIsRequired()
         fun showTagsReportItems(tagsReportItems: List<TagsReportItem>)
     }
 }
