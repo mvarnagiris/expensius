@@ -15,11 +15,9 @@
 package com.mvcoding.expensius.feature
 
 import com.mvcoding.expensius.feature.ReportStep.Step.DAY
-import org.joda.time.Interval
-import org.joda.time.Period
+import org.joda.time.*
 import rx.Observable
 import rx.lang.kotlin.BehaviorSubject
-
 
 class ReportStep {
     private val stepSubject = BehaviorSubject(DAY)
@@ -41,8 +39,15 @@ class ReportStep {
             YEAR -> Period.years(1)
         }
 
-        fun toNumberOfSteps(interval: Interval): Int {
-            return 0
+        fun toNumberOfSteps(interval: Interval) = when (this) {
+            HOUR -> Hours.hoursIn(interval).hours
+            DAY -> Days.daysIn(interval).days
+            WEEK -> Weeks.weeksIn(interval).weeks
+            FORTNIGHT -> Weeks.weeksIn(interval).weeks / 2
+            MONTH -> Months.monthsIn(interval).months
+            QUARTER_YEAR -> Months.monthsIn(interval).months / 3
+            HALF_YEAR -> Months.monthsIn(interval).months / 6
+            YEAR -> Years.yearsIn(interval).years
         }
     }
 }

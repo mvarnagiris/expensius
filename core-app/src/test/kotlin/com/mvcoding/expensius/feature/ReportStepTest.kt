@@ -14,10 +14,10 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.aRandomItem
 import com.mvcoding.expensius.feature.ReportStep.Step.DAY
 import com.mvcoding.expensius.feature.ReportStep.Step.MONTH
 import org.hamcrest.CoreMatchers.equalTo
+import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -44,9 +44,29 @@ class ReportStepTest {
     }
 
     @Test
-    fun numberOfStepsIs0WhenIntervalIsEmpty() {
-        val step = ReportStep.Step.values().aRandomItem()
+    fun numberOfStepsIs0WhenIntervalIsEmptyOrDoesNotFillThePeriod() {
+        val anyDate = DateTime()
+        val emptyInterval = Interval(0, 0)
 
-        assertThat(step.toNumberOfSteps(Interval(0, 0)), equalTo(0))
+        ReportStep.Step.values().forEach {
+            assertThat(it.toNumberOfSteps(emptyInterval), equalTo(0))
+            assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod().minusMinutes(1))), equalTo(0))
+        }
+    }
+
+    @Test
+    fun numberOfStepsIs1WhenIntervalIsSameAsStep() {
+        val anyDate = DateTime()
+
+        ReportStep.Step.values().forEach { assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod())), equalTo(1)) }
+    }
+
+    @Test
+    fun numberOfStepsIs1WhenIntervalDoesNotFillTheSecondPeriod() {
+        val anyDate = DateTime()
+
+        ReportStep.Step.values().forEach {
+            assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod().plusMinutes(1))), equalTo(1))
+        }
     }
 }
