@@ -62,50 +62,58 @@ class TagsReportPresenter(
     }
 
     private fun queryTransactions(filterData: FilterData): Observable<IntervalAndTransactions> {
-        val transactionsFilter = TransactionsFilter(NONE, filterData.interval, filterData.transactionType, CONFIRMED)
-        return transactionsProvider.transactions(transactionsFilter).map { IntervalAndTransactions(filterData.interval!!, it) }
+        val transactionsFilter = TransactionsFilter(
+                NONE,
+                filterData.interval,
+                filterData.transactionType,
+                CONFIRMED)
+        return transactionsProvider.transactions(transactionsFilter)
+                .map { IntervalAndTransactions(filterData.interval!!, it) }
     }
 
-    private fun combineFilteredTransactionsAndReportStep(filteredTransactions: Observable<IntervalAndTransactions>) =
-            combineLatest(filteredTransactions, reportStep.step(), { intervalAndTransactions, step ->
-                IntervalAndTransactionsAndStep(intervalAndTransactions.interval, intervalAndTransactions.transactions, step)
+    private fun combineFilteredTransactionsAndReportStep(
+            filteredTransactions: Observable<IntervalAndTransactions>) =
+            combineLatest(filteredTransactions, reportStep.step(), {
+                intervalAndTransactions, step ->
+                IntervalAndTransactionsAndStep(
+                        intervalAndTransactions.interval,
+                        intervalAndTransactions.transactions, step)
             })
 
-    private fun convertToReportData(interval: Interval, transactions: List<Transaction>, step: ReportStep.Step): List<TagsReportItem> {
-        val resultMap = hashMapOf<Interval, HashMap<Tag, BigDecimal>>()
-        0..step.toNumberOfSteps(interval)
+    private fun convertToReportData(
+            interval: Interval,
+            transactions: List<Transaction>,
+            step: ReportStep.Step): List<TagsReportItem> {
+        val resultMap = step.splitIntoStepIntervals(interval)
+                .map { it to hashMapOf<Tag, BigDecimal>() }
+                .toMap()
 
         transactions.forEach { transaction ->
             val stepInterval = step.toInterval(transaction.timestamp)
-            val amountsMap = resultMap.getOrPut(stepInterval, { hashMapOf<Tag, BigDecimal>() })
+            val amountsMap = resultMap[stepInterval]
             transaction.tagsOrNoTag().forEach { tag ->
-                val newAmount = amountsMap.getOrElse(tag, { ZERO }).plus(transaction.getAmountForCurrency(settings.mainCurrency))
-                amountsMap.put(tag, newAmount)
+                val newAmount = amountsMap?.getOrElse(tag, { ZERO })
+                        ?.plus(transaction.getAmountForCurrency(settings.mainCurrency)) ?: ZERO
+                amountsMap?.put(tag, newAmount)
             }
         }
 
-        return fillEmptyIntervals(resultMap, filterDataAndTransactions.filterData)
+        return prepareReportItems(resultMap)
     }
 
     private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(Tag()) else tags }
 
-    private fun fillEmptyIntervals(resultMap: HashMap<Interval, HashMap<Tag, BigDecimal>>,
-            interval: Interval,
-            step: ReportStep.Step): List<TagsReportItem> {
-        val period = step.toPeriod()
-        var stepInterval = step.toInterval(interval.startMillis)
-        val intervalsRange = 0..step.toNumberOfSteps(interval)
-        return intervalsRange.map {
-            resultMap
-                    .getOrElse(stepInterval, { emptyMap<Tag, BigDecimal>() })
-                    .toSortedMap(Comparator { tagLeft, tagRight -> tagLeft.order.compareTo(tagRight.order) })
-                    .toList()
-                    .map { TagWithAmount(it.first, it.second) }
-                    .let {
-                        val tagsReportItem = TagsReportItem(interval, it)
-                        stepInterval = interval.withStart(interval.end).withPeriodAfterStart(period)
-                        tagsReportItem
-                    }
+    private fun prepareReportItems(
+            resultMap: Map<Interval, HashMap<Tag, BigDecimal>>): List<TagsReportItem> {
+
+        return resultMap.map {
+            val interval = it.key
+            val tagsWithAmount = it.value
+                    .toSortedMap(Comparator { tagLeft, tagRight ->
+                        tagLeft.order.compareTo(tagRight.order)
+                    }).toList().map { TagWithAmount(it.first, it.second) }
+
+            TagsReportItem(interval, tagsWithAmount)
         }
     }
 

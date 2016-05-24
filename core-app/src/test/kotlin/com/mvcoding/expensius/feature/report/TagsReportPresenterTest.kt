@@ -18,6 +18,7 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.feature.ReportStep.Step.DAY
+import com.mvcoding.expensius.feature.ReportStep.Step.MONTH
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagWithAmount
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagsReportItem
 import com.mvcoding.expensius.feature.tag.aNewTag
@@ -30,6 +31,7 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.joda.time.DateTime
 import org.joda.time.Interval
@@ -51,7 +53,12 @@ class TagsReportPresenterTest {
     val view = mock<TagsReportPresenter.View>()
     val filter = Filter()
     val reportStep = ReportStep()
-    val presenter = TagsReportPresenter(filter, reportStep, transactionsProvider, settings)
+    val presenter = TagsReportPresenter(
+            filter,
+            reportStep,
+            transactionsProvider,
+            settings,
+            rxSchedulers())
 
     @Before
     fun setUp() {
@@ -70,13 +77,30 @@ class TagsReportPresenterTest {
 
     @Test
     fun showsTagsReportForGivenFilterAndReportStep() {
-        val interval = Interval(DateTime.now(), Period.days(10))
+        val interval = Interval(DateTime.now().withTimeAtStartOfDay(), Period.days(10))
         filter.setInterval(interval)
+        filter.setTransactionType(EXPENSE)
         reportStep.setStep(DAY)
         prepareTransactions(interval)
         val expectedTagsReportItems = expectedTagsReportItems(interval, DAY)
 
         presenter.onViewAttached(view)
+
+        verify(view).hideIntervalIsRequired()
+        verify(view).showTagsReportItems(expectedTagsReportItems)
+    }
+
+    @Test
+    fun updatesResultsWhenStepIsUpdated() {
+        val interval = Interval(DateTime.now().withDayOfMonth(1).withTimeAtStartOfDay(), Period.months(4))
+        filter.setInterval(interval)
+        filter.setTransactionType(EXPENSE)
+        reportStep.setStep(MONTH)
+        prepareTransactions(interval)
+        val expectedTagsReportItems = expectedTagsReportItems(interval, MONTH)
+        presenter.onViewAttached(view)
+
+//        reportStep.setStep(WEEK)
 
         verify(view).hideIntervalIsRequired()
         verify(view).showTagsReportItems(expectedTagsReportItems)
@@ -107,35 +131,35 @@ class TagsReportPresenterTest {
 
     private fun expectedTagsReportItems(interval: Interval, step: ReportStep.Step): List<TagsReportItem> {
         val stepPeriod = step.toPeriod()
+        val numberOfSteps = step.toNumberOfSteps(interval)
 
-        val intervalAtTheBeginning = interval.withPeriodAfterStart(stepPeriod)
-        val tagsReportItem30DaysAgo = TagsReportItem(intervalAtTheBeginning, listOf(
+        val intervalAtTheBeginning = step.toInterval(interval.startMillis)
+        val tagsReportItemAtTheBeginning = TagsReportItem(intervalAtTheBeginning, listOf(
                 TagWithAmount(tag2, BigDecimal("9.0")),
                 TagWithAmount(tag1, BigDecimal("21.0")),
                 TagWithAmount(tag3, BigDecimal("5.6"))
         ))
 
 
-        val midIntervalMillis = interval.end.minusMillis(interval.toDurationMillis().toInt() / 2)
-        val intervalInTheMiddle = interval.withStart(midIntervalMillis).withPeriodAfterStart(stepPeriod)
-        val tagsReportItem15DaysAgo = TagsReportItem(intervalInTheMiddle, listOf(
+        val midIntervalMillis = interval.end.minus(stepPeriod.multipliedBy(numberOfSteps / 2)).millis
+        val intervalInTheMiddle = step.toInterval(midIntervalMillis)
+        val tagsReportItemInTheMiddle = TagsReportItem(intervalInTheMiddle, listOf(
                 TagWithAmount(noTag, BigDecimal("9")),
                 TagWithAmount(tag1, BigDecimal("7.8"))
         ))
 
-        val intervalAtTheEnd = interval.withPeriodBeforeEnd(stepPeriod)
-        val tagsReportItemToday = TagsReportItem(intervalAtTheEnd, listOf(
+        val intervalAtTheEnd = step.toInterval(interval.endMillis - 1)
+        val tagsReportItemAtTheEnd = TagsReportItem(intervalAtTheEnd, listOf(
                 TagWithAmount(tag2, BigDecimal("10")),
                 TagWithAmount(tag3, BigDecimal("10"))
         ))
 
-        val numberOfSteps = step.toNumberOfSteps(interval)
         val lastIntervalIndex = numberOfSteps - 1
         val expectedTagsReportItems = (0..lastIntervalIndex).map {
             when (it) {
-                0 -> tagsReportItem30DaysAgo
-                numberOfSteps / 2 -> tagsReportItem15DaysAgo
-                lastIntervalIndex -> tagsReportItemToday
+                0 -> tagsReportItemAtTheBeginning
+                numberOfSteps / 2 -> tagsReportItemInTheMiddle
+                lastIntervalIndex -> tagsReportItemAtTheEnd
                 else -> TagsReportItem(
                         interval.withEnd(interval.end.minusDays(lastIntervalIndex - it)).withPeriodBeforeEnd(stepPeriod), emptyList())
             }

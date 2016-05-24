@@ -14,11 +14,11 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.feature.ReportStep.Step.DAY
-import com.mvcoding.expensius.feature.ReportStep.Step.MONTH
+import com.mvcoding.expensius.feature.ReportStep.Step.*
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.DateTime
 import org.joda.time.Interval
+import org.joda.time.Period
 import org.junit.Assert.assertThat
 import org.junit.Test
 import rx.observers.TestSubscriber
@@ -50,7 +50,10 @@ class ReportStepTest {
 
         ReportStep.Step.values().forEach {
             assertThat(it.toNumberOfSteps(emptyInterval), equalTo(0))
-            assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod().minusMinutes(1))), equalTo(0))
+            assertThat(
+                    "$it",
+                    it.toNumberOfSteps(Interval(anyDate, it.toPeriod().minusMinutes(1))),
+                    equalTo(0))
         }
     }
 
@@ -58,7 +61,9 @@ class ReportStepTest {
     fun numberOfStepsIs1WhenIntervalIsSameAsStep() {
         val anyDate = DateTime()
 
-        ReportStep.Step.values().forEach { assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod())), equalTo(1)) }
+        ReportStep.Step.values().forEach {
+            assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod())), equalTo(1))
+        }
     }
 
     @Test
@@ -67,6 +72,57 @@ class ReportStepTest {
 
         ReportStep.Step.values().forEach {
             assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod().plusMinutes(1))), equalTo(1))
+        }
+    }
+
+    @Test
+    fun intervalWrapsGivenTimestamp() {
+        val now = DateTime.now()
+        val timestamp = now.millis
+
+        ReportStep.Step.values().forEach {
+            val interval = it.toInterval(timestamp)
+            val expectedInterval = when (it) {
+                DAY -> Interval(now.withTimeAtStartOfDay(), Period.days(1))
+                WEEK -> Interval(now.withDayOfWeek(1).withTimeAtStartOfDay(), Period.weeks(1))
+                MONTH -> Interval(now.withDayOfMonth(1).withTimeAtStartOfDay(), Period.months(1))
+                YEAR -> Interval(now.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay(), Period.years(1))
+            }
+            assertThat("$it", interval, equalTo(expectedInterval))
+        }
+    }
+
+    @Test
+    fun splitsIntoIntervalsThatFullyCoverGivenIntervalWhenItCanBeDividedInEqualPeriods() {
+        val timestamp = DateTime.now().millis
+
+        ReportStep.Step.values().forEach {
+            val firstInterval = it.toInterval(timestamp)
+            val secondInterval = firstInterval
+                    .withStart(firstInterval.end)
+                    .withPeriodAfterStart(it.toPeriod())
+            val totalInterval = Interval(firstInterval.start, secondInterval.end)
+            val splitIntervals = it.splitIntoStepIntervals(totalInterval)
+
+            assertThat("$it", splitIntervals, equalTo(listOf(firstInterval, secondInterval)))
+        }
+    }
+
+    @Test
+    fun splitsIntoIntervalsByCuttingOutEdgesWhenCannotBeDividedInEqualPeriods() {
+        val timestamp = DateTime.now().millis
+
+        ReportStep.Step.values().forEach {
+            val firstInterval = it.toInterval(timestamp)
+            val secondInterval = firstInterval
+                    .withStart(firstInterval.end)
+                    .withPeriodAfterStart(it.toPeriod())
+            val totalInterval = Interval(
+                    firstInterval.start.minusMinutes(1),
+                    secondInterval.end.plusMinutes(1))
+            val splitIntervals = it.splitIntoStepIntervals(totalInterval)
+
+            assertThat("$it", splitIntervals, equalTo(listOf(firstInterval, secondInterval)))
         }
     }
 }

@@ -22,7 +22,7 @@ import rx.lang.kotlin.BehaviorSubject
 class ReportStep {
     private val stepSubject = BehaviorSubject(DAY)
 
-    fun step(): Observable<Step> = stepSubject
+    fun step(): Observable<Step> = stepSubject.asObservable()
     fun setStep(step: Step) = stepSubject.onNext(step)
 
     enum class Step {
@@ -42,22 +42,26 @@ class ReportStep {
             YEAR -> Years.yearsIn(interval).years
         }
 
-        // TODO: Write tests for this method.
         fun splitIntoStepIntervals(interval: Interval): List<Interval> {
-            // TODO: Normalize start if not beginning of period.
-            // TODO: Normalize end if not end of period.
-            val normalizedInterval = when (this) {
-                DAY -> interval.withStart(interval.start.withDay)
-                WEEK -> Weeks.weeksIn(interval).weeks
-                MONTH -> Months.monthsIn(interval).months
-                YEAR -> Years.yearsIn(interval).years
-            }
+            val startInterval = toInterval(interval.startMillis)
+
+            val normalizedInterval =
+                    if (interval.startMillis != startInterval.startMillis)
+                        when (this) {
+                            DAY -> interval.withStart(interval.start.plusDays(1).withTimeAtStartOfDay())
+                            WEEK -> interval.withStart(interval.start.plusWeeks(1).withDayOfWeek(1).withTimeAtStartOfDay())
+                            MONTH -> interval.withStart(interval.start.plusMonths(1).withDayOfMonth(1).withTimeAtStartOfDay())
+                            YEAR -> interval.withStart(interval.start.plusYears(1).withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay())
+                        }
+                    else interval
+
             val period = toPeriod()
-            val numberOfSteps = toNumberOfSteps(interval)
-            val stepIntervals = (0..numberOfSteps).map { }
+            val numberOfSteps = toNumberOfSteps(normalizedInterval)
+            return (0..numberOfSteps - 1).map {
+                toInterval(normalizedInterval.start.plus(period.multipliedBy(it)).millis)
+            }
         }
 
-        // TODO: Write tests for this method.
         fun toInterval(timestamp: Long) = DateTime(timestamp).let {
             when (this) {
                 DAY -> it.withTimeAtStartOfDay()

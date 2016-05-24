@@ -16,4 +16,4 @@ package com.mvcoding.expensius
 
 import rx.schedulers.Schedulers.immediate
 
-fun rxSchedulers() = RxSchedulers(immediate(), immediate())
+fun rxSchedulers() = RxSchedulers(immediate(), immediate(), immediate())
