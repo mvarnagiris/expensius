@@ -43,8 +43,10 @@ class ReportStep {
         }
 
         fun splitIntoStepIntervals(interval: Interval): List<Interval> {
-            val startInterval = toInterval(interval.startMillis)
+            val period = toPeriod()
+            if (interval.endMillis < Interval(interval.start, period).endMillis) return emptyList()
 
+            val startInterval = toInterval(interval.startMillis)
             val normalizedInterval =
                     if (interval.startMillis != startInterval.startMillis)
                         when (this) {
@@ -55,7 +57,6 @@ class ReportStep {
                         }
                     else interval
 
-            val period = toPeriod()
             val numberOfSteps = toNumberOfSteps(normalizedInterval)
             return (0..numberOfSteps - 1).map {
                 toInterval(normalizedInterval.start.plus(period.multipliedBy(it)).millis)

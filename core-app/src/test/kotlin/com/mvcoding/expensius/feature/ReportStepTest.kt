@@ -109,6 +109,21 @@ class ReportStepTest {
     }
 
     @Test
+    fun returnsEmptyListWhenIntervalIsSmallerThanPeriod() {
+        val timestamp = DateTime.now().millis
+
+        ReportStep.Step.values().forEach {
+            val interval = it.toInterval(timestamp)
+            val totalInterval = Interval(
+                    interval.start.plusMinutes(1),
+                    interval.end.minusMinutes(1))
+            val splitIntervals = it.splitIntoStepIntervals(totalInterval)
+
+            assertThat("$it", splitIntervals, equalTo(emptyList()))
+        }
+    }
+
+    @Test
     fun splitsIntoIntervalsByCuttingOutEdgesWhenCannotBeDividedInEqualPeriods() {
         val timestamp = DateTime.now().millis
 
