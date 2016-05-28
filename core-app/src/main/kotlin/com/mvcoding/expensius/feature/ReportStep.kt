@@ -19,8 +19,8 @@ import org.joda.time.*
 import rx.Observable
 import rx.lang.kotlin.BehaviorSubject
 
-class ReportStep {
-    private val stepSubject = BehaviorSubject(DAY)
+class ReportStep(step: Step = DAY) {
+    private val stepSubject = BehaviorSubject(step)
 
     fun step(): Observable<Step> = stepSubject.asObservable()
     fun setStep(step: Step) = stepSubject.onNext(step)

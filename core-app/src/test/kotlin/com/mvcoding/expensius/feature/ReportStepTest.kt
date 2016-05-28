@@ -28,10 +28,17 @@ class ReportStepTest {
     val reportStep = ReportStep()
 
     @Test
-    fun initiallyGivesDay() {
+    fun initiallyGivesDayByDefault() {
         reportStep.step().subscribe(subscriber)
 
         subscriber.assertValue(DAY)
+    }
+
+    @Test
+    fun initiallyGivesProvidedStep() {
+        ReportStep(MONTH).step().subscribe(subscriber)
+
+        subscriber.assertValue(MONTH)
     }
 
     @Test

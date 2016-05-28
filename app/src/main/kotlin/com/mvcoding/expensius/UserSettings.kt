@@ -18,6 +18,7 @@ import android.content.SharedPreferences
 import com.mvcoding.expensius.extension.getObject
 import com.mvcoding.expensius.extension.putBoolean
 import com.mvcoding.expensius.extension.putObject
+import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.model.Currency
 import rx.lang.kotlin.BehaviorSubject
 import java.util.*
@@ -25,6 +26,7 @@ import java.util.*
 class UserSettings(private val sharedPreferences: SharedPreferences) : Settings {
     private val KEY_IS_INTRODUCTION_SEEN = "KEY_IS_INTRODUCTION_SEEN"
     private val KEY_SUBSCRIPTION_TYPE = "KEY_SUBSCRIPTION_TYPE"
+    private val KEY_REPORT_STEP = "KEY_REPORT_STEP"
     private val KEY_MAIN_CURRENCY = "KEY_MAIN_CURRENCY"
 
     override var isIntroductionSeen: Boolean = sharedPreferences.getBoolean(KEY_IS_INTRODUCTION_SEEN, false)
@@ -37,8 +39,15 @@ class UserSettings(private val sharedPreferences: SharedPreferences) : Settings 
             sharedPreferences.getObject(KEY_SUBSCRIPTION_TYPE, SubscriptionType::class, { SubscriptionType.FREE })
         set(value) {
             field = value
-            subscriptionTypes.onNext(value)
+            subscriptionTypesSubject.onNext(value)
             sharedPreferences.putObject(KEY_SUBSCRIPTION_TYPE, value)
+        }
+
+    override var reportStep: ReportStep.Step = sharedPreferences.getObject(KEY_REPORT_STEP, ReportStep.Step::class, { ReportStep.Step.DAY })
+        set(value) {
+            field = value
+            reportStepsSubject.onNext(value)
+            sharedPreferences.putObject(KEY_REPORT_STEP, value)
         }
 
     override var mainCurrency: Currency =
@@ -48,9 +57,11 @@ class UserSettings(private val sharedPreferences: SharedPreferences) : Settings 
             sharedPreferences.putObject(KEY_MAIN_CURRENCY, value.toPersistedCurrency())
         }
 
-    private val subscriptionTypes = BehaviorSubject(subscriptionType)
+    private val subscriptionTypesSubject = BehaviorSubject(subscriptionType)
+    private val reportStepsSubject = BehaviorSubject(reportStep)
 
-    override fun subscriptionTypes() = subscriptionTypes
+    override fun subscriptionTypes() = subscriptionTypesSubject.asObservable()
+    override fun reportSteps() = reportStepsSubject.asObservable()
 
     private fun defaultCurrency() = {
         try {

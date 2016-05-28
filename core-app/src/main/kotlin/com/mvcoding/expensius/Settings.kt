@@ -14,12 +14,15 @@
 
 package com.mvcoding.expensius
 
+import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.model.Currency
 import rx.Observable
 
 interface Settings {
     var isIntroductionSeen: Boolean
     var subscriptionType: SubscriptionType
+    var reportStep: ReportStep.Step
     var mainCurrency: Currency
     fun subscriptionTypes(): Observable<SubscriptionType>
+    fun reportSteps(): Observable<ReportStep.Step>
 }

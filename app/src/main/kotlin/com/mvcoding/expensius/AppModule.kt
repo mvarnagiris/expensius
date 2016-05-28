@@ -21,6 +21,7 @@ import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
+import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
@@ -29,7 +30,8 @@ import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.squareup.sqlbrite.SqlBrite
-import rx.android.schedulers.AndroidSchedulers
+import rx.android.schedulers.AndroidSchedulers.mainThread
+import rx.schedulers.Schedulers.computation
 import rx.schedulers.Schedulers.io
 
 class AppModule(val context: Context) : ShankModule {
@@ -49,7 +51,7 @@ class AppModule(val context: Context) : ShankModule {
     private fun rxBus() = registerFactory(RxBus::class.java, { -> RxBus() })
     private fun session() = registerFactory(Session::class.java, { -> UserSession() })
     private fun dateFormatter() = registerFactory(DateFormatter::class.java, { -> DateFormatter(context) })
-    private fun rxSchedulers() = registerFactory(RxSchedulers::class.java, { -> RxSchedulers(AndroidSchedulers.mainThread(), io()) })
+    private fun rxSchedulers() = registerFactory(RxSchedulers::class.java, { -> RxSchedulers(mainThread(), io(), computation()) })
 
     private fun settings() {
         registerFactory(Settings::class.java, { -> UserSettings(PreferenceManager.getDefaultSharedPreferences(provideContext())) })
@@ -78,3 +80,4 @@ fun provideSession() = provideSingleton(Session::class)
 fun provideDatabase() = provideSingleton(Database::class)
 fun provideDateFormatter() = provideSingleton(DateFormatter::class)
 fun provideAmountFormatter() = provideSingleton(AmountFormatter::class)
+fun provideReportStep() = ReportStep(provideSettings().reportStep)

@@ -89,6 +89,14 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
                 .let { LineData(xAxis, it).apply { setDrawValues(false) } }
     }
 
+    override fun showIntervalIsRequired() {
+        // Interval will always be there
+    }
+
+    override fun hideIntervalIsRequired() {
+        // Interval will always be there
+    }
+
     private fun List<List<TagsReportPresenter.TagWithAmount>>.collectToTagEntries() = foldIndexed(hashMapOf<Tag, ArrayList<Entry>>(), {
         index, tagsEntries, tagsWithAmount ->
         tagsEntries.apply {

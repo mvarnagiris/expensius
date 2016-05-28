@@ -16,8 +16,11 @@ package com.mvcoding.expensius.feature.report
 
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.provideTransactionsProvider
+import com.mvcoding.expensius.provideReportStep
+import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provideSettings
 import org.joda.time.DateTime
 import org.joda.time.Interval
@@ -30,6 +33,9 @@ class ReportsModule : ShankModule {
     private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class.java, { transactionType: TransactionType ->
         val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
         val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
-        TagsReportPresenter(transactionType, last30Days, provideTransactionsProvider(), provideSettings())
+        val filter = Filter()
+        filter.setInterval(last30Days)
+        filter.setTransactionType(transactionType)
+        TagsReportPresenter(filter, provideReportStep(), provideTransactionsProvider(), provideSettings(), provideRxSchedulers())
     })
 }
