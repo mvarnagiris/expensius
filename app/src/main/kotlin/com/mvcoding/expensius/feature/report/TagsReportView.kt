@@ -87,6 +87,7 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
                 .collectToTagEntries()
                 .map { it.toLineDataSet() }
                 .let { LineData(xAxis, it).apply { setDrawValues(false) } }
+        lineChart.invalidate()
     }
 
     override fun showIntervalIsRequired() {
