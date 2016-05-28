@@ -20,7 +20,8 @@ import android.view.ViewOutlineProvider
 import com.mvcoding.expensius.feature.SnackbarBuilder.Companion.snackbar
 import kotlin.reflect.KClass
 
-fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>,
+fun <T : Any> View.provideActivityScopedSingleton(
+        cls: KClass<T>,
         arg1: Any? = null,
         arg2: Any? = null,
         arg3: Any? = null,
@@ -31,11 +32,9 @@ fun <T : Any> View.provideActivityScopedSingleton(cls: KClass<T>,
 fun View.scope() = context.toBaseActivity().scope
 
 fun View.makeOutlineProviderOval() {
-    if (supportsLollipop()) {
-        outlineProvider = object : ViewOutlineProvider() {
-            override fun getOutline(view: View, outline: Outline) {
-                outline.setOval(0, 0, view.width, view.height)
-            }
+    outlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline) {
+            outline.setOval(0, 0, view.width, view.height)
         }
     }
 }

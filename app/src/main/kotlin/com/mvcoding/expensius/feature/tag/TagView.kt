@@ -36,7 +36,10 @@ import com.larswerkman.lobsterpicker.LobsterPicker
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.*
+import com.mvcoding.expensius.extension.pickForegroundColor
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.extension.snackbar
+import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
@@ -198,10 +201,7 @@ class TagView : LinearLayout, TagPresenter.View {
         val navigationIcon = DrawableCompat.wrap(toolbar.navigationIcon!!.mutate())
         DrawableCompat.setTint(navigationIcon, textColor)
         toolbar.navigationIcon = navigationIcon
-
-        if (supportsLollipop()) {
-            context.toBaseActivity().window.statusBarColor = color;
-        }
+        context.toBaseActivity().window.statusBarColor = color;
     }
 
     private class MaterialColorAdapter(context: Context) : ColorAdapter {
