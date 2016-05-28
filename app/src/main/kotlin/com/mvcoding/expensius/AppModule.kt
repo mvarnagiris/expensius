@@ -21,7 +21,6 @@ import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
-import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
@@ -80,4 +79,3 @@ fun provideSession() = provideSingleton(Session::class)
 fun provideDatabase() = provideSingleton(Database::class)
 fun provideDateFormatter() = provideSingleton(DateFormatter::class)
 fun provideAmountFormatter() = provideSingleton(AmountFormatter::class)
-fun provideReportStep() = ReportStep(provideSettings().reportStep)

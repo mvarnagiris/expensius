@@ -21,8 +21,8 @@ import rx.Observable
 interface Settings {
     var isIntroductionSeen: Boolean
     var subscriptionType: SubscriptionType
-    var reportStep: ReportStep.Step
+    var reportStep: ReportStep
     var mainCurrency: Currency
     fun subscriptionTypes(): Observable<SubscriptionType>
-    fun reportSteps(): Observable<ReportStep.Step>
+    fun reportSteps(): Observable<ReportStep>
 }

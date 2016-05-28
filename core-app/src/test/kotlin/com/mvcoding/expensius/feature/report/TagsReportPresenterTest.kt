@@ -17,31 +17,48 @@ package com.mvcoding.expensius.feature.report
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.ReportStep
-import com.mvcoding.expensius.feature.ReportStep.Step.*
+import com.mvcoding.expensius.feature.ReportStep.DAY
+import com.mvcoding.expensius.feature.ReportStep.MONTH
+import com.mvcoding.expensius.feature.ReportStep.WEEK
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagWithAmount
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagsReportItem
 import com.mvcoding.expensius.feature.tag.aNewTag
 import com.mvcoding.expensius.feature.tag.aTag
 import com.mvcoding.expensius.feature.tag.withTitle
-import com.mvcoding.expensius.feature.transaction.*
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import com.mvcoding.expensius.feature.transaction.TransactionsFilter
+import com.mvcoding.expensius.feature.transaction.TransactionsProvider
+import com.mvcoding.expensius.feature.transaction.aTransaction
+import com.mvcoding.expensius.feature.transaction.withAmount
+import com.mvcoding.expensius.feature.transaction.withCurrency
+import com.mvcoding.expensius.feature.transaction.withExchangeRate
+import com.mvcoding.expensius.feature.transaction.withTags
+import com.mvcoding.expensius.feature.transaction.withTimestamp
+import com.mvcoding.expensius.feature.transaction.withTransactionType
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.rxSchedulers
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.Period
 import org.junit.Before
 import org.junit.Test
 import rx.Observable.just
+import rx.lang.kotlin.BehaviorSubject
 import java.math.BigDecimal
 import java.math.BigDecimal.TEN
 
 class TagsReportPresenterTest {
+    val reportStepsSubject = BehaviorSubject(DAY)
     val mainCurrency = Currency("GBP")
     val noTag = aNewTag()
     val tag1 = aTag().withTitle("tag1").withOrder(1)
@@ -51,10 +68,8 @@ class TagsReportPresenterTest {
     val settings = mock<Settings>()
     val view = mock<TagsReportPresenter.View>()
     val filter = Filter()
-    val reportStep = ReportStep()
     val presenter = TagsReportPresenter(
             filter,
-            reportStep,
             transactionsProvider,
             settings,
             rxSchedulers())
@@ -62,6 +77,7 @@ class TagsReportPresenterTest {
     @Before
     fun setUp() {
         whenever(settings.mainCurrency).thenReturn(mainCurrency)
+        whenever(settings.reportSteps()).thenReturn(reportStepsSubject)
     }
 
     @Test
@@ -79,7 +95,7 @@ class TagsReportPresenterTest {
         val interval = Interval(DateTime.now().withTimeAtStartOfDay(), Period.days(10))
         filter.setInterval(interval)
         filter.setTransactionType(EXPENSE)
-        reportStep.setStep(DAY)
+        setReportStep(DAY)
         prepareTransactions(interval)
 
         presenter.onViewAttached(view)
@@ -94,7 +110,7 @@ class TagsReportPresenterTest {
         val interval = Interval(DateTime.now().withDayOfWeek(1).withTimeAtStartOfDay(), Period.weeks(4))
         filter.setInterval(interval)
         filter.setTransactionType(EXPENSE)
-        reportStep.setStep(WEEK)
+        setReportStep(WEEK)
         prepareTransactions(interval)
 
         presenter.onViewAttached(view)
@@ -109,7 +125,7 @@ class TagsReportPresenterTest {
         val interval = Interval(DateTime.now().withDayOfMonth(1).withTimeAtStartOfDay(), Period.months(4))
         filter.setInterval(interval)
         filter.setTransactionType(EXPENSE)
-        reportStep.setStep(MONTH)
+        setReportStep(MONTH)
         prepareTransactions(interval)
 
         presenter.onViewAttached(view)
@@ -142,11 +158,11 @@ class TagsReportPresenterTest {
                 .withTransactionType(EXPENSE)
     }
 
-    private fun expectedTagsReportItems(interval: Interval, step: ReportStep.Step): List<TagsReportItem> {
-        val stepPeriod = step.toPeriod()
-        val numberOfSteps = step.toNumberOfSteps(interval)
+    private fun expectedTagsReportItems(interval: Interval, reportStep: ReportStep): List<TagsReportItem> {
+        val stepPeriod = reportStep.toPeriod()
+        val numberOfSteps = reportStep.toNumberOfSteps(interval)
 
-        val intervalAtTheBeginning = step.toInterval(interval.startMillis)
+        val intervalAtTheBeginning = reportStep.toInterval(interval.startMillis)
         val tagsReportItemAtTheBeginning = TagsReportItem(intervalAtTheBeginning, listOf(
                 TagWithAmount(tag2, BigDecimal("9.0")),
                 TagWithAmount(tag1, BigDecimal("21.0")),
@@ -155,13 +171,13 @@ class TagsReportPresenterTest {
 
 
         val timestampInTheMiddle = (interval.startMillis + interval.endMillis) / 2
-        val intervalInTheMiddle = step.toInterval(timestampInTheMiddle)
+        val intervalInTheMiddle = reportStep.toInterval(timestampInTheMiddle)
         val tagsReportItemInTheMiddle = TagsReportItem(intervalInTheMiddle, listOf(
                 TagWithAmount(noTag, BigDecimal("9")),
                 TagWithAmount(tag1, BigDecimal("7.8"))
         ))
 
-        val intervalAtTheEnd = step.toInterval(interval.endMillis - 1)
+        val intervalAtTheEnd = reportStep.toInterval(interval.endMillis - 1)
         val tagsReportItemAtTheEnd = TagsReportItem(intervalAtTheEnd, listOf(
                 TagWithAmount(tag2, BigDecimal("10")),
                 TagWithAmount(tag3, BigDecimal("10"))
@@ -178,4 +194,6 @@ class TagsReportPresenterTest {
         }
         return expectedTagsReportItems
     }
+
+    private fun setReportStep(reportStep: ReportStep) = reportStepsSubject.onNext(reportStep)
 }

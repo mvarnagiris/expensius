@@ -19,7 +19,6 @@ import com.memoizrlabs.ShankModule
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.provideTransactionsProvider
-import com.mvcoding.expensius.provideReportStep
 import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provideSettings
 import org.joda.time.DateTime
@@ -36,6 +35,6 @@ class ReportsModule : ShankModule {
         val filter = Filter()
         filter.setInterval(last30Days)
         filter.setTransactionType(transactionType)
-        TagsReportPresenter(filter, provideReportStep(), provideTransactionsProvider(), provideSettings(), provideRxSchedulers())
+        TagsReportPresenter(filter, provideTransactionsProvider(), provideSettings(), provideRxSchedulers())
     })
 }

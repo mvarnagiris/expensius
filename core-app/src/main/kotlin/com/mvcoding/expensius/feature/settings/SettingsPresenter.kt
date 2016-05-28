@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.settings
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.Currency
 import rx.Observable
@@ -27,27 +28,44 @@ class SettingsPresenter(
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
-        view.showMainCurrency(settings.mainCurrency)
+        mainCurrency(view)
+        reportStep(view)
+        settings.subscriptionTypes().subscribeUntilDetached { view.showSubscriptionType(it) }
+        view.onSupportDeveloperSelected().subscribeUntilDetached { view.displaySupportDeveloper() }
+        view.onAboutSelected().subscribeUntilDetached { view.displayAbout() }
+    }
 
-        view.onMainCurrencyRequested()
+    private fun mainCurrency(view: View) {
+        view.showMainCurrency(settings.mainCurrency)
+        view.onMainCurrencySelected()
                 .flatMap { currenciesProvider.currencies() }
                 .flatMap { view.requestMainCurrency(it) }
                 .doOnNext { settings.mainCurrency = it }
                 .subscribeUntilDetached { view.showMainCurrency(it) }
         // TODO: Things need to get a notification that main currency has been changed and update.
+    }
 
-        settings.subscriptionTypes().subscribeUntilDetached { view.showSubscriptionType(it) }
-        view.onSupportDeveloperRequested().subscribeUntilDetached { view.displaySupportDeveloper() }
-        view.onAboutRequested().subscribeUntilDetached { view.displayAbout() }
+    private fun reportStep(view: View) {
+        settings.reportSteps().subscribeUntilDetached { view.showReportStep(it) }
+        view.onReportStepSelected()
+                .map { ReportStep.values().toList() }
+                .flatMap { view.requestReportStep(it) }
+                .subscribeUntilDetached { settings.reportStep = it }
     }
 
     interface View : Presenter.View {
-        fun onMainCurrencyRequested(): Observable<Unit>
-        fun onSupportDeveloperRequested(): Observable<Unit>
-        fun onAboutRequested(): Observable<Unit>
+        fun onMainCurrencySelected(): Observable<Unit>
+        fun onReportStepSelected(): Observable<Unit>
+        fun onSupportDeveloperSelected(): Observable<Unit>
+        fun onAboutSelected(): Observable<Unit>
+
         fun requestMainCurrency(currencies: List<Currency>): Observable<Currency>
+        fun requestReportStep(reportSteps: List<ReportStep>): Observable<ReportStep>
+
         fun showMainCurrency(mainCurrency: Currency)
+        fun showReportStep(reportStep: ReportStep)
         fun showSubscriptionType(subscriptionType: SubscriptionType)
+
         fun displaySupportDeveloper()
         fun displayAbout()
     }

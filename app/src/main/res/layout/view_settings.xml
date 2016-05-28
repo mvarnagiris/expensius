@@ -28,6 +28,12 @@
         <View style="@style/Divider" />
 
         <include
+            android:id="@+id/reportStepSettingsItemView"
+            layout="@layout/view_settings_item" />
+
+        <View style="@style/Divider" />
+
+        <include
             android:id="@+id/supportDeveloperSettingsItemView"
             layout="@layout/view_settings_item" />
 

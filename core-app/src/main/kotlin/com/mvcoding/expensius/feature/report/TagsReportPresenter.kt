@@ -35,7 +35,6 @@ import java.util.*
 
 class TagsReportPresenter(
         private val filter: Filter,
-        private val reportStep: ReportStep,
         private val transactionsProvider: TransactionsProvider,
         private val settings: Settings,
         private val rxSchedulers: RxSchedulers) : Presenter<TagsReportPresenter.View>() {
@@ -51,7 +50,7 @@ class TagsReportPresenter(
 
         combineFilteredTransactionsAndReportStep(filteredTransactions)
                 .observeOn(rxSchedulers.computation)
-                .map { convertToReportData(it.interval, it.transactions, it.step) }
+                .map { convertToReportData(it.interval, it.transactions, it.reportStep) }
                 .subscribeOn(rxSchedulers.main)
                 .observeOn(rxSchedulers.main)
                 .subscribeUntilDetached { view.showTagsReportItems(it) }
@@ -73,9 +72,9 @@ class TagsReportPresenter(
 
     private fun combineFilteredTransactionsAndReportStep(
             filteredTransactions: Observable<IntervalAndTransactions>) =
-            combineLatest(filteredTransactions, reportStep.step(), {
+            combineLatest(filteredTransactions, settings.reportSteps(), {
                 intervalAndTransactions, step ->
-                IntervalAndTransactionsAndStep(
+                IntervalAndTransactionsAndReportStep(
                         intervalAndTransactions.interval,
                         intervalAndTransactions.transactions, step)
             })
@@ -83,17 +82,17 @@ class TagsReportPresenter(
     private fun convertToReportData(
             interval: Interval,
             transactions: List<Transaction>,
-            step: ReportStep.Step): List<TagsReportItem> {
-        val resultMap = step.splitIntoStepIntervals(interval)
+            reportStep: ReportStep): List<TagsReportItem> {
+        val resultMap = reportStep.splitIntoStepIntervals(interval)
                 .map { it to hashMapOf<Tag, BigDecimal>() }
                 .toMap()
 
         transactions.forEach { transaction ->
-            val stepInterval = step.toInterval(transaction.timestamp)
+            val stepInterval = reportStep.toInterval(transaction.timestamp)
             val amountsMap = resultMap[stepInterval]
             transaction.tagsOrNoTag().forEach { tag ->
                 val newAmount = amountsMap?.getOrElse(tag, { ZERO })
-                        ?.plus(transaction.getAmountForCurrency(settings.mainCurrency)) ?: ZERO
+                                        ?.plus(transaction.getAmountForCurrency(settings.mainCurrency)) ?: ZERO
                 amountsMap?.put(tag, newAmount)
             }
         }
@@ -120,10 +119,10 @@ class TagsReportPresenter(
     data class TagWithAmount(val tag: Tag, val amount: BigDecimal)
     data class TagsReportItem(val interval: Interval, val tagsWithAmount: List<TagWithAmount>)
     private data class IntervalAndTransactions(val interval: Interval, val transactions: List<Transaction>)
-    private data class IntervalAndTransactionsAndStep(
+    private data class IntervalAndTransactionsAndReportStep(
             val interval: Interval,
             val transactions: List<Transaction>,
-            val step: ReportStep.Step)
+            val reportStep: ReportStep)
 
     interface View : Presenter.View {
         fun showIntervalIsRequired()

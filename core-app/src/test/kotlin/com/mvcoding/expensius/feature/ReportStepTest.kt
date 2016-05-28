@@ -14,48 +14,24 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.feature.ReportStep.Step.*
+import com.mvcoding.expensius.feature.ReportStep.DAY
+import com.mvcoding.expensius.feature.ReportStep.MONTH
+import com.mvcoding.expensius.feature.ReportStep.WEEK
+import com.mvcoding.expensius.feature.ReportStep.YEAR
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.Period
 import org.junit.Assert.assertThat
 import org.junit.Test
-import rx.observers.TestSubscriber
 
 class ReportStepTest {
-    val subscriber = TestSubscriber.create<ReportStep.Step>()
-    val reportStep = ReportStep()
-
-    @Test
-    fun initiallyGivesDayByDefault() {
-        reportStep.step().subscribe(subscriber)
-
-        subscriber.assertValue(DAY)
-    }
-
-    @Test
-    fun initiallyGivesProvidedStep() {
-        ReportStep(MONTH).step().subscribe(subscriber)
-
-        subscriber.assertValue(MONTH)
-    }
-
-    @Test
-    fun changingFilterValuesEmitsUpdatedFilter() {
-        reportStep.step().subscribe(subscriber)
-
-        reportStep.setStep(MONTH)
-
-        subscriber.assertValues(DAY, MONTH)
-    }
-
     @Test
     fun numberOfStepsIs0WhenIntervalIsEmptyOrDoesNotFillThePeriod() {
         val anyDate = DateTime()
         val emptyInterval = Interval(0, 0)
 
-        ReportStep.Step.values().forEach {
+        ReportStep.values().forEach {
             assertThat(it.toNumberOfSteps(emptyInterval), equalTo(0))
             assertThat(
                     "$it",
@@ -68,7 +44,7 @@ class ReportStepTest {
     fun numberOfStepsIs1WhenIntervalIsSameAsStep() {
         val anyDate = DateTime()
 
-        ReportStep.Step.values().forEach {
+        ReportStep.values().forEach {
             assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod())), equalTo(1))
         }
     }
@@ -77,7 +53,7 @@ class ReportStepTest {
     fun numberOfStepsIs1WhenIntervalDoesNotFillTheSecondPeriod() {
         val anyDate = DateTime()
 
-        ReportStep.Step.values().forEach {
+        ReportStep.values().forEach {
             assertThat("$it", it.toNumberOfSteps(Interval(anyDate, it.toPeriod().plusMinutes(1))), equalTo(1))
         }
     }
@@ -87,7 +63,7 @@ class ReportStepTest {
         val now = DateTime.now()
         val timestamp = now.millis
 
-        ReportStep.Step.values().forEach {
+        ReportStep.values().forEach {
             val interval = it.toInterval(timestamp)
             val expectedInterval = when (it) {
                 DAY -> Interval(now.withTimeAtStartOfDay(), Period.days(1))
@@ -103,7 +79,7 @@ class ReportStepTest {
     fun splitsIntoIntervalsThatFullyCoverGivenIntervalWhenItCanBeDividedInEqualPeriods() {
         val timestamp = DateTime.now().millis
 
-        ReportStep.Step.values().forEach {
+        ReportStep.values().forEach {
             val firstInterval = it.toInterval(timestamp)
             val secondInterval = firstInterval
                     .withStart(firstInterval.end)
@@ -119,7 +95,7 @@ class ReportStepTest {
     fun returnsEmptyListWhenIntervalIsSmallerThanPeriod() {
         val timestamp = DateTime.now().millis
 
-        ReportStep.Step.values().forEach {
+        ReportStep.values().forEach {
             val interval = it.toInterval(timestamp)
             val totalInterval = Interval(
                     interval.start.plusMinutes(1),
@@ -134,7 +110,7 @@ class ReportStepTest {
     fun splitsIntoIntervalsByCuttingOutEdgesWhenCannotBeDividedInEqualPeriods() {
         val timestamp = DateTime.now().millis
 
-        ReportStep.Step.values().forEach {
+        ReportStep.values().forEach {
             val firstInterval = it.toInterval(timestamp)
             val secondInterval = firstInterval
                     .withStart(firstInterval.end)

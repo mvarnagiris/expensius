@@ -43,7 +43,7 @@ class UserSettings(private val sharedPreferences: SharedPreferences) : Settings 
             sharedPreferences.putObject(KEY_SUBSCRIPTION_TYPE, value)
         }
 
-    override var reportStep: ReportStep.Step = sharedPreferences.getObject(KEY_REPORT_STEP, ReportStep.Step::class, { ReportStep.Step.DAY })
+    override var reportStep: ReportStep = sharedPreferences.getObject(KEY_REPORT_STEP, ReportStep::class, { ReportStep.DAY })
         set(value) {
             field = value
             reportStepsSubject.onNext(value)

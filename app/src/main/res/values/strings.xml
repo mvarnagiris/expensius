@@ -48,6 +48,12 @@
     <string name="delete">Delete</string>
     <string name="about">About</string>
     <string name="support_developer">Support developer</string>
+    <string name="report_grouping">Report grouping</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+
     <string name="long_user_is_using_free_version">You are using free version</string>
     <string name="long_user_is_using_premium_version">Thank you for using premium version</string>
     <string name="long_no_purchases_available">At the moment there is nothing you can buy. Check back later.</string>

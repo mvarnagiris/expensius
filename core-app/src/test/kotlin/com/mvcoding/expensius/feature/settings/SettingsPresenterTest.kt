@@ -18,9 +18,13 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.feature.ReportStep
+import com.mvcoding.expensius.feature.ReportStep.DAY
+import com.mvcoding.expensius.feature.ReportStep.WEEK
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.Currency
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -31,11 +35,16 @@ import rx.lang.kotlin.PublishSubject
 import rx.observers.TestSubscriber.create
 
 class SettingsPresenterTest {
-    val mainCurrencyRequestedSubject = PublishSubject<Unit>()
-    val supportDeveloperRequestedSubject = PublishSubject<Unit>()
-    val aboutRequestedSubject = PublishSubject<Unit>()
-    val requestMainCurrencySubject = PublishSubject<Currency>()
-    val subscriptionTypes = BehaviorSubject(FREE)
+    val selectMainCurrencySubject = PublishSubject<Unit>()
+    val selectReportStepSubject = PublishSubject<Unit>()
+    val selectSupportDeveloperSubject = PublishSubject<Unit>()
+    val selectAboutSubject = PublishSubject<Unit>()
+
+    val mainCurrencyRequestSubject = PublishSubject<Currency>()
+    val reportStepRequestSubject = PublishSubject<ReportStep>()
+
+    val reportStepsSubject = BehaviorSubject(DAY)
+    val subscriptionTypesSubject = BehaviorSubject(FREE)
 
     val settings = mock<Settings>()
     val currenciesProvider = CurrenciesProvider()
@@ -44,11 +53,16 @@ class SettingsPresenterTest {
 
     @Before
     fun setUp() {
-        whenever(view.onMainCurrencyRequested()).thenReturn(mainCurrencyRequestedSubject)
-        whenever(view.onSupportDeveloperRequested()).thenReturn(supportDeveloperRequestedSubject)
-        whenever(view.onAboutRequested()).thenReturn(aboutRequestedSubject)
-        whenever(view.requestMainCurrency(any())).thenReturn(requestMainCurrencySubject)
-        whenever(settings.subscriptionTypes()).thenReturn(subscriptionTypes)
+        whenever(view.onMainCurrencySelected()).thenReturn(selectMainCurrencySubject)
+        whenever(view.onReportStepSelected()).thenReturn(selectReportStepSubject)
+        whenever(view.onSupportDeveloperSelected()).thenReturn(selectSupportDeveloperSubject)
+        whenever(view.onAboutSelected()).thenReturn(selectAboutSubject)
+        whenever(view.requestMainCurrency(any())).thenReturn(mainCurrencyRequestSubject)
+        whenever(view.requestReportStep(any())).thenReturn(reportStepRequestSubject)
+        whenever(settings.subscriptionTypes()).thenReturn(subscriptionTypesSubject)
+        whenever(settings.reportSteps()).thenReturn(reportStepsSubject)
+        whenever(settings.reportStep).thenReturn(DAY)
+        doAnswer { reportStepsSubject.onNext(it.getArgument(0)) }.whenever(settings).reportStep = any()
     }
 
     @Test
@@ -69,8 +83,8 @@ class SettingsPresenterTest {
         whenever(settings.mainCurrency).thenReturn(oldCurrency)
         presenter.onViewAttached(view)
 
-        requestMainCurrency()
-        selectMainCurrency(newCurrency)
+        selectMainCurrency()
+        setMainCurrency(newCurrency)
 
         verify(view).requestMainCurrency(allCurrencies)
         verify(view).showMainCurrency(newCurrency)
@@ -78,8 +92,27 @@ class SettingsPresenterTest {
     }
 
     @Test
+    fun showsReportStep() {
+        presenter.onViewAttached(view)
+
+        verify(view).showReportStep(DAY)
+    }
+
+    @Test
+    fun canSelectNewReportStep() {
+        presenter.onViewAttached(view)
+
+        selectReportStep()
+        setReportStep(WEEK)
+
+        verify(view).requestReportStep(ReportStep.values().toList())
+        verify(view).showReportStep(WEEK)
+        verify(settings).reportStep = WEEK
+    }
+
+    @Test
     fun showsSubscriptionType() {
-        selectSubscriptionType(PREMIUM_PAID)
+        setSubscriptionType(PREMIUM_PAID)
 
         presenter.onViewAttached(view)
 
@@ -88,10 +121,10 @@ class SettingsPresenterTest {
 
     @Test
     fun showsUpdatedSubscriptionType() {
-        selectSubscriptionType(FREE)
+        setSubscriptionType(FREE)
         presenter.onViewAttached(view)
 
-        selectSubscriptionType(PREMIUM_PAID)
+        setSubscriptionType(PREMIUM_PAID)
 
         verify(view).showSubscriptionType(PREMIUM_PAID)
     }
@@ -100,7 +133,7 @@ class SettingsPresenterTest {
     fun displaysAbout() {
         presenter.onViewAttached(view)
 
-        requestAbout()
+        selectAbout()
 
         verify(view).displayAbout()
     }
@@ -109,14 +142,16 @@ class SettingsPresenterTest {
     fun displaysSupportDeveloper() {
         presenter.onViewAttached(view)
 
-        requestSupportDeveloper()
+        selectSupportDeveloper()
 
         verify(view).displaySupportDeveloper()
     }
 
-    private fun requestMainCurrency() = mainCurrencyRequestedSubject.onNext(Unit)
-    private fun requestSupportDeveloper() = supportDeveloperRequestedSubject.onNext(Unit)
-    private fun requestAbout() = aboutRequestedSubject.onNext(Unit)
-    private fun selectMainCurrency(currency: Currency) = requestMainCurrencySubject.onNext(currency)
-    private fun selectSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypes.onNext(subscriptionType)
+    private fun selectMainCurrency() = selectMainCurrencySubject.onNext(Unit)
+    private fun selectReportStep() = selectReportStepSubject.onNext(Unit)
+    private fun selectSupportDeveloper() = selectSupportDeveloperSubject.onNext(Unit)
+    private fun selectAbout() = selectAboutSubject.onNext(Unit)
+    private fun setMainCurrency(currency: Currency) = mainCurrencyRequestSubject.onNext(currency)
+    private fun setReportStep(reportStep: ReportStep) = reportStepRequestSubject.onNext(reportStep)
+    private fun setSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypesSubject.onNext(subscriptionType)
 }
