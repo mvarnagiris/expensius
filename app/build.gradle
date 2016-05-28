@@ -34,11 +34,11 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '24.0.0-rc4'
 
     defaultConfig {
         applicationId "com.mvcoding.expensius"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 8
         versionName "0.3.2"
