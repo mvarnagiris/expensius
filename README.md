@@ -5,6 +5,7 @@
 ```
 CRASHLYTICS=your_id_goes_here
 ```
+- Add google-services.json from Firebase.
 
 # Links
 - [Google+ community](https://plus.google.com/communities/101485799420505987783)

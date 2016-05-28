@@ -9,3 +9,4 @@
 /build
 /captures
 *.iml
+/app/google-services.json
