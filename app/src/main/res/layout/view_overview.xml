@@ -26,8 +26,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="@dimen/keyline_quarter">
+            android:orientation="vertical">
+
+            <com.mvcoding.expensius.feature.report.TagReportItemsView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <include
                 android:id="@+id/expenseTagsReportView"

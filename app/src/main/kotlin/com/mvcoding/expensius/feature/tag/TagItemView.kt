@@ -58,6 +58,5 @@ class TagItemView : LinearLayout {
     }
 
     private fun getIconColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else tag.color
-
     private fun getTextColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else textColorPrimary
 }

@@ -165,17 +165,17 @@
     <!--<item name="android:padding">@dimen/keyline_half</item>-->
     <!--</style>-->
 
-    <!--<style name="RecyclerViewItem">-->
-    <!--<item name="android:layout_width">match_parent</item>-->
-    <!--<item name="android:layout_height">wrap_content</item>-->
-    <!--<item name="android:minHeight">?actionBarSize</item>-->
-    <!--<item name="android:paddingLeft">@dimen/keyline</item>-->
-    <!--<item name="android:paddingRight">@dimen/keyline</item>-->
-    <!--<item name="android:paddingTop">@dimen/space_normal</item>-->
-    <!--<item name="android:paddingBottom">@dimen/space_normal</item>-->
-    <!--<item name="android:clipToPadding">false</item>-->
-    <!--<item name="android:background">?selectableItemBackground</item>-->
-    <!--</style>-->
+    <style name="RecyclerViewItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">?actionBarSize</item>
+        <item name="android:paddingLeft">@dimen/keyline</item>
+        <item name="android:paddingRight">@dimen/keyline</item>
+        <item name="android:paddingTop">@dimen/grid_1x</item>
+        <item name="android:paddingBottom">@dimen/grid_1x</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:background">?selectableItemBackground</item>
+    </style>
 
     <!-- Divider -->
     <!-- =============================================================================================================================== -->
