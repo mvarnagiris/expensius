@@ -14,10 +14,12 @@
 
 package com.mvcoding.expensius.feature.report
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -56,6 +58,7 @@ class ExpensesTrendView @JvmOverloads constructor(context: Context, attrs: Attri
         lineChart.xAxis.setDrawAxisLine(false)
         lineChart.xAxis.setDrawLabels(false)
         lineChart.xAxis.setDrawLimitLinesBehindData(false)
+        lineChart.animateY(700, Easing.EasingOption.EaseOutCubic)
 
         val random = Random()
         val lineDataSet = LineDataSet((0..13).map { Entry(random.nextInt(100).toFloat(), it) }, "")
@@ -80,7 +83,12 @@ class ExpensesTrendView @JvmOverloads constructor(context: Context, attrs: Attri
         val lineData = LineData((0..13).map { "" }, listOf(lastLineDataSet, lineDataSet))
         lineChart.data = lineData
 
-        thisPeriodAmountTextView.text = amountFormatter.format(BigDecimal.valueOf(random.nextDouble() * 1000),
-                provideSettings().mainCurrency)
+        val amount = BigDecimal.valueOf(random.nextDouble() * 1000)
+        val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(700)
+        animator.addUpdateListener {
+            thisPeriodAmountTextView.text = amountFormatter.format(amount.multiply(BigDecimal.valueOf(it.animatedFraction.toDouble())),
+                    provideSettings().mainCurrency)
+        }
+        animator.start()
     }
 }

@@ -33,6 +33,7 @@
     <string name="calculator">Calculator</string>
     <string name="add_a_note">Add a note</string>
     <string name="expense">Expense</string>
+    <string name="expenses">Expenses</string>
     <string name="income">Income</string>
     <string name="date">Date</string>
     <string name="confirmed">Confirmed</string>

@@ -40,6 +40,7 @@
 
     <style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp</item>
     </style>
 
     <style name="Text.Display1" parent="TextAppearance.AppCompat.Display1">
