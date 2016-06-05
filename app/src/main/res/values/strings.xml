@@ -53,6 +53,7 @@
     <string name="week">Week</string>
     <string name="month">Month</string>
     <string name="year">Year</string>
+    <string name="settings">Settings</string>
 
     <string name="long_user_is_using_free_version">You are using free version</string>
     <string name="long_user_is_using_premium_version">Thank you for using premium version</string>

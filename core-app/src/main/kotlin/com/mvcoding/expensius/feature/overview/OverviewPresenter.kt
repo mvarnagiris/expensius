@@ -21,14 +21,21 @@ class OverviewPresenter : Presenter<OverviewPresenter.View>() {
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        unsubscribeOnDetach(view.onAddNewTransaction().subscribe { view.startTransactionEdit() })
-        unsubscribeOnDetach(view.onStartTags().subscribe { view.startTags() })
+        view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
+        view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
+        view.tagsSelects().subscribeUntilDetached { view.displayTags() }
+        view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
     }
 
     interface View : Presenter.View {
-        fun onAddNewTransaction(): Observable<Unit>
-        fun onStartTags(): Observable<Unit>
-        fun startTags()
-        fun startTransactionEdit()
+        fun createTransactionSelects(): Observable<Unit>
+        fun transactionsSelects(): Observable<Unit>
+        fun tagsSelects(): Observable<Unit>
+        fun settingsSelects(): Observable<Unit>
+
+        fun displayCreateTransaction()
+        fun displayTransactions()
+        fun displayTags()
+        fun displaySettings()
     }
 }

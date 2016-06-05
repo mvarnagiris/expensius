@@ -24,6 +24,8 @@
     <dimen name="keyline_plus_view_padding">20dp</dimen>
     <dimen name="keyline_minus_view_padding">12dp</dimen>
 
+    <dimen name="grid_1x">8dp</dimen>
+
     <dimen name="space_small">4dp</dimen>
     <dimen name="space_normal">8dp</dimen>
     <dimen name="space_large">16dp</dimen>

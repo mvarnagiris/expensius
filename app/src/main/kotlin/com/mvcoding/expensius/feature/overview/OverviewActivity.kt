@@ -24,9 +24,7 @@ import com.mvcoding.expensius.feature.BaseActivity
 
 class OverviewActivity : BaseActivity() {
     companion object {
-        fun start(context: Context) {
-            ActivityStarter(context, OverviewActivity::class).start()
-        }
+        fun start(context: Context) = ActivityStarter(context, OverviewActivity::class).start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

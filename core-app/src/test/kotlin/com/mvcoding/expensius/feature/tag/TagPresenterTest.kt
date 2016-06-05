@@ -22,7 +22,11 @@ import com.nhaarman.mockito_kotlin.argThat
 import com.nhaarman.mockito_kotlin.mock
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.mock
+import org.mockito.BDDMockito.never
+import org.mockito.BDDMockito.times
+import org.mockito.BDDMockito.verify
 import rx.lang.kotlin.PublishSubject
 
 class TagPresenterTest {
@@ -83,7 +87,7 @@ class TagPresenterTest {
 
         presenter.onViewAttached(view)
 
-        verify(view).showColor(color(0x607d8b))
+        verify(view).showColor(com.mvcoding.expensius.extension.color(0x607d8b))
     }
 
     @Test

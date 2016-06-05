@@ -26,7 +26,11 @@ import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.*
+import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.extension.getDimensionFromTheme
+import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.extension.setTextIfChanged
+import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.DateDialogFragment
 import com.mvcoding.expensius.feature.DateDialogFragment.DateDialogResult
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity

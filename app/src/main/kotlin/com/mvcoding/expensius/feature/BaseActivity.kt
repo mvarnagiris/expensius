@@ -14,15 +14,20 @@
 
 package com.mvcoding.expensius.feature
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Scope.scope
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.forEach
+import com.mvcoding.expensius.extension.getColorFromTheme
+import kotlinx.android.synthetic.main.toolbar.*
 import java.util.UUID.randomUUID
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -62,6 +67,11 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        tintToolbarIcons(menu)
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             onBackPressed();
@@ -76,6 +86,19 @@ abstract class BaseActivity : AppCompatActivity() {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true);
             supportActionBar?.setHomeButtonEnabled(true);
+        }
+    }
+
+    private fun tintToolbarIcons(menu: Menu) {
+        toolbar?.apply {
+            val tintColor = getColorFromTheme(context, android.R.attr.textColorPrimary)
+            menu.forEach {
+                val icon = it.icon
+                if (icon != null) {
+                    icon.mutate()
+                    icon.setColorFilter(tintColor, PorterDuff.Mode.SRC_ATOP)
+                }
+            }
         }
     }
 }

@@ -14,46 +14,68 @@
 
 package com.mvcoding.expensius.feature.overview
 
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.verify
 import rx.lang.kotlin.PublishSubject
 
 class OverviewPresenterTest {
-    val addNewTransactionSubject = PublishSubject<Unit>()
-    val startTagsSubject = PublishSubject<Unit>()
-    val view = mock(OverviewPresenter.View::class.java)
+    val newTransactionSelectedSubject = PublishSubject<Unit>()
+    val transactionsSelectedSubject = PublishSubject<Unit>()
+    val tagsSelectedSubject = PublishSubject<Unit>()
+    val settingsSelectedSubject = PublishSubject<Unit>()
+
+    val view = mock<OverviewPresenter.View>()
     val presenter = OverviewPresenter()
 
     @Before
     fun setUp() {
-        given(view.onAddNewTransaction()).willReturn(addNewTransactionSubject)
-        given(view.onStartTags()).willReturn(startTagsSubject)
+        whenever(view.createTransactionSelects()).thenReturn(newTransactionSelectedSubject)
+        whenever(view.transactionsSelects()).thenReturn(transactionsSelectedSubject)
+        whenever(view.tagsSelects()).thenReturn(tagsSelectedSubject)
+        whenever(view.settingsSelects()).thenReturn(settingsSelectedSubject)
     }
 
     @Test
-    fun startsTransactionEditOnAddNewTransaction() {
+    fun displaysCreateTransaction() {
         presenter.onViewAttached(view)
 
-        addNewTransaction()
+        selectNewTransaction()
 
-        verify(view).startTransactionEdit()
+        verify(view).displayCreateTransaction()
     }
 
     @Test
-    fun startsTagsOnStartTags() {
+    fun displaysTransactions() {
         presenter.onViewAttached(view)
 
-        startTags()
+        selectTransactions()
 
-        verify(view).startTags()
+        verify(view).displayTransactions()
     }
 
-    private fun addNewTransaction() {
-        addNewTransactionSubject.onNext(Unit)
+    @Test
+    fun displaysTags() {
+        presenter.onViewAttached(view)
+
+        selectTags()
+
+        verify(view).displayTags()
     }
 
-    private fun startTags() {
-        startTagsSubject.onNext(Unit)
+    @Test
+    fun displaysSettings() {
+        presenter.onViewAttached(view)
+
+        selectSettings()
+
+        verify(view).displaySettings()
     }
+
+    private fun selectNewTransaction() = newTransactionSelectedSubject.onNext(Unit)
+    private fun selectTransactions() = transactionsSelectedSubject.onNext(Unit)
+    private fun selectTags() = tagsSelectedSubject.onNext(Unit)
+    private fun selectSettings() = settingsSelectedSubject.onNext(Unit)
 }

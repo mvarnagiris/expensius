@@ -14,16 +14,7 @@
 
 package com.mvcoding.expensius.extension
 
-import android.support.v4.graphics.ColorUtils
+import android.view.Menu
+import android.view.MenuItem
 
-fun pickForegroundColor(backgroundColor: Int, lightTextColor: Int, darkTextColor: Int) =
-        if (ColorUtils.calculateContrast(lightTextColor, backgroundColor) > 2) lightTextColor
-        else darkTextColor
-
-fun color(value: Int): Int {
-    val red = (value shr 16) and 0xFF
-    val green = (value shr 8) and 0xFF
-    val blue = (value shr 32) and 0xFF
-
-    return (0xFF shl 24) or (red shl 16) or (green shl 8) or blue
-}
+fun Menu.forEach(action: (MenuItem) -> Unit) = (0..size() - 1).forEach { action(getItem(it)) }

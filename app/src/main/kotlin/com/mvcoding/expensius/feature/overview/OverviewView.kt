@@ -15,32 +15,34 @@
 package com.mvcoding.expensius.feature.overview
 
 import android.content.Context
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.Toolbar
+import android.support.design.widget.CoordinatorLayout
 import android.util.AttributeSet
-import android.widget.FrameLayout
 import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
+import com.mvcoding.expensius.feature.report.TagsReportView
+import com.mvcoding.expensius.feature.settings.SettingsActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
+import com.mvcoding.expensius.feature.transaction.TransactionType
+import com.mvcoding.expensius.feature.transaction.TransactionsActivity
+import kotlinx.android.synthetic.main.toolbar.view.*
+import kotlinx.android.synthetic.main.view_overview.view.*
+import rx.Observable.never
 
-class OverviewView : FrameLayout, OverviewPresenter.View {
-    private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
-    private val floatingActionButton by lazy { findViewById(R.id.floatingActionButton) as FloatingActionButton }
+class OverviewView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        CoordinatorLayout(context, attrs, defStyleAttr), OverviewPresenter.View {
 
     private val presenter by lazy { provideActivityScopedSingleton(OverviewPresenter::class) }
-
-    constructor(context: Context?) : this(context, null)
-
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    private val toolbarClicks by lazy { toolbar.itemClicks().share() }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onViewAttached(this)
+        doNotInEditMode { presenter.onViewAttached(this) }
+        (expenseTagsReportView as TagsReportView).initialize(TransactionType.EXPENSE)
+        (incomeTagsReportView as TagsReportView).initialize(TransactionType.INCOME)
     }
 
     override fun onDetachedFromWindow() {
@@ -48,15 +50,13 @@ class OverviewView : FrameLayout, OverviewPresenter.View {
         presenter.onViewDetached(this)
     }
 
-    override fun onAddNewTransaction() = floatingActionButton.clicks()
+    override fun createTransactionSelects() = createTransactionFloatingActionButton.clicks()
+    override fun transactionsSelects() = never<Unit>() // TODO: Implement
+    override fun tagsSelects() = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
+    override fun settingsSelects() = toolbarClicks.filter { it.itemId == R.id.action_settings }.map { Unit }
 
-    override fun onStartTags() = toolbar.itemClicks().map { it.itemId }.filter { it == R.id.action_tags }.map { Unit }
-
-    override fun startTags() {
-        TagsActivity.startView(context)
-    }
-
-    override fun startTransactionEdit() {
-        CalculatorActivity.start(context)
-    }
+    override fun displayCreateTransaction() = CalculatorActivity.start(context)
+    override fun displayTransactions() = TransactionsActivity.start(context)
+    override fun displayTags() = TagsActivity.startView(context)
+    override fun displaySettings() = SettingsActivity.start(context)
 }

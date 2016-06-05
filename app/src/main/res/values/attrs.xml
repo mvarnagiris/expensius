@@ -15,6 +15,7 @@
 <resources>
     <declare-styleable name="Theme">
         <attr name="themeInverse" format="reference" />
+        <attr name="colorPrimaryLight" format="color" />
         <attr name="colorAccentDark" format="color" />
         <attr name="colorActionIcon" format="color" />
         <attr name="colorDivider" format="color" />

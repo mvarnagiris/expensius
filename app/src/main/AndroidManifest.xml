@@ -12,8 +12,8 @@
   ~ GNU General Public License for more details.
   -->
 
-<manifest package="com.mvcoding.expensius"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mvcoding.expensius">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -54,6 +54,9 @@
         <activity
             android:name=".feature.premium.PremiumActivity"
             android:label="@string/support_developer" />
+        <activity
+            android:name=".feature.settings.SettingsActivity"
+            android:label="@string/settings" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

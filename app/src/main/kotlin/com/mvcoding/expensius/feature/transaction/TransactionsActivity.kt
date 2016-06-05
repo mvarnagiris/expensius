@@ -19,22 +19,33 @@ import android.os.Bundle
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import kotlinx.android.synthetic.main.view_transactions.*
 import rx.Observable.never
 
 class TransactionsActivity : BaseActivity() {
     companion object {
-        fun startArchived(context: Context) {
-            ActivityStarter(context, TransactionsActivity::class).start()
-        }
+        private const val EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE"
+
+        fun start(context: Context) = ActivityStarter(context, TransactionsActivity::class)
+                .extra(EXTRA_DISPLAY_TYPE, VIEW_NOT_ARCHIVED)
+                .start()
+
+        fun startArchived(context: Context) = ActivityStarter(context, TransactionsActivity::class)
+                .extra(EXTRA_DISPLAY_TYPE, VIEW_ARCHIVED)
+                .start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_transactions)
 
-        val transactionsView = findViewById(R.id.transactionsView) as TransactionsView
-        transactionsView.init(VIEW_ARCHIVED, never())
-        supportActionBar?.title = getString(R.string.archived_transactions)
+        val displayType = intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as ModelDisplayType
+        transactionsView.init(displayType, never())
+        supportActionBar?.title =
+                if (displayType == VIEW_ARCHIVED) getString(R.string.archived_transactions)
+                else getString(R.string.transactions)
     }
 }
