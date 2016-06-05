@@ -30,6 +30,7 @@ class ReportsModule : ShankModule {
     }
 
     private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class.java, { transactionType: TransactionType ->
+        // TODO: This is a temporary filter until global filter comes.
         val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
         val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
         val filter = Filter()

@@ -14,13 +14,18 @@
 
 package com.mvcoding.expensius.feature.overview
 
+import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.Presenter
+import org.joda.time.Interval
 import rx.Observable
+import rx.lang.kotlin.filterNotNull
 
-class OverviewPresenter : Presenter<OverviewPresenter.View>() {
+class OverviewPresenter(private val filter: Filter) : Presenter<OverviewPresenter.View>() {
+
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
+        filter.filterData().map { it.interval }.filterNotNull().distinctUntilChanged().subscribeUntilDetached { view.showInterval(it) }
         view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
@@ -32,6 +37,8 @@ class OverviewPresenter : Presenter<OverviewPresenter.View>() {
         fun transactionsSelects(): Observable<Unit>
         fun tagsSelects(): Observable<Unit>
         fun settingsSelects(): Observable<Unit>
+
+        fun showInterval(interval: Interval)
 
         fun displayCreateTransaction()
         fun displayTransactions()

@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.feature.color
 import com.mvcoding.expensius.feature.tag.TagPresenter.Companion.VERY_HIGH_ORDER
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -87,7 +88,7 @@ class TagPresenterTest {
 
         presenter.onViewAttached(view)
 
-        verify(view).showColor(com.mvcoding.expensius.extension.color(0x607d8b))
+        verify(view).showColor(color(0x607d8b))
     }
 
     @Test

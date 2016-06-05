@@ -16,11 +16,21 @@ package com.mvcoding.expensius.feature.overview
 
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.mvcoding.expensius.feature.Filter
+import org.joda.time.DateTime
+import org.joda.time.Interval
 
 class OverviewModule() : ShankModule {
     override fun registerFactories() {
         overviewPresenter()
     }
 
-    private fun overviewPresenter() = registerFactory(OverviewPresenter::class.java, { -> OverviewPresenter() })
+    private fun overviewPresenter() = registerFactory(OverviewPresenter::class.java, { ->
+        // TODO: This is a temporary filter until global filter comes.
+        val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
+        val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
+        val filter = Filter()
+        filter.setInterval(last30Days)
+        OverviewPresenter(filter)
+    })
 }

@@ -14,8 +14,11 @@
 
 package com.mvcoding.expensius.feature.overview
 
+import com.mvcoding.expensius.feature.Filter
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import org.joda.time.DateTime
+import org.joda.time.Interval
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.verify
@@ -27,8 +30,10 @@ class OverviewPresenterTest {
     val tagsSelectedSubject = PublishSubject<Unit>()
     val settingsSelectedSubject = PublishSubject<Unit>()
 
+    val interval = Interval(DateTime.now().minusDays(1), DateTime.now())
+    val filter = Filter().apply { setInterval(interval) }
     val view = mock<OverviewPresenter.View>()
-    val presenter = OverviewPresenter()
+    val presenter = OverviewPresenter(filter)
 
     @Before
     fun setUp() {
@@ -36,6 +41,13 @@ class OverviewPresenterTest {
         whenever(view.transactionsSelects()).thenReturn(transactionsSelectedSubject)
         whenever(view.tagsSelects()).thenReturn(tagsSelectedSubject)
         whenever(view.settingsSelects()).thenReturn(settingsSelectedSubject)
+    }
+
+    @Test
+    fun showsInterval() {
+        presenter.onViewAttached(view)
+
+        verify(view).showInterval(interval)
     }
 
     @Test

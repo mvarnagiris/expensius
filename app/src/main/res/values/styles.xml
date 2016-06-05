@@ -69,7 +69,7 @@
 
     <style name="Text.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,onum</item>
+        <item name="android:fontFeatureSettings">smcp</item>
     </style>
 
     <!-- Button -->

@@ -20,6 +20,7 @@ import android.util.AttributeSet
 import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.activity
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
@@ -30,11 +31,12 @@ import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
 import kotlinx.android.synthetic.main.toolbar.view.*
 import kotlinx.android.synthetic.main.view_overview.view.*
+import net.danlew.android.joda.DateUtils
+import org.joda.time.Interval
 import rx.Observable.never
 
 class OverviewView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         CoordinatorLayout(context, attrs, defStyleAttr), OverviewPresenter.View {
-
     private val presenter by lazy { provideActivityScopedSingleton(OverviewPresenter::class) }
     private val toolbarClicks by lazy { toolbar.itemClicks().share() }
 
@@ -54,6 +56,12 @@ class OverviewView @JvmOverloads constructor(context: Context, attrs: AttributeS
     override fun transactionsSelects() = never<Unit>() // TODO: Implement
     override fun tagsSelects() = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
     override fun settingsSelects() = toolbarClicks.filter { it.itemId == R.id.action_settings }.map { Unit }
+
+    override fun showInterval(interval: Interval) {
+        val start = DateUtils.formatDateTime(context, interval.start, DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_DATE)
+        val end = DateUtils.formatDateTime(context, interval.end.minusMillis(1), DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_DATE)
+        activity().supportActionBar?.title = "$start - $end"
+    }
 
     override fun displayCreateTransaction() = CalculatorActivity.start(context)
     override fun displayTransactions() = TransactionsActivity.start(context)
