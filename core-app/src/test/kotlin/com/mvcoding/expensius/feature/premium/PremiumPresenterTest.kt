@@ -18,7 +18,12 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.inOrder
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import rx.Observable.just
@@ -51,7 +56,7 @@ class PremiumPresenterTest {
     fun showsFreeUserWhenUserIsFree() {
         setSubscriptionType(FREE)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showFreeUser()
     }
@@ -60,7 +65,7 @@ class PremiumPresenterTest {
     fun showsPremiumUserWhenUserIsPremium() {
         setSubscriptionType(PREMIUM_PAID)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showPremiumUser()
     }
@@ -74,7 +79,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         inOrder.verify(view).showLoading()
         inOrder.verify(view).hideLoading()
@@ -91,7 +96,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         inOrder.verify(view).showLoading()
         inOrder.verify(view).hideLoading()
@@ -109,7 +114,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         inOrder.verify(view).showLoading()
         inOrder.verify(view).hideLoading()
@@ -126,7 +131,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asDonation(),
                 aBillingProduct().asPremium().notOwned())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         setSubscriptionType(PREMIUM_PAID)
 
@@ -144,7 +149,7 @@ class PremiumPresenterTest {
         setSubscriptionType(FREE)
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(emptyList()))
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         inOrder.verify(view).showLoading()
         inOrder.verify(view).hideLoading()
@@ -158,7 +163,7 @@ class PremiumPresenterTest {
         val billingProducts = listOf(aBillingProduct().asPremium().notOwned(), aBillingProduct().asPremium().notOwned())
         val updatedBillingProducts = listOf(aBillingProduct().asPremium().notOwned())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts), just(updatedBillingProducts))
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         refresh()
 
@@ -175,7 +180,7 @@ class PremiumPresenterTest {
     @Test
     fun billingProductsProviderIsDisposedOnDestroy() {
         setSubscriptionType(FREE)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         presenter.onDestroy()
 
@@ -189,7 +194,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectBillingProduct(billingProducts.first())
         makeSuccessfulPurchase()
@@ -205,7 +210,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectBillingProduct(billingProducts.first())
         makeFailedPurchase()
@@ -221,7 +226,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation())
         whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         selectBillingProduct(billingProducts.first())
         makeFailedPurchase()
 

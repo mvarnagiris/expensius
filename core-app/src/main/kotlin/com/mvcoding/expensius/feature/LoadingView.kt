@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature
 
 import com.mvcoding.expensius.LoadingState
 import com.mvcoding.expensius.LoadingState.LOADING
+import com.mvcoding.mvp.Presenter
 
 interface LoadingView : Presenter.View {
     fun showLoading()

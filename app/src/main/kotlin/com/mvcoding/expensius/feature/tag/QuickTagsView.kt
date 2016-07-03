@@ -60,12 +60,12 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        doNotInEditMode { presenter.onViewAttached(this) }
+        doNotInEditMode { presenter.attach(this) }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onViewDetached(this)
+        presenter.detach(this)
     }
 
     fun showSelectedTags(tags: Set<Tag>) {
@@ -82,7 +82,7 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
             val quickTagView = QuickTagView.inflate(this)
             addView(quickTagView)
             quickTagView.setQuickTag(quickTag)
-            quickTagView.setOnClickListener { selectableTagToggledSubject.onNext(selectableTags[index]) };
+            quickTagView.setOnClickListener { selectableTagToggledSubject.onNext(selectableTags[index]) }
         }
         requestLayout()
     }
@@ -90,8 +90,8 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = getSize(widthMeasureSpec) - paddingLeft - paddingRight
         var measuredHeight = paddingTop
-        var usedWidth = 0;
-        var currentLineHeight = 0;
+        var usedWidth = 0
+        var currentLineHeight = 0
 
         0.rangeTo(childCount - 1).forEach {
             val child = getChildAt(it)
@@ -118,8 +118,8 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val width = measuredWidth - paddingLeft - paddingRight
         var currentTop = paddingTop
-        var usedWidth = 0;
-        var currentLineHeight = 0;
+        var usedWidth = 0
+        var currentLineHeight = 0
 
         0.rangeTo(childCount - 1).forEach {
             val child = getChildAt(it)

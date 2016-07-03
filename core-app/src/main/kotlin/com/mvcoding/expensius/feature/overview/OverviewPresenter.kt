@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.feature.Filter
-import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
 import rx.lang.kotlin.filterNotNull

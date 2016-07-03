@@ -49,28 +49,28 @@ class TransactionsPresenterTest {
 
     @Test
     fun showsModelDisplayType() {
-        presenterWithModelDisplayTypeArchived().onViewAttached(view)
+        presenterWithModelDisplayTypeArchived().attach(view)
 
         verify(view).showModelDisplayType(VIEW_ARCHIVED)
     }
 
     @Test
     fun showsTransactions() {
-        presenterWithModelDisplayTypeView().onViewAttached(view)
+        presenterWithModelDisplayTypeView().attach(view)
 
         verify(view).showTransactions(argThat { size == 1 })
     }
 
     @Test
     fun showsArchivedTransactions() {
-        presenterWithModelDisplayTypeArchived().onViewAttached(view)
+        presenterWithModelDisplayTypeArchived().attach(view)
 
         verify(view).showTransactions(argThat { size == 1 && first().modelState == ARCHIVED })
     }
 
     @Test
     fun displaysCreateTransactionOnCreateTransaction() {
-        presenterWithModelDisplayTypeView().onViewAttached(view)
+        presenterWithModelDisplayTypeView().attach(view)
 
         createTransaction()
 
@@ -80,7 +80,7 @@ class TransactionsPresenterTest {
     @Test
     fun displaysTransactionEditOnTransactionSelected() {
         val transaction = aTransaction()
-        presenterWithModelDisplayTypeView().onViewAttached(view)
+        presenterWithModelDisplayTypeView().attach(view)
 
         selectTransaction(transaction)
 
@@ -89,7 +89,7 @@ class TransactionsPresenterTest {
 
     @Test
     fun displaysArchivedTransactions() {
-        presenterWithModelDisplayTypeView().onViewAttached(view)
+        presenterWithModelDisplayTypeView().attach(view)
 
         displayArchivedTransactions()
 

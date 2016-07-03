@@ -63,7 +63,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {
-            scope.clearWithFinalAction { if (it is Presenter<*>) it.onDestroy() }
+            scope.clearWithFinalAction { if (it is Destroyable) it.onDestroy() }
         }
     }
 
@@ -74,7 +74,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            onBackPressed();
+            onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -84,8 +84,8 @@ abstract class BaseActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar?
         if (toolbar != null) {
             setSupportActionBar(toolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true);
-            supportActionBar?.setHomeButtonEnabled(true);
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setHomeButtonEnabled(true)
         }
     }
 

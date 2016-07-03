@@ -107,12 +107,12 @@ class TransactionView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        doNotInEditMode { presenter.onViewAttached(this) }
+        doNotInEditMode { presenter.attach(this) }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onViewDetached(this)
+        presenter.detach(this)
     }
 
     override fun onTransactionStateChanged(): Observable<TransactionState> {
@@ -171,7 +171,7 @@ class TransactionView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun showTransactionState(transactionState: TransactionState) {
-        this.transactionState = transactionState;
+        this.transactionState = transactionState
         allowTransactionStateChanges = false
         transactionStateCheckBox.isChecked = transactionState == CONFIRMED
     }
@@ -187,7 +187,7 @@ class TransactionView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun showCurrency(currency: Currency) {
-        this.currency = currency;
+        this.currency = currency
         currencyButton.text = currency.displayName()
         updateAmount()
     }

@@ -18,7 +18,9 @@ import com.mvcoding.expensius.Image
 import com.mvcoding.expensius.Settings
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.mock
+import org.mockito.BDDMockito.verify
 import rx.subjects.PublishSubject
 
 class IntroPresenterTest {
@@ -39,18 +41,18 @@ class IntroPresenterTest {
 
     @Test
     fun initiallyShowsIntroPagesWithActivePosition0() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showIntroPages(introPages, 0)
     }
 
     @Test
     fun showsIntroPagesWithPreservedPositionAfterReattach() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         setActiveIntroPagePosition(1)
-        presenter.onViewDetached(view)
+        presenter.detach(view)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
 
         verify(view).showIntroPages(introPages, 1)
@@ -58,7 +60,7 @@ class IntroPresenterTest {
 
     @Test
     fun setsIntroductionAsSeenAndStartsMainWhenSkippingLogin() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         skipLogin()
 
@@ -68,7 +70,7 @@ class IntroPresenterTest {
 
     @Test
     fun setsIntroductionAsSeenAndStartsLoginWhenLoggingIn() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         login()
 

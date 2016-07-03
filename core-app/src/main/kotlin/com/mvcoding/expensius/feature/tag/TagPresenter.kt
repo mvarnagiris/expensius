@@ -14,13 +14,13 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.color
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.generateModelId
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 

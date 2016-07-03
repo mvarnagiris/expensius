@@ -18,7 +18,6 @@ import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.FilterData
-import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
@@ -26,6 +25,7 @@ import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
 import rx.Observable.combineLatest

@@ -18,7 +18,9 @@ import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.rxSchedulers
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.mock
+import org.mockito.BDDMockito.verify
 import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
@@ -41,7 +43,7 @@ class QuickTagsPresenterTest {
 
     @Test
     fun initiallyShowsAllTagsUnselected() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showSelectableTags(defaultSelectableTags)
     }
@@ -49,7 +51,7 @@ class QuickTagsPresenterTest {
     @Test
     fun showsAllSelectedTagsEvenIfTheyAreNotPartOfTagsProvider() {
         val extraTag = aTag()
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         updateSelectedTags(setOf(defaultTags[1], extraTag))
 
@@ -61,7 +63,7 @@ class QuickTagsPresenterTest {
     @Test
     fun canSelectTag() {
         val selectableTag = defaultSelectableTags[0]
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         toggleSelectableTag(selectableTag)
 
@@ -71,7 +73,7 @@ class QuickTagsPresenterTest {
     @Test
     fun canDeselectTag() {
         val selectableTag = defaultSelectableTags[0]
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         toggleSelectableTag(selectableTag)
 
         toggleSelectableTag(selectableTag.withSelected(true))
@@ -83,11 +85,11 @@ class QuickTagsPresenterTest {
     fun tagSelectionStateIsRestoredAfterReattach() {
         val selectableTag = defaultSelectableTags[0]
         val expectedSelectableTags = defaultSelectableTags.map { if (it == selectableTag) it.toggled() else it }
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         toggleSelectableTag(selectableTag)
 
-        presenter.onViewDetached(view)
-        presenter.onViewAttached(view)
+        presenter.detach(view)
+        presenter.attach(view)
 
         verify(view).showSelectableTags(expectedSelectableTags)
     }

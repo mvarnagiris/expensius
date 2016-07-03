@@ -12,14 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.feature.report
 
-import com.mvcoding.mvp.Presenter
-
-interface ErrorView : Presenter.View {
-    fun showError(error: Error)
+class ExpensesTrendPresenter {
 }
-
-data class Error(val throwable: Throwable)
-
-fun Throwable.toError() = Error(this)

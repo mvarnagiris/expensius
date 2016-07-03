@@ -25,7 +25,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.jakewharton.rxbinding.support.v4.widget.refreshes
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.*
+import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.extension.inflate
+import com.mvcoding.expensius.extension.scope
+import com.mvcoding.expensius.extension.snackbar
+import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.BaseClickableAdapter
 import com.mvcoding.expensius.feature.ClickableViewHolder
 import com.mvcoding.expensius.feature.Error
@@ -52,12 +56,12 @@ class PremiumView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        doNotInEditMode { presenter.onViewAttached(this) }
+        doNotInEditMode { presenter.attach(this) }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onViewDetached(this)
+        presenter.detach(this)
     }
 
     override fun showFreeUser() = subscriptionTextView.setText(R.string.long_user_is_using_free_version)

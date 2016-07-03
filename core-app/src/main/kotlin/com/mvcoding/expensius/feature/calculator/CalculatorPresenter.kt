@@ -15,11 +15,11 @@
 package com.mvcoding.expensius.feature.calculator
 
 import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.merge
 import rx.lang.kotlin.PublishSubject
@@ -72,9 +72,9 @@ class CalculatorPresenter(
                 .doOnNext { view.showExpression(it) }
                 .map { calculator.calculate() }
 
-        unsubscribeOnDetach(saves.filter { val result = canSave; canSave = true; result }
+        saves.filter { val result = canSave; canSave = true; result }
                 .withLatestFrom(alteredExpressions, { unit, number -> number })
-                .subscribe { displayResult(view, it) })
+                .subscribeUntilDetached { displayResult(view, it) }
     }
 
     private fun getCurrentState() = if (calculator.isEmptyOrSingleNumber()) SAVE else CALCULATE

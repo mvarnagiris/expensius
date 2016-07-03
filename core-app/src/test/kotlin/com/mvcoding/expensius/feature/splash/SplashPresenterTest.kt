@@ -28,7 +28,7 @@ class SplashPresenterTest {
 
     @Test
     fun startsMain() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).startMain()
     }

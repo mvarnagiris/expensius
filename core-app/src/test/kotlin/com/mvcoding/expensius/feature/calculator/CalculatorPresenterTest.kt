@@ -20,7 +20,12 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Currency
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.times
@@ -77,14 +82,14 @@ class CalculatorPresenterTest {
 
     @Test
     fun initiallyShowsSaveState() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showState(SAVE)
     }
 
     @Test
     fun showsEmptyExpressionWhenThereIsNoInitialNumber() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showExpression("")
     }
@@ -93,7 +98,7 @@ class CalculatorPresenterTest {
     fun showsInitialNumberWhenThereIsInitialNumber() {
         val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showExpression("10")
     }
@@ -101,10 +106,10 @@ class CalculatorPresenterTest {
     @Test
     fun showsInitialNumberAfterReattach() {
         val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
-        presenter.onViewDetached(view)
-        presenter.onViewAttached(view)
+        presenter.detach(view)
+        presenter.attach(view)
 
         verify(view, times(2)).showExpression("10")
     }
@@ -112,7 +117,7 @@ class CalculatorPresenterTest {
     @Test
     fun clearsExpression() {
         val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         clear()
 
@@ -122,11 +127,11 @@ class CalculatorPresenterTest {
     @Test
     fun showsUpdatedExpressionAfterReattach() {
         val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         clear()
 
-        presenter.onViewDetached(view)
-        presenter.onViewAttached(view)
+        presenter.detach(view)
+        presenter.attach(view)
 
         verify(view, times(2)).showExpression("")
     }
@@ -134,7 +139,7 @@ class CalculatorPresenterTest {
     @Test
     fun deletesLastSymbolFromExpression() {
         val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         delete()
 
@@ -144,7 +149,7 @@ class CalculatorPresenterTest {
     @Test
     fun deletesLastSymbol() {
         val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.ONE)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         delete()
 
@@ -153,7 +158,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDigitWhenExpressionIsEmpty() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         clear()
         digit0()
@@ -198,7 +203,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDigitWhenExpressionEndsWithNumber() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit0()
 
         digit0()
@@ -217,7 +222,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDecimalWhenExpressionIsEmpty() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         decimal()
 
@@ -226,7 +231,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDigitWhenExpressionEndsWithDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         clear()
         decimal()
@@ -281,7 +286,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsSubtractOperatorWhenExpressionIsEmpty() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         subtract()
 
@@ -290,7 +295,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDigitWhenExpressionEndsWithOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         clear()
         subtract()
@@ -345,7 +350,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun divideIsIgnoredWhenExpressionIsEmpty() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         divide()
 
@@ -354,7 +359,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun divideIsIgnoredWhenExpressionIsOnlySubtractOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         subtract()
 
         divide()
@@ -364,7 +369,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDivideOperatorWhenExpressionEndsWithNumber() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
 
         divide()
@@ -374,7 +379,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsSubtractOperatorWhenExpressionEndsWithNumber() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
 
         subtract()
@@ -384,7 +389,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun divideReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         subtract()
 
@@ -395,7 +400,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDivideOperatorWhenExpressionEndsWithDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         decimal()
 
         divide()
@@ -405,7 +410,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun multiplyIsIgnoredWhenExpressionIsEmpty() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         multiply()
 
@@ -414,7 +419,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun multiplyIsIgnoredWhenExpressionIsOnlySubtractOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         subtract()
 
         multiply()
@@ -424,7 +429,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun multiplyReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         subtract()
 
@@ -435,7 +440,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsMultiplyOperatorWhenExpressionEndsWithNumber() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
 
         multiply()
@@ -445,7 +450,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsMultiplyOperatorWhenExpressionEndsWithDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         decimal()
 
         multiply()
@@ -455,7 +460,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun subtractReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         multiply()
 
@@ -466,7 +471,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsSubtractOperatorWhenExpressionEndsWithDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         decimal()
 
         subtract()
@@ -476,7 +481,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addIsIgnoredWhenExpressionIsEmpty() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         add()
 
@@ -485,7 +490,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addIsIgnoredWhenExpressionIsOnlySubtractOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         subtract()
 
         add()
@@ -495,7 +500,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addReplacesPreviousOperatorWhenExpressionEndsWithOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         subtract()
 
@@ -506,7 +511,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsAddOperatorWhenExpressionEndsWithNumber() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
 
         add()
@@ -516,7 +521,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsAddOperatorWhenExpressionEndsWithDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         decimal()
 
         add()
@@ -526,7 +531,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDecimalWhenExpressionHasOneNumberWithoutDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
 
         decimal()
@@ -536,7 +541,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun decimalIsIgnoredWhenExpressionHasOneNumberThatAlreadyHasDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         decimal()
         digit2()
@@ -548,7 +553,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDecimalWhenExpressionHasMoreThanOneNumberAndLastOneIsWithoutDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         decimal()
         digit2()
@@ -562,7 +567,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun decimalIsIgnoredWhenExpressionHasMoreThanOneNumberAndLastNumberAlreadyHasDecimal() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         decimal()
         digit2()
@@ -578,7 +583,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun addsDecimalWhenExpressionEndsWithAnOperator() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         subtract()
 
         decimal()
@@ -588,7 +593,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsCalculateStateWhenExpressionHasAtLeastTwoNumbers() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         subtract()
         digit1()
@@ -598,20 +603,20 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsCalculateStateAfterReattach() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         subtract()
         digit1()
 
-        presenter.onViewDetached(view)
-        presenter.onViewAttached(view)
+        presenter.detach(view)
+        presenter.attach(view)
 
         verify(view, times(2)).showState(CALCULATE)
     }
 
     @Test
     fun displaysResultFromEvaluatedExpression() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         add()
         digit1()
@@ -625,7 +630,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun startsResultWithCurrentlyDisplayedNumber() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         add()
         digit1()
@@ -639,7 +644,7 @@ class CalculatorPresenterTest {
     @Test
     fun startsTransactionWithCurrentlyDisplayedNumber() {
         val presenter = CalculatorPresenter(calculator, TRANSACTION, settings)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         digit1()
         add()
         digit1()
@@ -652,7 +657,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun savesAreOnlySubscribedOnce() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view, times(1)).onSave()
     }

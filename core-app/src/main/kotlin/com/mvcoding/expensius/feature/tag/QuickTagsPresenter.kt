@@ -15,8 +15,8 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 

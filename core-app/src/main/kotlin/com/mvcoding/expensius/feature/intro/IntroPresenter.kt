@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.feature.intro
 
 import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val settings: Settings) : Presenter<IntroPresenter.View<T>>() {
@@ -25,15 +25,15 @@ class IntroPresenter<T>(private val introPages: List<IntroPage<T>>, private val 
         super.onViewAttached(view)
         view.showIntroPages(introPages, activeIntroPagePosition)
 
-        unsubscribeOnDetach(view.onLogin()
+        view.onLogin()
                 .doOnNext { settings.isIntroductionSeen = true }
-                .subscribe { view.startLogin() })
+                .subscribeUntilDetached { view.startLogin() }
 
-        unsubscribeOnDetach(view.onSkipLogin()
+        view.onSkipLogin()
                 .doOnNext { settings.isIntroductionSeen = true }
-                .subscribe { view.startMain() })
+                .subscribeUntilDetached { view.startMain() }
 
-        unsubscribeOnDetach(view.onActiveIntroPagePositionChanged().subscribe { position -> activeIntroPagePosition = position })
+        view.onActiveIntroPagePositionChanged().subscribeUntilDetached { position -> activeIntroPagePosition = position }
     }
 
     interface View<T> : Presenter.View {

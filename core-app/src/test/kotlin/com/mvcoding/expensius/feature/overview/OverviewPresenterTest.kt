@@ -45,14 +45,14 @@ class OverviewPresenterTest {
 
     @Test
     fun showsInterval() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showInterval(interval)
     }
 
     @Test
     fun displaysCreateTransaction() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectNewTransaction()
 
@@ -61,7 +61,7 @@ class OverviewPresenterTest {
 
     @Test
     fun displaysTransactions() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectTransactions()
 
@@ -70,7 +70,7 @@ class OverviewPresenterTest {
 
     @Test
     fun displaysTags() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectTags()
 
@@ -79,7 +79,7 @@ class OverviewPresenterTest {
 
     @Test
     fun displaysSettings() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectSettings()
 

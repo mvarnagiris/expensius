@@ -23,7 +23,11 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.times
@@ -68,7 +72,7 @@ class TransactionPresenterTest {
 
     @Test
     fun showsInitialValues() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showTransactionType(transaction.transactionType)
         verify(view).showTransactionState(transaction.transactionState)
@@ -85,7 +89,7 @@ class TransactionPresenterTest {
     fun showsUpdatedValues() {
         val tags = setOf(aTag(), aTag())
         val currency = Currency("EUR")
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         updateTransactionType(INCOME)
         updateTransactionState(PENDING)
@@ -112,7 +116,7 @@ class TransactionPresenterTest {
     fun showsUpdatedValuesAfterReattach() {
         val tags = setOf(aTag(), aTag())
         val currency = Currency("EUR")
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         updateTransactionType(INCOME)
         updateTransactionState(PENDING)
@@ -123,8 +127,8 @@ class TransactionPresenterTest {
         updateAmount(TEN)
         updateTags(tags)
         updateNote("Updated note")
-        presenter.onViewDetached(view)
-        presenter.onViewAttached(view)
+        presenter.detach(view)
+        presenter.attach(view)
 
         verify(view, times(2)).showTransactionType(INCOME)
         verify(view, times(2)).showTransactionState(PENDING)
@@ -138,7 +142,7 @@ class TransactionPresenterTest {
 
     @Test
     fun savesTransactionAndDisplaysResult() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         save()
 
@@ -149,14 +153,14 @@ class TransactionPresenterTest {
     fun archiveIsDisabledForNewTransaction() {
         val presenter = TransactionPresenter(aNewTransaction(), transactionsProvider, currenciesProvider, settings)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showArchiveEnabled(false)
     }
 
     @Test
     fun archiveIsEnabledForExistingTransaction() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showArchiveEnabled(true)
     }
@@ -164,7 +168,7 @@ class TransactionPresenterTest {
     @Test
     fun archivesTransactionAndDisplaysResult() {
         val archivedTransaction = transaction.withModelState(ARCHIVED)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         toggleArchive()
 
@@ -177,7 +181,7 @@ class TransactionPresenterTest {
         val archivedTransaction = transaction.withModelState(ARCHIVED)
         val restoredTransaction = transaction.withModelState(NONE)
         val presenter = TransactionPresenter(archivedTransaction, transactionsProvider, currenciesProvider, settings)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         toggleArchive()
 
@@ -188,7 +192,7 @@ class TransactionPresenterTest {
     @Test
     fun showsExchangeRateOnlyWhenCurrencyIsNotMain() {
         whenever(settings.mainCurrency).thenReturn(transaction.currency)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         verify(view).showExchangeRateVisible(false)
 
         requestCurrencyChange()

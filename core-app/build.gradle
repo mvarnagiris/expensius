@@ -20,7 +20,8 @@ dependencies {
     compile "io.reactivex:rxkotlin:$rxkotlin_version"
     compile "io.reactivex:rxjava:$rxjava_version"
     compile 'joda-time:joda-time:2.9.2'
+    compile 'com.github.mvarnagiris:mvp:3d4f87fbea'
     testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "com.nhaarman:mockito-kotlin:0.4.1"
+    testCompile "com.nhaarman:mockito-kotlin:0.5.1"
 }

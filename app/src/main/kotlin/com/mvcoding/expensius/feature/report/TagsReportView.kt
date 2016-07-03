@@ -72,12 +72,12 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        doNotInEditMode { presenter.onViewAttached(this) }
+        doNotInEditMode { presenter.attach(this) }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onViewDetached(this)
+        presenter.detach(this)
     }
 
     override fun showTagsReportItems(tagsReportItems: List<TagsReportPresenter.TagsReportItem>) {

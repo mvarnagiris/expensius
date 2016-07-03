@@ -16,10 +16,10 @@ package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
-import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.ReportStep
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.Currency
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class SettingsPresenter(

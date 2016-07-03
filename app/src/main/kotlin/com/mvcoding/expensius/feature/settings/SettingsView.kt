@@ -73,12 +73,12 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        doNotInEditMode { presenter.onViewAttached(this) }
+        doNotInEditMode { presenter.attach(this) }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onViewDetached(this)
+        presenter.detach(this)
     }
 
     override fun onMainCurrencySelected() = mainCurrencySettingsItemView.clicks()

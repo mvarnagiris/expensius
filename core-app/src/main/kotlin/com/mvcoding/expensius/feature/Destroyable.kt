@@ -14,12 +14,6 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.mvp.Presenter
-
-interface ErrorView : Presenter.View {
-    fun showError(error: Error)
+interface Destroyable {
+    fun onDestroy()
 }
-
-data class Error(val throwable: Throwable)
-
-fun Throwable.toError() = Error(this)

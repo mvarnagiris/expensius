@@ -82,12 +82,12 @@ class TagView : LinearLayout, TagPresenter.View {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.onViewAttached(this)
+        presenter.attach(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter.onViewDetached(this)
+        presenter.detach(this)
     }
 
     override fun showArchiveEnabled(archiveEnabled: Boolean) {
@@ -96,12 +96,12 @@ class TagView : LinearLayout, TagPresenter.View {
     }
 
     override fun showTitle(title: String) {
-        titleUpdatesAvailable = false;
+        titleUpdatesAvailable = false
         if (!titleEditText.text.toString().equals(title)) {
             titleEditText.setText(title)
             titleEditText.setSelection(title.length)
         }
-        titleUpdatesAvailable = true;
+        titleUpdatesAvailable = true
     }
 
     override fun showColor(color: Int) {
@@ -113,7 +113,7 @@ class TagView : LinearLayout, TagPresenter.View {
             return
         }
 
-        lobsterPicker.history = color;
+        lobsterPicker.history = color
         if (colorAnimator == null) {
             val colorAdapter = lobsterPicker.colorAdapter
             colorAdapter.size().minus(1)
@@ -181,13 +181,13 @@ class TagView : LinearLayout, TagPresenter.View {
         }
 
         val startColor = (titleContainerView.background as ColorDrawable).color
-        val animator = ValueAnimator();
-        animator.setIntValues(startColor, color);
-        animator.setEvaluator(ArgbEvaluator());
+        val animator = ValueAnimator()
+        animator.setIntValues(startColor, color)
+        animator.setEvaluator(ArgbEvaluator())
         animator.addUpdateListener { setColorOnViews(it.animatedValue as Int) }
-        animator.duration = 150;
-        animator.start();
-        colorAnimator = animator;
+        animator.duration = 150
+        animator.start()
+        colorAnimator = animator
     }
 
     private fun setColorOnViews(color: Int) {
@@ -201,7 +201,7 @@ class TagView : LinearLayout, TagPresenter.View {
         val navigationIcon = DrawableCompat.wrap(toolbar.navigationIcon!!.mutate())
         DrawableCompat.setTint(navigationIcon, textColor)
         toolbar.navigationIcon = navigationIcon
-        context.toBaseActivity().window.statusBarColor = color;
+        context.toBaseActivity().window.statusBarColor = color
     }
 
     private class MaterialColorAdapter(context: Context) : ColorAdapter {

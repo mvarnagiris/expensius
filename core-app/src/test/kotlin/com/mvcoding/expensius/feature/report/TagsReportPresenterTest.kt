@@ -84,7 +84,7 @@ class TagsReportPresenterTest {
     fun showsIntervalIsRequiredWhenIntervalInFilterIsEmpty() {
         filter.clearInterval()
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showIntervalIsRequired()
         verify(view, never()).showTagsReportItems(any())
@@ -98,7 +98,7 @@ class TagsReportPresenterTest {
         setReportStep(DAY)
         prepareTransactions(interval)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(transactionsProvider, times(1)).transactions(any())
         verify(view).hideIntervalIsRequired()
@@ -113,7 +113,7 @@ class TagsReportPresenterTest {
         setReportStep(WEEK)
         prepareTransactions(interval)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(transactionsProvider, times(1)).transactions(any())
         verify(view).hideIntervalIsRequired()
@@ -128,7 +128,7 @@ class TagsReportPresenterTest {
         setReportStep(MONTH)
         prepareTransactions(interval)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(transactionsProvider, times(1)).transactions(any())
         verify(view).hideIntervalIsRequired()

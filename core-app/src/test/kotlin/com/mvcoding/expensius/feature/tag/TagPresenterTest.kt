@@ -51,7 +51,7 @@ class TagPresenterTest {
 
     @Test
     fun showsInitialValues() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showTitle(tag.title)
         verify(view).showColor(tag.color)
@@ -60,7 +60,7 @@ class TagPresenterTest {
 
     @Test
     fun showsUpdateValuesWhenValuesAreUpdated() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         setTitle("updatedTitle")
         setColor(10)
@@ -71,12 +71,12 @@ class TagPresenterTest {
 
     @Test
     fun showsUpdatedValuesAfterReattach() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         setTitle("updatedTitle")
         setColor(10)
-        presenter.onViewDetached(view)
-        presenter.onViewAttached(view)
+        presenter.detach(view)
+        presenter.attach(view)
 
         verify(view, times(2)).showTitle("updatedTitle")
         verify(view, times(2)).showColor(10)
@@ -86,14 +86,14 @@ class TagPresenterTest {
     fun showsDefaultColorWhenCreatingNewTag() {
         val presenter = TagPresenter(newTag, tagsProvider)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showColor(color(0x607d8b))
     }
 
     @Test
     fun doesNotTryToSaveAndShowsErrorWhenTitleIsEmptyOnSave() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         setTitle("")
 
         save()
@@ -104,7 +104,7 @@ class TagPresenterTest {
 
     @Test
     fun savesTagWhenValidationSucceeds() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         save()
 
@@ -113,7 +113,7 @@ class TagPresenterTest {
 
     @Test
     fun savesNewTagWithVeryHighOrder() {
-        TagPresenter(newTag, tagsProvider).onViewAttached(view)
+        TagPresenter(newTag, tagsProvider).attach(view)
         setTitle("Updated title")
         setColor(10)
 
@@ -124,7 +124,7 @@ class TagPresenterTest {
 
     @Test
     fun trimsTitleWhenSaving() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
         setTitle(" title ")
 
         save()
@@ -134,7 +134,7 @@ class TagPresenterTest {
 
     @Test
     fun displaysResultWhenTagIsSavedSuccessfully() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         save()
 
@@ -145,14 +145,14 @@ class TagPresenterTest {
     fun archiveIsDisabledForNewTag() {
         val presenter = TagPresenter(newTag, tagsProvider)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showArchiveEnabled(false)
     }
 
     @Test
     fun archiveIsEnabledForExistingTag() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showArchiveEnabled(true)
     }
@@ -160,7 +160,7 @@ class TagPresenterTest {
     @Test
     fun archivesTagAndDisplaysResult() {
         val archivedTag = tag.withModelState(ARCHIVED)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         toggleArchive()
 
@@ -173,7 +173,7 @@ class TagPresenterTest {
         val archivedTag = tag.withModelState(ARCHIVED)
         val restoredTag = tag.withModelState(NONE)
         val presenter = TagPresenter(archivedTag, tagsProvider)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         toggleArchive()
 

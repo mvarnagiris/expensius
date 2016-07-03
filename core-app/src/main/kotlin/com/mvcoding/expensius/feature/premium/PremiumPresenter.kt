@@ -18,14 +18,20 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
-import com.mvcoding.expensius.feature.*
+import com.mvcoding.expensius.feature.Destroyable
+import com.mvcoding.expensius.feature.EmptyView
+import com.mvcoding.expensius.feature.ErrorView
+import com.mvcoding.expensius.feature.RefreshableView
+import com.mvcoding.expensius.feature.showEmptyState
+import com.mvcoding.expensius.feature.showLoadingState
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.Observable.empty
 
 class PremiumPresenter(
         private val settings: Settings,
-        private val billingProductsProvider: BillingProductsProvider) : Presenter<PremiumPresenter.View>() {
+        private val billingProductsProvider: BillingProductsProvider) : Presenter<PremiumPresenter.View>(), Destroyable {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -49,7 +55,6 @@ class PremiumPresenter(
             { billingProducts, subscriptionType -> BillingData(subscriptionType, billingProducts) })
 
     override fun onDestroy() {
-        super.onDestroy()
         billingProductsProvider.dispose()
     }
 

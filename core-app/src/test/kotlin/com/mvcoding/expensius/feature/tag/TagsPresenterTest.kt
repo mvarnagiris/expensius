@@ -50,7 +50,7 @@ class TagsPresenterTest {
     fun showsModelDisplayType() {
         val presenter = presenterWithModelDisplayTypeView()
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showModelDisplayType(VIEW_NOT_ARCHIVED)
     }
@@ -61,7 +61,7 @@ class TagsPresenterTest {
         val tags = listOf(aTag(), aTag(), aTag())
         whenever(tagsProvider.tags()).thenReturn(just(tags))
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showTags(tags)
     }
@@ -72,7 +72,7 @@ class TagsPresenterTest {
         val tags = listOf(aTag(), aTag(), aTag())
         whenever(tagsProvider.archivedTags()).thenReturn(just(tags))
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showTags(tags)
     }
@@ -81,7 +81,7 @@ class TagsPresenterTest {
     fun displaysTagEditWhenSelectingATagAndDisplayTypeIsView() {
         val presenter = presenterWithModelDisplayTypeView()
         val tag = aTag()
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectTag(tag)
 
@@ -91,7 +91,7 @@ class TagsPresenterTest {
     @Test
     fun displaysTagEditOnCreateTag() {
         val presenter = presenterWithModelDisplayTypeView()
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         createTag()
 
@@ -101,7 +101,7 @@ class TagsPresenterTest {
     @Test
     fun displaysArchivedTagsOnArchivedTags() {
         val presenter = presenterWithModelDisplayTypeView()
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         archivedTags()
 
@@ -113,7 +113,7 @@ class TagsPresenterTest {
         val tags = listOf(aTag(), aTag(), aTag(), aTag())
         val reorderedTags = listOf(tags[2].withOrder(0), tags[0].withOrder(1), tags[1].withOrder(2), tags[3].withOrder(3))
         whenever(tagsProvider.tags()).thenReturn(just(tags))
-        presenterWithModelDisplayTypeView().onViewAttached(view)
+        presenterWithModelDisplayTypeView().attach(view)
 
         moveTag(2, 0)
 
@@ -125,7 +125,7 @@ class TagsPresenterTest {
         val tags = listOf(aTag(), aTag(), aTag(), aTag())
         val reorderedTags = listOf(tags[1].withOrder(0), tags[2].withOrder(1), tags[0].withOrder(2), tags[3].withOrder(3))
         whenever(tagsProvider.tags()).thenReturn(just(tags))
-        presenterWithModelDisplayTypeView().onViewAttached(view)
+        presenterWithModelDisplayTypeView().attach(view)
 
         moveTag(0, 2)
 

@@ -15,11 +15,15 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.generateModelId
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.Observable.just

@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature
 
 import com.mvcoding.expensius.EmptyState
 import com.mvcoding.expensius.EmptyState.EMPTY
+import com.mvcoding.mvp.Presenter
 
 interface EmptyView : Presenter.View {
     fun showEmptyView()

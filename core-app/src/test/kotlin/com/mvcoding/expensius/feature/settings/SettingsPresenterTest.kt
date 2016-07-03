@@ -70,7 +70,7 @@ class SettingsPresenterTest {
         val mainCurrency = Currency("GBP")
         whenever(settings.mainCurrency).thenReturn(mainCurrency)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showMainCurrency(mainCurrency)
     }
@@ -81,7 +81,7 @@ class SettingsPresenterTest {
         val newCurrency = Currency("EUR")
         val allCurrencies = create<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
         whenever(settings.mainCurrency).thenReturn(oldCurrency)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectMainCurrency()
         setMainCurrency(newCurrency)
@@ -93,14 +93,14 @@ class SettingsPresenterTest {
 
     @Test
     fun showsReportStep() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showReportStep(DAY)
     }
 
     @Test
     fun canSelectNewReportStep() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectReportStep()
         setReportStep(WEEK)
@@ -114,7 +114,7 @@ class SettingsPresenterTest {
     fun showsSubscriptionType() {
         setSubscriptionType(PREMIUM_PAID)
 
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         verify(view).showSubscriptionType(PREMIUM_PAID)
     }
@@ -122,7 +122,7 @@ class SettingsPresenterTest {
     @Test
     fun showsUpdatedSubscriptionType() {
         setSubscriptionType(FREE)
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         setSubscriptionType(PREMIUM_PAID)
 
@@ -131,7 +131,7 @@ class SettingsPresenterTest {
 
     @Test
     fun displaysAbout() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectAbout()
 
@@ -140,7 +140,7 @@ class SettingsPresenterTest {
 
     @Test
     fun displaysSupportDeveloper() {
-        presenter.onViewAttached(view)
+        presenter.attach(view)
 
         selectSupportDeveloper()
 

@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.splash
 
 import com.mvcoding.expensius.Session
 import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.feature.Presenter
+import com.mvcoding.mvp.Presenter
 
 class SplashPresenter(private val settings: Settings, private val session: Session) : Presenter<SplashPresenter.View>() {
     override fun onViewAttached(view: View) {

@@ -18,10 +18,10 @@ import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.feature.Presenter
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class TransactionsPresenter(
