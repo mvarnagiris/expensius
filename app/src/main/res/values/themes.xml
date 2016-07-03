@@ -17,9 +17,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="themeInverse">@style/AppTheme.Inverse</item>
 
-        <item name="colorPrimary">#cddc39</item>
-        <item name="colorPrimaryDark">#afb42b</item>
-        <item name="colorPrimaryLight">#f0f4c3</item>
+        <item name="colorPrimary">#8bc34a</item>
+        <item name="colorPrimaryDark">#689f38</item>
+        <item name="colorPrimaryLight">#dcedc8</item>
         <item name="colorAccent">#03a9f4</item>
         <item name="colorAccentLight">#4fc3f7</item>
         <item name="colorAccentDark">#0288d1</item>
@@ -38,7 +38,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@color/backgroundWindow</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
     <style name="AppTheme.Inverse">
@@ -61,7 +60,7 @@
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
