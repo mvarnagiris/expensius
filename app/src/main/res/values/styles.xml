@@ -40,7 +40,7 @@
 
     <style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
     </style>
 
     <style name="Text.Display1" parent="TextAppearance.AppCompat.Display1">
@@ -70,7 +70,7 @@
 
     <style name="Text.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp</item>
+        <item name="android:fontFeatureSettings">smcp,onum</item>
     </style>
 
     <!-- Button -->
