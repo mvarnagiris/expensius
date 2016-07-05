@@ -12,11 +12,20 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.model
 
-import rx.Scheduler
-import rx.schedulers.Schedulers.immediate
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
+import org.junit.Test
 
-fun rxSchedulers() = RxSchedulers(immediate(), immediate(), immediate())
-fun RxSchedulers.withIo(scheduler: Scheduler) = copy(io = scheduler)
-fun RxSchedulers.withMain(scheduler: Scheduler) = copy(main = scheduler)
+class UserTest {
+    @Test
+    fun appUserIsNotLoggedInWhenAuthProvidersAreEmpty() {
+        assertThat(anAppUser().withNoAuthProviders().isLoggedIn(), equalTo(false))
+    }
+
+    @Test
+    fun appUserIsLoggedInWhenAuthProvidersAreNotEmpty() {
+        assertThat(anAppUser().withAuthProvider(anAuthProvider()).isLoggedIn(), equalTo(true))
+    }
+}

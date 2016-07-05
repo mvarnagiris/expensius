@@ -14,18 +14,22 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import com.mvcoding.expensius.Session
-import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.mvp.Presenter
 
-class SplashPresenter(private val settings: Settings, private val session: Session) : Presenter<SplashPresenter.View>() {
+class SplashPresenter(private val appUserService: com.mvcoding.expensius.service.AppUserService, private val schedulers: RxSchedulers) : Presenter<SplashPresenter.View>() {
+
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
-        view.startMain()
+
+        appUserService.appUsers().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached {
+            if (it.isLoggedIn()) view.displayApp()
+            else view.displayLogin()
+        }
     }
 
     interface View : Presenter.View {
-        fun startMain()
-        fun startIntro()
+        fun displayLogin()
+        fun displayApp()
     }
 }

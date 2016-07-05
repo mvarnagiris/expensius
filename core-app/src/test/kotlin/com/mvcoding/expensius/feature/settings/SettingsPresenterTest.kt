@@ -18,9 +18,9 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
 import com.mvcoding.expensius.SubscriptionType.FREE
 import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
-import com.mvcoding.expensius.feature.ReportStep
-import com.mvcoding.expensius.feature.ReportStep.DAY
-import com.mvcoding.expensius.feature.ReportStep.WEEK
+import com.mvcoding.expensius.feature.ReportGroup
+import com.mvcoding.expensius.feature.ReportGroup.DAY
+import com.mvcoding.expensius.feature.ReportGroup.WEEK
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.Currency
 import com.nhaarman.mockito_kotlin.any
@@ -41,7 +41,7 @@ class SettingsPresenterTest {
     val selectAboutSubject = PublishSubject<Unit>()
 
     val mainCurrencyRequestSubject = PublishSubject<Currency>()
-    val reportStepRequestSubject = PublishSubject<ReportStep>()
+    val reportStepRequestSubject = PublishSubject<ReportGroup>()
 
     val reportStepsSubject = BehaviorSubject(DAY)
     val subscriptionTypesSubject = BehaviorSubject(FREE)
@@ -61,8 +61,8 @@ class SettingsPresenterTest {
         whenever(view.requestReportStep(any())).thenReturn(reportStepRequestSubject)
         whenever(settings.subscriptionTypes()).thenReturn(subscriptionTypesSubject)
         whenever(settings.reportSteps()).thenReturn(reportStepsSubject)
-        whenever(settings.reportStep).thenReturn(DAY)
-        doAnswer { reportStepsSubject.onNext(it.getArgument(0)) }.whenever(settings).reportStep = any()
+        whenever(settings.reportGroup).thenReturn(DAY)
+        doAnswer { reportStepsSubject.onNext(it.getArgument(0)) }.whenever(settings).reportGroup = any()
     }
 
     @Test
@@ -105,9 +105,9 @@ class SettingsPresenterTest {
         selectReportStep()
         setReportStep(WEEK)
 
-        verify(view).requestReportStep(ReportStep.values().toList())
+        verify(view).requestReportStep(ReportGroup.values().toList())
         verify(view).showReportStep(WEEK)
-        verify(settings).reportStep = WEEK
+        verify(settings).reportGroup = WEEK
     }
 
     @Test
@@ -152,6 +152,6 @@ class SettingsPresenterTest {
     private fun selectSupportDeveloper() = selectSupportDeveloperSubject.onNext(Unit)
     private fun selectAbout() = selectAboutSubject.onNext(Unit)
     private fun setMainCurrency(currency: Currency) = mainCurrencyRequestSubject.onNext(currency)
-    private fun setReportStep(reportStep: ReportStep) = reportStepRequestSubject.onNext(reportStep)
+    private fun setReportStep(reportGroup: ReportGroup) = reportStepRequestSubject.onNext(reportGroup)
     private fun setSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypesSubject.onNext(subscriptionType)
 }

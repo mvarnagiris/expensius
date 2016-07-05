@@ -41,7 +41,7 @@ class SplashView : FrameLayout, SplashPresenter.View {
         presenter.detach(this)
     }
 
-    override fun startMain() {
+    override fun displayApp() {
         OverviewActivity.start(context)
         context.toBaseActivity().finish()
     }

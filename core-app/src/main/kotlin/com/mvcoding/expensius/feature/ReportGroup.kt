@@ -8,24 +8,24 @@ import org.joda.time.Period
 import org.joda.time.Weeks
 import org.joda.time.Years
 
-enum class ReportStep {
+enum class ReportGroup {
     DAY, WEEK, MONTH, YEAR;
 
-    fun toPeriod() = when (this) {
+    fun toPeriod(): Period = when (this) {
         DAY -> Period.days(1)
         WEEK -> Period.weeks(1)
         MONTH -> Period.months(1)
         YEAR -> Period.years(1)
     }
 
-    fun toNumberOfSteps(interval: Interval) = when (this) {
+    fun toNumberOfGroups(interval: Interval) = when (this) {
         DAY -> Days.daysIn(interval).days
         WEEK -> Weeks.weeksIn(interval).weeks
         MONTH -> Months.monthsIn(interval).months
         YEAR -> Years.yearsIn(interval).years
     }
 
-    fun splitIntoStepIntervals(interval: Interval): List<Interval> {
+    fun splitIntoGroupIntervals(interval: Interval): List<Interval> {
         val period = toPeriod()
         if (interval.endMillis < Interval(interval.start, period).endMillis) return emptyList()
 
@@ -40,7 +40,7 @@ enum class ReportStep {
                     }
                 else interval
 
-        val numberOfSteps = toNumberOfSteps(normalizedInterval)
+        val numberOfSteps = toNumberOfGroups(normalizedInterval)
         return (0..numberOfSteps - 1).map {
             toInterval(normalizedInterval.start.plus(period.multipliedBy(it)).millis)
         }

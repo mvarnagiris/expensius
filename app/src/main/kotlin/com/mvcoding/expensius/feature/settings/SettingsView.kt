@@ -36,11 +36,11 @@ import com.mvcoding.expensius.extension.getDimensionFromTheme
 import com.mvcoding.expensius.extension.getString
 import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
-import com.mvcoding.expensius.feature.ReportStep
-import com.mvcoding.expensius.feature.ReportStep.DAY
-import com.mvcoding.expensius.feature.ReportStep.MONTH
-import com.mvcoding.expensius.feature.ReportStep.WEEK
-import com.mvcoding.expensius.feature.ReportStep.YEAR
+import com.mvcoding.expensius.feature.ReportGroup
+import com.mvcoding.expensius.feature.ReportGroup.DAY
+import com.mvcoding.expensius.feature.ReportGroup.MONTH
+import com.mvcoding.expensius.feature.ReportGroup.WEEK
+import com.mvcoding.expensius.feature.ReportGroup.YEAR
 import com.mvcoding.expensius.feature.premium.PremiumActivity
 import com.mvcoding.expensius.model.Currency
 import kotlinx.android.synthetic.main.view_settings.view.*
@@ -107,25 +107,25 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         setSubtitle(mainCurrency.displayName())
     }
 
-    override fun requestReportStep(reportSteps: List<ReportStep>): Observable<ReportStep> = Observable.create {
-        val displayCurrencies = reportSteps.map { it.displayName() }
+    override fun requestReportStep(reportGroups: List<ReportGroup>): Observable<ReportGroup> = Observable.create {
+        val displayCurrencies = reportGroups.map { it.displayName() }
         val itemHeight = getDimensionFromTheme(context, R.attr.actionBarSize)
         val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
         val keylineHalf = resources.getDimensionPixelOffset(R.dimen.keyline_half)
         val popupWindow = ListPopupWindow(context)
         popupWindow.anchorView = reportStepSettingsItemView
         popupWindow.setAdapter(ArrayAdapter<String>(context, item_view_currency, currencyCodeTextView, displayCurrencies))
-        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(reportSteps[position]); popupWindow.dismiss() }
+        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(reportGroups[position]); popupWindow.dismiss() }
         popupWindow.setOnDismissListener { it.onCompleted() }
         popupWindow.width = width - keyline
-        popupWindow.height = min(height - reportStepSettingsItemView.bottom - itemHeight - keylineHalf, itemHeight * reportSteps.size)
+        popupWindow.height = min(height - reportStepSettingsItemView.bottom - itemHeight - keylineHalf, itemHeight * reportGroups.size)
         popupWindow.isModal = true
         popupWindow.horizontalOffset = keylineHalf
         popupWindow.show()
     }
 
-    override fun showReportStep(reportStep: ReportStep) = with(reportStepSettingsItemView as SettingsItemView) {
-        setSubtitle(reportStep.displayName())
+    override fun showReportStep(reportGroup: ReportGroup) = with(reportStepSettingsItemView as SettingsItemView) {
+        setSubtitle(reportGroup.displayName())
     }
 
     override fun showSubscriptionType(subscriptionType: SubscriptionType) = with(supportDeveloperSettingsItemView as SettingsItemView) {
@@ -152,7 +152,7 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     private fun openUrl(uri: Uri) = context.startActivity(Intent(Intent.ACTION_VIEW, uri))
 
-    private fun ReportStep.displayName() = when (this) {
+    private fun ReportGroup.displayName() = when (this) {
         DAY -> getString(R.string.day)
         WEEK -> getString(R.string.week)
         MONTH -> getString(R.string.month)

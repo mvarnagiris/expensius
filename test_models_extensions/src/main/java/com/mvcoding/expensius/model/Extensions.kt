@@ -12,11 +12,17 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.model
 
-import rx.Scheduler
-import rx.schedulers.Schedulers.immediate
+import java.util.*
 
-fun rxSchedulers() = RxSchedulers(immediate(), immediate(), immediate())
-fun RxSchedulers.withIo(scheduler: Scheduler) = copy(io = scheduler)
-fun RxSchedulers.withMain(scheduler: Scheduler) = copy(main = scheduler)
+fun aString() = UUID.randomUUID().toString()
+fun aString(string: String) = "$string${anInt(1000)}"
+fun aStringId() = aString("id_")
+fun aLong() = Random().nextLong()
+fun aLong(limit: Int) = anInt(limit).toLong()
+fun anInt() = Random().nextInt()
+fun anInt(limit: Int) = Random().nextInt(limit)
+fun aLongTimestamp() = System.currentTimeMillis() - anInt(1000 * 60 * 60 * 24)
+fun aBoolean() = Math.random() >= 0.5
+fun <T> Array<T>.aRandomItem() = get(anInt(size - 1))

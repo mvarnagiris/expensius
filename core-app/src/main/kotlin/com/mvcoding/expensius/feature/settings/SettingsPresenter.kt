@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.SubscriptionType
-import com.mvcoding.expensius.feature.ReportStep
+import com.mvcoding.expensius.feature.ReportGroup
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.mvp.Presenter
@@ -48,9 +48,9 @@ class SettingsPresenter(
     private fun reportStep(view: View) {
         settings.reportSteps().subscribeUntilDetached { view.showReportStep(it) }
         view.onReportStepSelected()
-                .map { ReportStep.values().toList() }
+                .map { ReportGroup.values().toList() }
                 .flatMap { view.requestReportStep(it) }
-                .subscribeUntilDetached { settings.reportStep = it }
+                .subscribeUntilDetached { settings.reportGroup = it }
     }
 
     interface View : Presenter.View {
@@ -60,10 +60,10 @@ class SettingsPresenter(
         fun onAboutSelected(): Observable<Unit>
 
         fun requestMainCurrency(currencies: List<Currency>): Observable<Currency>
-        fun requestReportStep(reportSteps: List<ReportStep>): Observable<ReportStep>
+        fun requestReportStep(reportGroups: List<ReportGroup>): Observable<ReportGroup>
 
         fun showMainCurrency(mainCurrency: Currency)
-        fun showReportStep(reportStep: ReportStep)
+        fun showReportStep(reportGroup: ReportGroup)
         fun showSubscriptionType(subscriptionType: SubscriptionType)
 
         fun displaySupportDeveloper()

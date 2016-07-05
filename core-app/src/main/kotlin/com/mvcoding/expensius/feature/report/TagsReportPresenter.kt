@@ -18,7 +18,7 @@ import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.FilterData
-import com.mvcoding.expensius.feature.ReportStep
+import com.mvcoding.expensius.feature.ReportGroup
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
@@ -50,7 +50,7 @@ class TagsReportPresenter(
 
         combineFilteredTransactionsAndReportStep(filteredTransactions)
                 .observeOn(rxSchedulers.computation)
-                .map { convertToReportData(it.interval, it.transactions, it.reportStep) }
+                .map { convertToReportData(it.interval, it.transactions, it.reportGroup) }
                 .subscribeOn(rxSchedulers.main)
                 .observeOn(rxSchedulers.main)
                 .subscribeUntilDetached { view.showTagsReportItems(it) }
@@ -82,13 +82,13 @@ class TagsReportPresenter(
     private fun convertToReportData(
             interval: Interval,
             transactions: List<Transaction>,
-            reportStep: ReportStep): List<TagsReportItem> {
-        val resultMap = reportStep.splitIntoStepIntervals(interval)
+            reportGroup: ReportGroup): List<TagsReportItem> {
+        val resultMap = reportGroup.splitIntoGroupIntervals(interval)
                 .map { it to hashMapOf<Tag, BigDecimal>() }
                 .toMap()
 
         transactions.forEach { transaction ->
-            val stepInterval = reportStep.toInterval(transaction.timestamp)
+            val stepInterval = reportGroup.toInterval(transaction.timestamp)
             val amountsMap = resultMap[stepInterval]
             transaction.tagsOrNoTag().forEach { tag ->
                 val newAmount = amountsMap?.getOrElse(tag, { ZERO })
@@ -122,7 +122,7 @@ class TagsReportPresenter(
     private data class IntervalAndTransactionsAndReportStep(
             val interval: Interval,
             val transactions: List<Transaction>,
-            val reportStep: ReportStep)
+            val reportGroup: ReportGroup)
 
     interface View : Presenter.View {
         fun showIntervalIsRequired()

@@ -12,7 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.report
+package com.mvcoding.expensius.model
 
-class ExpensesTrendPresenter {
-}
+import com.mvcoding.expensius.SubscriptionType
+import com.mvcoding.expensius.feature.ReportGroup
+import java.io.Serializable
+
+data class Settings(
+        val subscriptionType: SubscriptionType,
+        val mainCurrency: Currency,
+        val reportGroup: ReportGroup) : Serializable

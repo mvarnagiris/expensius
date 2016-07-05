@@ -16,11 +16,13 @@ apply plugin: 'java'
 apply plugin: "kotlin"
 
 dependencies {
+    compile project(':services')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "io.reactivex:rxkotlin:$rxkotlin_version"
-    compile "io.reactivex:rxjava:$rxjava_version"
     compile 'joda-time:joda-time:2.9.2'
     compile 'com.github.mvarnagiris:mvp:3d4f87fbea'
+
+    testCompile project(':test_models_extensions')
     testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "com.nhaarman:mockito-kotlin:0.5.1"

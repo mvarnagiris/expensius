@@ -14,52 +14,36 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import com.mvcoding.expensius.Session
-import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.model.AppUser.Companion.noAppUser
+import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.rxSchedulers
+import com.mvcoding.expensius.service.AppUserService
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
-import org.mockito.BDDMockito.mock
-import org.mockito.BDDMockito.verify
+import rx.Observable.just
 
 class SplashPresenterTest {
-    val settings: Settings = mock(Settings::class.java)
-    val session: Session = mock(Session::class.java)
-    val view: SplashPresenter.View = mock(SplashPresenter.View::class.java)
-    val presenter = SplashPresenter(settings, session)
+    val appUserService: AppUserService = mock()
+    val view: SplashPresenter.View = mock()
+    val presenter = SplashPresenter(appUserService, rxSchedulers())
 
     @Test
-    fun startsMain() {
+    fun displaysLoginIfUserIsNotLoggedIn() {
+        whenever(appUserService.appUsers()).thenReturn(just(noAppUser))
+
         presenter.attach(view)
 
-        verify(view).startMain()
+        verify(view).displayLogin()
     }
 
-    //    @Test
-    //    fun startsOverviewWhenIntroductionWasSeen() {
-    //        given(session.isLoggedIn()).willReturn(false)
-    //        given(settings.isIntroductionSeen()).willReturn(true)
-    //
-    //        presenter.onAttachView(view)
-    //
-    //        verify(view).startOverview()
-    //    }
-    //
-    //    @Test
-    //    fun startsOverviewWhenSessionIsLoggedIn() {
-    //        given(session.isLoggedIn()).willReturn(true)
-    //        given(settings.isIntroductionSeen()).willReturn(false)
-    //
-    //        presenter.onAttachView(view)
-    //
-    //        verify(view).startOverview()
-    //    }
-    //
-    //    @Test
-    //    fun startsIntroductionWhenSessionIsNotLoggedIn() {
-    //        given(session.isLoggedIn()).willReturn(false)
-    //        given(settings.isIntroductionSeen()).willReturn(false)
-    //
-    //        presenter.onAttachView(view)
-    //
-    //        verify(view).startIntro()
-    //    }
+    @Test
+    fun displaysAppIfUserIsLoggedIn() {
+        whenever(appUserService.appUsers()).thenReturn(just(anAppUser()))
+
+        presenter.attach(view)
+
+        verify(view).displayApp()
+    }
 }

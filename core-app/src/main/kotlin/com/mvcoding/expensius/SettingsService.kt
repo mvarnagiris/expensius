@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +14,9 @@
 
 package com.mvcoding.expensius
 
-import com.mvcoding.expensius.feature.ReportGroup
-import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.Settings
 import rx.Observable
 
-interface Settings {
-    var isIntroductionSeen: Boolean
-    var subscriptionType: SubscriptionType
-    var reportGroup: ReportGroup
-    var mainCurrency: Currency
-    fun subscriptionTypes(): Observable<SubscriptionType>
-    fun reportSteps(): Observable<ReportGroup>
+interface SettingsService {
+    fun settings(): Observable<Settings>
 }

@@ -18,7 +18,7 @@ import android.content.SharedPreferences
 import com.mvcoding.expensius.extension.getObject
 import com.mvcoding.expensius.extension.putBoolean
 import com.mvcoding.expensius.extension.putObject
-import com.mvcoding.expensius.feature.ReportStep
+import com.mvcoding.expensius.feature.ReportGroup
 import com.mvcoding.expensius.model.Currency
 import rx.lang.kotlin.BehaviorSubject
 import java.util.*
@@ -43,7 +43,7 @@ class UserSettings(private val sharedPreferences: SharedPreferences) : Settings 
             sharedPreferences.putObject(KEY_SUBSCRIPTION_TYPE, value)
         }
 
-    override var reportStep: ReportStep = sharedPreferences.getObject(KEY_REPORT_STEP, ReportStep::class, { ReportStep.DAY })
+    override var reportGroup: ReportGroup = sharedPreferences.getObject(KEY_REPORT_STEP, ReportGroup::class, { ReportGroup.DAY })
         set(value) {
             field = value
             reportStepsSubject.onNext(value)
@@ -58,7 +58,7 @@ class UserSettings(private val sharedPreferences: SharedPreferences) : Settings 
         }
 
     private val subscriptionTypesSubject = BehaviorSubject(subscriptionType)
-    private val reportStepsSubject = BehaviorSubject(reportStep)
+    private val reportStepsSubject = BehaviorSubject(reportGroup)
 
     override fun subscriptionTypes() = subscriptionTypesSubject.asObservable()
     override fun reportSteps() = reportStepsSubject.asObservable()

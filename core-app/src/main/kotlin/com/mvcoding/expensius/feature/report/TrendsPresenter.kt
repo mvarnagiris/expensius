@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,17 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.feature.report
 
-import com.mvcoding.expensius.feature.ReportGroup
-import com.mvcoding.expensius.model.Currency
-import rx.Observable
+import com.mvcoding.mvp.Presenter
+import java.math.BigDecimal
 
-interface Settings {
-    var isIntroductionSeen: Boolean
-    var subscriptionType: SubscriptionType
-    var reportGroup: ReportGroup
-    var mainCurrency: Currency
-    fun subscriptionTypes(): Observable<SubscriptionType>
-    fun reportSteps(): Observable<ReportGroup>
+class TrendsPresenter : Presenter<TrendsPresenter.View>() {
+    interface View : Presenter.View {
+        fun showTrends(totalForCurrentAmounts: BigDecimal, currentAmounts: List<BigDecimal>, previousAmounts: List<BigDecimal>)
+    }
 }

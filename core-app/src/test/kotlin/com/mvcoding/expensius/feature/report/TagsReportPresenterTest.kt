@@ -16,10 +16,10 @@ package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Filter
-import com.mvcoding.expensius.feature.ReportStep
-import com.mvcoding.expensius.feature.ReportStep.DAY
-import com.mvcoding.expensius.feature.ReportStep.MONTH
-import com.mvcoding.expensius.feature.ReportStep.WEEK
+import com.mvcoding.expensius.feature.ReportGroup
+import com.mvcoding.expensius.feature.ReportGroup.DAY
+import com.mvcoding.expensius.feature.ReportGroup.MONTH
+import com.mvcoding.expensius.feature.ReportGroup.WEEK
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagWithAmount
 import com.mvcoding.expensius.feature.report.TagsReportPresenter.TagsReportItem
 import com.mvcoding.expensius.feature.tag.aNewTag
@@ -158,11 +158,11 @@ class TagsReportPresenterTest {
                 .withTransactionType(EXPENSE)
     }
 
-    private fun expectedTagsReportItems(interval: Interval, reportStep: ReportStep): List<TagsReportItem> {
-        val stepPeriod = reportStep.toPeriod()
-        val numberOfSteps = reportStep.toNumberOfSteps(interval)
+    private fun expectedTagsReportItems(interval: Interval, reportGroup: ReportGroup): List<TagsReportItem> {
+        val stepPeriod = reportGroup.toPeriod()
+        val numberOfSteps = reportGroup.toNumberOfGroups(interval)
 
-        val intervalAtTheBeginning = reportStep.toInterval(interval.startMillis)
+        val intervalAtTheBeginning = reportGroup.toInterval(interval.startMillis)
         val tagsReportItemAtTheBeginning = TagsReportItem(intervalAtTheBeginning, listOf(
                 TagWithAmount(tag2, BigDecimal("9.0")),
                 TagWithAmount(tag1, BigDecimal("21.0")),
@@ -171,13 +171,13 @@ class TagsReportPresenterTest {
 
 
         val timestampInTheMiddle = (interval.startMillis + interval.endMillis) / 2
-        val intervalInTheMiddle = reportStep.toInterval(timestampInTheMiddle)
+        val intervalInTheMiddle = reportGroup.toInterval(timestampInTheMiddle)
         val tagsReportItemInTheMiddle = TagsReportItem(intervalInTheMiddle, listOf(
                 TagWithAmount(noTag, BigDecimal("9")),
                 TagWithAmount(tag1, BigDecimal("7.8"))
         ))
 
-        val intervalAtTheEnd = reportStep.toInterval(interval.endMillis - 1)
+        val intervalAtTheEnd = reportGroup.toInterval(interval.endMillis - 1)
         val tagsReportItemAtTheEnd = TagsReportItem(intervalAtTheEnd, listOf(
                 TagWithAmount(tag2, BigDecimal("10")),
                 TagWithAmount(tag3, BigDecimal("10"))
@@ -195,5 +195,5 @@ class TagsReportPresenterTest {
         return expectedTagsReportItems
     }
 
-    private fun setReportStep(reportStep: ReportStep) = reportStepsSubject.onNext(reportStep)
+    private fun setReportStep(reportGroup: ReportGroup) = reportStepsSubject.onNext(reportGroup)
 }

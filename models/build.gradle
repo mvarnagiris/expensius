@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,17 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+apply plugin: "kotlin"
 
-import com.mvcoding.expensius.feature.ReportGroup
-import com.mvcoding.expensius.model.Currency
-import rx.Observable
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-interface Settings {
-    var isIntroductionSeen: Boolean
-    var subscriptionType: SubscriptionType
-    var reportGroup: ReportGroup
-    var mainCurrency: Currency
-    fun subscriptionTypes(): Observable<SubscriptionType>
-    fun reportSteps(): Observable<ReportGroup>
+    testCompile project(':test_models_extensions')
+    testCompile "junit:junit:$junit_version"
+    testCompile "com.natpryce:hamkrest:$hamkrest_version"
 }

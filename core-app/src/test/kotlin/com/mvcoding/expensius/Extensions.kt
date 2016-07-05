@@ -17,7 +17,12 @@ package com.mvcoding.expensius
 import java.util.*
 
 fun aString() = UUID.randomUUID().toString()
-fun anInt() = anInt(Int.MAX_VALUE)
-fun anInt(max: Int) = (Math.random() * max).toInt()
+fun aString(string: String) = "$string${anInt(1000)}"
+fun aStringId() = aString("id_")
+fun aLong() = Random().nextLong()
+fun aLong(limit: Int) = anInt(limit).toLong()
+fun anInt() = Random().nextInt()
+fun anInt(limit: Int) = Random().nextInt(limit)
+fun aLongTimestamp() = System.currentTimeMillis() - anInt(1000 * 60 * 60 * 24)
 fun aBoolean() = Math.random() >= 0.5
 fun <T> Array<T>.aRandomItem() = get(anInt(size - 1))
