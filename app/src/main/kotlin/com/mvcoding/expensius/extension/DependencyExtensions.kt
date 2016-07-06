@@ -14,37 +14,13 @@
 
 package com.mvcoding.expensius.extension
 
-import android.content.Context
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
+import com.memoizrlabs.Shank.registerFactory
+import com.memoizrlabs.shankkotlin.provideSingletonFor
 import kotlin.reflect.KClass
 
-fun <T : Any> provideNew(cls: KClass<T>) = Shank.provideNew(cls.java)
-
-fun <T : Any> provideSingleton(cls: KClass<T>) = Shank.provideSingleton(cls.java)
-
-fun <T : Any> provideActivityScopedSingleton(cls: KClass<T>,
-        context: Context,
-        arg1: Any? = null,
-        arg2: Any? = null,
-        arg3: Any? = null,
-        arg4: Any? = null): T {
-    return provideScopedSingleton(cls, context.toBaseActivity().scope, arg1, arg2, arg3, arg4)
-}
-
-fun <T : Any> provideScopedSingleton(
-        cls: KClass<T>,
-        scope: Scope,
-        arg1: Any? = null,
-        arg2: Any? = null,
-        arg3: Any? = null,
-        arg4: Any? = null): T {
-    val shank = Shank.with(scope)
-    return when {
-        arg4 != null -> shank.provideSingleton(cls.java, arg1, arg2, arg3, arg4)
-        arg3 != null -> shank.provideSingleton(cls.java, arg1, arg2, arg3)
-        arg2 != null -> shank.provideSingleton(cls.java, arg1, arg2)
-        arg1 != null -> shank.provideSingleton(cls.java, arg1)
-        else -> shank.provideSingleton(cls.java)
-    }
-}
+inline fun <reified T : Any> Scope.provideSingleton() = Shank.with(this).provideSingletonFor<T>()
+fun <T : Any, A : Any> registerFactory(objectClass: KClass<T>, factory: (arg1: A) -> T) = registerFactory(objectClass.java, factory)
+fun <T : Any, A : Any, B : Any> registerFactory(objectClass: KClass<T>, factory: (arg1: A, arg2: B) -> T) =
+        registerFactory(objectClass.java, factory)

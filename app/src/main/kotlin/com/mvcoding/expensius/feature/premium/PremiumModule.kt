@@ -14,16 +14,19 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import android.content.Context
+import android.view.View
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.BuildConfig
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
-import com.mvcoding.expensius.extension.provideScopedSingleton
-import com.mvcoding.expensius.extension.toBaseActivity
+import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.extension.registerFactory
+import com.mvcoding.expensius.extension.scope
 import com.mvcoding.expensius.provideContext
 import com.mvcoding.expensius.provideSettings
+import memoizrlabs.com.shankandroid.withActivityScope
 
 class PremiumModule : ShankModule {
     override fun registerFactories() {
@@ -32,14 +35,12 @@ class PremiumModule : ShankModule {
         premiumPresenter()
     }
 
-    private fun remoteBillingProductsService() {
-        registerFactory(RemoteBillingProductsService::class.java) { ->
-            if (BuildConfig.DEBUG) DummyRemoteBillingProductsService(provideSettings())
-            else BillingRemoteBillingProductsService(provideContext())
-        }
+    private fun remoteBillingProductsService() = registerFactory(RemoteBillingProductsService::class) { ->
+        if (BuildConfig.DEBUG) DummyRemoteBillingProductsService(provideSettings())
+        else BillingRemoteBillingProductsService(provideContext())
     }
 
-    private fun billingFlow() = registerFactory(BillingFlow::class.java) { scope: Scope ->
+    private fun billingFlow() = registerFactory(BillingFlow::class) { scope: Scope ->
         provideRemoteBillingProductsService(scope) as BillingFlow
     }
 
@@ -50,7 +51,6 @@ class PremiumModule : ShankModule {
     }
 }
 
-fun provideRemoteBillingProductsService(scope: Scope) = provideScopedSingleton(RemoteBillingProductsService::class, scope)
-fun provideBillingFlow(scope: Scope) = provideScopedSingleton(BillingFlow::class, scope, scope)
-fun providePremiumPresenter(context: Context) =
-        provideActivityScopedSingleton(PremiumPresenter::class, context, context.toBaseActivity().scope)
+private fun provideRemoteBillingProductsService(scope: Scope): RemoteBillingProductsService = scope.provideSingleton()
+fun View.provideBillingFlow(): BillingFlow = withActivityScope.provideSingletonFor(scope())
+fun View.providePremiumPresenter(): PremiumPresenter = withActivityScope.provideSingletonFor(scope())

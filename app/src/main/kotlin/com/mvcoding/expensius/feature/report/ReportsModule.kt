@@ -14,13 +14,16 @@
 
 package com.mvcoding.expensius.feature.report
 
+import android.view.View
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.provideTransactionsProvider
 import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provideSettings
+import memoizrlabs.com.shankandroid.withActivityScope
 import org.joda.time.DateTime
 import org.joda.time.Interval
 
@@ -39,3 +42,6 @@ class ReportsModule : ShankModule {
         TagsReportPresenter(filter, provideTransactionsProvider(), provideSettings(), provideRxSchedulers())
     })
 }
+
+fun View.provideTagsReportPresenter(transactionType: TransactionType): TagsReportPresenter =
+        withActivityScope.provideSingletonFor(transactionType)

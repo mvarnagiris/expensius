@@ -22,7 +22,6 @@ import android.widget.LinearLayout
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.view.longClicks
 import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.transaction.TransactionActivity
@@ -40,7 +39,7 @@ class CalculatorView @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     fun init(initialNumber: BigDecimal?, resultDestination: CalculatorPresenter.ResultDestination) {
-        presenter = provideActivityScopedSingleton(CalculatorPresenter::class, initialNumber, resultDestination)
+        presenter = provideCalculatorPresenter(initialNumber, resultDestination)
     }
 
     override fun onAttachedToWindow() {

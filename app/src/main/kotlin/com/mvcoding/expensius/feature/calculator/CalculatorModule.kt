@@ -14,9 +14,12 @@
 
 package com.mvcoding.expensius.feature.calculator
 
-import com.memoizrlabs.Shank.registerFactory
+import android.view.View
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.mvcoding.expensius.extension.registerFactory
 import com.mvcoding.expensius.provideSettings
+import memoizrlabs.com.shankandroid.withActivityScope
 import java.math.BigDecimal
 
 class CalculatorModule : ShankModule {
@@ -24,8 +27,12 @@ class CalculatorModule : ShankModule {
         calculatorPresenter()
     }
 
-    private fun calculatorPresenter() = registerFactory(CalculatorPresenter::class.java, {
+    private fun calculatorPresenter() = registerFactory(CalculatorPresenter::class) {
         initialNumber: BigDecimal?, resultDestination: CalculatorPresenter.ResultDestination ->
         CalculatorPresenter(Calculator(Interpreter()), resultDestination, provideSettings(), initialNumber)
-    })
+    }
 }
+
+fun View.provideCalculatorPresenter(
+        initialNumber: BigDecimal?,
+        resultDestination: CalculatorPresenter.ResultDestination): CalculatorPresenter = withActivityScope.provideSingletonFor()

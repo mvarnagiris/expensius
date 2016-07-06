@@ -27,7 +27,6 @@ import com.jakewharton.rxbinding.support.v4.widget.refreshes
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.inflate
-import com.mvcoding.expensius.extension.scope
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.BaseClickableAdapter
@@ -41,8 +40,8 @@ class PremiumView @JvmOverloads constructor(context: Context, attrs: AttributeSe
 
     private val REQUEST_BILLING = 1
 
-    private val presenter by lazy { providePremiumPresenter(context) }
-    private val billingFlow by lazy { provideBillingFlow(scope()) }
+    private val presenter by lazy { providePremiumPresenter() }
+    private val billingFlow by lazy { provideBillingFlow() }
     private val adapter by lazy { Adapter() }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) = billingFlow.onActivityResult(requestCode, resultCode, data)

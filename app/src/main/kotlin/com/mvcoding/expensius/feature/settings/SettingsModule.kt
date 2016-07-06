@@ -14,17 +14,22 @@
 
 package com.mvcoding.expensius.feature.settings
 
+import android.view.View
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
 import com.mvcoding.expensius.provideSettings
+import memoizrlabs.com.shankandroid.withActivityScope
 
 class SettingsModule : ShankModule {
     override fun registerFactories() {
         settingsPresenter()
     }
 
-    private fun settingsPresenter() {
-        registerFactory(SettingsPresenter::class.java) { -> SettingsPresenter(provideSettings(), provideCurrenciesProvider()) }
+    private fun settingsPresenter() = registerFactory(SettingsPresenter::class.java) { ->
+        SettingsPresenter(provideSettings(), provideCurrenciesProvider())
     }
 }
+
+fun View.provideSettingsPresenter(): SettingsPresenter = withActivityScope.provideSingletonFor()

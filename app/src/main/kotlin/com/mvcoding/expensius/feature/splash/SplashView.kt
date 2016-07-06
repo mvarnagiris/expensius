@@ -17,23 +17,18 @@ package com.mvcoding.expensius.feature.splash
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
+import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.toBaseActivity
-import com.mvcoding.expensius.feature.intro.IntroActivity
 import com.mvcoding.expensius.feature.overview.OverviewActivity
 
-class SplashView : FrameLayout, SplashPresenter.View {
-    private val presenter = provideActivityScopedSingleton(SplashPresenter::class)
+class SplashView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        FrameLayout(context, attrs, defStyleAttr), SplashPresenter.View {
 
-    constructor(context: Context?) : this(context, null)
-
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    private val presenter by lazy { provideSplashPresenter() }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.attach(this)
+        doNotInEditMode { presenter.attach(this) }
     }
 
     override fun onDetachedFromWindow() {
@@ -41,13 +36,12 @@ class SplashView : FrameLayout, SplashPresenter.View {
         presenter.detach(this)
     }
 
-    override fun displayApp() {
-        OverviewActivity.start(context)
-        context.toBaseActivity().finish()
+    override fun displayLogin() {
+        // TODO: Display Login
     }
 
-    override fun startIntro() {
-        IntroActivity.start(context)
+    override fun displayApp() {
+        OverviewActivity.start(context)
         context.toBaseActivity().finish()
     }
 }

@@ -34,7 +34,6 @@ import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.getDimensionFromTheme
 import com.mvcoding.expensius.extension.getString
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.ReportGroup
 import com.mvcoding.expensius.feature.ReportGroup.DAY
@@ -51,7 +50,7 @@ import java.lang.Math.min
 class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         NestedScrollView(context, attrs, defStyleAttr), SettingsPresenter.View {
 
-    private val presenter by lazy { provideActivityScopedSingleton(SettingsPresenter::class) }
+    private val presenter by lazy { provideSettingsPresenter() }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -130,9 +129,9 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
 
     override fun showSubscriptionType(subscriptionType: SubscriptionType) = with(supportDeveloperSettingsItemView as SettingsItemView) {
         setSubtitle(when (subscriptionType) {
-                        FREE -> getString(R.string.long_user_is_using_free_version)
-                        PREMIUM_PAID -> getString(R.string.long_user_is_using_premium_version)
-                    })
+            FREE -> getString(R.string.long_user_is_using_free_version)
+            PREMIUM_PAID -> getString(R.string.long_user_is_using_premium_version)
+        })
     }
 
     override fun displaySupportDeveloper() = PremiumActivity.start(context)

@@ -21,7 +21,6 @@ import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.DividerItemDecoration
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
@@ -50,7 +49,7 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     fun init(modelDisplayType: ModelDisplayType, createTransactionObservable: Observable<Unit>) {
         this.createTransactionObservable = createTransactionObservable
-        this.presenter = provideActivityScopedSingleton(TransactionsPresenter::class, modelDisplayType)
+        this.presenter = provideTransactionsPresenter(modelDisplayType)
     }
 
     override fun onAttachedToWindow() {

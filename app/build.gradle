@@ -71,6 +71,7 @@ android {
 dependencies {
     compile project(':core-app')
     compile project(':billing')
+    compile project(':firebase')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:design:$support_version"
@@ -84,7 +85,7 @@ dependencies {
     compile 'me.zhanghai.android.customtabshelper:library:1.0.1'
     compile 'com.github.memoizr:shank:v1.3.1'
     compile 'com.github.memoizr:shank-kotlin:v1.3.1'
-    compile 'com.github.memoizr:shank-android:v0.0.1'
+    compile 'com.github.memoizr:shank-android:v1.3.1'
     compile "com.jakewharton.rxbinding:rxbinding-kotlin:$rxbinding_version"
     compile "com.jakewharton.rxbinding:rxbinding-support-v4-kotlin:$rxbinding_version"
     compile "com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:$rxbinding_version"

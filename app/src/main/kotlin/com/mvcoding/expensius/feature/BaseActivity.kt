@@ -15,35 +15,17 @@
 package com.mvcoding.expensius.feature
 
 import android.graphics.PorterDuff
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import com.memoizrlabs.Scope
-import com.memoizrlabs.Scope.scope
-import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.forEach
 import com.mvcoding.expensius.extension.getColorFromTheme
 import kotlinx.android.synthetic.main.toolbar.*
-import java.util.UUID.randomUUID
+import memoizrlabs.com.shankandroid.ShankAppCompatActivity
 
-abstract class BaseActivity : AppCompatActivity() {
-    private lateinit var scopeId: String
-    lateinit var scope: Scope
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        scopeId = savedInstanceState?.getString("STATE_SCOPE_ID") ?: randomUUID().toString()
-        scope = scope(scopeId)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable("STATE_SCOPE_ID", scopeId)
-    }
+abstract class BaseActivity : ShankAppCompatActivity() {
+    override val finalAction = { /*TODO: if (it is Destroyable) it.onDestroy()*/ }
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
@@ -60,13 +42,6 @@ abstract class BaseActivity : AppCompatActivity() {
         setupToolbar()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isFinishing) {
-            scope.clearWithFinalAction { if (it is Destroyable) it.onDestroy() }
-        }
-    }
-
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         tintToolbarIcons(menu)
         return super.onPrepareOptionsMenu(menu)
@@ -81,11 +56,12 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     protected fun setupToolbar() {
-        val toolbar = findViewById(R.id.toolbar) as Toolbar?
-        if (toolbar != null) {
-            setSupportActionBar(toolbar)
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setHomeButtonEnabled(true)
+        toolbar?.run {
+            setSupportActionBar(this)
+            supportActionBar?.run {
+                setDisplayHomeAsUpEnabled(true)
+                setHomeButtonEnabled(true)
+            }
         }
     }
 

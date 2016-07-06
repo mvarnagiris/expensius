@@ -14,10 +14,10 @@
 
 package com.mvcoding.expensius.feature.currency
 
-import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
-import com.mvcoding.expensius.extension.provideNew
-import com.mvcoding.expensius.extension.provideSingleton
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.provideNew
+import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.provider.DatabaseCurrencyFormatsProvider
 
 class CurrenciesModule : ShankModule {
@@ -26,14 +26,9 @@ class CurrenciesModule : ShankModule {
         currencyFormatsProvider()
     }
 
-    private fun currenciesProvider() {
-        registerFactory(CurrenciesProvider::class.java) { -> CurrenciesProvider() }
-    }
-
-    private fun currencyFormatsProvider() {
-        registerFactory(CurrencyFormatsProvider::class.java) { -> DatabaseCurrencyFormatsProvider() }
-    }
+    private fun currenciesProvider() = registerFactory(CurrenciesProvider::class) { -> CurrenciesProvider() }
+    private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> DatabaseCurrencyFormatsProvider() }
 }
 
-fun provideCurrenciesProvider() = provideNew(CurrenciesProvider::class)
-fun provideCurrencyFormatsProvider() = provideSingleton(CurrencyFormatsProvider::class)
+fun provideCurrenciesProvider(): CurrenciesProvider = provideNew()
+fun provideCurrencyFormatsProvider(): CurrencyFormatsProvider = provideGlobalSingleton()

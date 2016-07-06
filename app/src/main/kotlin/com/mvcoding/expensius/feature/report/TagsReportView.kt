@@ -23,7 +23,6 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.Tag
@@ -45,7 +44,7 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
     private var defaultColor = 0
 
     fun initialize(transactionType: TransactionType) {
-        presenter = provideActivityScopedSingleton(TagsReportPresenter::class, transactionType)
+        presenter = provideTagsReportPresenter(transactionType)
         defaultColor = if (transactionType == EXPENSE) getColorFromTheme(R.attr.colorExpense) else getColorFromTheme(R.attr.colorIncome)
     }
 

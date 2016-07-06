@@ -18,16 +18,19 @@ import android.content.Context
 import android.preference.PreferenceManager
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
-import com.mvcoding.expensius.extension.provideSingleton
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
+import com.mvcoding.expensius.firebase.FirebaseAppUserService
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.SqliteDatabase
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
+import com.mvcoding.expensius.service.AppUserService
 import com.squareup.sqlbrite.SqlBrite
 import rx.android.schedulers.AndroidSchedulers.mainThread
 import rx.schedulers.Schedulers.computation
@@ -38,19 +41,22 @@ class AppModule(val context: Context) : ShankModule {
     override fun registerFactories() {
         appContext()
         rxSchedulers()
+        firebaseAppUserService()
         rxBus()
-        settings()
         session()
         dateFormatter()
+        settings()
         database()
         amountFormatter()
     }
 
-    private fun appContext() = registerFactory(Context::class.java, { -> context })
-    private fun rxBus() = registerFactory(RxBus::class.java, { -> RxBus() })
-    private fun session() = registerFactory(Session::class.java, { -> UserSession() })
-    private fun dateFormatter() = registerFactory(DateFormatter::class.java, { -> DateFormatter(context) })
-    private fun rxSchedulers() = registerFactory(RxSchedulers::class.java, { -> RxSchedulers(mainThread(), io(), computation()) })
+
+    private fun appContext() = registerFactory(Context::class) { -> context }
+    private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
+    private fun firebaseAppUserService() = registerFactory(FirebaseAppUserService::class) { -> FirebaseAppUserService() }
+    private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
+    private fun session() = registerFactory(Session::class) { -> UserSession() }
+    private fun dateFormatter() = registerFactory(DateFormatter::class) { -> DateFormatter(context) }
 
     private fun settings() {
         registerFactory(Settings::class.java, { -> UserSettings(PreferenceManager.getDefaultSharedPreferences(provideContext())) })
@@ -71,11 +77,14 @@ class AppModule(val context: Context) : ShankModule {
     }
 }
 
-fun provideContext() = provideSingleton(Context::class)
-fun provideRxBus() = provideSingleton(RxBus::class)
-fun provideRxSchedulers() = provideSingleton(RxSchedulers::class)
-fun provideSettings() = provideSingleton(Settings::class)
-fun provideSession() = provideSingleton(Session::class)
-fun provideDatabase() = provideSingleton(Database::class)
-fun provideDateFormatter() = provideSingleton(DateFormatter::class)
-fun provideAmountFormatter() = provideSingleton(AmountFormatter::class)
+fun provideContext(): Context = provideGlobalSingleton()
+fun provideRxSchedulers(): RxSchedulers = provideGlobalSingleton()
+fun provideRxBus(): RxBus = provideGlobalSingleton()
+fun provideSettings(): Settings = provideGlobalSingleton()
+fun provideSession(): Session = provideGlobalSingleton()
+fun provideDatabase(): Database = provideGlobalSingleton()
+fun provideDateFormatter(): DateFormatter = provideGlobalSingleton()
+fun provideAmountFormatter(): AmountFormatter = provideGlobalSingleton()
+
+fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
+private fun provideFirebaseAppUserService(): FirebaseAppUserService = provideGlobalSingleton()

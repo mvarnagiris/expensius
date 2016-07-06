@@ -28,7 +28,6 @@ import com.jakewharton.rxbinding.widget.textChanges
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getDimensionFromTheme
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.setTextIfChanged
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.DateDialogFragment
@@ -93,7 +92,7 @@ class TransactionView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     fun init(transaction: Transaction) {
-        presenter = provideActivityScopedSingleton(TransactionPresenter::class, transaction)
+        presenter = provideTransactionPresenter(transaction)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -14,15 +14,19 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.memoizrlabs.Shank.registerFactory
+import android.view.View
 import com.memoizrlabs.ShankModule
-import com.mvcoding.expensius.extension.provideSingleton
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.extension.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideDatabase
 import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provider.DatabaseTagsProvider
 import com.mvcoding.expensius.provider.database.table.TagsTable
+import memoizrlabs.com.shankandroid.withActivityScope
 
 class TagsModule : ShankModule {
     override fun registerFactories() {
@@ -32,17 +36,20 @@ class TagsModule : ShankModule {
         tagPresenter()
     }
 
-    private fun tagsProvider() = registerFactory(TagsProvider::class.java, { -> DatabaseTagsProvider(provideDatabase(), TagsTable()) })
+    private fun tagsProvider() = registerFactory(TagsProvider::class) { -> DatabaseTagsProvider(provideDatabase(), TagsTable()) }
 
-    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class.java) { ->
+    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
         QuickTagsPresenter(provideTagsProvider(), provideRxSchedulers())
     }
 
-    private fun tagPresenter() = registerFactory(TagPresenter::class.java, { tag: Tag -> TagPresenter(tag, provideTagsProvider()) })
+    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsProvider()) }
 
-    private fun tagsPresenter() = registerFactory(TagsPresenter::class.java, { modelDisplayType: ModelDisplayType ->
+    private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
         TagsPresenter(provideTagsProvider(), modelDisplayType, provideRxSchedulers())
-    })
+    }
 }
 
-fun provideTagsProvider() = provideSingleton(TagsProvider::class)
+fun provideTagsProvider(): TagsProvider = provideGlobalSingleton()
+fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()
+fun View.provideTagPresenter(tag: Tag): TagPresenter = withActivityScope.provideSingletonFor(tag)
+fun View.provideTagsPresenter(modelDisplayType: ModelDisplayType): TagsPresenter = withActivityScope.provideSingletonFor(modelDisplayType)

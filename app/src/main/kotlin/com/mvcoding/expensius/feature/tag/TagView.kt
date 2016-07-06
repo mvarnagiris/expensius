@@ -37,7 +37,6 @@ import com.larswerkman.lobsterpicker.OnColorListener
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.pickForegroundColor
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.model.ModelState
@@ -71,7 +70,7 @@ class TagView : LinearLayout, TagPresenter.View {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     fun init(tag: Tag) {
-        presenter = provideActivityScopedSingleton(TagPresenter::class, tag)
+        presenter = provideTagPresenter(tag)
     }
 
     override fun onFinishInflate() {
@@ -229,7 +228,7 @@ class TagView : LinearLayout, TagPresenter.View {
             val orange = resources.getIntArray(R.array.oranges)
 
             colors = arrayOf(red, deepPurple, lightBlue, green, yellow, deepOrange, blueGrey, pink, indigo, cyan, lightGreen, amber, brown,
-                             purple, blue, teal, lime, orange)
+                    purple, blue, teal, lime, orange)
         }
 
         override fun size(): Int {

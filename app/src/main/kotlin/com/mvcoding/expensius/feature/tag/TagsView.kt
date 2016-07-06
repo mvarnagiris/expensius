@@ -20,7 +20,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.DragAndDropTouchHelperCallback
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Tag
@@ -39,7 +38,7 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
 
     fun init(modelDisplayType: ModelDisplayType, createTagObservable: Observable<Unit>) {
         this.createTagObservable = createTagObservable
-        this.presenter = provideActivityScopedSingleton(TagsPresenter::class, modelDisplayType)
+        this.presenter = provideTagsPresenter(modelDisplayType)
     }
 
     override fun onFinishInflate() {

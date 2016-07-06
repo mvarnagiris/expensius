@@ -20,12 +20,12 @@ import android.os.Bundle
 import android.support.v4.app.FragmentManager
 import android.widget.DatePicker
 import com.mvcoding.expensius.RxBus
-import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.provideRxBus
 import org.joda.time.DateTime
 import rx.Observable
 
 class DateDialogFragment : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
-    private val rxBus = provideSingleton(RxBus::class)
+    private val rxBus = provideRxBus()
 
     companion object {
         private const val ARG_YEAR = "ARG_YEAR"

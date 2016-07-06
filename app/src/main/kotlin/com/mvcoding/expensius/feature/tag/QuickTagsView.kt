@@ -22,7 +22,6 @@ import android.view.View.MeasureSpec.getSize
 import android.view.ViewGroup
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.extension.provideActivityScopedSingleton
 import com.mvcoding.expensius.feature.tag.QuickTagView.QuickTag
 import com.mvcoding.expensius.model.Tag
 import rx.lang.kotlin.BehaviorSubject
@@ -32,7 +31,7 @@ import java.lang.Math.max
 class QuickTagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         ViewGroup(context, attrs, defStyleAttr), QuickTagsPresenter.View {
 
-    private val presenter by lazy { provideActivityScopedSingleton(QuickTagsPresenter::class) }
+    private val presenter by lazy { provideQuickTagsPresenter() }
 
     private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
     private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }
