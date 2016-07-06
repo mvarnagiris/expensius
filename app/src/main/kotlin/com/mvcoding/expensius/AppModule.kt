@@ -31,6 +31,7 @@ import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.LoginService
 import com.squareup.sqlbrite.SqlBrite
 import rx.android.schedulers.AndroidSchedulers.mainThread
 import rx.schedulers.Schedulers.computation
@@ -43,7 +44,6 @@ class AppModule(val context: Context) : ShankModule {
         rxSchedulers()
         firebaseAppUserService()
         rxBus()
-        session()
         dateFormatter()
         settings()
         database()
@@ -55,7 +55,6 @@ class AppModule(val context: Context) : ShankModule {
     private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
     private fun firebaseAppUserService() = registerFactory(FirebaseAppUserService::class) { -> FirebaseAppUserService() }
     private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
-    private fun session() = registerFactory(Session::class) { -> UserSession() }
     private fun dateFormatter() = registerFactory(DateFormatter::class) { -> DateFormatter(context) }
 
     private fun settings() {
@@ -77,14 +76,14 @@ class AppModule(val context: Context) : ShankModule {
     }
 }
 
-fun provideContext(): Context = provideGlobalSingleton()
-fun provideRxSchedulers(): RxSchedulers = provideGlobalSingleton()
-fun provideRxBus(): RxBus = provideGlobalSingleton()
-fun provideSettings(): Settings = provideGlobalSingleton()
-fun provideSession(): Session = provideGlobalSingleton()
-fun provideDatabase(): Database = provideGlobalSingleton()
-fun provideDateFormatter(): DateFormatter = provideGlobalSingleton()
-fun provideAmountFormatter(): AmountFormatter = provideGlobalSingleton()
+fun provideContext() = provideGlobalSingleton<Context>()
+fun provideRxSchedulers() = provideGlobalSingleton<RxSchedulers>()
+fun provideRxBus() = provideGlobalSingleton<RxBus>()
+fun provideSettings() = provideGlobalSingleton<Settings>()
+fun provideDatabase() = provideGlobalSingleton<Database>()
+fun provideDateFormatter() = provideGlobalSingleton<DateFormatter>()
+fun provideAmountFormatter() = provideGlobalSingleton<AmountFormatter>()
 
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
+fun provideLoginService(): LoginService = provideFirebaseAppUserService()
 private fun provideFirebaseAppUserService(): FirebaseAppUserService = provideGlobalSingleton()

@@ -16,11 +16,6 @@ package com.mvcoding.expensius.extension
 
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
-import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.shankkotlin.provideSingletonFor
-import kotlin.reflect.KClass
 
 inline fun <reified T : Any> Scope.provideSingleton() = Shank.with(this).provideSingletonFor<T>()
-fun <T : Any, A : Any> registerFactory(objectClass: KClass<T>, factory: (arg1: A) -> T) = registerFactory(objectClass.java, factory)
-fun <T : Any, A : Any, B : Any> registerFactory(objectClass: KClass<T>, factory: (arg1: A, arg2: B) -> T) =
-        registerFactory(objectClass.java, factory)

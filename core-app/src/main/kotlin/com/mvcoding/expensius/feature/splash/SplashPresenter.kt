@@ -15,9 +15,12 @@
 package com.mvcoding.expensius.feature.splash
 
 import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.mvp.Presenter
 
-class SplashPresenter(private val appUserService: com.mvcoding.expensius.service.AppUserService, private val schedulers: RxSchedulers) : Presenter<SplashPresenter.View>() {
+class SplashPresenter(
+        private val appUserService: AppUserService,
+        private val schedulers: RxSchedulers) : Presenter<SplashPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)

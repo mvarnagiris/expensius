@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,10 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.feature
 
-class UserSession : Session {
-    override fun isLoggedIn(): Boolean {
-        return false
+import android.content.Context
+import android.widget.Toast
+
+class ErrorDisplayer(private val context: Context) {
+    fun show(error: Error) {
+        Toast.makeText(context, error.throwable.message, Toast.LENGTH_LONG).show()
     }
 }

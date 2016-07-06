@@ -22,7 +22,6 @@ import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.extension.provideSingleton
-import com.mvcoding.expensius.extension.registerFactory
 import com.mvcoding.expensius.extension.scope
 import com.mvcoding.expensius.provideContext
 import com.mvcoding.expensius.provideSettings

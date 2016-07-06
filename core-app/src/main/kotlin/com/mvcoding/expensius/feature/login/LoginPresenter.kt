@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ErrorView
-import com.mvcoding.expensius.feature.handleErrorOnMain
+import com.mvcoding.expensius.feature.handleError
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.mvp.Presenter
@@ -47,12 +47,12 @@ class LoginPresenter(private val loginService: LoginService, private val schedul
         val loginRequest = loginRequest ?: loginService.loginAnonymously().cache()
         this.loginRequest = loginRequest
 
-        return loginRequest
-                .handleErrorOnMain(view, schedulers) {
-                    this.loginRequest = null
-                    view.hideLoggingIn()
-                }
-                .doOnNext { this.loginRequest = null }
+        return loginRequest.observeOn(schedulers.main).onErrorResumeNext {
+            view.handleError(it) {
+                this.loginRequest = null
+                view.hideLoggingIn()
+            }
+        }
     }
 
     interface View : Presenter.View, ErrorView {

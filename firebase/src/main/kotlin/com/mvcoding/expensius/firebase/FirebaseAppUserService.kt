@@ -33,7 +33,7 @@ import rx.lang.kotlin.observable
 
 class FirebaseAppUserService : AppUserService, LoginService {
     private val authStateListener = AuthStateListener { appUserSubject.onNext(it.currentUser?.toAppUser() ?: noAppUser) }
-    private val firebaseAuth = FirebaseAuth.getInstance().apply { addAuthStateListener { authStateListener } }
+    private val firebaseAuth = FirebaseAuth.getInstance().apply { addAuthStateListener(authStateListener) }
     private val appUserSubject = BehaviorSubject<AppUser>()
 
     override fun appUser(): Observable<AppUser> = appUserSubject.distinctUntilChanged()

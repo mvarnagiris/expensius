@@ -72,13 +72,4 @@
     <string name="tag_health_and_beauty">Health &amp; beauty</string>
     <string name="tag_bills_and_utilities">Bills &amp; utilities</string>
     <string name="tag_pets">Pets</string>
-
-    <string name="intro_title_1">Intro title 1</string>
-    <string name="intro_title_2">Intro title 2</string>
-    <string name="intro_title_3">Intro title 3</string>
-    <string name="intro_title_4">Intro title 4</string>
-    <string name="intro_message_1">Intro message 1 that can be long and describe some interesting functionality</string>
-    <string name="intro_message_2">Intro message 2 that can be long and describe some interesting functionality</string>
-    <string name="intro_message_3">Intro message 3 that can be long and describe some interesting functionality</string>
-    <string name="intro_message_4">Intro message 4 that can be long and describe some interesting functionality</string>
 </resources>

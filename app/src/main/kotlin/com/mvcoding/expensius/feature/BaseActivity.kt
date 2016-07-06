@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 import memoizrlabs.com.shankandroid.ShankAppCompatActivity
 
 abstract class BaseActivity : ShankAppCompatActivity() {
-    override val finalAction = { /*TODO: if (it is Destroyable) it.onDestroy()*/ }
+    override val finalAction: (Any) -> Unit = { if (it is Destroyable) it.onDestroy() }
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)

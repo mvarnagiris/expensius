@@ -19,7 +19,6 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.extension.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
 import com.mvcoding.expensius.model.Transaction

@@ -12,24 +12,24 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.feature.login
 
 import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.provideAppUserService
+import com.mvcoding.expensius.provideLoginService
 import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
-class SplashModule : ShankModule {
+class LoginModule : ShankModule {
     override fun registerFactories() {
-        splashPresenter()
+        loginPresenter()
     }
 
-    private fun splashPresenter() = registerFactory(SplashPresenter::class) { ->
-        SplashPresenter(provideAppUserService(), provideRxSchedulers())
+    private fun loginPresenter() = registerFactory(LoginPresenter::class) { ->
+        LoginPresenter(provideLoginService(), provideRxSchedulers())
     }
 }
 
-fun Activity.provideSplashPresenter() = withThisScope.provideSingletonFor<SplashPresenter>()
+fun Activity.provideLoginPresenter() = withThisScope.provideSingletonFor<LoginPresenter>()

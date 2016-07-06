@@ -14,11 +14,9 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.empty
-import rx.Observable.just
 
 interface ErrorView : Presenter.View {
     fun showError(error: Error)
@@ -27,11 +25,10 @@ interface ErrorView : Presenter.View {
 data class Error(val throwable: Throwable)
 
 fun Throwable.toError() = Error(this)
-fun <T> Observable<T>.handleErrorOnMain(errorView: ErrorView, schedulers: RxSchedulers, actionOnMain: (Error) -> Unit = {}): Observable<T> =
-        onErrorResumeNext {
-            just(it).observeOn(schedulers.main)
-                    .map { it.toError() }
-                    .doOnNext { actionOnMain(it) }
-                    .doOnNext { errorView.showError(it) }
-                    .flatMap { empty<T>() }
-        }
+
+fun <T> ErrorView.handleError(throwable: Throwable, actionOnMain: (Error) -> Unit = {}): Observable<T> {
+    val error = throwable.toError()
+    actionOnMain(error)
+    showError(error)
+    return empty<T>()
+}
