@@ -15,11 +15,37 @@
 package com.mvcoding.expensius.feature.splash
 
 import android.os.Bundle
+import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.login.LoginActivity
+import com.mvcoding.expensius.feature.overview.OverviewActivity
 
-class SplashActivity : BaseActivity() {
+class SplashActivity : BaseActivity(), SplashPresenter.View {
+
+    private val presenter by lazy { provideSplashPresenter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(SplashView(this))
+        setContentView(R.layout.activity_splash)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.attach(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.detach(this)
+    }
+
+    override fun displayLogin() {
+        LoginActivity.start(this)
+        finish()
+    }
+
+    override fun displayApp() {
+        OverviewActivity.start(this)
+        finish()
     }
 }
