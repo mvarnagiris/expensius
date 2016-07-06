@@ -31,7 +31,7 @@ class SplashPresenterTest {
 
     @Test
     fun displaysLoginIfUserIsNotLoggedIn() {
-        whenever(appUserService.appUsers()).thenReturn(just(noAppUser))
+        whenever(appUserService.appUser()).thenReturn(just(noAppUser))
 
         presenter.attach(view)
 
@@ -40,7 +40,7 @@ class SplashPresenterTest {
 
     @Test
     fun displaysAppIfUserIsLoggedIn() {
-        whenever(appUserService.appUsers()).thenReturn(just(anAppUser()))
+        whenever(appUserService.appUser()).thenReturn(just(anAppUser()))
 
         presenter.attach(view)
 

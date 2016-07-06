@@ -18,5 +18,5 @@ import com.mvcoding.expensius.model.AppUser
 import rx.Observable
 
 interface AppUserService {
-    fun appUsers(): Observable<AppUser>
+    fun appUser(): Observable<AppUser>
 }

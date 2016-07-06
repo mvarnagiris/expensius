@@ -22,7 +22,7 @@ class SplashPresenter(private val appUserService: com.mvcoding.expensius.service
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        appUserService.appUsers().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached {
+        appUserService.appUser().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached {
             if (it.isLoggedIn()) view.displayApp()
             else view.displayLogin()
         }
