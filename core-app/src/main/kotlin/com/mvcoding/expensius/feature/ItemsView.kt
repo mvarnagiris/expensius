@@ -14,14 +14,12 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.LoadingState
-import com.mvcoding.expensius.LoadingState.LOADING
 import com.mvcoding.mvp.Presenter
 
-interface LoadingView : Presenter.View {
-    fun showLoading()
-    fun hideLoading()
+interface ItemsView<in ITEM> : Presenter.View {
+    fun showItems(items: List<ITEM>)
+    fun showAddedItems(position: Int, items: List<ITEM>)
+    fun showChangedItems(position: Int, items: List<ITEM>)
+    fun showRemovedItems(position: Int, items: List<ITEM>)
+    fun showMovedItem(fromPosition: Int, toPosition: Int, item: ITEM)
 }
-
-// TODO: Delete this
-fun LoadingView.showLoadingState(loadingState: LoadingState) = if (loadingState == LOADING) showLoading() else hideLoading()

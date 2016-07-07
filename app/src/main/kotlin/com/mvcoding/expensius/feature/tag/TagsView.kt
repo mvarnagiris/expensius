@@ -29,6 +29,33 @@ import rx.lang.kotlin.PublishSubject
 
 class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr), TagsPresenter.View {
+    override fun showChangedItems(position: Int, items: List<Tag>) {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showItems(items: List<Tag>) {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showAddedItems(position: Int, items: List<Tag>) {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showRemovedItems(position: Int, items: List<Tag>) {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showMovedItem(fromPosition: Int, toPosition: Int, item: Tag) {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showLoading() {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun hideLoading() {
+        throw UnsupportedOperationException("Not implemented")
+    }
 
     private val adapter = TagsAdapter()
     private val tagMoveSubject = PublishSubject<DragAndDropTouchHelperCallback.ItemMoved>()
@@ -38,7 +65,7 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
 
     fun init(modelDisplayType: ModelDisplayType, createTagObservable: Observable<Unit>) {
         this.createTagObservable = createTagObservable
-        this.presenter = provideTagsPresenter(modelDisplayType)
+        //        this.presenter = provideTagsPresenter(modelDisplayType)
     }
 
     override fun onFinishInflate() {
@@ -64,14 +91,14 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         presenter.detach(this)
     }
 
-    override fun showModelDisplayType(modelDisplayType: ModelDisplayType) = adapter.let { it.displayType = modelDisplayType }
-    override fun showTags(tags: List<Tag>) = adapter.setItems(tags)
-
-    override fun onTagSelected() = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
-    override fun onCreateTag() = createTagObservable
-    override fun onDisplayArchivedTags() = adapter.itemPositionClicks().filter { !adapter.isTagPosition(it) }.map { Unit }
-    override fun onTagMoved() = tagMoveSubject.map { TagsPresenter.TagMove(it.fromPosition, it.toPosition) }
-
-    override fun displayTagEdit(tag: Tag) = TagActivity.start(context, tag)
-    override fun displayArchivedTags() = TagsActivity.startArchived(context)
+    override fun showModelDisplayType(modelDisplayType: ModelDisplayType) = adapter.let { it.modelDisplayType = modelDisplayType }
+    //    override fun showTags(tags: List<Tag>) = adapter.setItems(tags)
+    //
+    //    override fun onTagSelected() = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
+    //    override fun onCreateTag() = createTagObservable
+    //    override fun onDisplayArchivedTags() = adapter.itemPositionClicks().filter { !adapter.isTagPosition(it) }.map { Unit }
+    //    override fun onTagMoved() = tagMoveSubject.map { TagsPresenter.TagMove(it.fromPosition, it.toPosition) }
+    //
+    //    override fun displayTagEdit(tag: Tag) = TagActivity.start(context, tag)
+    //    override fun displayArchivedTags() = TagsActivity.startArchived(context)
 }

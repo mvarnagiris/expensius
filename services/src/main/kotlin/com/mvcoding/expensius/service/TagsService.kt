@@ -12,16 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.service
 
-import com.mvcoding.expensius.LoadingState
-import com.mvcoding.expensius.LoadingState.LOADING
-import com.mvcoding.mvp.Presenter
+import com.mvcoding.expensius.model.Tag
 
-interface LoadingView : Presenter.View {
-    fun showLoading()
-    fun hideLoading()
-}
-
-// TODO: Delete this
-fun LoadingView.showLoadingState(loadingState: LoadingState) = if (loadingState == LOADING) showLoading() else hideLoading()
+interface TagsService : ItemsService<Tag>

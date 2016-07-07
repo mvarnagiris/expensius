@@ -19,11 +19,13 @@ import android.preference.PreferenceManager
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import com.mvcoding.expensius.firebase.FirebaseAppUserService
+import com.mvcoding.expensius.firebase.FirebaseTagsService
 import com.mvcoding.expensius.firebase.FirebaseTagsWriteService
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
@@ -33,6 +35,7 @@ import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.LoginService
+import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
 import com.squareup.sqlbrite.SqlBrite
 import rx.android.schedulers.AndroidSchedulers.mainThread
@@ -46,6 +49,7 @@ class AppModule(val context: Context) : ShankModule {
         rxSchedulers()
         firebaseAppUserService()
         firebaseTagsService()
+        firebaseTagsWriteService()
 
         rxBus()
         dateFormatter()
@@ -58,7 +62,12 @@ class AppModule(val context: Context) : ShankModule {
     private fun appContext() = registerFactory(Context::class) { -> context }
     private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
     private fun firebaseAppUserService() = registerFactory(FirebaseAppUserService::class) { -> FirebaseAppUserService() }
-    private fun firebaseTagsService() = registerFactory(FirebaseTagsWriteService::class) { -> FirebaseTagsWriteService(provideAppUserService()) }
+    private fun firebaseTagsService() = registerFactory(FirebaseTagsService::class) { -> FirebaseTagsService(provideAppUserService()) }
+
+    private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { ->
+        FirebaseTagsWriteService(provideAppUserService())
+    }
+
     private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
     private fun dateFormatter() = registerFactory(DateFormatter::class) { -> DateFormatter(context) }
 
@@ -91,7 +100,9 @@ fun provideAmountFormatter() = provideGlobalSingleton<AmountFormatter>()
 
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideLoginService(): LoginService = provideFirebaseAppUserService()
+fun provideTagsService(): TagsService = provideFirebaseTagsService()
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
 
 private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
-private fun provideFirebaseTagsWriteService() = provideGlobalSingleton<FirebaseTagsWriteService>()
+private fun provideFirebaseTagsService() = provideGlobalSingleton<FirebaseTagsService>()
+private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()

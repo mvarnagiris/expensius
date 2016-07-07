@@ -15,43 +15,60 @@
 package com.mvcoding.expensius.feature
 
 import android.support.v7.widget.RecyclerView
-import java.util.Collections.swap
 
-abstract class BaseAdapter<T, VH : RecyclerView.ViewHolder>() : RecyclerView.Adapter<VH>() {
-    private val items = arrayListOf<T>()
+abstract class BaseAdapter<ITEM, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+    private var items = arrayListOf<ITEM>()
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
-    fun setItems(items: List<T>) {
+    fun getItem(position: Int) = items[position]
+
+    fun set(items: List<ITEM>) {
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun getItem(position: Int): T {
-        return items[position]
-    }
-
-    fun insert(item: T, position: Int) {
+    fun add(position: Int, item: ITEM) {
         items.add(position, item)
         notifyItemInserted(position)
     }
 
-    fun insert(items: List<T>, position: Int) {
+    fun add(position: Int, items: List<ITEM>) {
         this.items.addAll(position, items)
         notifyItemRangeInserted(position, items.size)
     }
 
-    fun remove(item: T) {
-        val removedItemPosition = items.indexOf(item)
+    fun change(position: Int, items: List<ITEM>) {
+        (position..(position + items.size - 1)).forEachIndexed { index, positionToReplace -> this.items[positionToReplace] = items[index] }
+        notifyItemRangeChanged(position, items.size)
+    }
+
+    fun remove(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun remove(position: Int, count: Int) {
+        count.downTo(1).forEach { items.removeAt(position + it - 1) }
+        notifyItemRangeRemoved(position, count)
+    }
+
+    fun remove(item: ITEM) {
+        val position = items.indexOf(item)
         items.remove(item)
-        notifyItemRemoved(removedItemPosition)
+        notifyItemRemoved(position)
+    }
+
+    fun remove(items: List<ITEM>) {
+        val positions = items.map { this.items.indexOf(it) }.sorted()
+        this.items.removeAll(items)
+        positions.forEach { notifyItemRemoved(it) }
     }
 
     fun move(fromPosition: Int, toPosition: Int) {
-        swap(items, fromPosition, toPosition)
+        val item = items.removeAt(fromPosition)
+        items.add(toPosition, item)
         notifyItemMoved(fromPosition, toPosition)
     }
 }

@@ -71,7 +71,7 @@ class TransactionsView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     override fun showTransactions(transactions: List<Transaction>) {
-        transactionsAdapter.setItems(transactions)
+        transactionsAdapter.set(transactions)
     }
 
     override fun displayCreateTransaction() {

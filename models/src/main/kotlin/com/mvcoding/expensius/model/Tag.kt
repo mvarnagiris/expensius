@@ -39,10 +39,12 @@ data class Color(val rgb: Int) : Serializable {
     }
 }
 
-data class Order(val value: Int) : Serializable {
+data class Order(val value: Int) : Serializable, Comparable<Order> {
     companion object {
         val noOrder = Order(0)
     }
+
+    override fun compareTo(other: Order): Int = value.compareTo(other.value)
 }
 
 data class CreateTag(val title: Title, val color: Color, val order: Order) : Serializable

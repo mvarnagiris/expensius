@@ -28,16 +28,16 @@ class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<View>>() {
     private val VIEW_TYPE_DEFAULT = 0
     private val VIEW_TYPE_ARCHIVED = 1
 
-    var displayType = VIEW_NOT_ARCHIVED
+    var modelDisplayType = VIEW_NOT_ARCHIVED
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    fun isTagPosition(position: Int) = position < itemCount - 1 || displayType != VIEW_NOT_ARCHIVED
+    fun isTagPosition(position: Int) = position < itemCount - 1 || modelDisplayType != VIEW_NOT_ARCHIVED
 
     override fun getItemCount(): Int {
-        return super.getItemCount() + if (displayType == VIEW_NOT_ARCHIVED) 1 else 0
+        return super.getItemCount() + if (modelDisplayType == VIEW_NOT_ARCHIVED) 1 else 0
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -67,7 +67,7 @@ class PremiumView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     override fun showPremiumUser() = subscriptionTextView.setText(R.string.long_user_is_using_premium_version)
     override fun onRefresh() = swipeRefreshLayout.refreshes()
     override fun onBillingProductSelected() = adapter.itemPositionClicks().map { adapter.getItem(it) }
-    override fun showBillingProducts(billingProducts: List<BillingProduct>) = adapter.setItems(billingProducts)
+    override fun showBillingProducts(billingProducts: List<BillingProduct>) = adapter.set(billingProducts)
     override fun displayBuyProcess(productId: String) = billingFlow.startPurchase(context.toBaseActivity(), REQUEST_BILLING, productId)
 
     override fun showLoading() {

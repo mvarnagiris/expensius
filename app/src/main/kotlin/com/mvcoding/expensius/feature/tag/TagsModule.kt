@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import android.app.Activity
 import android.view.View
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
@@ -23,9 +24,11 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideDatabase
 import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideTagsService
 import com.mvcoding.expensius.provider.DatabaseTagsProvider
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import memoizrlabs.com.shankandroid.withActivityScope
+import memoizrlabs.com.shankandroid.withThisScope
 
 class TagsModule : ShankModule {
     override fun registerFactories() {
@@ -44,11 +47,11 @@ class TagsModule : ShankModule {
     private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsProvider()) }
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
-        TagsPresenter(provideTagsProvider(), modelDisplayType, provideRxSchedulers())
+        TagsPresenter(modelDisplayType, provideTagsService(), provideRxSchedulers())
     }
 }
 
 fun provideTagsProvider(): TagsProvider = provideGlobalSingleton()
 fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()
 fun View.provideTagPresenter(tag: Tag): TagPresenter = withActivityScope.provideSingletonFor(tag)
-fun View.provideTagsPresenter(modelDisplayType: ModelDisplayType): TagsPresenter = withActivityScope.provideSingletonFor(modelDisplayType)
+fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)

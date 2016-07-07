@@ -19,6 +19,18 @@
 
     <include layout="@layout/toolbar" />
 
-    <include layout="@layout/view_tags" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            style="@style/RecyclerView" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/ProgressBar" />
+
+    </FrameLayout>
 
 </LinearLayout>

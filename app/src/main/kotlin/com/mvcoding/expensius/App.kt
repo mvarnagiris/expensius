@@ -16,6 +16,7 @@ package com.mvcoding.expensius
 
 import android.app.Application
 import com.crashlytics.android.Crashlytics
+import com.google.firebase.database.FirebaseDatabase
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.currency.CurrenciesModule
@@ -35,6 +36,7 @@ class App : Application() {
         super.onCreate()
         JodaTimeAndroid.init(this)
         Fabric.with(this, Crashlytics())
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         initializeModules(
                 AppModule(this),
                 SplashModule(),
