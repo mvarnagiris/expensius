@@ -62,7 +62,9 @@ class AppModule(val context: Context) : ShankModule {
     private fun appContext() = registerFactory(Context::class) { -> context }
     private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
     private fun firebaseAppUserService() = registerFactory(FirebaseAppUserService::class) { -> FirebaseAppUserService() }
-    private fun firebaseTagsService() = registerFactory(FirebaseTagsService::class) { -> FirebaseTagsService(provideAppUserService()) }
+    private fun firebaseTagsService() = registerFactory(FirebaseTagsService::class) { archived: Boolean ->
+        FirebaseTagsService(provideAppUserService(), archived)
+    }
 
     private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { ->
         FirebaseTagsWriteService(provideAppUserService())
@@ -100,9 +102,9 @@ fun provideAmountFormatter() = provideGlobalSingleton<AmountFormatter>()
 
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideLoginService(): LoginService = provideFirebaseAppUserService()
-fun provideTagsService(): TagsService = provideFirebaseTagsService()
+fun provideTagsService(archived: Boolean): TagsService = provideFirebaseTagsService(archived)
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
 
 private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
-private fun provideFirebaseTagsService() = provideGlobalSingleton<FirebaseTagsService>()
+private fun provideFirebaseTagsService(archived: Boolean) = provideGlobalSingleton<FirebaseTagsService>(archived)
 private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()

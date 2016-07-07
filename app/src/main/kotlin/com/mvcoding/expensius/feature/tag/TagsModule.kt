@@ -21,6 +21,7 @@ import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideDatabase
 import com.mvcoding.expensius.provideRxSchedulers
@@ -47,7 +48,7 @@ class TagsModule : ShankModule {
     private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsProvider()) }
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
-        TagsPresenter(modelDisplayType, provideTagsService(), provideRxSchedulers())
+        TagsPresenter(modelDisplayType, provideTagsService(modelDisplayType == VIEW_ARCHIVED), provideRxSchedulers())
     }
 }
 

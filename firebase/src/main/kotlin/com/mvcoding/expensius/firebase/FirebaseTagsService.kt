@@ -24,9 +24,11 @@ import com.mvcoding.expensius.service.ItemsRemoved
 import com.mvcoding.expensius.service.TagsService
 import rx.Observable
 
-class FirebaseTagsService(appUserService: AppUserService) : TagsService {
+class FirebaseTagsService(appUserService: AppUserService, archived: Boolean) : TagsService {
 
-    private val firebaseList = FirebaseList(tagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")) {
+    private val firebaseList = FirebaseList(
+            if (archived) archivedTagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")
+            else tagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")) {
         it.getValue(FirebaseTag::class.java).toTag()
     }
 
