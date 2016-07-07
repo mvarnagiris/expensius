@@ -16,6 +16,7 @@ package com.mvcoding.expensius.firebase
 
 import com.mvcoding.expensius.firebase.model.FirebaseTag
 import com.mvcoding.expensius.model.CreateTag
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.service.AppUserService
@@ -26,20 +27,39 @@ import rx.lang.kotlin.observable
 
 class FirebaseTagsWriteService(private val appUserService: AppUserService) : TagsWriteService {
 
-    override fun createTags(createTags: Set<CreateTag>): Observable<List<Tag>> = deferredObservable {
-        observable<List<Tag>> { subscriber ->
+    override fun createTags(createTags: Set<CreateTag>): Observable<Unit> = deferredObservable {
+        observable<Unit> { subscriber ->
             val tagsReference = tagsDatabaseReference(appUserService.getCurrentAppUser().userId)
-            val createdTags = createTags.map {
+            createTags.forEach {
                 val newTagReference = tagsReference.push()
                 val firebaseTag = it.toFirebaseTag(newTagReference.key)
                 newTagReference.setValue(firebaseTag)
-                firebaseTag.toTag()
             }
 
-            subscriber.onNext(createdTags)
+            subscriber.onNext(Unit)
+            subscriber.onCompleted()
+        }
+    }
+
+    override fun updateTags(updateTags: Set<Tag>): Observable<Unit> = deferredObservable {
+        observable<Unit> { subscriber ->
+            val tagsToUpdate = updateTags.filter { it.modelState == NONE }.associateBy({ it.tagId.id }, { it.toMap() })
+            val archivedTagsToUpdate = updateTags.filter { it.modelState == ARCHIVED }.associateBy({ it.tagId.id }, { it.toMap() })
+
+            val appUserId = appUserService.getCurrentAppUser().userId
+            if (tagsToUpdate.isNotEmpty()) tagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
+            if (archivedTagsToUpdate.isNotEmpty()) archivedTagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
+
+            subscriber.onNext(Unit)
             subscriber.onCompleted()
         }
     }
 
     private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, NONE.name, title.text, color.rgb, order.value)
+    private fun Tag.toMap() = mapOf(
+            "id" to tagId.id,
+            "modelState" to modelState.name,
+            "title" to title.text,
+            "color" to color.rgb,
+            "order" to order.value)
 }

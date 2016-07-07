@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.feature.splash
 
+import android.os.Bundle
+import com.google.firebase.database.FirebaseDatabase
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.overview.OverviewActivity
@@ -21,6 +23,11 @@ import com.mvcoding.expensius.feature.overview.OverviewActivity
 class SplashActivity : BaseActivity(), SplashPresenter.View {
 
     private val presenter by lazy { provideSplashPresenter() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+    }
 
     override fun onStart() {
         super.onStart()

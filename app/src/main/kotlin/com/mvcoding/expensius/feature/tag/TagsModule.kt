@@ -26,6 +26,7 @@ import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideDatabase
 import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provideTagsService
+import com.mvcoding.expensius.provideTagsWriteService
 import com.mvcoding.expensius.provider.DatabaseTagsProvider
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import memoizrlabs.com.shankandroid.withActivityScope
@@ -48,7 +49,11 @@ class TagsModule : ShankModule {
     private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsProvider()) }
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
-        TagsPresenter(modelDisplayType, provideTagsService(modelDisplayType == VIEW_ARCHIVED), provideRxSchedulers())
+        TagsPresenter(
+                modelDisplayType,
+                provideTagsService(modelDisplayType == VIEW_ARCHIVED),
+                provideTagsWriteService(),
+                provideRxSchedulers())
     }
 }
 

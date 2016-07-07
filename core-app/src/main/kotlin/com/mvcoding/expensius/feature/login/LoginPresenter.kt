@@ -62,7 +62,7 @@ class LoginPresenter(
         }
     }
 
-    private fun createDefaultTags() = tagsWriteService.createTags(defaultTags.getDefaultTags()).onErrorReturn { emptyList() }
+    private fun createDefaultTags() = tagsWriteService.createTags(defaultTags.getDefaultTags()).onErrorReturn { Unit }
 
     interface View : Presenter.View, ErrorView {
         fun loginAnonymouslyRequests(): Observable<Unit>

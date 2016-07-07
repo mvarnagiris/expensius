@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import com.mvcoding.expensius.feature.tag.TagsPresenter.TagMove
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.rxSchedulers
@@ -24,6 +25,7 @@ import com.mvcoding.expensius.service.ItemsAdded
 import com.mvcoding.expensius.service.ItemsChanged
 import com.mvcoding.expensius.service.ItemsRemoved
 import com.mvcoding.expensius.service.TagsService
+import com.mvcoding.expensius.service.TagsWriteService
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
@@ -35,6 +37,7 @@ import org.junit.Test
 import org.mockito.InOrder
 import rx.Observable.empty
 import rx.Observable.from
+import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
@@ -45,11 +48,11 @@ class TagsPresenterTest {
     val itemsSubject = BehaviorSubject(someTags)
     val tagSelectedSubject = PublishSubject<Tag>()
     val tagCreateSubject = PublishSubject<Unit>()
-    val tagMoveSubject = PublishSubject<TagsPresenter.TagMove>()
+    val tagMovesSubject = PublishSubject<TagMove>()
 
     val displayArchivedTagsSubject = PublishSubject<Unit>()
     val tagsService: TagsService = mock()
-    val tagsProvider = mock<TagsProvider>()
+    val tagsWriteService: TagsWriteService = mock()
     val view: TagsPresenter.View = mock()
     val inOrder: InOrder = inOrder(view)
 
@@ -57,15 +60,13 @@ class TagsPresenterTest {
     fun setUp() {
         //        whenever(view.onTagSelected()).thenReturn(tagSelectedSubject)
         //        whenever(view.onCreateTag()).thenReturn(tagCreateSubject)
-        //        whenever(view.onDisplayArchivedTags()).thenReturn(displayArchivedTagsSubject)
-        //        whenever(view.onTagMoved()).thenReturn(tagMoveSubject)
-        whenever(tagsProvider.tags()).thenReturn(empty())
+        whenever(view.archivedTagsRequests()).thenReturn(displayArchivedTagsSubject)
+        whenever(view.tagMoves()).thenReturn(tagMovesSubject)
         whenever(tagsService.items()).thenReturn(itemsSubject)
         whenever(tagsService.addedItems()).thenReturn(empty())
         whenever(tagsService.changedItems()).thenReturn(empty())
         whenever(tagsService.removedItems()).thenReturn(empty())
         whenever(tagsService.movedItems()).thenReturn(empty())
-        whenever(tagsProvider.archivedTags()).thenReturn(empty())
     }
 
     @Test
@@ -168,47 +169,47 @@ class TagsPresenterTest {
     //        verify(view).displayTagEdit(aNewTag())
     //    }
     //
-    //    @Test
-    //    fun displaysArchivedTagsOnArchivedTags() {
-    //        val presenter = presenterWithModelDisplayTypeView()
-    //        presenter.attach(view)
-    //
-    //        archivedTags()
-    //
-    //        verify(view).displayArchivedTags()
-    //    }
 
-    //    @Test
-    //    fun reordersAllTagsWhenOneTagWasMovedUp() {
-    //        val tags = listOf(aTag(), aTag(), aTag(), aTag())
-    //        val reorderedTags = listOf(tags[2].withOrder(0), tags[0].withOrder(1), tags[1].withOrder(2), tags[3].withOrder(3))
-    //        whenever(tagsProvider.tags()).thenReturn(just(tags))
-    //        presenterWithModelDisplayTypeView().attach(view)
-    //
-    //        moveTag(2, 0)
-    //
-    //        verify(tagsProvider).save(reorderedTags.toSet())
-    //    }
-    //
-    //    @Test
-    //    fun reordersAllTagsWhenOneTagWasMovedDown() {
-    //        val tags = listOf(aTag(), aTag(), aTag(), aTag())
-    //        val reorderedTags = listOf(tags[1].withOrder(0), tags[2].withOrder(1), tags[0].withOrder(2), tags[3].withOrder(3))
-    //        whenever(tagsProvider.tags()).thenReturn(just(tags))
-    //        presenterWithModelDisplayTypeView().attach(view)
-    //
-    //        moveTag(0, 2)
-    //
-    //        verify(tagsProvider).save(reorderedTags.toSet())
-    //    }
+    @Test
+    fun displaysArchivedTags() {
+        presenterWithModelDisplayTypeView().attach(view)
+
+        requestArchivedTags()
+
+        verify(view).displayArchivedTags()
+    }
+
+    @Test
+    fun reordersAllTagsWhenOneTagWasMovedUp() {
+        val tags = listOf(aTag(), aTag(), aTag(), aTag())
+        val reorderedTags = listOf(tags[2].withOrder(0), tags[0].withOrder(1), tags[1].withOrder(2), tags[3].withOrder(3))
+        whenever(tagsService.items()).thenReturn(just(tags))
+        presenterWithModelDisplayTypeView().attach(view)
+
+        moveTag(2, 0)
+
+        verify(tagsWriteService).updateTags(reorderedTags.toSet())
+    }
+
+    @Test
+    fun reordersAllTagsWhenOneTagWasMovedDown() {
+        val tags = listOf(aTag(), aTag(), aTag(), aTag())
+        val reorderedTags = listOf(tags[1].withOrder(0), tags[2].withOrder(1), tags[0].withOrder(2), tags[3].withOrder(3))
+        whenever(tagsService.items()).thenReturn(just(tags))
+        presenterWithModelDisplayTypeView().attach(view)
+
+        moveTag(0, 2)
+
+        verify(tagsWriteService).updateTags(reorderedTags.toSet())
+    }
 
     private fun tags(tags: List<Tag>) = itemsSubject.onNext(tags)
 
     private fun selectTag(tagToSelect: Tag) = tagSelectedSubject.onNext(tagToSelect)
-    private fun archivedTags() = displayArchivedTagsSubject.onNext(Unit)
+    private fun requestArchivedTags() = displayArchivedTagsSubject.onNext(Unit)
     private fun createTag() = tagCreateSubject.onNext(Unit)
-    private fun moveTag(fromPosition: Int, toPosition: Int) = tagMoveSubject.onNext(TagsPresenter.TagMove(fromPosition, toPosition))
-    private fun presenterWithModelDisplayTypeView() = TagsPresenter(VIEW_NOT_ARCHIVED, tagsService, rxSchedulers())
-    private fun presenterWithModelDisplayTypeArchived() = TagsPresenter(VIEW_ARCHIVED, tagsService, rxSchedulers())
+    private fun moveTag(fromPosition: Int, toPosition: Int) = tagMovesSubject.onNext(TagMove(fromPosition, toPosition))
+    private fun presenterWithModelDisplayTypeView() = TagsPresenter(VIEW_NOT_ARCHIVED, tagsService, tagsWriteService, rxSchedulers())
+    private fun presenterWithModelDisplayTypeArchived() = TagsPresenter(VIEW_ARCHIVED, tagsService, tagsWriteService, rxSchedulers())
 }
 

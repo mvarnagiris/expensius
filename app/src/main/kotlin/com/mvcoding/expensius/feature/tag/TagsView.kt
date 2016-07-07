@@ -29,6 +29,18 @@ import rx.lang.kotlin.PublishSubject
 
 class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr), TagsPresenter.View {
+    override fun tagMoves(): Observable<TagsPresenter.TagMove> {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun displayArchivedTags() {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun archivedTagsRequests(): Observable<Unit> {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
     override fun showChangedItems(position: Int, items: List<Tag>) {
         throw UnsupportedOperationException("Not implemented")
     }
@@ -97,7 +109,7 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
     //    override fun onTagSelected() = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
     //    override fun onCreateTag() = createTagObservable
     //    override fun onDisplayArchivedTags() = adapter.itemPositionClicks().filter { !adapter.isTagPosition(it) }.map { Unit }
-    //    override fun onTagMoved() = tagMoveSubject.map { TagsPresenter.TagMove(it.fromPosition, it.toPosition) }
+    //    override fun tagMoves() = tagMoveSubject.map { TagsPresenter.TagMove(it.fromPosition, it.toPosition) }
     //
     //    override fun displayTagEdit(tag: Tag) = TagActivity.start(context, tag)
     //    override fun displayArchivedTags() = TagsActivity.startArchived(context)

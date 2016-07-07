@@ -19,5 +19,6 @@ import com.mvcoding.expensius.model.Tag
 import rx.Observable
 
 interface TagsWriteService {
-    fun createTags(createTags: Set<CreateTag>): Observable<List<Tag>>
+    fun createTags(createTags: Set<CreateTag>): Observable<Unit>
+    fun updateTags(updateTags: Set<Tag>): Observable<Unit>
 }
