@@ -26,7 +26,7 @@ import rx.Observable
 
 class FirebaseTagsService(appUserService: AppUserService) : TagsService {
 
-    private val firebaseList = FirebaseList(tagsDatabaseReference(appUserService.getCurrentAppUser().userId)) {
+    private val firebaseList = FirebaseList(tagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")) {
         it.getValue(FirebaseTag::class.java).toTag()
     }
 

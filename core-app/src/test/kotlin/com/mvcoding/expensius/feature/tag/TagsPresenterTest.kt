@@ -16,11 +16,13 @@ package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.model.ModelState.ARCHIVED
-import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.rxSchedulers
+import com.mvcoding.expensius.service.ItemMoved
+import com.mvcoding.expensius.service.ItemsAdded
+import com.mvcoding.expensius.service.ItemsChanged
+import com.mvcoding.expensius.service.ItemsRemoved
 import com.mvcoding.expensius.service.TagsService
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.inOrder
@@ -32,12 +34,13 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.InOrder
 import rx.Observable.empty
+import rx.Observable.from
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class TagsPresenterTest {
-    val someTags = listOf(aTag(), aTag(), aTag().withModelState(ARCHIVED))
-    val someOtherTags = listOf(aTag(), aTag().withModelState(ARCHIVED))
+    val someTags = listOf(aTag(), aTag(), aTag())
+    val someOtherTags = listOf(aTag(), aTag())
 
     val itemsSubject = BehaviorSubject(someTags)
     val tagSelectedSubject = PublishSubject<Tag>()
@@ -79,7 +82,7 @@ class TagsPresenterTest {
 
         inOrder.verify(view).showLoading()
         inOrder.verify(view).hideLoading()
-        inOrder.verify(view).showItems(someTags.filter { it.modelState == NONE }.sortedBy { it.order })
+        inOrder.verify(view).showItems(someTags)
         verify(view, times(1)).showItems(any())
     }
 
@@ -90,8 +93,58 @@ class TagsPresenterTest {
 
         inOrder.verify(view).showLoading()
         inOrder.verify(view).hideLoading()
-        inOrder.verify(view).showItems(someTags.filter { it.modelState == ARCHIVED }.sortedBy { it.order })
+        inOrder.verify(view).showItems(someTags)
         verify(view, times(1)).showItems(any())
+    }
+
+    @Test
+    fun showsAddedTags() {
+        val someItemsAdded = ItemsAdded(0, someTags)
+        val someOtherItemsAdded = ItemsAdded(someTags.size, someOtherTags)
+        whenever(tagsService.addedItems()).thenReturn(from(listOf(someItemsAdded, someOtherItemsAdded)))
+
+        presenterWithModelDisplayTypeView().attach(view)
+
+        inOrder.verify(view).showAddedItems(someItemsAdded.position, someItemsAdded.items)
+        inOrder.verify(view).showAddedItems(someOtherItemsAdded.position, someOtherItemsAdded.items)
+    }
+
+    @Test
+    fun showsChangedTags() {
+        val someItemsChanged = ItemsChanged(0, someTags)
+        val someOtherItemsChanged = ItemsChanged(someTags.size, someOtherTags)
+        whenever(tagsService.changedItems()).thenReturn(from(listOf(someItemsChanged, someOtherItemsChanged)))
+
+        presenterWithModelDisplayTypeView().attach(view)
+
+        inOrder.verify(view).showChangedItems(someItemsChanged.position, someItemsChanged.items)
+        inOrder.verify(view).showChangedItems(someOtherItemsChanged.position, someOtherItemsChanged.items)
+    }
+
+    @Test
+    fun showsRemovedTags() {
+        val someItemsRemoved = ItemsRemoved(0, someTags)
+        val someOtherItemsRemoved = ItemsRemoved(someTags.size, someOtherTags)
+        whenever(tagsService.removedItems()).thenReturn(from(listOf(someItemsRemoved, someOtherItemsRemoved)))
+
+        presenterWithModelDisplayTypeView().attach(view)
+
+        inOrder.verify(view).showRemovedItems(someItemsRemoved.position, someItemsRemoved.items)
+        inOrder.verify(view).showRemovedItems(someOtherItemsRemoved.position, someOtherItemsRemoved.items)
+    }
+
+    @Test
+    fun showsMovedTags() {
+        val inOrder = inOrder(view)
+        val someTag = aTag()
+        val someOtherTag = aTag()
+        val movedComments = listOf(ItemMoved(0, 1, someTag), ItemMoved(1, 2, someOtherTag))
+        whenever(tagsService.movedItems()).thenReturn(from(movedComments))
+
+        presenterWithModelDisplayTypeView().attach(view)
+
+        inOrder.verify(view).showMovedItem(0, 1, someTag)
+        inOrder.verify(view).showMovedItem(1, 2, someOtherTag)
     }
 
     //    @Test

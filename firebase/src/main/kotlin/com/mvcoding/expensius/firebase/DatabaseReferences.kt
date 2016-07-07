@@ -17,4 +17,5 @@ package com.mvcoding.expensius.firebase
 import com.google.firebase.database.FirebaseDatabase
 import com.mvcoding.expensius.model.UserId
 
-internal fun tagsDatabaseReference(userId: UserId) = FirebaseDatabase.getInstance().reference.child("tags").child(userId.id)
+internal fun tagsDatabaseReference(userId: UserId) = firebase().child("tags").child(userId.id)
+private fun firebase() = FirebaseDatabase.getInstance().reference

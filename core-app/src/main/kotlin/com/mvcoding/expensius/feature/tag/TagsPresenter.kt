@@ -18,9 +18,6 @@ import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ItemsView
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.model.ModelState.ARCHIVED
-import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.mvp.Presenter
@@ -38,10 +35,29 @@ class TagsPresenter(
         tagsService.items()
                 .first()
                 .subscribeOn(schedulers.io)
-                .map { it.filterForDisplayType().sortedBy { it.order } }
                 .observeOn(schedulers.main)
                 .doOnNext { view.hideLoading() }
                 .subscribeUntilDetached { view.showItems(it) }
+
+        tagsService.addedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
+
+        tagsService.changedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
+
+        tagsService.removedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
+
+        tagsService.movedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
 
 
         //        val tags = if (modelDisplayType == VIEW_ARCHIVED) tagsProvider.archivedTags().cache() else tagsProvider.tags().cache()
@@ -53,8 +69,6 @@ class TagsPresenter(
         //        unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { /*Tag()*/ noTag }).subscribe { view.displayTagEdit(it) })
         //        unsubscribeOnDetach(view.onDisplayArchivedTags().subscribe { view.displayArchivedTags() })
     }
-
-    private fun List<Tag>.filterForDisplayType() = filter { it.modelState == if (modelDisplayType == VIEW_NOT_ARCHIVED) NONE else ARCHIVED }
 
     //    private fun reorderTags(tagMove: TagMove, tags: List<Tag>): List<Tag> {
     //        val fromPosition = tagMove.fromPosition

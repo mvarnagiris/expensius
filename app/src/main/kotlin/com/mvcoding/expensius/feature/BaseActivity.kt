@@ -15,10 +15,12 @@
 package com.mvcoding.expensius.feature
 
 import android.graphics.PorterDuff
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.database.FirebaseDatabase
 import com.mvcoding.expensius.extension.forEach
 import com.mvcoding.expensius.extension.getColorFromTheme
 import kotlinx.android.synthetic.main.toolbar.*
@@ -26,6 +28,11 @@ import memoizrlabs.com.shankandroid.ShankAppCompatActivity
 
 abstract class BaseActivity : ShankAppCompatActivity() {
     override val finalAction: (Any) -> Unit = { if (it is Destroyable) it.onDestroy() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+    }
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
