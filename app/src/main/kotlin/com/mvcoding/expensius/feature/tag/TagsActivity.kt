@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -79,7 +80,9 @@ class TagsActivity : BaseActivity(), TagsPresenter.View {
         adapter.modelDisplayType = modelDisplayType
     }
 
+    override fun tagSelects(): Observable<Tag> = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
     override fun archivedTagsRequests(): Observable<Unit> = adapter.itemPositionClicks().filter { !adapter.isTagPosition(it) }.map { Unit }
+    override fun createTagRequests(): Observable<Unit> = createTagFloatingActionButton.clicks()
     override fun tagMoves(): Observable<TagMove> = tagMoveSubject.map { TagMove(it.fromPosition, it.toPosition) }
     override fun showItems(items: List<Tag>): Unit = adapter.set(items)
     override fun showAddedItems(position: Int, items: List<Tag>): Unit = adapter.add(position, items)
@@ -89,4 +92,5 @@ class TagsActivity : BaseActivity(), TagsPresenter.View {
     override fun showLoading(): Unit = with(progressBar) { visibility = VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = GONE }
     override fun displayArchivedTags(): Unit = TagsActivity.startArchived(this)
+    override fun displayTagEdit(tag: Tag): Unit = TagActivity.start(this, tag)
 }

@@ -31,6 +31,11 @@
             android:id="@+id/progressBar"
             style="@style/ProgressBar" />
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/createTagFloatingActionButton"
+            style="@style/Button.Fab.Secondary"
+            android:src="@drawable/ic_action_tag" />
+
     </FrameLayout>
 
 </LinearLayout>

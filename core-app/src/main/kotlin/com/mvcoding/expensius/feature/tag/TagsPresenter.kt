@@ -20,10 +20,12 @@ import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
+import rx.Observable.merge
 import java.lang.Math.max
 import java.lang.Math.min
 
@@ -72,7 +74,7 @@ class TagsPresenter(
                 .switchMap { tagsWriteService.updateTags(it.toSet()) }
                 .subscribeUntilDetached { }
 
-        //        unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { /*Tag()*/ noTag }).subscribe { view.displayTagEdit(it) })
+        merge(view.tagSelects(), view.createTagRequests().map { noTag }).subscribeUntilDetached { view.displayTagEdit(it) }
         view.archivedTagsRequests().subscribeUntilDetached { view.displayArchivedTags() }
     }
 
@@ -95,13 +97,12 @@ class TagsPresenter(
     interface View : Presenter.View, ItemsView<Tag>, LoadingView {
         fun archivedTagsRequests(): Observable<Unit>
         fun tagMoves(): Observable<TagMove>
+        fun tagSelects(): Observable<Tag>
+        fun createTagRequests(): Observable<Unit>
 
         fun showModelDisplayType(modelDisplayType: ModelDisplayType)
 
-        //        fun onTagSelected(): Observable<Tag>
-        //        fun onCreateTag(): Observable<Unit>
-        //        fun displayTagEdit(tag: Tag)
-
+        fun displayTagEdit(tag: Tag)
         fun displayArchivedTags()
     }
 }

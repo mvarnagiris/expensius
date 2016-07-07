@@ -29,6 +29,18 @@ import rx.lang.kotlin.PublishSubject
 
 class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr), TagsPresenter.View {
+    override fun tagSelects(): Observable<Tag> {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun createTagRequests(): Observable<Unit> {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun displayTagEdit(tag: Tag) {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
     override fun tagMoves(): Observable<TagsPresenter.TagMove> {
         throw UnsupportedOperationException("Not implemented")
     }
@@ -106,8 +118,8 @@ class TagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
     override fun showModelDisplayType(modelDisplayType: ModelDisplayType) = adapter.let { it.modelDisplayType = modelDisplayType }
     //    override fun showTags(tags: List<Tag>) = adapter.setItems(tags)
     //
-    //    override fun onTagSelected() = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
-    //    override fun onCreateTag() = createTagObservable
+    //    override fun tagSelects() = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
+    //    override fun createTagRequests() = createTagObservable
     //    override fun onDisplayArchivedTags() = adapter.itemPositionClicks().filter { !adapter.isTagPosition(it) }.map { Unit }
     //    override fun tagMoves() = tagMoveSubject.map { TagsPresenter.TagMove(it.fromPosition, it.toPosition) }
     //
