@@ -19,6 +19,7 @@ import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.expensius.model.generateModelId
 import com.mvcoding.mvp.Presenter
 import rx.Observable
@@ -32,20 +33,22 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        view.showArchiveEnabled(tag.isStored())
+        view.showArchiveEnabled(/*tag.isStored()*/false)
         view.showModelState(tag.modelState)
 
-        val id = tag.let { if (it.isStored()) it.id else generateModelId() }
+        val id = tag.let { /*if (it.isStored()) it.id else */generateModelId() }
         val modelState = tag.modelState
-        val order = tag.let { if (it.isStored()) it.order else VERY_HIGH_ORDER }
+        val order = tag.let { /*if (it.isStored()) it.order else*/ VERY_HIGH_ORDER }
 
-        val titles = view.onTitleChanged().startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.trim() }
-        val colors = view.onColorChanged().startWith(if (tag.color == 0) color(0x607d8b) else tag.color).doOnNext { view.showColor(it) }
+        val titles = view.onTitleChanged().startWith(tag.title.text).doOnNext { view.showTitle(it) }.map { it.trim() }
+        val colors = view.onColorChanged().startWith(if (tag.color.rgb == 0) color(0x607d8b) else tag.color.rgb).doOnNext {
+            view.showColor(it)
+        }
 
         val tagObservable = combineLatest(
                 titles,
                 colors,
-                { title, color -> Tag(id, modelState, title, color, order) })
+                { title, color -> /*Tag(id, modelState, title, color, order)*/ noTag })
                 .doOnNext { tag = it }
 
         unsubscribeOnDetach(view.onSave()
@@ -63,7 +66,7 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
     private fun tagWithToggledArchiveState() = tag.withModelState(if (tag.modelState == NONE) ARCHIVED else NONE)
 
     private fun validate(tag: Tag, view: View) =
-            if (tag.title.isBlank()) view.showTitleCannotBeEmptyError().let { false }
+            if (tag.title.text.isBlank()) view.showTitleCannotBeEmptyError().let { false }
             else true
 
     interface View : Presenter.View {

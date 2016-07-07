@@ -12,12 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.tag
+package com.mvcoding.expensius.feature.login
 
-import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.CreateTag
 
-fun aSelectableTag() = SelectableTag(aTag(), false)
-
-fun SelectableTag.withTag(tag: Tag) = copy(tag = tag)
-
-fun SelectableTag.withSelected(isSelected: Boolean) = copy(isSelected = isSelected)
+interface DefaultTags {
+    fun getDefaultTags(): Set<CreateTag>
+}

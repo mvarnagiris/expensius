@@ -24,6 +24,7 @@ import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import com.mvcoding.expensius.firebase.FirebaseAppUserService
+import com.mvcoding.expensius.firebase.FirebaseTagsWriteService
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.SqliteDatabase
@@ -32,6 +33,7 @@ import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.LoginService
+import com.mvcoding.expensius.service.TagsWriteService
 import com.squareup.sqlbrite.SqlBrite
 import rx.android.schedulers.AndroidSchedulers.mainThread
 import rx.schedulers.Schedulers.computation
@@ -43,6 +45,8 @@ class AppModule(val context: Context) : ShankModule {
         appContext()
         rxSchedulers()
         firebaseAppUserService()
+        firebaseTagsService()
+
         rxBus()
         dateFormatter()
         settings()
@@ -54,6 +58,7 @@ class AppModule(val context: Context) : ShankModule {
     private fun appContext() = registerFactory(Context::class) { -> context }
     private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
     private fun firebaseAppUserService() = registerFactory(FirebaseAppUserService::class) { -> FirebaseAppUserService() }
+    private fun firebaseTagsService() = registerFactory(FirebaseTagsWriteService::class) { -> FirebaseTagsWriteService(provideAppUserService()) }
     private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
     private fun dateFormatter() = registerFactory(DateFormatter::class) { -> DateFormatter(context) }
 
@@ -86,4 +91,7 @@ fun provideAmountFormatter() = provideGlobalSingleton<AmountFormatter>()
 
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideLoginService(): LoginService = provideFirebaseAppUserService()
-private fun provideFirebaseAppUserService(): FirebaseAppUserService = provideGlobalSingleton()
+fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
+
+private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
+private fun provideFirebaseTagsWriteService() = provideGlobalSingleton<FirebaseTagsWriteService>()

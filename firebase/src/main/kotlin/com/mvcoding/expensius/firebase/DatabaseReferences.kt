@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,13 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.tag
+package com.mvcoding.expensius.firebase
 
-import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Tag
-import java.util.UUID.randomUUID
+import com.google.firebase.database.FirebaseDatabase
+import com.mvcoding.expensius.model.UserId
 
-fun aTag(): Tag = Tag(randomUUID().toString(), NONE, "title", 1)
-fun someTags() = setOf(aTag(), aTag())
-fun aNewTag(): Tag = Tag()
-fun Tag.withTitle(title: String) = copy(title = title)
+internal fun tagsDatabaseReference(userId: UserId) = FirebaseDatabase.getInstance().reference.child("tags").child(userId.id)

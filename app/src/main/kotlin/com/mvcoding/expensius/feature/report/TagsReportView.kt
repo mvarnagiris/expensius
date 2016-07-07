@@ -104,8 +104,8 @@ class TagsReportView @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     })
 
-    private fun Map.Entry<Tag, List<Entry>>.toLineDataSet() = LineDataSet(value, key.title).apply {
-        color = if (key.color == 0) defaultColor else key.color
+    private fun Map.Entry<Tag, List<Entry>>.toLineDataSet() = LineDataSet(value, key.title.text).apply {
+        color = if (key.color.rgb == 0) defaultColor else key.color.rgb
         setCircleColor(color)
         setDrawHighlightIndicators(false)
         setDrawFilled(true)

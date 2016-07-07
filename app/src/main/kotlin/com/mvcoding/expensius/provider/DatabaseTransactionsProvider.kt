@@ -22,8 +22,13 @@ import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.provider.database.*
+import com.mvcoding.expensius.provider.database.Database
+import com.mvcoding.expensius.provider.database.DeleteDatabaseAction
+import com.mvcoding.expensius.provider.database.Order
 import com.mvcoding.expensius.provider.database.OrderDirection.DESC
+import com.mvcoding.expensius.provider.database.QueryRequest
+import com.mvcoding.expensius.provider.database.SaveDatabaseAction
+import com.mvcoding.expensius.provider.database.select
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
@@ -64,7 +69,7 @@ class DatabaseTransactionsProvider(
     private fun relationshipSaveRecord(transaction: Transaction, tag: Tag): SaveDatabaseAction {
         val contentValues = ContentValues()
         contentValues.put(transactionTagsTable.transactionId.name, transaction.id)
-        contentValues.put(transactionTagsTable.tagId.name, tag.id)
+        contentValues.put(transactionTagsTable.tagId.name, tag.tagId.id)
         return SaveDatabaseAction(transactionTagsTable, contentValues)
     }
 

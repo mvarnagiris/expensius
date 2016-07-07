@@ -24,6 +24,7 @@ import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
@@ -100,7 +101,7 @@ class TagsReportPresenter(
         return prepareReportItems(resultMap)
     }
 
-    private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(Tag()) else tags }
+    private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(noTag) else tags }
 
     private fun prepareReportItems(
             resultMap: Map<Interval, HashMap<Tag, BigDecimal>>): List<TagsReportItem> {
@@ -109,7 +110,7 @@ class TagsReportPresenter(
             val interval = it.key
             val tagsWithAmount = it.value
                     .toSortedMap(Comparator { tagLeft, tagRight ->
-                        tagLeft.order.compareTo(tagRight.order)
+                        tagLeft.order.value.compareTo(tagRight.order.value)
                     }).toList().map { TagWithAmount(it.first, it.second) }
 
             TagsReportItem(interval, tagsWithAmount)

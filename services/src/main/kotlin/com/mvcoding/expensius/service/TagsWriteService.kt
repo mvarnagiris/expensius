@@ -12,17 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.service
 
-import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.CreateTag
+import com.mvcoding.expensius.model.Tag
+import rx.Observable
 
-data class Tag(
-        override val id: String = "",
-        override val modelState: ModelState = NONE,
-        val title: String = "",
-        val color: Int = 0,
-        val order: Int = 0) : Model {
-
-    fun withModelState(modelState: ModelState) = copy(modelState = modelState)
-    fun withOrder(order: Int) = copy(order = order)
+interface TagsWriteService {
+    fun createTags(createTags: Set<CreateTag>): Observable<List<Tag>>
 }

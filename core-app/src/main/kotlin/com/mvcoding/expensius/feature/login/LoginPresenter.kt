@@ -19,12 +19,17 @@ import com.mvcoding.expensius.feature.ErrorView
 import com.mvcoding.expensius.feature.handleError
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.service.LoginService
+import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.empty
 import rx.Observable.just
 
-class LoginPresenter(private val loginService: LoginService, private val schedulers: RxSchedulers) : Presenter<LoginPresenter.View>() {
+class LoginPresenter(
+        private val loginService: LoginService,
+        private val tagsWriteService: TagsWriteService,
+        private val defaultTags: DefaultTags,
+        private val schedulers: RxSchedulers) : Presenter<LoginPresenter.View>() {
 
     private var loginRequest: Observable<AppUser>? = null
 
@@ -36,6 +41,8 @@ class LoginPresenter(private val loginService: LoginService, private val schedul
                 .doOnNext { view.showLoggingIn() }
                 .observeOn(schedulers.io)
                 .switchMap { loginAnonymously(view) }
+                .observeOn(schedulers.io)
+                .switchMap { createDefaultTags() }
                 .observeOn(schedulers.main)
                 .doOnNext { view.hideLoggingIn() }
                 .subscribeUntilDetached { view.displayApp() }
@@ -54,6 +61,8 @@ class LoginPresenter(private val loginService: LoginService, private val schedul
             }
         }
     }
+
+    private fun createDefaultTags() = tagsWriteService.createTags(defaultTags.getDefaultTags()).onErrorReturn { emptyList() }
 
     interface View : Presenter.View, ErrorView {
         fun loginAnonymouslyRequests(): Observable<Unit>

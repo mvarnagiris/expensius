@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.feature.tag.someTags
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.Currency
@@ -35,7 +34,7 @@ fun aTransaction() = Transaction(
         aCurrency(),
         ONE,
         ONE,
-        someTags(),
+        emptySet(),
         "note")
 
 fun aNewTransaction() = Transaction(currency = aCurrency())

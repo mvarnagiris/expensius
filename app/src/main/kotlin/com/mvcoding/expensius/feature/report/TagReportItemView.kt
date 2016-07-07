@@ -36,8 +36,8 @@ class TagReportItemView @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     fun setTag(tag: Tag) {
-        colorImageView.setColorFilter(tag.color)
-        titleTextView.text = tag.title
+        colorImageView.setColorFilter(tag.color.rgb)
+        titleTextView.text = tag.title.text
     }
 
     fun setAmount(amount: BigDecimal) {

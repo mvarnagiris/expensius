@@ -32,7 +32,7 @@ class QuickTagsPresenter(
         val selectedTags = view.onShowSelectedTags().doOnNext { it.forEach { toggledTags.put(it, true) } }
         val allTags = combineLatest(tagsProvider.tags(), selectedTags, {
             providerTags, selectedTags ->
-            providerTags.plus(selectedTags.filterNot { providerTags.contains(it) }).sortedBy { it.order }
+            providerTags.plus(selectedTags.filterNot { providerTags.contains(it) }).sortedBy { it.order.value }
         })
 
         unsubscribeOnDetach(allTags

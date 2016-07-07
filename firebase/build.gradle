@@ -46,6 +46,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.google.firebase:firebase-core:$firebase_version"
     compile "com.google.firebase:firebase-auth:$firebase_version"
+    compile "com.google.firebase:firebase-database:$firebase_version"
 }
 
 apply plugin: 'com.google.gms.google-services'

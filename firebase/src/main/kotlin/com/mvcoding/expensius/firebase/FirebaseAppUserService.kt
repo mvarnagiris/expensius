@@ -30,13 +30,21 @@ import rx.Observable
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.deferredObservable
 import rx.lang.kotlin.observable
+import java.util.concurrent.atomic.AtomicReference
 
 class FirebaseAppUserService : AppUserService, LoginService {
-    private val authStateListener = AuthStateListener { appUserSubject.onNext(it.currentUser?.toAppUser() ?: noAppUser) }
+
+    private val authStateListener = AuthStateListener {
+        val appUser = it.currentUser?.toAppUser() ?: noAppUser
+        appUserSubject.onNext(appUser)
+        currentAppUser.set(appUser)
+    }
     private val firebaseAuth = FirebaseAuth.getInstance().apply { addAuthStateListener(authStateListener) }
     private val appUserSubject = BehaviorSubject<AppUser>()
+    private val currentAppUser = AtomicReference<AppUser>()
 
     override fun appUser(): Observable<AppUser> = appUserSubject.distinctUntilChanged()
+    override fun getCurrentAppUser(): AppUser = currentAppUser.get()
 
     override fun loginAnonymously(): Observable<AppUser> = deferredObservable {
         observable<AppUser> { subscriber ->

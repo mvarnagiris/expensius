@@ -18,8 +18,10 @@ import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.provideContext
 import com.mvcoding.expensius.provideLoginService
 import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideTagsWriteService
 import memoizrlabs.com.shankandroid.withThisScope
 
 class LoginModule : ShankModule {
@@ -28,7 +30,7 @@ class LoginModule : ShankModule {
     }
 
     private fun loginPresenter() = registerFactory(LoginPresenter::class) { ->
-        LoginPresenter(provideLoginService(), provideRxSchedulers())
+        LoginPresenter(provideLoginService(), provideTagsWriteService(), TranslatedDefaultTags(provideContext()), provideRxSchedulers())
     }
 }
 

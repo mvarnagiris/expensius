@@ -147,7 +147,7 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
     override fun showSelectableTags(selectableTags: List<SelectableTag>) {
         this.selectableTags.clear()
         this.selectableTags.addAll(selectableTags)
-        setQuickTags(selectableTags.map { QuickTag(it.tag.title, it.tag.color) })
+        setQuickTags(selectableTags.map { QuickTag(it.tag.title.text, it.tag.color.rgb) })
         selectableTags.forEachIndexed { i, selectableTag -> getChildAt(i).isSelected = selectableTag.isSelected }
     }
 

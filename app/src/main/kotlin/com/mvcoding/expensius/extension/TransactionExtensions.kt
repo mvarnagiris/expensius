@@ -4,9 +4,13 @@ import android.content.ContentValues
 import android.database.Cursor
 import com.mvcoding.expensius.feature.transaction.TransactionState
 import com.mvcoding.expensius.feature.transaction.TransactionType
+import com.mvcoding.expensius.model.Color
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.TagId
+import com.mvcoding.expensius.model.Title
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
@@ -22,7 +26,7 @@ fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentVa
     contentValues.put(transactionsTable.currency.name, currency.code)
     contentValues.put(transactionsTable.exchangeRate.name, exchangeRate.toPlainString())
     contentValues.put(transactionsTable.amount.name, amount.toPlainString())
-    contentValues.put(transactionsTable.tags.name, tags.joinToString(separator = ",", transform = { it.id }))
+    contentValues.put(transactionsTable.tags.name, tags.joinToString(separator = ",", transform = { it.tagId.id }))
     contentValues.put(transactionsTable.note.name, note)
     return contentValues
 }
@@ -40,7 +44,11 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTa
     val tagsString = getString(getColumnIndex(tagsTable.transactionTags.name))
     val tags = tagsString?.split(Regex(TagsTable.TAG_SEPARATOR))?.map {
         val tagValues = it.split(tagSplitRegex)
-        Tag(tagValues[0], ModelState.valueOf(tagValues[1]), tagValues[2], tagValues[3].toInt(), tagValues[4].toInt())
+        Tag(TagId(tagValues[0]),
+                ModelState.valueOf(tagValues[1]),
+                Title(tagValues[2]),
+                Color(tagValues[3].toInt()),
+                Order(tagValues[4].toInt()))
     }?.toSet() ?: emptySet<Tag>()
     val note = getString(getColumnIndex(transactionsTable.note.name))
     return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)

@@ -12,12 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.service
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.AppUser
-import rx.Observable
+import com.mvcoding.expensius.model.ModelState.NONE
 
-interface AppUserService {
-    fun appUser(): Observable<AppUser>
-    fun getCurrentAppUser(): AppUser
-}
+fun aTagId() = TagId(aStringId())
+fun aTitle() = Title(aString("title"))
+fun aColor() = Color(anInt())
+fun anOrder() = Order(anInt(100))
+fun aCreateTag() = CreateTag(aTitle(), aColor(), anOrder())
+fun aTag() = Tag(aTagId(), NONE, aTitle(), aColor(), anOrder())

@@ -17,7 +17,9 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.merge
@@ -40,7 +42,7 @@ class TagsPresenter(
                 .withLatestFrom(tags, { tagMove, tags -> reorderTags(tagMove, tags) })
                 .subscribe { tagsProvider.save(it.toSet()) })
         unsubscribeOnDetach(tags.subscribeOn(schedulers.io).observeOn(schedulers.main).subscribe { view.showTags(it) })
-        unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { Tag() }).subscribe { view.displayTagEdit(it) })
+        unsubscribeOnDetach(merge(view.onTagSelected(), view.onCreateTag().map { /*Tag()*/ noTag }).subscribe { view.displayTagEdit(it) })
         unsubscribeOnDetach(view.onDisplayArchivedTags().subscribe { view.displayArchivedTags() })
     }
 
@@ -51,9 +53,9 @@ class TagsPresenter(
         val maxPosition = max(fromPosition, toPosition)
         return tags.mapIndexed { position, tag ->
             when {
-                position == fromPosition -> tag.withOrder(toPosition)
-                position >= minPosition && position <= maxPosition -> tag.withOrder(position + if (fromPosition > toPosition) 1 else -1)
-                else -> tag.withOrder(position)
+                position == fromPosition -> tag.withOrder(Order(toPosition))
+                position >= minPosition && position <= maxPosition -> tag.withOrder(Order(position + if (fromPosition > toPosition) 1 else -1))
+                else -> tag.withOrder(Order(position))
             }
         }
     }

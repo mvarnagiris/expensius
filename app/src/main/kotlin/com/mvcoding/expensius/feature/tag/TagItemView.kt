@@ -54,9 +54,9 @@ class TagItemView : LinearLayout {
     fun setTag(tag: Tag) {
         colorImageView.setColorFilter(getIconColor(tag))
         titleTextView.setTextColor(getTextColor(tag))
-        titleTextView.text = tag.title
+        titleTextView.text = tag.title.text
     }
 
-    private fun getIconColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else tag.color
+    private fun getIconColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else tag.color.rgb
     private fun getTextColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else textColorPrimary
 }

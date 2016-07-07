@@ -16,9 +16,13 @@ package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.aCreateTag
+import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.LoginService
+import com.mvcoding.expensius.service.TagsWriteService
+import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -33,23 +37,33 @@ class LoginPresenterTest {
     val loginAnonymouslyRequestsSubject = PublishSubject<Unit>()
 
     val loginService: LoginService = mock()
+    val tagsWriteService: TagsWriteService = mock()
+    val defaultTags: DefaultTags = mock()
     val view: LoginPresenter.View = mock()
-    val inOrder: InOrder = inOrder(view)
-    val presenter = LoginPresenter(loginService, rxSchedulers())
+    val inOrder: InOrder = inOrder(view, loginService, tagsWriteService)
+    val presenter = LoginPresenter(loginService, tagsWriteService, defaultTags, rxSchedulers())
 
     @Before
     fun setUp() {
+        whenever(loginService.loginAnonymously()).thenReturn(just(anAppUser()))
+        whenever(tagsWriteService.createTags(any())).thenReturn(just(listOf(aTag())))
+        whenever(defaultTags.getDefaultTags()).thenReturn(setOf(aCreateTag()))
         whenever(view.loginAnonymouslyRequests()).thenReturn(loginAnonymouslyRequestsSubject)
     }
 
     @Test
     fun canLoginAnonymously() {
-        whenever(loginService.loginAnonymously()).thenReturn(just(anAppUser()))
+        val someCreateTags = setOf(aCreateTag(), aCreateTag())
+        val createdTags = listOf(aTag(), aTag())
+        whenever(defaultTags.getDefaultTags()).thenReturn(someCreateTags)
+        whenever(tagsWriteService.createTags(someCreateTags)).thenReturn(just(createdTags))
         presenter.attach(view)
 
         loginAnonymously()
 
         inOrder.verify(view).showLoggingIn()
+        inOrder.verify(loginService).loginAnonymously()
+        inOrder.verify(tagsWriteService).createTags(someCreateTags)
         inOrder.verify(view).hideLoggingIn()
         inOrder.verify(view).displayApp()
     }
@@ -66,6 +80,18 @@ class LoginPresenterTest {
         inOrder.verify(view).showError(throwable.toError())
 
         loginAnonymously()
+        inOrder.verify(view).showLoggingIn()
+        inOrder.verify(view).hideLoggingIn()
+        inOrder.verify(view).displayApp()
+    }
+
+    @Test
+    fun ignoresTagCreationErrors() {
+        whenever(tagsWriteService.createTags(any())).thenReturn(error(Throwable()))
+        presenter.attach(view)
+
+        loginAnonymously()
+
         inOrder.verify(view).showLoggingIn()
         inOrder.verify(view).hideLoggingIn()
         inOrder.verify(view).displayApp()

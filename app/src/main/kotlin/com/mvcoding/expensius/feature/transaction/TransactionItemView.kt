@@ -51,19 +51,19 @@ class TransactionItemView @JvmOverloads constructor(context: Context, attrs: Att
 
     private fun formatTags(tags: Set<Tag>): CharSequence {
         val ssb = SpannableStringBuilder()
-        tags.sortedBy { it.order }.forEach {
+        tags.sortedBy { it.order.value }.forEach {
             if (ssb.length > 0) ssb.append("  ")
 
             ssb.append("$NON_BREAKABLE_SPACE$NON_BREAKABLE_SPACE")
-            ssb.append(it.title.replace(" ", NON_BREAKABLE_SPACE))
+            ssb.append(it.title.text.replace(" ", NON_BREAKABLE_SPACE))
 
             val drawable = tagDrawable.constantState.newDrawable().mutate()
             val drawableSize = tagsTextView.paint.textSize - tagsTextView.paint.textSize * 0.25f
-            drawable.setColorFilter(it.color, SRC_ATOP)
+            drawable.setColorFilter(it.color.rgb, SRC_ATOP)
             drawable.bounds = Rect(0, 0, drawableSize.toInt(), drawableSize.toInt())
             ssb.setSpan(ImageSpan(drawable, ALIGN_BASELINE),
-                    ssb.length - it.title.length - 2,
-                    ssb.length - it.title.length - 1,
+                    ssb.length - it.title.text.length - 2,
+                    ssb.length - it.title.text.length - 1,
                     SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return ssb
