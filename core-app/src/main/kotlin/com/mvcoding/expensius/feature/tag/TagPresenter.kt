@@ -15,17 +15,22 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.color
+import com.mvcoding.expensius.model.Color
+import com.mvcoding.expensius.model.Color.Companion.noColor
+import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Tag.Companion.noTag
-import com.mvcoding.expensius.model.generateModelId
+import com.mvcoding.expensius.model.TagId.Companion.noTagId
+import com.mvcoding.expensius.model.Title
+import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 
-class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider) : Presenter<TagPresenter.View>() {
+class TagPresenter(private var tag: Tag, private val tagsWriteService: TagsWriteService) : Presenter<TagPresenter.View>() {
     companion object {
         internal val VERY_HIGH_ORDER = 1000
     }
@@ -33,35 +38,28 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        view.showArchiveEnabled(/*tag.isStored()*/false)
+        view.showArchiveEnabled(tag.isExistingTag())
         view.showModelState(tag.modelState)
 
-        val id = tag.let { /*if (it.isStored()) it.id else */generateModelId() }
-        val modelState = tag.modelState
-        val order = tag.let { /*if (it.isStored()) it.order else*/ VERY_HIGH_ORDER }
+        val titles = view.titleChanges().map { Title(it) }.startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.trimmed() }
+        val colors = view.colorChanges().map { Color(it) }.startWith(tagColorOrDefault()).doOnNext { view.showColor(it) }
+        val order = if (tag.isExistingTag()) tag.order else Order(VERY_HIGH_ORDER)
 
-        val titles = view.onTitleChanged().startWith(tag.title.text).doOnNext { view.showTitle(it) }.map { it.trim() }
-        val colors = view.onColorChanged().startWith(if (tag.color.rgb == 0) color(0x607d8b) else tag.color.rgb).doOnNext {
-            view.showColor(it)
-        }
+        val tag = combineLatest(titles, colors, { title, color -> tag.copy(title = title, color = color, order = order) }).doOnNext { tag = it }
 
-        val tagObservable = combineLatest(
-                titles,
-                colors,
-                { title, color -> /*Tag(id, modelState, title, color, order)*/ noTag })
-                .doOnNext { tag = it }
-
-        unsubscribeOnDetach(view.onSave()
-                .withLatestFrom(tagObservable, { action, tag -> tag })
+        view.saveRequests()
+                .withLatestFrom(tag, { unit, tag -> tag })
                 .filter { validate(it, view) }
-                .doOnNext { tagsProvider.save(setOf(it)) }
-                .subscribe { view.displayResult(it) })
+                .switchMap { if (it.isExistingTag()) tagsWriteService.saveTags(setOf(it)) else tagsWriteService.createTags(setOf(it.toCreateTag())) }
+                .subscribeUntilDetached { view.displayResult() }
 
-        unsubscribeOnDetach(view.onToggleArchive()
+        view.archiveToggles()
                 .map { tagWithToggledArchiveState() }
-                .doOnNext { tagsProvider.save(setOf(it)) }
-                .subscribe { view.displayResult(it) })
+                .switchMap { tagsWriteService.saveTags(setOf(it)) }
+                .subscribeUntilDetached { view.displayResult() }
     }
+
+    private fun tagColorOrDefault() = if (tag.color == noColor) Color(color(0x607d8b)) else tag.color
 
     private fun tagWithToggledArchiveState() = tag.withModelState(if (tag.modelState == NONE) ARCHIVED else NONE)
 
@@ -69,16 +67,21 @@ class TagPresenter(private var tag: Tag, private val tagsProvider: TagsProvider)
             if (tag.title.text.isBlank()) view.showTitleCannotBeEmptyError().let { false }
             else true
 
+    private fun Tag.isExistingTag() = this.tagId != noTagId
+    private fun Tag.toCreateTag() = CreateTag(title, color, order)
+
     interface View : Presenter.View {
-        fun showTitle(title: String)
-        fun showColor(color: Int)
+        fun titleChanges(): Observable<String>
+        fun colorChanges(): Observable<Int>
+        fun archiveToggles(): Observable<Unit>
+        fun saveRequests(): Observable<Unit>
+
+        fun showTitle(title: Title)
+        fun showColor(color: Color)
         fun showModelState(modelState: ModelState)
         fun showTitleCannotBeEmptyError()
         fun showArchiveEnabled(archiveEnabled: Boolean)
-        fun onTitleChanged(): Observable<String>
-        fun onColorChanged(): Observable<Int>
-        fun onToggleArchive(): Observable<Unit>
-        fun onSave(): Observable<Unit>
-        fun displayResult(tag: Tag)
+
+        fun displayResult()
     }
 }

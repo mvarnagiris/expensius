@@ -72,7 +72,7 @@ class TagsPresenter(
                 .subscribeOn(schedulers.main)
                 .observeOn(schedulers.io)
                 .withLatestFrom(tagsService.items(), { tagMove, tags -> reorderTags(tagMove, tags) })
-                .switchMap { tagsWriteService.updateTags(it.toSet()) }
+                .switchMap { tagsWriteService.saveTags(it.toSet()) }
                 .subscribeUntilDetached { }
 
         merge(view.tagSelects(), view.createTagRequests().map { noTag }).subscribeUntilDetached { view.displayTagEdit(it) }

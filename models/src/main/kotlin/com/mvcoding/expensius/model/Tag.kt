@@ -31,6 +31,8 @@ data class Title(val text: String) : Serializable {
     companion object {
         val noTitle = Title("")
     }
+
+    fun trimmed() = copy(text = text.trim())
 }
 
 data class Color(val rgb: Int) : Serializable {

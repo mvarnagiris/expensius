@@ -44,8 +44,8 @@ class TransactionPresenterTest {
     //        whenever(view.onAmountChanged()).thenReturn(amountSubject)
     //        whenever(view.onTagsChanged()).thenReturn(tagsSubject)
     //        whenever(view.onNoteChanged()).thenReturn(noteSubject)
-    //        whenever(view.onToggleArchive()).thenReturn(toggleArchiveSubject)
-    //        whenever(view.onSave()).thenReturn(saveSubject)
+    //        whenever(view.archiveToggles()).thenReturn(toggleArchiveSubject)
+    //        whenever(view.saveRequests()).thenReturn(saveSubject)
     //    }
     //
     //    @Test
@@ -76,7 +76,7 @@ class TransactionPresenterTest {
     //        updateCurrency(currency)
     //        updateExchangeRate(TEN)
     //        updateAmount(TEN)
-    //        updateTags(tags)
+    //        saveTags(tags)
     //        updateNote("Updated note")
     //
     //        verify(view).showTransactionType(INCOME)
@@ -103,7 +103,7 @@ class TransactionPresenterTest {
     //        updateCurrency(currency)
     //        updateExchangeRate(TEN)
     //        updateAmount(TEN)
-    //        updateTags(tags)
+    //        saveTags(tags)
     //        updateNote("Updated note")
     //        presenter.detach(view)
     //        presenter.attach(view)
@@ -186,7 +186,7 @@ class TransactionPresenterTest {
     //    private fun updateCurrency(currency: Currency) = currencySubject.onNext(currency)
     //    private fun updateExchangeRate(exchangeRate: BigDecimal) = exchangeRateSubject.onNext(exchangeRate)
     //    private fun updateAmount(amount: BigDecimal) = amountSubject.onNext(amount)
-    //    private fun updateTags(tags: Set<Tag>) = tagsSubject.onNext(tags)
+    //    private fun saveTags(tags: Set<Tag>) = tagsSubject.onNext(tags)
     //    private fun updateNote(note: String) = noteSubject.onNext(note)
     //    private fun save() = saveSubject.onNext(Unit)
     //    private fun allCurrencies() = create<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()

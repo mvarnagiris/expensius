@@ -20,5 +20,5 @@ import rx.Observable
 
 interface TagsWriteService {
     fun createTags(createTags: Set<CreateTag>): Observable<Unit>
-    fun updateTags(updateTags: Set<Tag>): Observable<Unit>
+    fun saveTags(updateTags: Set<Tag>): Observable<Unit>
 }

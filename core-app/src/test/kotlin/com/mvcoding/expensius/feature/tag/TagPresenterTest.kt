@@ -14,48 +14,57 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.feature.color
+import com.mvcoding.expensius.feature.tag.TagPresenter.Companion.VERY_HIGH_ORDER
+import com.mvcoding.expensius.model.Color
+import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Order
+import com.mvcoding.expensius.model.Tag.Companion.noTag
+import com.mvcoding.expensius.model.Title
 import com.mvcoding.expensius.model.aTag
+import com.mvcoding.expensius.service.TagsWriteService
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.argThat
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.mock
-import org.mockito.BDDMockito.never
-import org.mockito.BDDMockito.times
-import org.mockito.BDDMockito.verify
+import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
 class TagPresenterTest {
-    val titleSubject = PublishSubject<String>()
-    val colorSubject = PublishSubject<Int>()
+    val titleChangesSubject = PublishSubject<String>()
+    val colorChangesSubject = PublishSubject<Int>()
     val archiveToggleSubject = PublishSubject<Unit>()
-    val saveSubject = PublishSubject<Unit>()
+    val saveRequestsSubject = PublishSubject<Unit>()
     val tag = aTag()
-    //    val newTag = aNewTag()
-    val tagsProvider = mock<TagsProvider>()
-    val view = mock(TagPresenter.View::class.java)
-    val presenter = TagPresenter(tag, tagsProvider)
+    val tagsWriteService: TagsWriteService = mock()
+    val view: TagPresenter.View = mock()
+    val presenter = TagPresenter(tag, tagsWriteService)
 
     @Before
     fun setUp() {
-        given(view.onTitleChanged()).willReturn(titleSubject)
-        given(view.onColorChanged()).willReturn(colorSubject)
-        given(view.onToggleArchive()).willReturn(archiveToggleSubject)
-        given(view.onSave()).willReturn(saveSubject)
+        whenever(view.titleChanges()).thenReturn(titleChangesSubject)
+        whenever(view.colorChanges()).thenReturn(colorChangesSubject)
+        whenever(view.archiveToggles()).thenReturn(archiveToggleSubject)
+        whenever(view.saveRequests()).thenReturn(saveRequestsSubject)
+        whenever(tagsWriteService.saveTags(any())).thenReturn(just(Unit))
+        whenever(tagsWriteService.createTags(any())).thenReturn(just(Unit))
     }
 
-    //    @Test
-    //    fun showsInitialValues() {
-    //        presenter.attach(view)
-    //
-    //        verify(view).showTitle(tag.title)
-    //        verify(view).showColor(tag.color)
-    //        verify(view).showModelState(tag.modelState)
-    //    }
+    @Test
+    fun showsInitialValues() {
+        presenter.attach(view)
+
+        verify(view).showModelState(tag.modelState)
+        verify(view).showTitle(tag.title)
+        verify(view).showColor(tag.color)
+    }
 
     @Test
     fun showsUpdateValuesWhenValuesAreUpdated() {
@@ -64,8 +73,8 @@ class TagPresenterTest {
         setTitle("updatedTitle")
         setColor(10)
 
-        verify(view).showTitle("updatedTitle")
-        verify(view).showColor(10)
+        verify(view).showTitle(Title("updatedTitle"))
+        verify(view).showColor(Color(10))
     }
 
     @Test
@@ -77,18 +86,16 @@ class TagPresenterTest {
         presenter.detach(view)
         presenter.attach(view)
 
-        verify(view, times(2)).showTitle("updatedTitle")
-        verify(view, times(2)).showColor(10)
+        verify(view, times(2)).showTitle(Title("updatedTitle"))
+        verify(view, times(2)).showColor(Color(10))
     }
 
-    //    @Test
-    //    fun showsDefaultColorWhenCreatingNewTag() {
-    //        val presenter = TagPresenter(newTag, tagsProvider)
-    //
-    //        presenter.attach(view)
-    //
-    //        verify(view).showColor(color(0x607d8b))
-    //    }
+    @Test
+    fun showsDefaultColorWhenCreatingNewTag() {
+        TagPresenter(noTag, tagsWriteService).attach(view)
+
+        verify(view).showColor(Color(color(0x607d8b)))
+    }
 
     @Test
     fun doesNotTryToSaveAndShowsErrorWhenTitleIsEmptyOnSave() {
@@ -97,7 +104,7 @@ class TagPresenterTest {
 
         save()
 
-        verify(tagsProvider, never()).save(any())
+        verify(tagsWriteService, never()).saveTags(any())
         verify(view).showTitleCannotBeEmptyError()
     }
 
@@ -107,29 +114,29 @@ class TagPresenterTest {
 
         save()
 
-        verify(tagsProvider).save(argThat { first() == tag })
+        verify(tagsWriteService).saveTags(argThat { first() == tag })
     }
 
-    //    @Test
-    //    fun savesNewTagWithVeryHighOrder() {
-    //        TagPresenter(newTag, tagsProvider).attach(view)
-    //        setTitle("Updated title")
-    //        setColor(10)
-    //
-    //        save()
-    //
-    //        verify(tagsProvider).save(argThat { first().order == VERY_HIGH_ORDER })
-    //    }
+    @Test
+    fun createsNewTagWithVeryHighOrder() {
+        TagPresenter(noTag, tagsWriteService).attach(view)
+        setTitle("Updated title")
+        setColor(10)
 
-    //    @Test
-    //    fun trimsTitleWhenSaving() {
-    //        presenter.attach(view)
-    //        setTitle(" title ")
-    //
-    //        save()
-    //
-    //        verify(tagsProvider).save(argThat { first().title == "title" })
-    //    }
+        save()
+
+        verify(tagsWriteService).createTags(argThat { first() == CreateTag(Title("Updated title"), Color(10), Order(VERY_HIGH_ORDER)) })
+    }
+
+    @Test
+    fun trimsTitleWhenSaving() {
+        presenter.attach(view)
+        setTitle(" title ")
+
+        save()
+
+        verify(tagsWriteService).saveTags(argThat { first().title.text == "title" })
+    }
 
     @Test
     fun displaysResultWhenTagIsSavedSuccessfully() {
@@ -137,17 +144,17 @@ class TagPresenterTest {
 
         save()
 
-        verify(view).displayResult(tag)
+        verify(view).displayResult()
     }
-    //
-    //    @Test
-    //    fun archiveIsDisabledForNewTag() {
-    //        val presenter = TagPresenter(newTag, tagsProvider)
-    //
-    //        presenter.attach(view)
-    //
-    //        verify(view).showArchiveEnabled(false)
-    //    }
+
+    @Test
+    fun archiveIsDisabledForNewTag() {
+        val presenter = TagPresenter(noTag, tagsWriteService)
+
+        presenter.attach(view)
+
+        verify(view).showArchiveEnabled(false)
+    }
 
     @Test
     fun archiveIsEnabledForExistingTag() {
@@ -163,36 +170,25 @@ class TagPresenterTest {
 
         toggleArchive()
 
-        verify(tagsProvider).save(argThat { first() == archivedTag })
-        verify(view).displayResult(archivedTag)
+        verify(tagsWriteService).saveTags(argThat { first() == archivedTag })
+        verify(view).displayResult()
     }
 
     @Test
     fun restoresTagAndDisplaysResult() {
         val archivedTag = tag.withModelState(ARCHIVED)
         val restoredTag = tag.withModelState(NONE)
-        val presenter = TagPresenter(archivedTag, tagsProvider)
+        val presenter = TagPresenter(archivedTag, tagsWriteService)
         presenter.attach(view)
 
         toggleArchive()
 
-        verify(tagsProvider).save(argThat { first() == restoredTag })
-        verify(view).displayResult(restoredTag)
+        verify(tagsWriteService).saveTags(argThat { first() == restoredTag })
+        verify(view).displayResult()
     }
 
-    private fun setTitle(title: String) {
-        titleSubject.onNext(title)
-    }
-
-    private fun setColor(color: Int) {
-        colorSubject.onNext(color)
-    }
-
-    private fun toggleArchive() {
-        archiveToggleSubject.onNext(Unit)
-    }
-
-    private fun save() {
-        saveSubject.onNext(Unit)
-    }
+    private fun setTitle(title: String) = titleChangesSubject.onNext(title)
+    private fun setColor(color: Int) = colorChangesSubject.onNext(color)
+    private fun toggleArchive() = archiveToggleSubject.onNext(Unit)
+    private fun save() = saveRequestsSubject.onNext(Unit)
 }

@@ -36,7 +36,6 @@ import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.settings.SettingsView
-import com.mvcoding.expensius.feature.tag.TagsView
 import com.mvcoding.expensius.feature.transaction.TransactionsView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -59,7 +58,7 @@ class MainActivity : BaseActivity() {
         val screens = listOf(
                 Screen(reportsInflater(), R.drawable.ic_action_reports),
                 Screen(transactionsInflater(), R.drawable.ic_action_transactions),
-                Screen(tagsInflater(), R.drawable.ic_action_tag),
+                //                Screen(tagsInflater(), R.drawable.ic_action_tag),
                 Screen(settingsInflater(), R.drawable.ic_action_settings)
         )
 
@@ -101,9 +100,9 @@ class MainActivity : BaseActivity() {
 
     private fun tagsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
-        parent.inflate<TagsView>(R.layout.view_tags).apply {
-            init(VIEW_NOT_ARCHIVED, addTagFloatingActionButton.clicks())
-        }
+        //        parent.inflate<TagsView>(R.layout.view_tags).apply {
+        //            init(VIEW_NOT_ARCHIVED, addTagFloatingActionButton.clicks())
+        //        }
     }
 
     private fun settingsInflater() = {
@@ -124,8 +123,8 @@ class MainActivity : BaseActivity() {
         if (addTransactionFloatingActionButton.visibility == VISIBLE) return
 
         addTagFloatingActionButton.animate().setDuration(FAB_ANIMATION_DURATION).scaleX(0f).scaleY(0f).withEndAction {
-            addTransactionFloatingActionButton.scaleX = 0f;
-            addTransactionFloatingActionButton.scaleY = 0f;
+            addTransactionFloatingActionButton.scaleX = 0f
+            addTransactionFloatingActionButton.scaleY = 0f
             addTransactionFloatingActionButton.visibility = VISIBLE
             addTransactionFloatingActionButton.animate().scaleX(1f).scaleY(1f)
             addTagFloatingActionButton.visibility = GONE
@@ -136,8 +135,8 @@ class MainActivity : BaseActivity() {
         if (addTagFloatingActionButton.visibility == VISIBLE) return
 
         addTransactionFloatingActionButton.animate().setDuration(FAB_ANIMATION_DURATION).scaleX(0f).scaleY(0f).withEndAction {
-            addTagFloatingActionButton.scaleX = 0f;
-            addTagFloatingActionButton.scaleY = 0f;
+            addTagFloatingActionButton.scaleX = 0f
+            addTagFloatingActionButton.scaleY = 0f
             addTagFloatingActionButton.visibility = VISIBLE
             addTagFloatingActionButton.animate().scaleX(1f).scaleY(1f)
             addTransactionFloatingActionButton.visibility = GONE

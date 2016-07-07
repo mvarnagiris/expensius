@@ -68,7 +68,7 @@ class TagsPresenterTest {
         whenever(tagsService.changedItems()).thenReturn(empty())
         whenever(tagsService.removedItems()).thenReturn(empty())
         whenever(tagsService.movedItems()).thenReturn(empty())
-        whenever(tagsWriteService.updateTags(any())).thenReturn(just(Unit))
+        whenever(tagsWriteService.saveTags(any())).thenReturn(just(Unit))
     }
 
     @Test
@@ -187,7 +187,7 @@ class TagsPresenterTest {
 
         moveTag(2, 0)
 
-        verify(tagsWriteService).updateTags(reorderedTags.toSet())
+        verify(tagsWriteService).saveTags(reorderedTags.toSet())
     }
 
     @Test
@@ -199,7 +199,7 @@ class TagsPresenterTest {
 
         moveTag(0, 2)
 
-        verify(tagsWriteService).updateTags(reorderedTags.toSet())
+        verify(tagsWriteService).saveTags(reorderedTags.toSet())
     }
 
     @Test

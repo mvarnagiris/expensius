@@ -41,14 +41,14 @@ class FirebaseTagsWriteService(private val appUserService: AppUserService) : Tag
         }
     }
 
-    override fun updateTags(updateTags: Set<Tag>): Observable<Unit> = deferredObservable {
+    override fun saveTags(updateTags: Set<Tag>): Observable<Unit> = deferredObservable {
         observable<Unit> { subscriber ->
-            val tagsToUpdate = updateTags.filter { it.modelState == NONE }.associateBy({ it.tagId.id }, { it.toMap() })
-            val archivedTagsToUpdate = updateTags.filter { it.modelState == ARCHIVED }.associateBy({ it.tagId.id }, { it.toMap() })
+            val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toMap() else null })
+            val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toMap() else null })
 
             val appUserId = appUserService.getCurrentAppUser().userId
             if (tagsToUpdate.isNotEmpty()) tagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
-            if (archivedTagsToUpdate.isNotEmpty()) archivedTagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
+            if (archivedTagsToUpdate.isNotEmpty()) archivedTagsDatabaseReference(appUserId).updateChildren(archivedTagsToUpdate)
 
             subscriber.onNext(Unit)
             subscriber.onCompleted()

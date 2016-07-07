@@ -14,11 +14,7 @@
 
 package com.mvcoding.expensius.extension
 
-import android.widget.EditText
+import android.app.Activity
+import com.mvcoding.expensius.feature.SnackbarBuilder
 
-fun EditText.setTextIfChanged(text: String) {
-    if (this.text.toString() != text) {
-        setText(text)
-        setSelection(text.length)
-    }
-}
+fun Activity.snackbar(resId: Int, duration: Int) = SnackbarBuilder.snackbar(findViewById(android.R.id.content), resId, duration)

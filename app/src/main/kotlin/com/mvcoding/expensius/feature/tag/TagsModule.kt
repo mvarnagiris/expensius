@@ -46,7 +46,7 @@ class TagsModule : ShankModule {
         QuickTagsPresenter(provideTagsProvider(), provideRxSchedulers())
     }
 
-    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsProvider()) }
+    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsWriteService()) }
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
         TagsPresenter(
@@ -59,5 +59,5 @@ class TagsModule : ShankModule {
 
 fun provideTagsProvider(): TagsProvider = provideGlobalSingleton()
 fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()
-fun View.provideTagPresenter(tag: Tag): TagPresenter = withActivityScope.provideSingletonFor(tag)
+fun Activity.provideTagPresenter(tag: Tag): TagPresenter = withThisScope.provideSingletonFor(tag)
 fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)

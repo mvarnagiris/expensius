@@ -12,8 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.tag.TagView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tagView"
@@ -27,9 +26,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+        <include layout="@layout/toolbar" />
 
         <FrameLayout
             android:id="@+id/titleContainerView"
@@ -97,4 +94,4 @@
             android:text="@string/save" />
     </FrameLayout>
 
-</com.mvcoding.expensius.feature.tag.TagView>
+</LinearLayout>
