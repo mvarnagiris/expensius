@@ -106,5 +106,5 @@ fun provideTagsService(archived: Boolean): TagsService = provideFirebaseTagsServ
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
 
 private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
-private fun provideFirebaseTagsService(archived: Boolean) = provideGlobalSingleton<FirebaseTagsService>(archived)
+private fun provideFirebaseTagsService(archived: Boolean) = provideNew<FirebaseTagsService>(archived)
 private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()
