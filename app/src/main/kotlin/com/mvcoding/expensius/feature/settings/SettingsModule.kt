@@ -19,7 +19,9 @@ import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
-import com.mvcoding.expensius.provideSettings
+import com.mvcoding.expensius.provideAppUserService
+import com.mvcoding.expensius.provideAppUserWriteService
+import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withActivityScope
 
 class SettingsModule : ShankModule {
@@ -28,7 +30,7 @@ class SettingsModule : ShankModule {
     }
 
     private fun settingsPresenter() = registerFactory(SettingsPresenter::class.java) { ->
-        SettingsPresenter(provideSettings(), provideCurrenciesProvider())
+        SettingsPresenter(provideAppUserService(), provideAppUserWriteService(), provideCurrenciesProvider(), provideRxSchedulers())
     }
 }
 

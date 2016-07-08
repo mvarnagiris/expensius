@@ -25,6 +25,7 @@ import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import com.mvcoding.expensius.firebase.FirebaseAppUserService
+import com.mvcoding.expensius.firebase.FirebaseAppUserWriteService
 import com.mvcoding.expensius.firebase.FirebaseTagsService
 import com.mvcoding.expensius.firebase.FirebaseTagsWriteService
 import com.mvcoding.expensius.provider.database.DBHelper
@@ -34,6 +35,7 @@ import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.AppUserWriteService
 import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
@@ -50,6 +52,7 @@ class AppModule(val context: Context) : ShankModule {
         firebaseAppUserService()
         firebaseTagsService()
         firebaseTagsWriteService()
+        firebaseAppUserWriteService()
 
         rxBus()
         dateFormatter()
@@ -66,9 +69,8 @@ class AppModule(val context: Context) : ShankModule {
         FirebaseTagsService(provideAppUserService(), archived)
     }
 
-    private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { ->
-        FirebaseTagsWriteService(provideAppUserService())
-    }
+    private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { -> FirebaseTagsWriteService(provideAppUserService()) }
+    private fun firebaseAppUserWriteService() = registerFactory(FirebaseAppUserWriteService::class) { -> FirebaseAppUserWriteService(provideAppUserService()) }
 
     private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
     private fun dateFormatter() = registerFactory(DateFormatter::class) { -> DateFormatter(context) }
@@ -104,7 +106,9 @@ fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideLoginService(): LoginService = provideFirebaseAppUserService()
 fun provideTagsService(archived: Boolean): TagsService = provideFirebaseTagsService(archived)
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
+fun provideAppUserWriteService(): AppUserWriteService = provideFirebaseAppUserWriteService()
 
 private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
 private fun provideFirebaseTagsService(archived: Boolean) = provideNew<FirebaseTagsService>(archived)
 private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()
+private fun provideFirebaseAppUserWriteService() = provideNew<FirebaseAppUserWriteService>()

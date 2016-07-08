@@ -27,21 +27,21 @@ import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.R.id.currencyCodeTextView
 import com.mvcoding.expensius.R.layout.item_view_currency
-import com.mvcoding.expensius.SubscriptionType
-import com.mvcoding.expensius.SubscriptionType.FREE
-import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.getDimensionFromTheme
 import com.mvcoding.expensius.extension.getString
 import com.mvcoding.expensius.extension.toBaseActivity
-import com.mvcoding.expensius.feature.ReportGroup
-import com.mvcoding.expensius.feature.ReportGroup.DAY
-import com.mvcoding.expensius.feature.ReportGroup.MONTH
-import com.mvcoding.expensius.feature.ReportGroup.WEEK
-import com.mvcoding.expensius.feature.ReportGroup.YEAR
 import com.mvcoding.expensius.feature.premium.PremiumActivity
 import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.ReportGroup.MONTH
+import com.mvcoding.expensius.model.ReportGroup.WEEK
+import com.mvcoding.expensius.model.ReportGroup.YEAR
+import com.mvcoding.expensius.model.SubscriptionType
+import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import kotlinx.android.synthetic.main.view_settings.view.*
 import org.chromium.customtabsclient.CustomTabsActivityHelper
 import rx.Observable
@@ -80,12 +80,12 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         presenter.detach(this)
     }
 
-    override fun onMainCurrencySelected() = mainCurrencySettingsItemView.clicks()
-    override fun onReportStepSelected() = reportStepSettingsItemView.clicks()
-    override fun onSupportDeveloperSelected() = supportDeveloperSettingsItemView.clicks()
-    override fun onAboutSelected() = versionSettingsItemView.clicks()
+    override fun mainCurrencyRequests() = mainCurrencySettingsItemView.clicks()
+    override fun reportStepRequests() = reportStepSettingsItemView.clicks()
+    override fun supportDeveloperRequests() = supportDeveloperSettingsItemView.clicks()
+    override fun aboutRequests() = versionSettingsItemView.clicks()
 
-    override fun requestMainCurrency(currencies: List<Currency>): Observable<Currency> = Observable.create {
+    override fun chooseMainCurrency(currencies: List<Currency>): Observable<Currency> = Observable.create {
         val displayCurrencies = currencies.map { it.displayName() }
         val itemHeight = getDimensionFromTheme(context, R.attr.actionBarSize)
         val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
@@ -106,7 +106,7 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         setSubtitle(mainCurrency.displayName())
     }
 
-    override fun requestReportStep(reportGroups: List<ReportGroup>): Observable<ReportGroup> = Observable.create {
+    override fun chooseReportGroup(reportGroups: List<ReportGroup>): Observable<ReportGroup> = Observable.create {
         val displayCurrencies = reportGroups.map { it.displayName() }
         val itemHeight = getDimensionFromTheme(context, R.attr.actionBarSize)
         val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
@@ -123,7 +123,7 @@ class SettingsView @JvmOverloads constructor(context: Context, attrs: AttributeS
         popupWindow.show()
     }
 
-    override fun showReportStep(reportGroup: ReportGroup) = with(reportStepSettingsItemView as SettingsItemView) {
+    override fun showReportGroup(reportGroup: ReportGroup) = with(reportStepSettingsItemView as SettingsItemView) {
         setSubtitle(reportGroup.displayName())
     }
 

@@ -15,16 +15,16 @@
 package com.mvcoding.expensius.firebase.model
 
 import com.mvcoding.expensius.model.Color
-import com.mvcoding.expensius.model.Color.Companion.noColor
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.ModelState.valueOf
+import com.mvcoding.expensius.model.NullModels.noColor
+import com.mvcoding.expensius.model.NullModels.noOrder
+import com.mvcoding.expensius.model.NullModels.noTagId
+import com.mvcoding.expensius.model.NullModels.noTitle
 import com.mvcoding.expensius.model.Order
-import com.mvcoding.expensius.model.Order.Companion.noOrder
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.TagId
-import com.mvcoding.expensius.model.TagId.Companion.noTagId
 import com.mvcoding.expensius.model.Title
-import com.mvcoding.expensius.model.Title.Companion.noTitle
 
 data class FirebaseTag(
         val id: String? = null,

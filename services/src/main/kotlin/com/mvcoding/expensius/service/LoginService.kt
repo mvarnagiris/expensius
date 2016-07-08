@@ -14,9 +14,8 @@
 
 package com.mvcoding.expensius.service
 
-import com.mvcoding.expensius.model.AppUser
 import rx.Observable
 
 interface LoginService {
-    fun loginAnonymously(): Observable<AppUser>
+    fun loginAnonymously(): Observable<Unit>
 }

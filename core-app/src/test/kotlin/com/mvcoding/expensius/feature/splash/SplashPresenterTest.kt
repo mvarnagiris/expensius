@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import com.mvcoding.expensius.model.AppUser.Companion.noAppUser
+import com.mvcoding.expensius.model.NullModels.noAppUser
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.AppUserService

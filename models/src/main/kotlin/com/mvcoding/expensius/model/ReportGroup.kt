@@ -14,11 +14,6 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.SubscriptionType
-import com.mvcoding.expensius.feature.ReportGroup
-import java.io.Serializable
-
-data class Settings(
-        val subscriptionType: SubscriptionType,
-        val mainCurrency: Currency,
-        val reportGroup: ReportGroup) : Serializable
+enum class ReportGroup {
+    DAY, WEEK, MONTH, YEAR;
+}

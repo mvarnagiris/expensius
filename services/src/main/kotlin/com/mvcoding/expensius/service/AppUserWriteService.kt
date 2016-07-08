@@ -12,8 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.service
 
-enum class SubscriptionType {
-    FREE, PREMIUM_PAID
+import com.mvcoding.expensius.model.Settings
+import rx.Observable
+
+interface AppUserWriteService {
+    fun saveSettings(settings: Settings): Observable<Unit>
 }

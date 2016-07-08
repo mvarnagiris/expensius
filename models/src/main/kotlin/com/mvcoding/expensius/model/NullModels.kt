@@ -14,16 +14,20 @@
 
 package com.mvcoding.expensius.model
 
-import java.util.*
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.SubscriptionType.FREE
 
-fun aString() = UUID.randomUUID().toString()
-fun aString(string: String) = "$string${anInt(1000)}"
-fun aStringId() = aString("id_")
-fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
-fun aLong() = Random().nextLong()
-fun aLong(limit: Int) = anInt(limit).toLong()
-fun anInt() = Random().nextInt()
-fun anInt(limit: Int) = Random().nextInt(limit)
-fun aLongTimestamp() = System.currentTimeMillis() - anInt(1000 * 60 * 60 * 24)
-fun aBoolean() = Math.random() >= 0.5
-fun <T> Array<T>.aRandomItem() = get(anInt(size - 1))
+object NullModels {
+    val noCurrency = Currency("")
+    val noSettings = Settings(noCurrency, DAY, FREE)
+
+    val noUserId = UserId("")
+    val noAppUser = AppUser(noUserId, noSettings, emptySet())
+
+    val noTagId = TagId("")
+    val noTitle = Title("")
+    val noColor = Color(0)
+    val noOrder = Order(0)
+    val noTag = Tag(noTagId, NONE, noTitle, noColor, noOrder)
+}

@@ -17,8 +17,8 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsPresenter.TagMove
+import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.ItemMoved

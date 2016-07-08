@@ -15,9 +15,9 @@
 package com.mvcoding.expensius.feature.premium
 
 import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.SubscriptionType
-import com.mvcoding.expensius.SubscriptionType.FREE
-import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.model.SubscriptionType
+import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock

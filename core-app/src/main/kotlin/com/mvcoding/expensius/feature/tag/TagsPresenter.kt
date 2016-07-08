@@ -19,9 +19,9 @@ import com.mvcoding.expensius.feature.Destroyable
 import com.mvcoding.expensius.feature.ItemsView
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter

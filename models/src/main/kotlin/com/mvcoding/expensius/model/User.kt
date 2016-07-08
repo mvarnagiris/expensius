@@ -14,25 +14,27 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.UserId.Companion.noUserId
 import java.io.Serializable
 
 interface User {
     val userId: UserId
 }
 
-data class UserId(val id: String) : Serializable {
-    companion object {
-        val noUserId = UserId("")
-    }
+data class UserId(val id: String) : Serializable
+
+data class Settings(val currency: Currency, val reportGroup: ReportGroup, val subscriptionType: SubscriptionType) : Serializable {
+    fun withCurrency(currency: Currency) = copy(currency = currency)
+    fun withReportGroup(reportGroup: ReportGroup) = copy(reportGroup = reportGroup)
+    fun withSubscriptionType(subscriptionType: SubscriptionType) = copy(subscriptionType = subscriptionType)
 }
 
-data class AppUser(override val userId: UserId, val authProviders: Set<AuthProvider>) : User, Serializable {
-    companion object {
-        val noAppUser = AppUser(noUserId, emptySet())
-    }
+data class AppUser(
+        override val userId: UserId,
+        val settings: Settings,
+        val authProviders: Set<AuthProvider>) : User, Serializable {
 
     fun isLoggedIn(): Boolean = authProviders.isNotEmpty()
+    fun withSettings(settings: Settings) = copy(settings = settings)
 }
 
 enum class AuthProvider {

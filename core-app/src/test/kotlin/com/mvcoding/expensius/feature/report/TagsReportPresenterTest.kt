@@ -16,9 +16,9 @@ package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.Filter
-import com.mvcoding.expensius.feature.ReportGroup.DAY
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ReportGroup.DAY
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import rx.lang.kotlin.BehaviorSubject

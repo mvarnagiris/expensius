@@ -22,8 +22,8 @@ import com.mvcoding.billing.Inventory
 import com.mvcoding.billing.Product
 import com.mvcoding.billing.ProductId
 import com.mvcoding.billing.ProductType.SINGLE
-import com.mvcoding.expensius.SubscriptionType.FREE
-import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 
 class BillingRemoteBillingProductsService(context: Context) : RemoteBillingProductsService, BillingFlow {
 

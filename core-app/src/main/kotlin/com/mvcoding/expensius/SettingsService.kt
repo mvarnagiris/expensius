@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius
 
-import com.mvcoding.expensius.model.Settings
 import rx.Observable
 
 interface SettingsService {

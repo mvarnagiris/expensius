@@ -18,8 +18,9 @@ import android.content.SharedPreferences
 import com.mvcoding.expensius.extension.getObject
 import com.mvcoding.expensius.extension.putBoolean
 import com.mvcoding.expensius.extension.putObject
-import com.mvcoding.expensius.feature.ReportGroup
 import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.SubscriptionType
 import rx.lang.kotlin.BehaviorSubject
 import java.util.*
 

@@ -14,8 +14,9 @@
 
 package com.mvcoding.expensius.model
 
+fun aSettings() = Settings(aCurrency(), ReportGroup.values().aRandomItem(), SubscriptionType.values().aRandomItem())
 fun aUserId() = UserId(aStringId())
 fun anAuthProvider() = AuthProvider.values().aRandomItem()
-fun anAppUser() = AppUser(aUserId(), setOf(anAuthProvider()))
+fun anAppUser() = AppUser(aUserId(), aSettings(), setOf(anAuthProvider()))
 fun AppUser.withNoAuthProviders() = copy(authProviders = emptySet())
 fun AppUser.withAuthProvider(authProvider: AuthProvider) = copy(authProviders = this.authProviders.plus(authProvider))

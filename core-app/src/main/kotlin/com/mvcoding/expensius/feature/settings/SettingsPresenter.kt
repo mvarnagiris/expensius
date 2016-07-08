@@ -14,56 +14,66 @@
 
 package com.mvcoding.expensius.feature.settings
 
-import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.SubscriptionType
-import com.mvcoding.expensius.feature.ReportGroup
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.SubscriptionType
+import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.AppUserWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class SettingsPresenter(
-        private val settings: Settings,
-        private val currenciesProvider: CurrenciesProvider) : Presenter<SettingsPresenter.View>() {
+        private val appUserService: AppUserService,
+        private val appUserWriteService: AppUserWriteService,
+        private val currenciesProvider: CurrenciesProvider,
+        private val schedulers: RxSchedulers) : Presenter<SettingsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
-        mainCurrency(view)
-        reportStep(view)
-        settings.subscriptionTypes().subscribeUntilDetached { view.showSubscriptionType(it) }
-        view.onSupportDeveloperSelected().subscribeUntilDetached { view.displaySupportDeveloper() }
-        view.onAboutSelected().subscribeUntilDetached { view.displayAbout() }
-    }
 
-    private fun mainCurrency(view: View) {
-        view.showMainCurrency(settings.mainCurrency)
-        view.onMainCurrencySelected()
-                .flatMap { currenciesProvider.currencies() }
-                .flatMap { view.requestMainCurrency(it) }
-                .doOnNext { settings.mainCurrency = it }
-                .subscribeUntilDetached { view.showMainCurrency(it) }
-        // TODO: Things need to get a notification that main currency has been changed and update.
-    }
+        appUserService.appUser()
+                .subscribeOn(schedulers.io)
+                .map { it.settings }
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached {
+                    view.showMainCurrency(it.currency)
+                    view.showReportGroup(it.reportGroup)
+                    view.showSubscriptionType(it.subscriptionType)
+                }
 
-    private fun reportStep(view: View) {
-        settings.reportSteps().subscribeUntilDetached { view.showReportStep(it) }
-        view.onReportStepSelected()
+        view.mainCurrencyRequests()
+                .switchMap { currenciesProvider.currencies() }
+                .switchMap { view.chooseMainCurrency(it) }
+                .observeOn(schedulers.io)
+                .withLatestFrom(appUserService.appUser().map { it.settings }, { newCurrency, settings -> settings.withCurrency(newCurrency) })
+                .switchMap { appUserWriteService.saveSettings(it) }
+                .subscribeUntilDetached { }
+
+        view.reportStepRequests()
                 .map { ReportGroup.values().toList() }
-                .flatMap { view.requestReportStep(it) }
-                .subscribeUntilDetached { settings.reportGroup = it }
+                .switchMap { view.chooseReportGroup(it) }
+                .observeOn(schedulers.io)
+                .withLatestFrom(appUserService.appUser().map { it.settings }, { newReportGroup, settings -> settings.withReportGroup(newReportGroup) })
+                .switchMap { appUserWriteService.saveSettings(it) }
+                .subscribeUntilDetached { }
+
+        view.supportDeveloperRequests().subscribeUntilDetached { view.displaySupportDeveloper() }
+        view.aboutRequests().subscribeUntilDetached { view.displayAbout() }
     }
 
     interface View : Presenter.View {
-        fun onMainCurrencySelected(): Observable<Unit>
-        fun onReportStepSelected(): Observable<Unit>
-        fun onSupportDeveloperSelected(): Observable<Unit>
-        fun onAboutSelected(): Observable<Unit>
+        fun mainCurrencyRequests(): Observable<Unit>
+        fun reportStepRequests(): Observable<Unit>
+        fun supportDeveloperRequests(): Observable<Unit>
+        fun aboutRequests(): Observable<Unit>
 
-        fun requestMainCurrency(currencies: List<Currency>): Observable<Currency>
-        fun requestReportStep(reportGroups: List<ReportGroup>): Observable<ReportGroup>
+        fun chooseMainCurrency(currencies: List<Currency>): Observable<Currency>
+        fun chooseReportGroup(reportGroups: List<ReportGroup>): Observable<ReportGroup>
 
         fun showMainCurrency(mainCurrency: Currency)
-        fun showReportStep(reportGroup: ReportGroup)
+        fun showReportGroup(reportGroup: ReportGroup)
         fun showSubscriptionType(subscriptionType: SubscriptionType)
 
         fun displaySupportDeveloper()

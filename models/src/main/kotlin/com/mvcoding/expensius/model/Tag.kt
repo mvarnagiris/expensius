@@ -14,38 +14,15 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.Color.Companion.noColor
-import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Order.Companion.noOrder
-import com.mvcoding.expensius.model.TagId.Companion.noTagId
-import com.mvcoding.expensius.model.Title.Companion.noTitle
 import java.io.Serializable
 
-data class TagId(val id: String) : Serializable {
-    companion object {
-        val noTagId = TagId("")
-    }
-}
-
+data class TagId(val id: String) : Serializable
+data class Color(val rgb: Int) : Serializable
 data class Title(val text: String) : Serializable {
-    companion object {
-        val noTitle = Title("")
-    }
-
     fun trimmed() = copy(text = text.trim())
 }
 
-data class Color(val rgb: Int) : Serializable {
-    companion object {
-        val noColor = Color(0)
-    }
-}
-
 data class Order(val value: Int) : Serializable, Comparable<Order> {
-    companion object {
-        val noOrder = Order(0)
-    }
-
     override fun compareTo(other: Order): Int = value.compareTo(other.value)
 }
 
@@ -56,10 +33,6 @@ data class Tag(
         val title: Title,
         val color: Color,
         val order: Order) : Serializable {
-
-    companion object {
-        val noTag = Tag(noTagId, NONE, noTitle, noColor, noOrder)
-    }
 
     fun withModelState(modelState: ModelState) = copy(modelState = modelState)
     fun withOrder(order: Int) = withOrder(Order(order))

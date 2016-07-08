@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import com.mvcoding.expensius.SubscriptionType
+import com.mvcoding.expensius.model.SubscriptionType
 
 data class BillingProduct(
         val id: String,

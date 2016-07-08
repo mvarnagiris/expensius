@@ -17,7 +17,6 @@ package com.mvcoding.expensius.feature.login
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ErrorView
 import com.mvcoding.expensius.feature.handleError
-import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
@@ -31,7 +30,7 @@ class LoginPresenter(
         private val defaultTags: DefaultTags,
         private val schedulers: RxSchedulers) : Presenter<LoginPresenter.View>() {
 
-    private var loginRequest: Observable<AppUser>? = null
+    private var loginRequest: Observable<Unit>? = null
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -50,7 +49,7 @@ class LoginPresenter(
 
     private fun unitIfLoginInProgress() = loginRequest?.let { just(Unit) } ?: empty()
 
-    private fun loginAnonymously(view: View): Observable<AppUser> {
+    private fun loginAnonymously(view: View): Observable<Unit> {
         val loginRequest = loginRequest ?: loginService.loginAnonymously().cache()
         this.loginRequest = loginRequest
 

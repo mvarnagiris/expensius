@@ -14,10 +14,15 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.feature.ReportGroup.DAY
-import com.mvcoding.expensius.feature.ReportGroup.MONTH
-import com.mvcoding.expensius.feature.ReportGroup.WEEK
-import com.mvcoding.expensius.feature.ReportGroup.YEAR
+import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
+import com.mvcoding.expensius.extensions.toInterval
+import com.mvcoding.expensius.extensions.toNumberOfGroups
+import com.mvcoding.expensius.extensions.toPeriod
+import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.ReportGroup.MONTH
+import com.mvcoding.expensius.model.ReportGroup.WEEK
+import com.mvcoding.expensius.model.ReportGroup.YEAR
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.DateTime
 import org.joda.time.Interval

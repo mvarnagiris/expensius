@@ -20,8 +20,8 @@ import com.mvcoding.expensius.model.Color
 import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Order
-import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.expensius.model.Title
 import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.service.TagsWriteService

@@ -16,15 +16,17 @@ package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
+import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.FilterData
-import com.mvcoding.expensius.feature.ReportGroup
 import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.NullModels
+import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Tag.Companion.noTag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
@@ -101,7 +103,7 @@ class TagsReportPresenter(
         return prepareReportItems(resultMap)
     }
 
-    private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(noTag) else tags }
+    private fun Transaction.tagsOrNoTag() = tags.let { tags -> if (tags.isEmpty()) setOf(NullModels.noTag) else tags }
 
     private fun prepareReportItems(
             resultMap: Map<Interval, HashMap<Tag, BigDecimal>>): List<TagsReportItem> {

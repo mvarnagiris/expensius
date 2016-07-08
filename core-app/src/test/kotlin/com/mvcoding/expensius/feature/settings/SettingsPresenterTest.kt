@@ -14,117 +14,116 @@
 
 package com.mvcoding.expensius.feature.settings
 
-import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.SubscriptionType
-import com.mvcoding.expensius.SubscriptionType.FREE
-import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
-import com.mvcoding.expensius.feature.ReportGroup
-import com.mvcoding.expensius.feature.ReportGroup.DAY
-import com.mvcoding.expensius.feature.ReportGroup.WEEK
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.ReportGroup.WEEK
+import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.rxSchedulers
+import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.AppUserWriteService
 import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
+import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
-import rx.observers.TestSubscriber.create
+import rx.observers.TestSubscriber
 
 class SettingsPresenterTest {
-    val selectMainCurrencySubject = PublishSubject<Unit>()
-    val selectReportStepSubject = PublishSubject<Unit>()
-    val selectSupportDeveloperSubject = PublishSubject<Unit>()
-    val selectAboutSubject = PublishSubject<Unit>()
+    val appUser = anAppUser()
 
-    val mainCurrencyRequestSubject = PublishSubject<Currency>()
-    val reportStepRequestSubject = PublishSubject<ReportGroup>()
+    val appUserSubject = BehaviorSubject(appUser)
+    val mainCurrencyRequestsSubject = PublishSubject<Unit>()
+    val reportStepRequestsSubject = PublishSubject<Unit>()
+    val supportDeveloperRequestsSubject = PublishSubject<Unit>()
+    val aboutRequestsSubject = PublishSubject<Unit>()
+    val chooseMainCurrencySubject = PublishSubject<Currency>()
+    val chooseReportGroupSubject = PublishSubject<ReportGroup>()
 
-    val reportStepsSubject = BehaviorSubject(DAY)
-    val subscriptionTypesSubject = BehaviorSubject(FREE)
-
-    val settings = mock<Settings>()
+    val appUserService: AppUserService = mock()
+    val appUserWriteService: AppUserWriteService = mock()
     val currenciesProvider = CurrenciesProvider()
-    val view = mock<SettingsPresenter.View>()
-    val presenter = SettingsPresenter(settings, currenciesProvider)
+    val view: SettingsPresenter.View = mock()
+    val presenter = SettingsPresenter(appUserService, appUserWriteService, currenciesProvider, rxSchedulers())
 
     @Before
     fun setUp() {
-        whenever(view.onMainCurrencySelected()).thenReturn(selectMainCurrencySubject)
-        whenever(view.onReportStepSelected()).thenReturn(selectReportStepSubject)
-        whenever(view.onSupportDeveloperSelected()).thenReturn(selectSupportDeveloperSubject)
-        whenever(view.onAboutSelected()).thenReturn(selectAboutSubject)
-        whenever(view.requestMainCurrency(any())).thenReturn(mainCurrencyRequestSubject)
-        whenever(view.requestReportStep(any())).thenReturn(reportStepRequestSubject)
-        whenever(settings.subscriptionTypes()).thenReturn(subscriptionTypesSubject)
-        whenever(settings.reportSteps()).thenReturn(reportStepsSubject)
-        whenever(settings.reportGroup).thenReturn(DAY)
-        doAnswer { reportStepsSubject.onNext(it.getArgument(0)) }.whenever(settings).reportGroup = any()
+        whenever(view.mainCurrencyRequests()).thenReturn(mainCurrencyRequestsSubject)
+        whenever(view.reportStepRequests()).thenReturn(reportStepRequestsSubject)
+        whenever(view.supportDeveloperRequests()).thenReturn(supportDeveloperRequestsSubject)
+        whenever(view.aboutRequests()).thenReturn(aboutRequestsSubject)
+        whenever(view.chooseMainCurrency(any())).thenReturn(chooseMainCurrencySubject)
+        whenever(view.chooseReportGroup(any())).thenReturn(chooseReportGroupSubject)
+        whenever(appUserService.appUser()).thenReturn(appUserSubject)
+        whenever(appUserWriteService.saveSettings(any())).thenReturn(just(Unit))
     }
 
     @Test
     fun showsMainCurrency() {
-        val mainCurrency = Currency("GBP")
-        whenever(settings.mainCurrency).thenReturn(mainCurrency)
-
         presenter.attach(view)
 
-        verify(view).showMainCurrency(mainCurrency)
+        verify(view).showMainCurrency(appUser.settings.currency)
     }
 
     @Test
     fun canSelectNewMainCurrency() {
-        val oldCurrency = Currency("GBP")
-        val newCurrency = Currency("EUR")
-        val allCurrencies = create<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
-        whenever(settings.mainCurrency).thenReturn(oldCurrency)
+        val allCurrencies = TestSubscriber<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
+        val newCurrency = Currency("NEW")
+        val updatedSettings = appUser.settings.withCurrency(newCurrency)
         presenter.attach(view)
 
-        selectMainCurrency()
-        setMainCurrency(newCurrency)
+        requestMainCurrency()
+        chooseMainCurrency(newCurrency)
+        updateAppUser(appUser.withSettings(updatedSettings))
 
-        verify(view).requestMainCurrency(allCurrencies)
+        verify(view).chooseMainCurrency(allCurrencies)
         verify(view).showMainCurrency(newCurrency)
-        verify(settings).mainCurrency = newCurrency
+        verify(appUserWriteService).saveSettings(updatedSettings)
     }
 
     @Test
-    fun showsReportStep() {
+    fun showsReportGroup() {
         presenter.attach(view)
 
-        verify(view).showReportStep(DAY)
+        verify(view).showReportGroup(appUser.settings.reportGroup)
     }
 
     @Test
     fun canSelectNewReportStep() {
+        val updatedSettings = appUser.settings.withReportGroup(WEEK)
+        updateAppUser(appUser.withSettings(appUser.settings.withReportGroup(DAY)))
         presenter.attach(view)
 
-        selectReportStep()
-        setReportStep(WEEK)
+        requestReportGroup()
+        chooseReportGroup(WEEK)
+        updateAppUser(appUser.withSettings(updatedSettings))
 
-        verify(view).requestReportStep(ReportGroup.values().toList())
-        verify(view).showReportStep(WEEK)
-        verify(settings).reportGroup = WEEK
+        verify(view).chooseReportGroup(ReportGroup.values().toList())
+        verify(view).showReportGroup(WEEK)
+        verify(appUserWriteService).saveSettings(updatedSettings)
     }
 
     @Test
     fun showsSubscriptionType() {
-        setSubscriptionType(PREMIUM_PAID)
-
         presenter.attach(view)
 
-        verify(view).showSubscriptionType(PREMIUM_PAID)
+        verify(view).showSubscriptionType(appUser.settings.subscriptionType)
     }
 
     @Test
     fun showsUpdatedSubscriptionType() {
-        setSubscriptionType(FREE)
+        updateAppUser(appUser.withSettings(appUser.settings.withSubscriptionType(FREE)))
         presenter.attach(view)
 
-        setSubscriptionType(PREMIUM_PAID)
+        updateAppUser(appUser.withSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID)))
 
         verify(view).showSubscriptionType(PREMIUM_PAID)
     }
@@ -133,7 +132,7 @@ class SettingsPresenterTest {
     fun displaysAbout() {
         presenter.attach(view)
 
-        selectAbout()
+        requestAbout()
 
         verify(view).displayAbout()
     }
@@ -142,16 +141,16 @@ class SettingsPresenterTest {
     fun displaysSupportDeveloper() {
         presenter.attach(view)
 
-        selectSupportDeveloper()
+        requestSupportDeveloper()
 
         verify(view).displaySupportDeveloper()
     }
 
-    private fun selectMainCurrency() = selectMainCurrencySubject.onNext(Unit)
-    private fun selectReportStep() = selectReportStepSubject.onNext(Unit)
-    private fun selectSupportDeveloper() = selectSupportDeveloperSubject.onNext(Unit)
-    private fun selectAbout() = selectAboutSubject.onNext(Unit)
-    private fun setMainCurrency(currency: Currency) = mainCurrencyRequestSubject.onNext(currency)
-    private fun setReportStep(reportGroup: ReportGroup) = reportStepRequestSubject.onNext(reportGroup)
-    private fun setSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypesSubject.onNext(subscriptionType)
+    private fun updateAppUser(appUser: AppUser) = appUserSubject.onNext(appUser)
+    private fun requestMainCurrency() = mainCurrencyRequestsSubject.onNext(Unit)
+    private fun requestReportGroup() = reportStepRequestsSubject.onNext(Unit)
+    private fun requestSupportDeveloper() = supportDeveloperRequestsSubject.onNext(Unit)
+    private fun requestAbout() = aboutRequestsSubject.onNext(Unit)
+    private fun chooseMainCurrency(currency: Currency) = chooseMainCurrencySubject.onNext(currency)
+    private fun chooseReportGroup(reportGroup: ReportGroup) = chooseReportGroupSubject.onNext(reportGroup)
 }

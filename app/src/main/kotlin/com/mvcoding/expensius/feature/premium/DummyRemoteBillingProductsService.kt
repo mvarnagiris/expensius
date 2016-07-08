@@ -17,8 +17,8 @@ package com.mvcoding.expensius.feature.premium
 import android.app.Activity
 import android.content.Intent
 import com.mvcoding.expensius.Settings
-import com.mvcoding.expensius.SubscriptionType.FREE
-import com.mvcoding.expensius.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import rx.Observable.just
 
 class DummyRemoteBillingProductsService(private val settings: Settings) : RemoteBillingProductsService, BillingFlow {

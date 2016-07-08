@@ -16,14 +16,14 @@ package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.color
 import com.mvcoding.expensius.model.Color
-import com.mvcoding.expensius.model.Color.Companion.noColor
 import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.NullModels.noColor
+import com.mvcoding.expensius.model.NullModels.noTagId
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.TagId.Companion.noTagId
 import com.mvcoding.expensius.model.Title
 import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
