@@ -15,19 +15,138 @@
 package com.mvcoding.expensius.feature.settings
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent
+import android.support.v7.widget.ListPopupWindow
+import android.widget.ArrayAdapter
+import com.jakewharton.rxbinding.view.clicks
+import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.getColorFromTheme
+import com.mvcoding.expensius.extension.getDimensionFromTheme
+import com.mvcoding.expensius.extension.getString
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.premium.PremiumActivity
+import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.ReportGroup.MONTH
+import com.mvcoding.expensius.model.ReportGroup.WEEK
+import com.mvcoding.expensius.model.ReportGroup.YEAR
+import com.mvcoding.expensius.model.SubscriptionType
+import kotlinx.android.synthetic.main.activity_settings.*
+import org.chromium.customtabsclient.CustomTabsActivityHelper
+import rx.Observable
+import java.lang.Math.min
 
-class SettingsActivity : BaseActivity() {
-
+class SettingsActivity : BaseActivity(), SettingsPresenter.View {
     companion object {
         fun start(context: Context) = ActivityStarter(context, SettingsActivity::class).start()
     }
 
+    private val presenter by lazy { provideSettingsPresenter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_settings)
+        setContentView(R.layout.activity_settings)
+
+        with(mainCurrencySettingsItemView as SettingsItemView) {
+            setTitle(getString(R.string.main_currency))
+        }
+        with(reportStepSettingsItemView as SettingsItemView) {
+            setTitle(getString(R.string.report_grouping))
+        }
+        with(supportDeveloperSettingsItemView as SettingsItemView) {
+            setTitle(getString(R.string.support_developer))
+        }
+        with(versionSettingsItemView as SettingsItemView) {
+            setTitle(getString(R.string.about))
+            setSubtitle("v${BuildConfig.VERSION_NAME}")
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.attach(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter.detach(this)
+    }
+
+    override fun mainCurrencyRequests() = mainCurrencySettingsItemView.clicks()
+    override fun reportStepRequests() = reportStepSettingsItemView.clicks()
+    override fun supportDeveloperRequests() = supportDeveloperSettingsItemView.clicks()
+    override fun aboutRequests() = versionSettingsItemView.clicks()
+
+    override fun chooseMainCurrency(currencies: List<Currency>): Observable<Currency> = Observable.create {
+        val displayCurrencies = currencies.map { it.displayName() }
+        val itemHeight = getDimensionFromTheme(R.attr.actionBarSize)
+        val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
+        val keylineHalf = resources.getDimensionPixelOffset(R.dimen.keyline_half)
+        val popupWindow = ListPopupWindow(this)
+        popupWindow.anchorView = mainCurrencySettingsItemView
+        popupWindow.setAdapter(ArrayAdapter<String>(this, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
+        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(currencies[position]); popupWindow.dismiss() }
+        popupWindow.setOnDismissListener { it.onCompleted() }
+        popupWindow.width = contentView.width - keyline
+        popupWindow.height = min(contentView.height - mainCurrencySettingsItemView.bottom - itemHeight - keylineHalf, itemHeight * 7)
+        popupWindow.isModal = true
+        popupWindow.horizontalOffset = keylineHalf
+        popupWindow.show()
+    }
+
+    override fun chooseReportGroup(reportGroups: List<ReportGroup>): Observable<ReportGroup> = Observable.create {
+        val displayCurrencies = reportGroups.map { it.displayName() }
+        val itemHeight = getDimensionFromTheme(this, R.attr.actionBarSize)
+        val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
+        val keylineHalf = resources.getDimensionPixelOffset(R.dimen.keyline_half)
+        val popupWindow = ListPopupWindow(this)
+        popupWindow.anchorView = reportStepSettingsItemView
+        popupWindow.setAdapter(ArrayAdapter<String>(this, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
+        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(reportGroups[position]); popupWindow.dismiss() }
+        popupWindow.setOnDismissListener { it.onCompleted() }
+        popupWindow.width = contentView.width - keyline
+        popupWindow.height = min(contentView.height - reportStepSettingsItemView.bottom - itemHeight - keylineHalf, itemHeight * reportGroups.size)
+        popupWindow.isModal = true
+        popupWindow.horizontalOffset = keylineHalf
+        popupWindow.show()
+    }
+
+    override fun showMainCurrency(mainCurrency: Currency) = with(mainCurrencySettingsItemView as SettingsItemView) { setSubtitle(mainCurrency.displayName()) }
+    override fun showReportGroup(reportGroup: ReportGroup) = with(reportStepSettingsItemView as SettingsItemView) { setSubtitle(reportGroup.displayName()) }
+    override fun showSubscriptionType(subscriptionType: SubscriptionType) = with(supportDeveloperSettingsItemView as SettingsItemView) {
+        setSubtitle(when (subscriptionType) {
+            SubscriptionType.FREE -> getString(R.string.long_user_is_using_free_version)
+            SubscriptionType.PREMIUM_PAID -> getString(R.string.long_user_is_using_premium_version)
+        })
+    }
+
+    override fun displaySupportDeveloper(): Unit = PremiumActivity.start(this)
+
+    override fun displayAbout() {
+        CustomTabsActivityHelper.openCustomTab(
+                this,
+                CustomTabsIntent.Builder()
+                        .setToolbarColor(getColorFromTheme(R.attr.colorPrimary))
+                        .setSecondaryToolbarColor(getColorFromTheme(R.attr.colorAccent))
+                        .setShowTitle(false)
+                        .enableUrlBarHiding()
+                        .build(),
+                Uri.parse("https://github.com/mvarnagiris/expensius/blob/dev/CHANGELOG.md"),
+                { activity, uri -> openUrl(uri) })
+    }
+
+    private fun openUrl(uri: Uri): Unit = this.startActivity(Intent(Intent.ACTION_VIEW, uri))
+
+    private fun ReportGroup.displayName() = when (this) {
+        DAY -> getString(R.string.day)
+        WEEK -> getString(R.string.week)
+        MONTH -> getString(R.string.month)
+        YEAR -> getString(R.string.year)
     }
 }

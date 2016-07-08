@@ -41,3 +41,4 @@ fun Context.isActivity(): Boolean {
 }
 
 fun Context.getColorFromTheme(attrId: Int) = getColorFromTheme(this, attrId)
+fun Context.getDimensionFromTheme(attrId: Int) = getDimensionFromTheme(this, attrId)

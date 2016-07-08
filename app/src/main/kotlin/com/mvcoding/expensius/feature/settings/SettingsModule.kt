@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.feature.settings
 
-import android.view.View
+import android.app.Activity
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
@@ -22,7 +22,7 @@ import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
 import com.mvcoding.expensius.provideAppUserService
 import com.mvcoding.expensius.provideAppUserWriteService
 import com.mvcoding.expensius.provideRxSchedulers
-import memoizrlabs.com.shankandroid.withActivityScope
+import memoizrlabs.com.shankandroid.withThisScope
 
 class SettingsModule : ShankModule {
     override fun registerFactories() {
@@ -34,4 +34,4 @@ class SettingsModule : ShankModule {
     }
 }
 
-fun View.provideSettingsPresenter(): SettingsPresenter = withActivityScope.provideSingletonFor()
+fun Activity.provideSettingsPresenter() = withThisScope.provideSingletonFor<SettingsPresenter>()

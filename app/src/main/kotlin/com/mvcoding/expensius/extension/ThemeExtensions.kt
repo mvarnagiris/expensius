@@ -17,15 +17,15 @@ package com.mvcoding.expensius.extension
 import android.content.Context
 
 fun getColorFromTheme(context: Context, attrId: Int): Int {
-    val a = context.theme.obtainStyledAttributes(intArrayOf(attrId));
-    val color = a.getColor(0, 0);
-    a.recycle();
-    return color;
+    val a = context.theme.obtainStyledAttributes(intArrayOf(attrId))
+    val color = a.getColor(0, 0)
+    a.recycle()
+    return color
 }
 
 fun getDimensionFromTheme(context: Context, attrId: Int): Int {
-    val a = context.theme.obtainStyledAttributes(intArrayOf(attrId));
-    val color = a.getDimensionPixelSize(0, 0);
-    a.recycle();
-    return color;
+    val a = context.theme.obtainStyledAttributes(intArrayOf(attrId))
+    val color = a.getDimensionPixelSize(0, 0)
+    a.recycle()
+    return color
 }

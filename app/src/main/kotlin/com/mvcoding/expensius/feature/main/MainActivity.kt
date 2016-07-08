@@ -35,7 +35,6 @@ import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.feature.settings.SettingsView
 import com.mvcoding.expensius.feature.transaction.TransactionsView
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -57,9 +56,9 @@ class MainActivity : BaseActivity() {
         val selectedTabColor = getColorFromTheme(tabLayout.context, R.attr.colorAccent)
         val screens = listOf(
                 Screen(reportsInflater(), R.drawable.ic_action_reports),
-                Screen(transactionsInflater(), R.drawable.ic_action_transactions),
+                Screen(transactionsInflater(), R.drawable.ic_action_transactions)
                 //                Screen(tagsInflater(), R.drawable.ic_action_tag),
-                Screen(settingsInflater(), R.drawable.ic_action_settings)
+                //                Screen(settingsInflater(), R.drawable.ic_action_settings)
         )
 
         viewPager.adapter = ScreensAdapter(screens)
@@ -107,7 +106,7 @@ class MainActivity : BaseActivity() {
 
     private fun settingsInflater() = {
         layoutInflater: LayoutInflater, parent: ViewGroup ->
-        parent.inflate<SettingsView>(R.layout.view_settings)
+        //        parent.inflate<SettingsView>(R.layout.activity_settings)
     }
 
     private fun updateFloatingActionButtons(position: Int) {
