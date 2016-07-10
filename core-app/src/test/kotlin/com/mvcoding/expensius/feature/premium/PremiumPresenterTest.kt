@@ -14,10 +14,13 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.rxSchedulers
+import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.AppUserWriteService
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
@@ -26,30 +29,34 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
+import org.mockito.InOrder
 import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class PremiumPresenterTest {
+    private val appUser = anAppUser()
+
+    val appUserSubject = BehaviorSubject(appUser)
     val refreshSubject = PublishSubject<Unit>()
-    val subscriptionTypeSubject = BehaviorSubject(FREE)
     val billingProductSubject = PublishSubject<BillingProduct>()
     var purchaseSubject = PublishSubject<Unit>()
 
-    val remoteBillingProductsService = mock<RemoteBillingProductsService>()
-    val billingProductsProvider = BillingProductsProvider(remoteBillingProductsService)
-    val settings = mock<Settings>()
-    val view = mock<PremiumPresenter.View>()
-    val presenter = PremiumPresenter(settings, billingProductsProvider)
-    val inOrder = inOrder(view)
+    val billingProductsService: BillingProductsService = mock()
+    val appUserService: AppUserService = mock()
+    val appUserWriteService: AppUserWriteService = mock()
+    val view: PremiumPresenter.View = mock()
+    val presenter = PremiumPresenter(appUserService, appUserWriteService, billingProductsService, rxSchedulers())
+    val inOrder: InOrder = inOrder(view)
 
     @Before
     fun setUp() {
-        whenever(view.onRefresh()).thenReturn(refreshSubject)
-        whenever(view.onBillingProductSelected()).thenReturn(billingProductSubject)
+        whenever(appUserService.appUser()).thenReturn(appUserSubject)
+        whenever(appUserWriteService.saveSettings(any())).thenReturn(just(Unit))
+        whenever(view.refreshes()).thenReturn(refreshSubject)
+        whenever(view.billingProductSelects()).thenReturn(billingProductSubject)
         whenever(view.displayBuyProcess(any())).thenReturn(purchaseSubject)
-        whenever(settings.subscriptionTypes()).thenReturn(subscriptionTypeSubject)
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(emptyList()))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(emptyList()))
     }
 
     @Test
@@ -77,7 +84,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation(),
                 aBillingProduct().asPremium().notOwned())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts))
 
         presenter.attach(view)
 
@@ -94,7 +101,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().owned(),
                 aBillingProduct().asDonation(),
                 aBillingProduct().asPremium().notOwned())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts))
 
         presenter.attach(view)
 
@@ -102,7 +109,7 @@ class PremiumPresenterTest {
         inOrder.verify(view).hideLoading()
         inOrder.verify(view).hideEmptyView()
         inOrder.verify(view).showBillingProducts(billingProducts.filter { it.subscriptionType == PREMIUM_PAID })
-        verify(settings).subscriptionType = PREMIUM_PAID
+        verify(appUserWriteService).saveSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID))
     }
 
     @Test
@@ -112,7 +119,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().owned(),
                 aBillingProduct().asDonation(),
                 aBillingProduct().asPremium().notOwned())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts))
 
         presenter.attach(view)
 
@@ -120,7 +127,7 @@ class PremiumPresenterTest {
         inOrder.verify(view).hideLoading()
         inOrder.verify(view).hideEmptyView()
         inOrder.verify(view).showBillingProducts(billingProducts.filter { it.subscriptionType == PREMIUM_PAID })
-        verify(settings, never()).subscriptionType = any()
+        verify(appUserWriteService, never()).saveSettings(any())
     }
 
     @Test
@@ -130,7 +137,7 @@ class PremiumPresenterTest {
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation(),
                 aBillingProduct().asPremium().notOwned())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts))
         presenter.attach(view)
 
         setSubscriptionType(PREMIUM_PAID)
@@ -147,7 +154,7 @@ class PremiumPresenterTest {
     @Test
     fun showsEmptyViewWhenThereAreNoPurchases() {
         setSubscriptionType(FREE)
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(emptyList()))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(emptyList()))
 
         presenter.attach(view)
 
@@ -162,7 +169,7 @@ class PremiumPresenterTest {
         setSubscriptionType(FREE)
         val billingProducts = listOf(aBillingProduct().asPremium().notOwned(), aBillingProduct().asPremium().notOwned())
         val updatedBillingProducts = listOf(aBillingProduct().asPremium().notOwned())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts), just(updatedBillingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts), just(updatedBillingProducts))
         presenter.attach(view)
 
         refresh()
@@ -178,13 +185,10 @@ class PremiumPresenterTest {
     }
 
     @Test
-    fun billingProductsProviderIsDisposedOnDestroy() {
-        setSubscriptionType(FREE)
-        presenter.attach(view)
-
+    fun billingProductsProviderIsClosedOnDestroy() {
         presenter.onDestroy()
 
-        verify(remoteBillingProductsService).dispose()
+        verify(billingProductsService).close()
     }
 
     @Test
@@ -193,14 +197,14 @@ class PremiumPresenterTest {
         val billingProducts = listOf(
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts))
         presenter.attach(view)
 
         selectBillingProduct(billingProducts.first())
         makeSuccessfulPurchase()
 
         verify(view).displayBuyProcess(billingProducts.first().id)
-        verify(settings).subscriptionType = PREMIUM_PAID
+        verify(appUserWriteService).saveSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID))
     }
 
     @Test
@@ -209,14 +213,14 @@ class PremiumPresenterTest {
         val billingProducts = listOf(
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts))
         presenter.attach(view)
 
         selectBillingProduct(billingProducts.first())
         makeFailedPurchase()
 
         verify(view).displayBuyProcess(billingProducts.first().id)
-        verify(settings, never()).subscriptionType = any()
+        verify(appUserWriteService, never()).saveSettings(any())
     }
 
     @Test
@@ -225,7 +229,7 @@ class PremiumPresenterTest {
         val billingProducts = listOf(
                 aBillingProduct().asPremium().notOwned(),
                 aBillingProduct().asDonation())
-        whenever(remoteBillingProductsService.billingProducts()).thenReturn(just(billingProducts))
+        whenever(billingProductsService.billingProducts()).thenReturn(just(billingProducts))
         presenter.attach(view)
         selectBillingProduct(billingProducts.first())
         makeFailedPurchase()
@@ -233,10 +237,10 @@ class PremiumPresenterTest {
         selectBillingProduct(billingProducts.first())
         makeSuccessfulPurchase()
 
-        verify(settings).subscriptionType = PREMIUM_PAID
+        verify(appUserWriteService).saveSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID))
     }
 
-    private fun setSubscriptionType(subscriptionType: SubscriptionType) = subscriptionTypeSubject.onNext(subscriptionType)
+    private fun setSubscriptionType(subscriptionType: SubscriptionType) = appUserSubject.onNext(appUser.withSubscriptionType(subscriptionType))
     private fun selectBillingProduct(billingProduct: BillingProduct) = billingProductSubject.onNext(billingProduct)
     private fun refresh() = refreshSubject.onNext(Unit)
     private fun makeSuccessfulPurchase() = purchaseSubject.onNext(Unit)

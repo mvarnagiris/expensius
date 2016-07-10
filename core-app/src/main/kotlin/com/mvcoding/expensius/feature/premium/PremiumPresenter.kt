@@ -14,72 +14,89 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import com.mvcoding.expensius.Settings
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.Destroyable
 import com.mvcoding.expensius.feature.EmptyView
 import com.mvcoding.expensius.feature.ErrorView
 import com.mvcoding.expensius.feature.RefreshableView
-import com.mvcoding.expensius.feature.showEmptyState
-import com.mvcoding.expensius.feature.showLoadingState
+import com.mvcoding.expensius.feature.ignoreError
+import com.mvcoding.expensius.feature.updateEmptyView
+import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.AppUserWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
-import rx.Observable.empty
+import rx.Observable.just
 
 class PremiumPresenter(
-        private val settings: Settings,
-        private val billingProductsProvider: BillingProductsProvider) : Presenter<PremiumPresenter.View>(), Destroyable {
+        private val appUserService: AppUserService,
+        private val appUserWriteService: AppUserWriteService,
+        private val billingProductsService: BillingProductsService,
+        private val schedulers: RxSchedulers) : Presenter<PremiumPresenter.View>(), Destroyable {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        settings.subscriptionTypes().subscribeUntilDetached { view.showSubscriptionType(it) }
-        view.onBillingProductSelected()
-                .flatMap { view.displayBuyProcess(it.id).onErrorResumeNext { empty() } }
-                .subscribeUntilDetached { settings.subscriptionType = PREMIUM_PAID }
-        view.onRefresh().subscribeUntilDetached { billingProductsProvider.refresh() }
-        billingProductsProvider.loadingStates().subscribeUntilDetached { view.showLoadingState(it) }
-        billingProductsProvider.emptyStates().subscribeUntilDetached { view.showEmptyState(it) }
-        billingData(view).subscribeUntilDetached {
-            settings.updateToPremiumPaidIfNecessary(it, view)
-            view.showBillingProducts(it.billingProducts())
-        }
+        appUserService.appUser()
+                .subscribeOn(schedulers.io)
+                .map { it.settings.subscriptionType }
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showSubscriptionType(it) }
+
+        view.refreshes()
+                .startWith(Unit)
+                .doOnNext { view.showLoading() }
+                .observeOn(schedulers.io)
+                .switchMap { billingData() }
+                .switchMap { it.updateToPremiumPaidIfNecessary() }
+                .map { it.billingProducts() }
+                .observeOn(schedulers.main)
+                .doOnNext { view.hideLoading() }
+                .doOnNext { view.updateEmptyView(it) }
+                .subscribeUntilDetached { view.showBillingProducts(it) }
+
+        view.billingProductSelects()
+                .switchMap { view.displayBuyProcess(it.id).ignoreError() }
+                .observeOn(schedulers.io)
+                .withLatestFrom(appUserService.appUser().map { it.settings }, { unit, settings -> settings })
+                .switchMap { updateToPremiumPaid(it) }
+                .subscribeUntilDetached()
     }
 
-    private fun billingData(view: View): Observable<BillingData> = combineLatest(
-            billingProductsProvider.data(view),
-            settings.subscriptionTypes(),
-            { billingProducts, subscriptionType -> BillingData(subscriptionType, billingProducts) })
+    private fun billingData(): Observable<BillingData> = combineLatest(
+            appUserService.appUser().map { it.settings },
+            billingProductsService.billingProducts(),
+            { settings, billingProducts -> BillingData(settings, billingProducts) })
 
     override fun onDestroy() {
-        billingProductsProvider.dispose()
+        billingProductsService.close()
     }
 
     private fun View.showSubscriptionType(subscriptionType: SubscriptionType) =
             if (subscriptionType == FREE) showFreeUser()
             else showPremiumUser()
 
-    private fun Settings.updateToPremiumPaidIfNecessary(billingData: BillingData, view: View) {
-        if (billingData.shouldUpdateToPremiumPaid()) {
-            subscriptionType = PREMIUM_PAID
-            view.showPremiumUser()
-        }
-    }
+    private fun BillingData.updateToPremiumPaidIfNecessary(): Observable<BillingData> =
+            if (shouldUpdateToPremiumPaid()) updateToPremiumPaid(settings).map { this }
+            else just(this)
 
-    private data class BillingData(private val subscriptionType: SubscriptionType, private val billingProducts: List<BillingProduct>) {
+    private fun updateToPremiumPaid(settings: Settings) = appUserWriteService.saveSettings(settings.withSubscriptionType(PREMIUM_PAID))
+
+    private data class BillingData(val settings: Settings, private val billingProducts: List<BillingProduct>) {
         fun subscriptionType() =
-                if (subscriptionType == PREMIUM_PAID || billingProducts.any { it.isOwned && it.subscriptionType == FREE }) PREMIUM_PAID
+                if (settings.subscriptionType == PREMIUM_PAID || billingProducts.any { it.isOwned && it.subscriptionType == FREE }) PREMIUM_PAID
                 else FREE
 
-        fun shouldUpdateToPremiumPaid() = subscriptionType != PREMIUM_PAID && subscriptionType() == PREMIUM_PAID
+        fun shouldUpdateToPremiumPaid() = settings.subscriptionType != PREMIUM_PAID && subscriptionType() == PREMIUM_PAID
         fun billingProducts() = billingProducts.filter { it.subscriptionType == subscriptionType() }
     }
 
     interface View : Presenter.View, RefreshableView, EmptyView, ErrorView {
-        fun onBillingProductSelected(): Observable<BillingProduct>
+        fun billingProductSelects(): Observable<BillingProduct>
         fun showFreeUser()
         fun showPremiumUser()
         fun showBillingProducts(billingProducts: List<BillingProduct>)

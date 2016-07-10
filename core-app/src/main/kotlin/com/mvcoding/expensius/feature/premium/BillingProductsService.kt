@@ -14,11 +14,9 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import com.mvcoding.expensius.CachedDataProvider
-import com.mvcoding.expensius.CachedDataService
+import rx.Observable
+import java.io.Closeable
 
-class BillingProductsProvider(private val remoteBillingProductsService: RemoteBillingProductsService) :
-        CachedDataProvider<List<BillingProduct>>(CachedDataService { remoteBillingProductsService.billingProducts() }) {
-
-    fun dispose() = remoteBillingProductsService.dispose()
+interface BillingProductsService : Closeable {
+    fun billingProducts(): Observable<List<BillingProduct>>
 }

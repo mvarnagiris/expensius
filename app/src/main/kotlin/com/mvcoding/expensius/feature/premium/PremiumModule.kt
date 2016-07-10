@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import android.view.View
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
@@ -22,10 +21,13 @@ import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.extension.provideSingleton
-import com.mvcoding.expensius.extension.scope
+import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.provideAppUserService
+import com.mvcoding.expensius.provideAppUserWriteService
 import com.mvcoding.expensius.provideContext
+import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provideSettings
-import memoizrlabs.com.shankandroid.withActivityScope
+import memoizrlabs.com.shankandroid.withThisScope
 
 class PremiumModule : ShankModule {
     override fun registerFactories() {
@@ -34,22 +36,21 @@ class PremiumModule : ShankModule {
         premiumPresenter()
     }
 
-    private fun remoteBillingProductsService() = registerFactory(RemoteBillingProductsService::class) { ->
-        if (BuildConfig.DEBUG) DummyRemoteBillingProductsService(provideSettings())
-        else BillingRemoteBillingProductsService(provideContext())
+    private fun remoteBillingProductsService() = registerFactory(BillingProductsService::class) { ->
+        if (BuildConfig.DEBUG) DummyBillingProductsService(provideSettings())
+        else BillingBillingProductsService(provideContext())
     }
 
     private fun billingFlow() = registerFactory(BillingFlow::class) { scope: Scope ->
-        provideRemoteBillingProductsService(scope) as BillingFlow
+        provideBillingProductsService(scope) as BillingFlow
     }
 
     private fun premiumPresenter() = registerFactory(PremiumPresenter::class.java) { scope: Scope ->
-        val remoteBillingProductsService = provideRemoteBillingProductsService(scope)
-        val billingProductsProvider = BillingProductsProvider(remoteBillingProductsService)
-        PremiumPresenter(provideSettings(), billingProductsProvider)
+        val billingProductsService = provideBillingProductsService(scope)
+        PremiumPresenter(provideAppUserService(), provideAppUserWriteService(), billingProductsService, provideRxSchedulers())
     }
 }
 
-private fun provideRemoteBillingProductsService(scope: Scope): RemoteBillingProductsService = scope.provideSingleton()
-fun View.provideBillingFlow(): BillingFlow = withActivityScope.provideSingletonFor(scope())
-fun View.providePremiumPresenter(): PremiumPresenter = withActivityScope.provideSingletonFor(scope())
+private fun provideBillingProductsService(scope: Scope): BillingProductsService = scope.provideSingleton()
+fun BaseActivity.provideBillingFlow(): BillingFlow = withThisScope.provideSingletonFor(scope)
+fun BaseActivity.providePremiumPresenter(): PremiumPresenter = withThisScope.provideSingletonFor(scope)

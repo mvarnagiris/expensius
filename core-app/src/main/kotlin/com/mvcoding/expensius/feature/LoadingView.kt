@@ -14,14 +14,9 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.LoadingState
-import com.mvcoding.expensius.LoadingState.LOADING
 import com.mvcoding.mvp.Presenter
 
 interface LoadingView : Presenter.View {
     fun showLoading()
     fun hideLoading()
 }
-
-// TODO: Delete this
-fun LoadingView.showLoadingState(loadingState: LoadingState) = if (loadingState == LOADING) showLoading() else hideLoading()

@@ -14,8 +14,6 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.EmptyState
-import com.mvcoding.expensius.EmptyState.EMPTY
 import com.mvcoding.mvp.Presenter
 
 interface EmptyView : Presenter.View {
@@ -23,4 +21,4 @@ interface EmptyView : Presenter.View {
     fun hideEmptyView()
 }
 
-fun EmptyView.showEmptyState(emptyState: EmptyState) = if (emptyState == EMPTY) showEmptyView() else hideEmptyView()
+fun EmptyView.updateEmptyView(collection: Collection<*>) = if (collection.isEmpty()) showEmptyView() else hideEmptyView()

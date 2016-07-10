@@ -20,7 +20,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "io.reactivex:rxkotlin:$rxkotlin_version"
     compile 'joda-time:joda-time:2.9.2'
-    compile 'com.github.mvarnagiris:mvp:3d4f87fbea'
+    compile 'com.github.mvarnagiris:mvp:162ade81a4'
 
     testCompile project(':test_models_extensions')
     testCompile "junit:junit:$junit_version"

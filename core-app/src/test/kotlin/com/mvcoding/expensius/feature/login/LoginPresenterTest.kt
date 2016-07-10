@@ -15,9 +15,7 @@
 package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.feature.toError
-import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.aCreateTag
-import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.expensius.service.TagsWriteService
@@ -44,7 +42,7 @@ class LoginPresenterTest {
 
     @Before
     fun setUp() {
-        whenever(loginService.loginAnonymously()).thenReturn(just(anAppUser()))
+        whenever(loginService.loginAnonymously()).thenReturn(just(Unit))
         whenever(tagsWriteService.createTags(any())).thenReturn(just(Unit))
         whenever(defaultTags.getDefaultTags()).thenReturn(setOf(aCreateTag()))
         whenever(view.loginAnonymouslyRequests()).thenReturn(loginAnonymouslyRequestsSubject)
@@ -69,7 +67,7 @@ class LoginPresenterTest {
     @Test
     fun handlesAnonymousLoginErrors() {
         val throwable = Throwable()
-        whenever(loginService.loginAnonymously()).thenReturn(error(throwable), just(anAppUser()))
+        whenever(loginService.loginAnonymously()).thenReturn(error(throwable), just(Unit))
         presenter.attach(view)
 
         loginAnonymously()
@@ -97,8 +95,6 @@ class LoginPresenterTest {
 
     @Test
     fun resumesLoginAfterReattach() {
-        val loginSubject = PublishSubject<AppUser>()
-        whenever(loginService.loginAnonymously()).thenReturn(loginSubject)
         presenter.attach(view)
 
         loginAnonymously()
@@ -108,7 +104,7 @@ class LoginPresenterTest {
         presenter.attach(view)
         inOrder.verify(view).showLoggingIn()
 
-        loginSubject.onNext(anAppUser())
+        loginAnonymously()
         inOrder.verify(view).hideLoggingIn()
         inOrder.verify(view).displayApp()
     }

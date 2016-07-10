@@ -24,8 +24,9 @@ import com.mvcoding.billing.ProductId
 import com.mvcoding.billing.ProductType.SINGLE
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
+import rx.Observable
 
-class BillingRemoteBillingProductsService(context: Context) : RemoteBillingProductsService, BillingFlow {
+class BillingBillingProductsService(context: Context) : BillingProductsService, BillingFlow {
 
     private val premiumItemsIds = listOf("premium_1", "premium_2", "premium_3")
 
@@ -36,14 +37,14 @@ class BillingRemoteBillingProductsService(context: Context) : RemoteBillingProdu
             + "4Rs+8Jscq72xUPJffrj8M8gFosLgsyNLZ0Ci7ubSpfuKEfkUiCq30R8A0vbeFsXaevu0Luv9BlaUxYBEgMTg4Qt+emVqWfrMYqc0k9IEmd0/hRapCSPMhYHY9Gfy"
             + "LU7pyUkMYmsQIDAQAB")
 
-    override fun billingProducts() = billingHelper.startSetup().map {
+    override fun billingProducts(): Observable<List<BillingProduct>> = billingHelper.startSetup().map {
         val inventory = billingHelper.queryInventory(true, premiumItemsIds.map { ProductId(it) })
         inventory.products().map { it.toBillingProduct(inventory) }
     }
 
-    override fun dispose() = billingHelper.dispose()
+    override fun close() = billingHelper.dispose()
 
-    override fun startPurchase(activity: Activity, requestCode: Int, productId: String) =
+    override fun startPurchase(activity: Activity, requestCode: Int, productId: String): Observable<Unit> =
             billingHelper.launchPurchaseFlow(activity, requestCode, ProductId(productId), SINGLE, emptyList(), "").map { Unit }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) =

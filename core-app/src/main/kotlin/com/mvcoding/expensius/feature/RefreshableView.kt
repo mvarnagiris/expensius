@@ -17,5 +17,5 @@ package com.mvcoding.expensius.feature
 import rx.Observable
 
 interface RefreshableView : LoadingView {
-    fun onRefresh(): Observable<Unit>
+    fun refreshes(): Observable<Unit>
 }

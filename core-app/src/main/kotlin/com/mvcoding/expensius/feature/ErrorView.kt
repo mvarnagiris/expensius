@@ -26,9 +26,10 @@ data class Error(val throwable: Throwable)
 
 fun Throwable.toError() = Error(this)
 
-fun <T> ErrorView.handleError(throwable: Throwable, actionOnMain: (Error) -> Unit = {}): Observable<T> {
+fun <T> Observable<T>.ignoreError(): Observable<T> = onErrorResumeNext { empty() }
+fun <T> ErrorView.handleError(throwable: Throwable, action: (Error) -> Unit = {}): Observable<T> {
     val error = throwable.toError()
-    actionOnMain(error)
+    action(error)
     showError(error)
     return empty<T>()
 }
