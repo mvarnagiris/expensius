@@ -15,7 +15,11 @@
 package com.mvcoding.expensius.feature.calculator
 
 import android.app.Activity
+import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.provideSettings
+import memoizrlabs.com.shankandroid.withThisScope
 import java.math.BigDecimal
 
 class CalculatorModule : ShankModule {

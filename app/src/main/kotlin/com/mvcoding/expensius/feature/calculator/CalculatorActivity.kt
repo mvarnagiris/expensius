@@ -18,6 +18,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding.view.longClicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -25,6 +27,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.transaction.TransactionActivity
 import com.mvcoding.expensius.model.Transaction
+import kotlinx.android.synthetic.main.activity_calculator.*
 import java.math.BigDecimal
 
 class CalculatorActivity : BaseActivity(), CalculatorPresenter.View {

@@ -19,6 +19,10 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.mvp.Presenter
+import rx.Observable
+import rx.Observable.merge
+import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorPresenter(
