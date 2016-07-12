@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.splash
 
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
 import com.mvcoding.expensius.model.NullModels.noAppUser
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
@@ -35,7 +36,7 @@ class SplashPresenterTest {
 
         presenter.attach(view)
 
-        verify(view).displayLogin()
+        verify(view).displayLogin(APP)
     }
 
     @Test

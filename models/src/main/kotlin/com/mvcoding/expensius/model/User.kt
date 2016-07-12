@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.model
 
+import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import java.io.Serializable
 
 interface User {
@@ -34,9 +35,12 @@ data class AppUser(
         val authProviders: Set<AuthProvider>) : User, Serializable {
 
     fun isLoggedIn(): Boolean = authProviders.isNotEmpty()
+    fun isWithNonAnonymousAccount() = authProviders.any { it != ANONYMOUS }
     fun withSubscriptionType(subscriptionType: SubscriptionType) = withSettings(settings.withSubscriptionType(subscriptionType))
     fun withSettings(settings: Settings) = copy(settings = settings)
 }
+
+data class GoogleToken(val token: String) : Serializable
 
 enum class AuthProvider {
     ANONYMOUS, GOOGLE

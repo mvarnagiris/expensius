@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,29 +12,27 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.mvp.Presenter
+import rx.Observable
 
-class SplashPresenter(
+class LoginWithAccountPresenter(
         private val appUserService: AppUserService,
-        private val schedulers: RxSchedulers) : Presenter<SplashPresenter.View>() {
+        private val schedulers: RxSchedulers) : Presenter<LoginWithAccountPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        appUserService.appUser().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached {
-            if (it.isLoggedIn()) view.displayApp()
-            else view.displayLogin(APP)
-        }
+        appUserService.appUser().subscribeOn(schedulers.io).skip(1).observeOn(schedulers.main).subscribeUntilDetached { view.displaySupportDeveloper() }
+        view.loginFailures().subscribeUntilDetached { view.close() }
     }
 
     interface View : Presenter.View {
-        fun displayLogin(destination: Destination)
-        fun displayApp()
+        fun loginFailures(): Observable<Unit>
+        fun displaySupportDeveloper()
+        fun close()
     }
 }

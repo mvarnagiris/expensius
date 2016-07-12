@@ -20,6 +20,16 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Currency
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
+import org.junit.Before
+import org.junit.Test
+import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorPresenterTest {
@@ -42,8 +52,8 @@ class CalculatorPresenterTest {
     val deleteObservable = PublishSubject<Unit>()
     val clearObservable = PublishSubject<Unit>()
     val saveObservable = PublishSubject<Unit>()
-    val settings = mock<Settings>()
-    val view = mock<CalculatorPresenter.View>()
+    val settings: Settings = mock()
+    val view: CalculatorPresenter.View = mock()
     val calculator = Calculator(Interpreter())
     val presenter = CalculatorPresenter(calculator, resultDestination, settings)
 

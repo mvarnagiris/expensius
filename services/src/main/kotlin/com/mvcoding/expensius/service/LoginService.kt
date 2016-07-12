@@ -14,8 +14,10 @@
 
 package com.mvcoding.expensius.service
 
+import com.mvcoding.expensius.model.GoogleToken
 import rx.Observable
 
 interface LoginService {
     fun loginAnonymously(): Observable<Unit>
+    fun loginWithGoogle(googleToken: GoogleToken): Observable<Unit>
 }

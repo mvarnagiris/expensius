@@ -22,38 +22,30 @@ import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.TagsWriteService
 import rx.Observable
-import rx.lang.kotlin.deferredObservable
-import rx.lang.kotlin.observable
 
 class FirebaseTagsWriteService(private val appUserService: AppUserService) : TagsWriteService {
 
-    override fun createTags(createTags: Set<CreateTag>): Observable<Unit> = deferredObservable {
-        observable<Unit> { subscriber ->
-            val tagsReference = tagsDatabaseReference(appUserService.getCurrentAppUser().userId)
-            createTags.forEach {
-                val newTagReference = tagsReference.push()
-                val firebaseTag = it.toFirebaseTag(newTagReference.key)
-                newTagReference.setValue(firebaseTag)
+    override fun createTags(createTags: Set<CreateTag>): Observable<Unit> = appUserService.appUser()
+            .first()
+            .map {
+                val tagsReference = tagsDatabaseReference(appUserService.getCurrentAppUser().userId)
+                createTags.forEach {
+                    val newTagReference = tagsReference.push()
+                    val firebaseTag = it.toFirebaseTag(newTagReference.key)
+                    newTagReference.setValue(firebaseTag)
+                }
             }
 
-            subscriber.onNext(Unit)
-            subscriber.onCompleted()
-        }
-    }
+    override fun saveTags(updateTags: Set<Tag>): Observable<Unit> = appUserService.appUser()
+            .first()
+            .map {
+                val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toMap() else null })
+                val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toMap() else null })
 
-    override fun saveTags(updateTags: Set<Tag>): Observable<Unit> = deferredObservable {
-        observable<Unit> { subscriber ->
-            val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toMap() else null })
-            val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toMap() else null })
-
-            val appUserId = appUserService.getCurrentAppUser().userId
-            if (tagsToUpdate.isNotEmpty()) tagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
-            if (archivedTagsToUpdate.isNotEmpty()) archivedTagsDatabaseReference(appUserId).updateChildren(archivedTagsToUpdate)
-
-            subscriber.onNext(Unit)
-            subscriber.onCompleted()
-        }
-    }
+                val appUserId = appUserService.getCurrentAppUser().userId
+                if (tagsToUpdate.isNotEmpty()) tagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
+                if (archivedTagsToUpdate.isNotEmpty()) archivedTagsDatabaseReference(appUserId).updateChildren(archivedTagsToUpdate)
+            }
 
     private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, NONE.name, title.text, color.rgb, order.value)
     private fun Tag.toMap() = mapOf(

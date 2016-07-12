@@ -104,7 +104,8 @@ fun provideAmountFormatter() = provideGlobalSingleton<AmountFormatter>()
 
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideLoginService(): LoginService = provideFirebaseAppUserService()
-fun provideTagsService(archived: Boolean): TagsService = provideFirebaseTagsService(archived)
+fun provideTagsService(): TagsService = provideFirebaseTagsService(false)
+fun provideArchivedTagsService(): TagsService = provideFirebaseTagsService(true)
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
 fun provideAppUserWriteService(): AppUserWriteService = provideFirebaseAppUserWriteService()
 

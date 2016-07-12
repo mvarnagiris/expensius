@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.firebase
 
+import android.util.Log
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -93,7 +94,8 @@ class FirebaseList<ITEM>(
     }
 
     override fun onCancelled(databaseError: DatabaseError) {
-        // TODO: What to do with errors?
+        Log.e("Firebase", databaseError.toString())
+        itemsSubject.onNext(emptyList())
     }
 
     override fun close() = query.removeEventListener(this as ChildEventListener)

@@ -15,9 +15,10 @@
 package com.mvcoding.expensius.feature.splash
 
 import android.os.Bundle
-import com.google.firebase.database.FirebaseDatabase
+import com.mvcoding.expensius.extension.app
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.overview.OverviewActivity
 
 class SplashActivity : BaseActivity(), SplashPresenter.View {
@@ -26,7 +27,7 @@ class SplashActivity : BaseActivity(), SplashPresenter.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        app().setupFirebase()
     }
 
     override fun onStart() {
@@ -39,8 +40,8 @@ class SplashActivity : BaseActivity(), SplashPresenter.View {
         presenter.detach(this)
     }
 
-    override fun displayLogin() {
-        LoginActivity.start(this)
+    override fun displayLogin(destination: Destination) {
+        LoginActivity.start(this, destination)
         finish()
     }
 

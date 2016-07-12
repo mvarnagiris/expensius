@@ -15,7 +15,10 @@
 package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
 import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
+import com.mvcoding.expensius.model.AuthProvider.GOOGLE
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.ReportGroup.DAY
@@ -23,6 +26,7 @@ import com.mvcoding.expensius.model.ReportGroup.WEEK
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.model.withAuthProvider
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.AppUserWriteService
@@ -138,12 +142,23 @@ class SettingsPresenterTest {
     }
 
     @Test
-    fun displaysSupportDeveloper() {
+    fun displaysSupportDeveloperWhenUserIsWithNonAnonymousAccount() {
+        updateAppUser(appUser.withAuthProvider(GOOGLE))
         presenter.attach(view)
 
         requestSupportDeveloper()
 
         verify(view).displaySupportDeveloper()
+    }
+
+    @Test
+    fun displaysLoginWhenUserIsWithAnonymousAccount() {
+        updateAppUser(appUser.withAuthProvider(ANONYMOUS))
+        presenter.attach(view)
+
+        requestSupportDeveloper()
+
+        verify(view).displayLogin(SUPPORT_DEVELOPER)
     }
 
     private fun updateAppUser(appUser: AppUser) = appUserSubject.onNext(appUser)

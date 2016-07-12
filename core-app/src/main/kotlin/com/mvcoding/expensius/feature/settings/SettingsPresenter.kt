@@ -16,6 +16,8 @@ package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.SubscriptionType
@@ -59,7 +61,9 @@ class SettingsPresenter(
                 .switchMap { appUserWriteService.saveSettings(it) }
                 .subscribeUntilDetached { }
 
-        view.supportDeveloperRequests().subscribeUntilDetached { view.displaySupportDeveloper() }
+        view.supportDeveloperRequests().withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser }).subscribeUntilDetached {
+            if (it.isWithNonAnonymousAccount()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER)
+        }
         view.aboutRequests().subscribeUntilDetached { view.displayAbout() }
     }
 
@@ -76,6 +80,7 @@ class SettingsPresenter(
         fun showReportGroup(reportGroup: ReportGroup)
         fun showSubscriptionType(subscriptionType: SubscriptionType)
 
+        fun displayLogin(destination: Destination)
         fun displaySupportDeveloper()
         fun displayAbout()
     }

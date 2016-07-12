@@ -15,6 +15,8 @@
 package com.mvcoding.expensius.extension
 
 import android.app.Activity
+import com.mvcoding.expensius.App
 import com.mvcoding.expensius.feature.SnackbarBuilder
 
 fun Activity.snackbar(resId: Int, duration: Int) = SnackbarBuilder.snackbar(findViewById(android.R.id.content), resId, duration)
+fun Activity.app() = applicationContext as App

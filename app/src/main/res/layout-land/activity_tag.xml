@@ -87,7 +87,7 @@
 
         <Button
             android:id="@+id/saveButton"
-            style="@style/Button.Flat.Borderless.Colored"
+            style="@style/Button.Flat.Colored"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"

@@ -18,9 +18,11 @@ import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.provideContext
 import com.mvcoding.expensius.provideLoginService
 import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideTagsService
 import com.mvcoding.expensius.provideTagsWriteService
 import memoizrlabs.com.shankandroid.withThisScope
 
@@ -29,9 +31,15 @@ class LoginModule : ShankModule {
         loginPresenter()
     }
 
-    private fun loginPresenter() = registerFactory(LoginPresenter::class) { ->
-        LoginPresenter(provideLoginService(), provideTagsWriteService(), TranslatedDefaultTags(provideContext()), provideRxSchedulers())
+    private fun loginPresenter() = registerFactory(LoginPresenter::class) { destination: Destination ->
+        LoginPresenter(
+                destination,
+                provideLoginService(),
+                provideTagsService(),
+                provideTagsWriteService(),
+                TranslatedDefaultTags(provideContext()),
+                provideRxSchedulers())
     }
 }
 
-fun Activity.provideLoginPresenter() = withThisScope.provideSingletonFor<LoginPresenter>()
+fun Activity.provideLoginPresenter(destination: Destination) = withThisScope.provideSingletonFor<LoginPresenter>(destination)

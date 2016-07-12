@@ -12,14 +12,21 @@
   ~ GNU General Public License for more details.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/skipButton"
-        style="@style/Button"
+        android:id="@+id/googleLoginButton"
+        style="@style/Button.Flat.Colored"
+        android:layout_centerInParent="true"
+        android:text="@string/sign_in_with_google" />
+
+    <Button
+        android:id="@+id/skipLoginButton"
+        style="@style/Button.Flat"
+        android:layout_below="@+id/googleLoginButton"
+        android:layout_centerInParent="true"
         android:text="@string/skip" />
 
     <ProgressBar
@@ -27,4 +34,4 @@
         style="@style/ProgressBar"
         android:visibility="gone" />
 
-</LinearLayout>
+</RelativeLayout>

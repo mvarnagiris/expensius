@@ -83,6 +83,8 @@
     </style>
 
     <style name="Button.Flat" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">@style/Text.Button</item>
     </style>
 
@@ -90,9 +92,9 @@
         <item name="android:background">?selectableItemBackgroundBorderless</item>
     </style>
 
-    <style name="Button.Flat.Borderless.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">
-        <item name="android:textAppearance">@style/Text.Button</item>
-        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    <style name="Button.Flat.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="Button.Flat.Borderless.Calc">
@@ -197,6 +199,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
+        <item name="android:layout_centerInParent">true</item>
     </style>
 
     <!-- ScrollView -->

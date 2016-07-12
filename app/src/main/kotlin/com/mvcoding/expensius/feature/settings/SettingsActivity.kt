@@ -29,6 +29,8 @@ import com.mvcoding.expensius.extension.getDimensionFromTheme
 import com.mvcoding.expensius.extension.getString
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.login.LoginActivity
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.premium.PremiumActivity
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ReportGroup
@@ -127,6 +129,7 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
     }
 
     override fun displaySupportDeveloper(): Unit = PremiumActivity.start(this)
+    override fun displayLogin(destination: Destination): Unit = LoginActivity.start(this, destination)
 
     override fun displayAbout() {
         CustomTabsActivityHelper.openCustomTab(

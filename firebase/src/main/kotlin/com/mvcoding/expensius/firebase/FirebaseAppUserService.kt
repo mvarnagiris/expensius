@@ -27,6 +27,7 @@ import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.AuthProvider
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
+import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.NullModels.noAppUser
 import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.model.UserId
@@ -69,8 +70,35 @@ class FirebaseAppUserService : AppUserService, LoginService {
     override fun loginAnonymously(): Observable<Unit> = deferredObservable {
         observable<Unit> { subscriber ->
             firebaseAuth.signInAnonymously()
-                    .addOnSuccessListener { subscriber.onNext(Unit) }
+                    .addOnSuccessListener {
+                        subscriber.onNext(Unit)
+                        subscriber.onCompleted()
+                    }
                     .addOnFailureListener { subscriber.onError(it) }
+        }
+    }
+
+    override fun loginWithGoogle(googleToken: GoogleToken): Observable<Unit> = appUser().first().switchMap {
+        if (it.isLoggedIn()) {
+            observable<Unit> { subscriber ->
+                val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
+                firebaseAuth.currentUser!!.linkWithCredential(credential)
+                        .addOnSuccessListener {
+                            subscriber.onNext(Unit)
+                            subscriber.onCompleted()
+                        }
+                        .addOnFailureListener { subscriber.onError(it) }
+            }
+        } else {
+            observable<Unit> { subscriber ->
+                val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
+                firebaseAuth.signInWithCredential(credential)
+                        .addOnSuccessListener {
+                            subscriber.onNext(Unit)
+                            subscriber.onCompleted()
+                        }
+                        .addOnFailureListener { subscriber.onError(it) }
+            }
         }
     }
 
