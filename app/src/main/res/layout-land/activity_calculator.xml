@@ -12,10 +12,10 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.calculator.CalculatorView android:id="@+id/calculatorView"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/calculatorView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -254,4 +254,4 @@
 
     </LinearLayout>
 
-</com.mvcoding.expensius.feature.calculator.CalculatorView>
+</LinearLayout>

@@ -20,16 +20,6 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Currency
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.argThat
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Before
-import org.junit.Test
-import org.mockito.Mockito.times
-import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorPresenterTest {
@@ -59,24 +49,24 @@ class CalculatorPresenterTest {
 
     @Before
     fun setUp() {
-        whenever(view.onDigit0()).thenReturn(digit0Observable)
-        whenever(view.onDigit1()).thenReturn(digit1Observable)
-        whenever(view.onDigit2()).thenReturn(digit2Observable)
-        whenever(view.onDigit3()).thenReturn(digit3Observable)
-        whenever(view.onDigit4()).thenReturn(digit4Observable)
-        whenever(view.onDigit5()).thenReturn(digit5Observable)
-        whenever(view.onDigit6()).thenReturn(digit6Observable)
-        whenever(view.onDigit7()).thenReturn(digit7Observable)
-        whenever(view.onDigit8()).thenReturn(digit8Observable)
-        whenever(view.onDigit9()).thenReturn(digit9Observable)
-        whenever(view.onDecimal()).thenReturn(decimalObservable)
-        whenever(view.onAdd()).thenReturn(addObservable)
-        whenever(view.onSubtract()).thenReturn(subtractObservable)
-        whenever(view.onMultiply()).thenReturn(multiplyObservable)
-        whenever(view.onDivide()).thenReturn(divideObservable)
-        whenever(view.onDelete()).thenReturn(deleteObservable)
-        whenever(view.onClear()).thenReturn(clearObservable)
-        whenever(view.onSave()).thenReturn(saveObservable)
+        whenever(view.digit0()).thenReturn(digit0Observable)
+        whenever(view.digit1()).thenReturn(digit1Observable)
+        whenever(view.digit2()).thenReturn(digit2Observable)
+        whenever(view.digit3()).thenReturn(digit3Observable)
+        whenever(view.digit4()).thenReturn(digit4Observable)
+        whenever(view.digit5()).thenReturn(digit5Observable)
+        whenever(view.digit6()).thenReturn(digit6Observable)
+        whenever(view.digit7()).thenReturn(digit7Observable)
+        whenever(view.digit8()).thenReturn(digit8Observable)
+        whenever(view.digit9()).thenReturn(digit9Observable)
+        whenever(view.decimalRequests()).thenReturn(decimalObservable)
+        whenever(view.addRequests()).thenReturn(addObservable)
+        whenever(view.subtractRequests()).thenReturn(subtractObservable)
+        whenever(view.multiplyRequests()).thenReturn(multiplyObservable)
+        whenever(view.divideRequests()).thenReturn(divideObservable)
+        whenever(view.deleteRequests()).thenReturn(deleteObservable)
+        whenever(view.clearRequests()).thenReturn(clearObservable)
+        whenever(view.saveRequests()).thenReturn(saveObservable)
         whenever(settings.mainCurrency).thenReturn(Currency("GBP"))
     }
 
@@ -659,7 +649,7 @@ class CalculatorPresenterTest {
     fun savesAreOnlySubscribedOnce() {
         presenter.attach(view)
 
-        verify(view, times(1)).onSave()
+        verify(view, times(1)).saveRequests()
     }
 
     fun digit0() {
