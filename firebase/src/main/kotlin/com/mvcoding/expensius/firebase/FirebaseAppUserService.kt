@@ -87,7 +87,7 @@ class FirebaseAppUserService : AppUserService, LoginService {
                             subscriber.onNext(Unit)
                             subscriber.onCompleted()
                         }
-                        .addOnFailureListener { subscriber.onError(it) }
+                        .addOnFailureListener { subscriber.onError(it) } // TODO com.google.firebase.auth.FirebaseAuthUserCollisionException: This credential is already associated with a different user account.
             }
         } else {
             observable<Unit> { subscriber ->
