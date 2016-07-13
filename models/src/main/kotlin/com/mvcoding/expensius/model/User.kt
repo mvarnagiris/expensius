@@ -35,6 +35,7 @@ data class AppUser(
         val authProviders: Set<AuthProvider>) : User, Serializable {
 
     fun isLoggedIn(): Boolean = authProviders.isNotEmpty()
+    fun isNotLoggedIn(): Boolean = !isLoggedIn()
     fun isWithNonAnonymousAccount() = authProviders.any { it != ANONYMOUS }
     fun withSubscriptionType(subscriptionType: SubscriptionType) = withSettings(settings.withSubscriptionType(subscriptionType))
     fun withSettings(settings: Settings) = copy(settings = settings)

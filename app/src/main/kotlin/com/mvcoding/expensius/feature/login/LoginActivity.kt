@@ -32,6 +32,8 @@ import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.Error
 import com.mvcoding.expensius.feature.ErrorDisplayer
+import com.mvcoding.expensius.feature.Resolution
+import com.mvcoding.expensius.feature.ResolvableErrorDisplayer
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
@@ -55,6 +57,7 @@ class LoginActivity : BaseActivity(), LoginPresenter.View, GoogleApiClient.OnCon
 
     private val presenter by lazy { provideLoginPresenter(intent.getSerializableExtra(EXTRA_DESTINATION) as Destination) }
     private val errorDisplayer by lazy { ErrorDisplayer(this) }
+    private val resolvableErrorDisplayer by lazy { ResolvableErrorDisplayer(this) }
     private val googleApiClient by lazy {
         val googleSignInOptions = GoogleSignInOptions.Builder(DEFAULT_SIGN_IN).requestIdToken(GOOGLE_WEB_CLIENT_ID).requestEmail().build()
         GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).build()
@@ -86,6 +89,8 @@ class LoginActivity : BaseActivity(), LoginPresenter.View, GoogleApiClient.OnCon
     override fun loginWithGoogleRequests(): Observable<Unit> = googleLoginButton.clicks()
     override fun skipLoginRequests(): Observable<Unit> = skipLoginButton.clicks()
     override fun showError(error: Error): Unit = errorDisplayer.show(error)
+    override fun showResolvableError(error: Error): Observable<Resolution> = resolvableErrorDisplayer.showError(error)
+
     override fun showLoading(): Unit = setLoading(true)
     override fun hideLoading(): Unit = setLoading(false)
     override fun showSkipEnabled(): Unit = with(skipLoginButton) { visibility = VISIBLE }

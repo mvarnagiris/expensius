@@ -19,5 +19,5 @@ import rx.Observable
 
 interface LoginService {
     fun loginAnonymously(): Observable<Unit>
-    fun loginWithGoogle(googleToken: GoogleToken): Observable<Unit>
+    fun loginWithGoogle(googleToken: GoogleToken, noLinkLogin: Boolean = false): Observable<Unit>
 }

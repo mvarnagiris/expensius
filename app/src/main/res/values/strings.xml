@@ -59,7 +59,9 @@
     <string name="long_user_is_using_free_version">You are using free version</string>
     <string name="long_user_is_using_premium_version">Thank you for using premium version</string>
     <string name="long_no_purchases_available">At the moment there is nothing you can buy. Check back later.</string>
+
     <string name="error_refreshing_purchases">Cannot get products to buy at the moment. Check back later.</string>
+    <string name="error_user_already_linked">You will lose all current data if you login.</string>
 
     <string name="tag_fixed">Fixed</string>
     <string name="tag_essential">Essential</string>

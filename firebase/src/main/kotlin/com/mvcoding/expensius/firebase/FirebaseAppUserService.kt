@@ -16,6 +16,7 @@ package com.mvcoding.expensius.firebase
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
@@ -29,7 +30,9 @@ import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.NullModels.noAppUser
+import com.mvcoding.expensius.model.NullModels.noUserId
 import com.mvcoding.expensius.model.Settings
+import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.expensius.model.UserId
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.LoginService
@@ -51,7 +54,7 @@ class FirebaseAppUserService : AppUserService, LoginService {
 
     private val authStateListener = AuthStateListener { onFirebaseUserChanged(it.currentUser) }
 
-
+    private var userId: UserId = noUserId
     private var userDataListener: ValueEventListener? = null
 
     init {
@@ -78,18 +81,8 @@ class FirebaseAppUserService : AppUserService, LoginService {
         }
     }
 
-    override fun loginWithGoogle(googleToken: GoogleToken): Observable<Unit> = appUser().first().switchMap {
-        if (it.isLoggedIn()) {
-            observable<Unit> { subscriber ->
-                val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
-                firebaseAuth.currentUser!!.linkWithCredential(credential)
-                        .addOnSuccessListener {
-                            subscriber.onNext(Unit)
-                            subscriber.onCompleted()
-                        }
-                        .addOnFailureListener { subscriber.onError(it) } // TODO com.google.firebase.auth.FirebaseAuthUserCollisionException: This credential is already associated with a different user account.
-            }
-        } else {
+    override fun loginWithGoogle(googleToken: GoogleToken, noLinkLogin: Boolean): Observable<Unit> = appUser().first().switchMap {
+        if (it.isNotLoggedIn() || noLinkLogin) {
             observable<Unit> { subscriber ->
                 val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
                 firebaseAuth.signInWithCredential(credential)
@@ -99,16 +92,40 @@ class FirebaseAppUserService : AppUserService, LoginService {
                         }
                         .addOnFailureListener { subscriber.onError(it) }
             }
+        } else {
+            observable<Unit> { subscriber ->
+                val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
+                firebaseAuth.currentUser!!.linkWithCredential(credential)
+                        .addOnSuccessListener {
+                            subscriber.onNext(Unit)
+                            subscriber.onCompleted()
+                        }
+                        .addOnFailureListener {
+                            subscriber.onError(convertException(it))
+                        }
+            }
         }
+    }
+
+    private fun convertException(exception: Exception) = when (exception) {
+        is FirebaseAuthUserCollisionException -> UserAlreadyLinkedException(exception)
+        else -> exception
     }
 
     private fun onFirebaseUserChanged(firebaseUser: FirebaseUser?) {
         firebaseUserSubject.onNext(firebaseUser)
+        val oldUserId = userId
+        val newUserId = firebaseUser?.let { UserId(it.uid) } ?: noUserId
+        userId = newUserId
         if (firebaseUser == null) firebaseUserDataSubject.onNext(null)
-        else if (userDataListener == null) setupUserDataListener(UserId(firebaseUser.uid))
+        else setupUserDataListener(oldUserId, newUserId)
     }
 
-    private fun setupUserDataListener(userId: UserId) {
+    private fun setupUserDataListener(oldUserId: UserId, userId: UserId) {
+        if (oldUserId != noUserId && userDataListener != null) {
+            userDatabaseReference(oldUserId).removeEventListener(userDataListener)
+        }
+
         userDataListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 firebaseUserDataSubject.onNext(dataSnapshot.getValue(FirebaseUserData::class.java))
@@ -118,7 +135,6 @@ class FirebaseAppUserService : AppUserService, LoginService {
                 // TODO Handle error
             }
         }
-
         userDatabaseReference(userId).addValueEventListener(userDataListener)
     }
 

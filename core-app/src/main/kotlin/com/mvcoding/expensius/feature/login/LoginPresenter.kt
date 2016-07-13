@@ -17,8 +17,11 @@ package com.mvcoding.expensius.feature.login
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ErrorView
 import com.mvcoding.expensius.feature.LoadingView
+import com.mvcoding.expensius.feature.Resolution.POSITIVE
+import com.mvcoding.expensius.feature.ResolvableErrorView
 import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
@@ -26,6 +29,7 @@ import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.empty
 import rx.Observable.just
+import rx.lang.kotlin.PublishSubject
 import rx.lang.kotlin.toSingletonObservable
 
 class LoginPresenter(
@@ -35,6 +39,8 @@ class LoginPresenter(
         private val tagsWriteService: TagsWriteService,
         private val defaultTags: DefaultTags,
         private val schedulers: RxSchedulers) : Presenter<LoginPresenter.View>() {
+
+    private val forceGoogleLoginSubject = PublishSubject<Boolean>()
 
     private var isGoogleLoginInProgress = false
     private var isAnonymousLoginInProgress = false
@@ -46,13 +52,13 @@ class LoginPresenter(
 
         if (destination == Destination.APP) view.showSkipEnabled() else view.showSkipDisabled()
 
-        view.loginWithGoogleRequests()
-                .startWith(isGoogleLoginInProgress.toSingletonObservable().filter { it }.map { Unit })
+        view.loginWithGoogleRequests().map { false }.mergeWith(forceGoogleLoginSubject)
+                .startWith(isGoogleLoginInProgress.toSingletonObservable().filter { it }.map { false })
                 .doOnNext { isGoogleLoginInProgress = true }
                 .doOnNext { view.showLoading() }
-                .switchMap { googleToken?.toSingletonObservable() ?: view.showLoginWithGoogle().handleError(view).doOnNext { googleToken = it } }
+                .switchMap { requestGoogleToken(view, it) }
                 .observeOn(schedulers.io)
-                .switchMap { loginWithGoogle(it).observeOn(schedulers.main).handleError(view) }
+                .switchMap { loginWithGoogle(it.googleToken, it.forceLogin).observeOn(schedulers.main).handleError(view) }
                 .observeOn(schedulers.io)
                 .switchMap { createDefaultTagsIfNecessary() }
                 .observeOn(schedulers.main)
@@ -74,8 +80,11 @@ class LoginPresenter(
                 .subscribeUntilDetached { view.displayDestination(destination) }
     }
 
-    private fun loginWithGoogle(googleToken: GoogleToken): Observable<Unit> {
-        val loginRequest = loginRequest ?: loginService.loginWithGoogle(googleToken).cache()
+    private fun requestGoogleToken(view: View, forceLogin: Boolean): Observable<ForceGoogleToken> = googleToken?.let { just(ForceGoogleToken(it, forceLogin)) }
+            ?: view.showLoginWithGoogle().handleError(view).doOnNext { googleToken = it }.map { ForceGoogleToken(it, forceLogin) }
+
+    private fun loginWithGoogle(googleToken: GoogleToken, forceLogin: Boolean): Observable<Unit> {
+        val loginRequest = loginRequest ?: loginService.loginWithGoogle(googleToken, forceLogin).cache()
         this.loginRequest = loginRequest
         return loginRequest
     }
@@ -93,14 +102,19 @@ class LoginPresenter(
 
     private fun <T> Observable<T>.handleError(view: View): Observable<T> = onErrorResumeNext {
         view.hideLoading()
-        view.showError(it.toError())
         isGoogleLoginInProgress = false
-        googleToken = null
         loginRequest = null
-        empty()
+
+        if (it is UserAlreadyLinkedException) {
+            view.showResolvableError(it.toError()).doOnNext { if (it == POSITIVE) forceGoogleLoginSubject.onNext(true) }.switchMap { empty<T>() }
+        } else {
+            googleToken = null
+            view.showError(it.toError())
+            empty<T>()
+        }
     }
 
-    interface View : Presenter.View, ErrorView, LoadingView {
+    interface View : Presenter.View, LoadingView, ErrorView, ResolvableErrorView {
         fun loginWithGoogleRequests(): Observable<Unit>
         fun skipLoginRequests(): Observable<Unit>
 
@@ -114,4 +128,6 @@ class LoginPresenter(
     enum class Destination {
         APP, SUPPORT_DEVELOPER
     }
+
+    private data class ForceGoogleToken(val googleToken: GoogleToken, val forceLogin: Boolean)
 }

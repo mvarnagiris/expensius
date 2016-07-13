@@ -26,10 +26,12 @@ import rx.Observable
 
 class FirebaseTagsService(appUserService: AppUserService, archived: Boolean) : TagsService {
 
-    private val firebaseList = FirebaseList(
-            if (archived) archivedTagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")
-            else tagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")) {
-        it.getValue(FirebaseTag::class.java).toTag()
+    private val firebaseList by lazy {
+        FirebaseList(
+                if (archived) archivedTagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")
+                else tagsDatabaseReference(appUserService.getCurrentAppUser().userId).orderByChild("order")) {
+            it.getValue(FirebaseTag::class.java).toTag()
+        }
     }
 
     override fun close(): Unit = firebaseList.close()

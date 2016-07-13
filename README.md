@@ -4,6 +4,7 @@
 
 ```
 CRASHLYTICS=your_id_goes_here
+GOOGLE_WEB_CLIENT_ID="your_id_goes_here"
 ```
 - Add google-services.json from Firebase.
 

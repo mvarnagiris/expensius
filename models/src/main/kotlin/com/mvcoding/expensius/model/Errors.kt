@@ -12,26 +12,6 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.model
 
-import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Observable.empty
-
-interface ErrorView : Presenter.View {
-    fun showError(error: Error)
-}
-
-interface ResolvableErrorView : Presenter.View {
-    fun showResolvableError(error: Error): Observable<Resolution>
-}
-
-enum class Resolution {
-    POSITIVE, NEGATIVE
-}
-
-data class Error(val throwable: Throwable)
-
-fun Throwable.toError() = Error(this)
-
-fun <T> Observable<T>.ignoreError(): Observable<T> = onErrorResumeNext { empty() }
+class UserAlreadyLinkedException(cause: Throwable) : RuntimeException("User already linked to another account.", cause)

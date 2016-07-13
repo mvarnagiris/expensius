@@ -14,11 +14,14 @@
 
 package com.mvcoding.expensius.feature.login
 
+import com.mvcoding.expensius.feature.Resolution
+import com.mvcoding.expensius.feature.Resolution.POSITIVE
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
 import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.expensius.model.aCreateTag
 import com.mvcoding.expensius.model.aGoogleToken
 import com.mvcoding.expensius.model.aTag
@@ -27,6 +30,7 @@ import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
@@ -46,6 +50,7 @@ class LoginPresenterTest {
     val loginWithGoogleRequestsSubject = PublishSubject<Unit>()
     val skipLoginRequestsSubject = PublishSubject<Unit>()
     val googleTokenSubject = PublishSubject<GoogleToken>()
+    val resolutionSubject = PublishSubject<Resolution>()
 
     val loginService: LoginService = mock()
     val tagsService: TagsService = mock()
@@ -61,8 +66,9 @@ class LoginPresenterTest {
         whenever(view.loginWithGoogleRequests()).thenReturn(loginWithGoogleRequestsSubject)
         whenever(view.skipLoginRequests()).thenReturn(skipLoginRequestsSubject)
         whenever(view.showLoginWithGoogle()).thenReturn(googleTokenSubject)
+        whenever(view.showResolvableError(any())).thenReturn(resolutionSubject)
 
-        whenever(loginService.loginWithGoogle(any())).thenReturn(just(Unit))
+        whenever(loginService.loginWithGoogle(any(), any())).thenReturn(just(Unit))
         whenever(loginService.loginAnonymously()).thenReturn(just(Unit))
         whenever(tagsService.items()).thenReturn(just(emptyList()))
         whenever(tagsWriteService.createTags(any())).thenReturn(just(Unit))
@@ -79,7 +85,7 @@ class LoginPresenterTest {
 
         inOrder.verify(view).showLoading()
         inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(loginService).loginWithGoogle(googleToken)
+        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
         inOrder.verify(view).hideLoading()
         inOrder.verify(view).displayDestination(APP)
     }
@@ -101,9 +107,8 @@ class LoginPresenterTest {
         val viewThrowable = Throwable()
         val loginThrowable = Throwable()
         val googleToken = aGoogleToken()
-        val aSuccessfulLoginResult = just(Unit)
         whenever(view.showLoginWithGoogle()).thenReturn(error(viewThrowable), just(googleToken))
-        whenever(loginService.loginWithGoogle(googleToken)).thenReturn(error(loginThrowable), aSuccessfulLoginResult)
+        whenever(loginService.loginWithGoogle(googleToken, false)).thenReturn(error(loginThrowable), just(Unit))
         presenter.attach(view)
 
         requestLoginWithGoogle()
@@ -115,14 +120,14 @@ class LoginPresenterTest {
         requestLoginWithGoogle()
         inOrder.verify(view).showLoading()
         inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(loginService).loginWithGoogle(googleToken)
+        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
         inOrder.verify(view).hideLoading()
         inOrder.verify(view).showError(loginThrowable.toError())
 
         requestLoginWithGoogle()
         inOrder.verify(view).showLoading()
         inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(loginService).loginWithGoogle(googleToken)
+        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
         inOrder.verify(view).hideLoading()
         inOrder.verify(view).displayDestination(APP)
     }
@@ -130,8 +135,7 @@ class LoginPresenterTest {
     @Test
     fun handlesAndRecoversFromLoginAnonymouslyErrors() {
         val loginThrowable = Throwable()
-        val aSuccessfulLoginResult = just(Unit)
-        whenever(loginService.loginAnonymously()).thenReturn(error(loginThrowable), aSuccessfulLoginResult)
+        whenever(loginService.loginAnonymously()).thenReturn(error(loginThrowable), just(Unit))
         presenter.attach(view)
 
         requestSkipLogin()
@@ -153,7 +157,7 @@ class LoginPresenterTest {
         val googleLoginSubject = PublishSubject<Unit>()
         val googleToken = aGoogleToken()
         whenever(view.showLoginWithGoogle()).thenReturn(googleTokenSubject)
-        whenever(loginService.loginWithGoogle(googleToken)).thenReturn(googleLoginSubject)
+        whenever(loginService.loginWithGoogle(googleToken, false)).thenReturn(googleLoginSubject)
         presenter.attach(view)
 
         requestLoginWithGoogle()
@@ -166,7 +170,7 @@ class LoginPresenterTest {
         inOrder.verify(view).showLoginWithGoogle()
 
         googleTokenSubject.onNext(googleToken)
-        inOrder.verify(loginService).loginWithGoogle(googleToken)
+        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
 
         presenter.detach(view)
         presenter.attach(view)
@@ -177,7 +181,7 @@ class LoginPresenterTest {
         inOrder.verify(view).displayDestination(APP)
 
         verify(view, times(2)).showLoginWithGoogle()
-        verify(loginService, times(1)).loginWithGoogle(any())
+        verify(loginService, times(1)).loginWithGoogle(any(), any())
     }
 
     @Test
@@ -268,9 +272,31 @@ class LoginPresenterTest {
         verify(view).showSkipDisabled()
     }
 
+    @Test
+    fun allowsUserToForceLogInWhenUserAccountIsAlreadyLinked() {
+        val userAlreadyLinkedException = UserAlreadyLinkedException(Throwable())
+        whenever(loginService.loginWithGoogle(any(), any())).thenReturn(error(userAlreadyLinkedException), just(Unit))
+        presenter.attach(view)
+
+        requestLoginWithGoogle()
+        successfulLoginWithGoogle()
+        inOrder.verify(view).showLoading()
+        inOrder.verify(view).showLoginWithGoogle()
+        inOrder.verify(loginService).loginWithGoogle(any(), eq(false))
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).showResolvableError(userAlreadyLinkedException.toError())
+
+        resolveError()
+        inOrder.verify(view).showLoading()
+        inOrder.verify(loginService).loginWithGoogle(any(), eq(true))
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).displayDestination(APP)
+    }
+
     private fun requestLoginWithGoogle() = loginWithGoogleRequestsSubject.onNext(Unit)
     private fun requestSkipLogin() = skipLoginRequestsSubject.onNext(Unit)
     private fun successfulLoginWithGoogle(googleToken: GoogleToken = aGoogleToken()) = googleTokenSubject.onNext(googleToken)
+    private fun resolveError() = resolutionSubject.onNext(POSITIVE)
     private fun presenter(destination: Destination = APP) = LoginPresenter(
             destination,
             loginService,
