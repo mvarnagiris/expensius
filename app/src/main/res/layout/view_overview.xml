@@ -32,20 +32,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <include
-                android:id="@+id/expenseTagsReportView"
-                layout="@layout/view_tags_report"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/keyline_quarter" />
-
-            <include
-                android:id="@+id/incomeTagsReportView"
-                layout="@layout/view_tags_report"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/keyline_quarter" />
-
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

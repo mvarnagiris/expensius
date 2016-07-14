@@ -23,11 +23,9 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.activity
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
-import com.mvcoding.expensius.feature.report.TagsReportView
 import com.mvcoding.expensius.feature.settings.SettingsActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
-import com.mvcoding.expensius.model.TransactionType
 import kotlinx.android.synthetic.main.toolbar.view.*
 import kotlinx.android.synthetic.main.view_overview.view.*
 import net.danlew.android.joda.DateUtils
@@ -44,8 +42,6 @@ class OverviewView @JvmOverloads constructor(context: Context, attrs: AttributeS
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         doNotInEditMode { presenter.attach(this) }
-        (expenseTagsReportView as TagsReportView).initialize(TransactionType.EXPENSE)
-        (incomeTagsReportView as TagsReportView).initialize(TransactionType.INCOME)
     }
 
     override fun onDetachedFromWindow() {
