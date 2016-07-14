@@ -17,8 +17,11 @@ package com.mvcoding.expensius.model
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.ReportGroup.DAY
 import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
+import java.lang.System.currentTimeMillis
+import java.math.BigDecimal.ONE
 import java.math.BigDecimal.ZERO
 
 object NullModels {
@@ -37,4 +40,15 @@ object NullModels {
     val noTransactionId = TransactionId("")
     val noNote = Note("")
     val noTransaction = Transaction(noTransactionId, NONE, EXPENSE, PENDING, 0, noCurrency, ZERO, ZERO, emptySet(), noNote)
+    fun newTransaction(appUser: AppUser) = Transaction(
+            noTransactionId,
+            NONE,
+            EXPENSE,
+            CONFIRMED,
+            currentTimeMillis(),
+            appUser.settings.currency,
+            ONE,
+            ZERO,
+            emptySet(),
+            noNote)
 }

@@ -46,7 +46,7 @@ class DatabaseTransactionsProvider(
                 .map { transaction -> transaction.tags.map { relationshipSaveRecord(transaction, it) } }
                 .flatten()
         val deleteRelationships = transactions.map {
-            DeleteDatabaseAction(transactionTagsTable, "${transactionTagsTable.transactionId}=?", arrayOf(it.id))
+            DeleteDatabaseAction(transactionTagsTable, "${transactionTagsTable.transactionId}=?", arrayOf(it.transactionId.id))
         }
 
         database.save(saveTransactions.plus(deleteRelationships).plus(saveRelationships))
@@ -68,7 +68,7 @@ class DatabaseTransactionsProvider(
 
     private fun relationshipSaveRecord(transaction: Transaction, tag: Tag): SaveDatabaseAction {
         val contentValues = ContentValues()
-        contentValues.put(transactionTagsTable.transactionId.name, transaction.id)
+        contentValues.put(transactionTagsTable.transactionId.name, transaction.transactionId.id)
         contentValues.put(transactionTagsTable.tagId.name, tag.tagId.id)
         return SaveDatabaseAction(transactionTagsTable, contentValues)
     }

@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import android.app.Activity
 import android.view.View
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
@@ -22,14 +23,16 @@ import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.provideAppUserService
 import com.mvcoding.expensius.provideDatabase
 import com.mvcoding.expensius.provideRxSchedulers
-import com.mvcoding.expensius.provideSettings
+import com.mvcoding.expensius.provideTransactionsWriteService
 import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionTagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import memoizrlabs.com.shankandroid.withActivityScope
+import memoizrlabs.com.shankandroid.withThisScope
 
 class TransactionModule : ShankModule {
     override fun registerFactories() {
@@ -52,11 +55,11 @@ class TransactionModule : ShankModule {
 
     private fun transactionPresenter() = registerFactory(TransactionPresenter::class) {
         transaction: Transaction ->
-        TransactionPresenter(transaction, provideTransactionsProvider(), provideCurrenciesProvider(), provideSettings())
+        TransactionPresenter(transaction, provideTransactionsWriteService(), provideAppUserService(), provideCurrenciesProvider())
     }
 }
 
 fun provideTransactionsProvider(): TransactionsProvider = provideGlobalSingleton()
-fun View.provideTransactionPresenter(transaction: Transaction): TransactionPresenter = withActivityScope.provideSingletonFor(transaction)
+fun Activity.provideTransactionPresenter(transaction: Transaction): TransactionPresenter = withThisScope.provideSingletonFor(transaction)
 fun View.provideTransactionsPresenter(modelDisplayType: ModelDisplayType): TransactionsPresenter =
         withActivityScope.provideSingletonFor(modelDisplayType)

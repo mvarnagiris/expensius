@@ -28,6 +28,7 @@ import com.mvcoding.expensius.firebase.FirebaseAppUserService
 import com.mvcoding.expensius.firebase.FirebaseAppUserWriteService
 import com.mvcoding.expensius.firebase.FirebaseTagsService
 import com.mvcoding.expensius.firebase.FirebaseTagsWriteService
+import com.mvcoding.expensius.firebase.FirebaseTransactionsWriteService
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.SqliteDatabase
@@ -39,6 +40,7 @@ import com.mvcoding.expensius.service.AppUserWriteService
 import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
+import com.mvcoding.expensius.service.TransactionsWriteService
 import com.squareup.sqlbrite.SqlBrite
 import rx.android.schedulers.AndroidSchedulers.mainThread
 import rx.schedulers.Schedulers.computation
@@ -52,6 +54,7 @@ class AppModule(val context: Context) : ShankModule {
         firebaseAppUserService()
         firebaseTagsService()
         firebaseTagsWriteService()
+        firebaseTransactionsWriteService()
         firebaseAppUserWriteService()
 
         rxBus()
@@ -70,6 +73,11 @@ class AppModule(val context: Context) : ShankModule {
     }
 
     private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { -> FirebaseTagsWriteService(provideAppUserService()) }
+
+    private fun firebaseTransactionsWriteService() = registerFactory(FirebaseTransactionsWriteService::class) { ->
+        FirebaseTransactionsWriteService(provideAppUserService())
+    }
+
     private fun firebaseAppUserWriteService() = registerFactory(FirebaseAppUserWriteService::class) { -> FirebaseAppUserWriteService(provideAppUserService()) }
 
     private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
@@ -107,9 +115,11 @@ fun provideLoginService(): LoginService = provideFirebaseAppUserService()
 fun provideTagsService(): TagsService = provideFirebaseTagsService(false)
 fun provideArchivedTagsService(): TagsService = provideFirebaseTagsService(true)
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
+fun provideTransactionsWriteService(): TransactionsWriteService = provideFirebaseTransactionsWriteService()
 fun provideAppUserWriteService(): AppUserWriteService = provideFirebaseAppUserWriteService()
 
 private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
 private fun provideFirebaseTagsService(archived: Boolean) = provideNew<FirebaseTagsService>(archived)
 private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()
+private fun provideFirebaseTransactionsWriteService() = provideNew<FirebaseTransactionsWriteService>()
 private fun provideFirebaseAppUserWriteService() = provideNew<FirebaseAppUserWriteService>()

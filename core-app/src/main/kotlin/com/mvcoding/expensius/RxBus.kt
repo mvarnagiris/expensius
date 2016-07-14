@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius
 
+import rx.Observable
 import rx.subjects.PublishSubject
 import rx.subjects.SerializedSubject
 import kotlin.reflect.KClass
@@ -22,5 +23,7 @@ class RxBus {
     private val bus = SerializedSubject(PublishSubject.create<Any>())
 
     fun send(o: Any) = bus.onNext(o)
-    fun <T : Any> observe(cls: KClass<T>) = bus.ofType(cls.java)
+    fun <T : Any> observe(cls: KClass<T>): Observable<T> = bus.ofType(cls.java)
 }
+
+inline fun <reified T : Any> RxBus.observe(): Observable<T> = observe(T::class)

@@ -14,12 +14,13 @@
 
 package com.mvcoding.expensius.feature.calculator
 
-import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.BACK
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
-import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.NullModels.newTransaction
+import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.service.AppUserService
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
@@ -51,10 +52,10 @@ class CalculatorPresenterTest {
     val deleteObservable = PublishSubject<Unit>()
     val clearObservable = PublishSubject<Unit>()
     val saveObservable = PublishSubject<Unit>()
-    val settings: Settings = mock()
     val view: CalculatorPresenter.View = mock()
     val calculator = Calculator(Interpreter())
-    val presenter = CalculatorPresenter(calculator, resultDestination, settings)
+    val appUserService: AppUserService = mock()
+    val presenter = CalculatorPresenter(calculator, resultDestination, appUserService)
 
     @Before
     fun setUp() {
@@ -76,7 +77,6 @@ class CalculatorPresenterTest {
         whenever(view.deleteRequests()).thenReturn(deleteObservable)
         whenever(view.clearRequests()).thenReturn(clearObservable)
         whenever(view.saveRequests()).thenReturn(saveObservable)
-        whenever(settings.mainCurrency).thenReturn(Currency("GBP"))
     }
 
     @Test
@@ -95,7 +95,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsInitialNumberWhenThereIsInitialNumber() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
 
         presenter.attach(view)
 
@@ -104,7 +104,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsInitialNumberAfterReattach() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
         presenter.attach(view)
 
         presenter.detach(view)
@@ -115,7 +115,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun clearsExpression() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
         presenter.attach(view)
 
         clear()
@@ -125,7 +125,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsUpdatedExpressionAfterReattach() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
         presenter.attach(view)
         clear()
 
@@ -137,7 +137,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun deletesLastSymbolFromExpression() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
         presenter.attach(view)
 
         delete()
@@ -147,7 +147,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun deletesLastSymbol() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, settings, BigDecimal.ONE)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.ONE)
         presenter.attach(view)
 
         delete()
@@ -642,7 +642,9 @@ class CalculatorPresenterTest {
 
     @Test
     fun startsTransactionWithCurrentlyDisplayedNumber() {
-        val presenter = CalculatorPresenter(calculator, TRANSACTION, settings)
+        val appUser = anAppUser()
+        whenever(appUserService.getCurrentAppUser()).thenReturn(appUser)
+        val presenter = CalculatorPresenter(calculator, TRANSACTION, appUserService)
         presenter.attach(view)
         digit1()
         add()
@@ -651,7 +653,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        verify(view).displayTransaction(BigDecimal(2))
+        verify(view).displayTransaction(newTransaction(appUser).withAmount(BigDecimal(2)))
     }
 
     @Test

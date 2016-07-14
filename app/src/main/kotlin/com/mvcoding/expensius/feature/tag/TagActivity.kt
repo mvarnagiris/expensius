@@ -60,8 +60,8 @@ class TagActivity : BaseActivity(), TagPresenter.View {
     private val darkTextColor by lazy { getColor(this, R.color.text_primary) }
     private val lightTextColor by lazy { getColor(this, R.color.text_primary_inverse) }
     private var colorAnimator: ValueAnimator? = null
-    private var isArchiveToggleVisible = false
-    private var archiveToggleTitle: String? = null
+    private var isArchiveToggleVisible = true
+    private var archiveToggleTitle = getString(R.string.archive)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

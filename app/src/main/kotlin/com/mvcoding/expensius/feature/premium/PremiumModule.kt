@@ -26,7 +26,6 @@ import com.mvcoding.expensius.provideAppUserService
 import com.mvcoding.expensius.provideAppUserWriteService
 import com.mvcoding.expensius.provideContext
 import com.mvcoding.expensius.provideRxSchedulers
-import com.mvcoding.expensius.provideSettings
 import memoizrlabs.com.shankandroid.withThisScope
 
 class PremiumModule : ShankModule {
@@ -37,7 +36,7 @@ class PremiumModule : ShankModule {
     }
 
     private fun remoteBillingProductsService() = registerFactory(BillingProductsService::class) { ->
-        if (BuildConfig.DEBUG) DummyBillingProductsService(provideSettings())
+        if (BuildConfig.DEBUG) DummyBillingProductsService(provideAppUserService())
         else BillingBillingProductsService(provideContext())
     }
 

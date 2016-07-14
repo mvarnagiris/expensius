@@ -54,9 +54,9 @@ class FirebaseTransactionsWriteService(private val appUserService: AppUserServic
             transactionState.name,
             timestamp,
             currency.code,
-            exchangeRate,
-            amount,
-            tags.map { it.tagId.id }.toSet(),
+            exchangeRate.toPlainString(),
+            amount.toPlainString(),
+            tags.map { it.tagId.id },
             note.text)
 
     private fun Transaction.toMap() = mapOf(
@@ -66,8 +66,8 @@ class FirebaseTransactionsWriteService(private val appUserService: AppUserServic
             "transactionState" to transactionState.name,
             "timestamp" to timestamp,
             "currency" to currency.code,
-            "exchangeRate" to exchangeRate,
-            "amount" to amount,
-            "tags" to tags.map { it.tagId.id }.toSet(),
+            "exchangeRate" to exchangeRate.toPlainString(),
+            "amount" to amount.toPlainString(),
+            "tags" to tags.map { it.tagId.id },
             "note" to note.text)
 }

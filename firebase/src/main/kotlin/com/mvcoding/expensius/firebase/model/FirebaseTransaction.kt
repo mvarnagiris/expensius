@@ -39,9 +39,9 @@ data class FirebaseTransaction(
         val transactionState: String? = null,
         val timestamp: Long? = 0,
         val currency: String? = null,
-        val exchangeRate: BigDecimal? = null,
-        val amount: BigDecimal? = null,
-        val tags: Set<String>? = null,
+        val exchangeRate: String? = null,
+        val amount: String? = null,
+        val tags: List<String>? = null,
         val note: String? = null) {
 
     fun toTransaction(tagsCache: Map<String, Tag>) = Transaction(
@@ -51,9 +51,9 @@ data class FirebaseTransaction(
             transactionState?.let { TransactionState.valueOf(it) } ?: PENDING,
             timestamp ?: currentTimeMillis(),
             currency?.let { Currency(it) } ?: defaultCurrency(),
-            exchangeRate ?: ONE,
-            amount ?: ZERO,
-            (tags ?: emptySet()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
+            exchangeRate?.let { BigDecimal(it) } ?: ONE,
+            amount?.let { BigDecimal(it) } ?: ZERO,
+            (tags ?: emptyList()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
             note?.let { Note(it) } ?: noNote
     )
 }

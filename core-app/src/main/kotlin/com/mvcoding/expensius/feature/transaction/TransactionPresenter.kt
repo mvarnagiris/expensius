@@ -31,7 +31,6 @@ import com.mvcoding.expensius.service.TransactionsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
-import rx.Observable.empty
 import java.math.BigDecimal
 
 class TransactionPresenter(
@@ -85,16 +84,6 @@ class TransactionPresenter(
                 .map { transactionWithToggledArchiveState() }
                 .switchMap { transactionsWriteService.saveTransactions(setOf(it)) }
                 .subscribeUntilDetached { view.displayResult() }
-
-        //        unsubscribeOnDetach(view.saveRequests()
-        //                .withLatestFrom(transactionObservable(view), { action, transaction -> transaction })
-        //                .doOnNext { transactionsProvider.save(setOf(it)) }
-        //                .subscribe { view.displayResult(it) })
-        //
-        //        unsubscribeOnDetach(view.archiveToggles()
-        //                .map { transactionWithToggledArchiveState() }
-        //                .doOnNext { transactionsProvider.save(setOf(it)) }
-        //                .subscribe { view.displayResult(it) })
     }
 
     private fun saveTransaction(transaction: Transaction) =
@@ -103,41 +92,6 @@ class TransactionPresenter(
 
     private fun Transaction.isExisting() = this.transactionId != noTransactionId
     private fun Transaction.toCreateTransaction() = CreateTransaction(transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
-
-    private fun transactionObservable(view: View): Observable<Transaction>? {
-
-        //
-        //        val values = listOf(
-        //                ids,
-        //                modelStates,
-        //                transactionTypes,
-        //                transactionStates,
-        //                timestamps,
-        //                currencies,
-        //                exchangeRates,
-        //                amounts,
-        //                tags,
-        //                notes)
-        //
-        //        return combineLatest(values) {
-        //            @Suppress("UNCHECKED_CAST")
-        //            Transaction(
-        //                    it[0] as String,
-        //                    it[1] as ModelState,
-        //                    it[2] as TransactionType,
-        //                    it[3] as TransactionState,
-        //                    it[4] as Long,
-        //                    it[5] as Currency,
-        //                    it[6] as BigDecimal,
-        //                    it[7] as BigDecimal,
-        //                    it[8] as Set<Tag>,
-        //                    it[9] as String
-        //            )
-        //        }.doOnNext { transaction = it }
-
-        return empty()
-    }
-
     private fun transactionWithToggledArchiveState() = transaction.withModelState(if (transaction.modelState == NONE) ARCHIVED else NONE)
 
     interface View : Presenter.View {

@@ -12,10 +12,10 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.transaction.TransactionView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/transactionView"
+    android:id="@id/contentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
@@ -218,4 +218,4 @@
             android:text="@string/save" />
     </FrameLayout>
 
-</com.mvcoding.expensius.feature.transaction.TransactionView>
+</LinearLayout>

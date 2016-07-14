@@ -46,7 +46,7 @@ class TransactionItemView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     private fun transactionOrDefaultNote(transaction: Transaction) =
-            if (transaction.note.isNotBlank()) transaction.note
+            if (transaction.note.text.isNotBlank()) transaction.note.text
             else resources.getString(if (transaction.transactionType == EXPENSE) R.string.expense else R.string.income)
 
     private fun formatTags(tags: Set<Tag>): CharSequence {
