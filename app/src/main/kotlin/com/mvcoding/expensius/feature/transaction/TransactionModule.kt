@@ -26,6 +26,7 @@ import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provideAppUserService
 import com.mvcoding.expensius.provideDatabase
 import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideTransactionsService
 import com.mvcoding.expensius.provideTransactionsWriteService
 import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
 import com.mvcoding.expensius.provider.database.table.TagsTable
@@ -39,6 +40,7 @@ class TransactionModule : ShankModule {
         transactionsProvider()
         transactionsPresenter()
         transactionPresenter()
+        transactionsOverviewPresenter()
     }
 
     private fun transactionsProvider() = registerFactory(TransactionsProvider::class) { ->
@@ -57,9 +59,13 @@ class TransactionModule : ShankModule {
         transaction: Transaction ->
         TransactionPresenter(transaction, provideTransactionsWriteService(), provideAppUserService(), provideCurrenciesProvider())
     }
+
+    private fun transactionsOverviewPresenter() = registerFactory(TransactionsOverviewPresenter::class) { ->
+        TransactionsOverviewPresenter(provideTransactionsService(3))
+    }
 }
 
 fun provideTransactionsProvider(): TransactionsProvider = provideGlobalSingleton()
 fun Activity.provideTransactionPresenter(transaction: Transaction): TransactionPresenter = withThisScope.provideSingletonFor(transaction)
-fun View.provideTransactionsPresenter(modelDisplayType: ModelDisplayType): TransactionsPresenter =
-        withActivityScope.provideSingletonFor(modelDisplayType)
+fun View.provideTransactionsOverviewPresenter() = withActivityScope.provideSingletonFor<TransactionsOverviewPresenter>()
+fun View.provideTransactionsPresenter(modelDisplayType: ModelDisplayType): TransactionsPresenter = withActivityScope.provideSingletonFor(modelDisplayType)

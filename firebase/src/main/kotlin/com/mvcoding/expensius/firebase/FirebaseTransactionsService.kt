@@ -46,7 +46,7 @@ class FirebaseTransactionsService(
         FirebaseList(
                 (if (archived) archivedTransactionsDatabaseReference(appUserService.getCurrentAppUser().userId)
                 else transactionsDatabaseReference(appUserService.getCurrentAppUser().userId))
-                        .orderByChild("timestamp")
+                        .orderByChild("timestampInverse")
                         .apply { if (limit > 0) limitToLast(limit) }) { it }
     }
 

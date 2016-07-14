@@ -38,6 +38,7 @@ data class FirebaseTransaction(
         val transactionType: String? = null,
         val transactionState: String? = null,
         val timestamp: Long? = 0,
+        val timestampInverse: Long? = 0,
         val currency: String? = null,
         val exchangeRate: String? = null,
         val amount: String? = null,
