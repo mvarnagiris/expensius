@@ -34,7 +34,7 @@ fun FirebaseSettings?.toSettings() =
                 reportGroup?.let { ReportGroup.valueOf(it) } ?: ReportGroup.DAY,
                 subscriptionType?.let { SubscriptionType.valueOf(it) } ?: SubscriptionType.FREE)
 
-private fun defaultCurrency(): Currency = try {
+fun defaultCurrency(): Currency = try {
     java.util.Currency.getInstance(Locale.getDefault()).let { Currency(it.currencyCode) }
 } catch (e: Exception) {
     Currency("USD")

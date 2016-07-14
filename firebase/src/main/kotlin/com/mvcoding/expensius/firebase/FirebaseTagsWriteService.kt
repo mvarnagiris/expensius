@@ -28,7 +28,7 @@ class FirebaseTagsWriteService(private val appUserService: AppUserService) : Tag
     override fun createTags(createTags: Set<CreateTag>): Observable<Unit> = appUserService.appUser()
             .first()
             .map {
-                val tagsReference = tagsDatabaseReference(appUserService.getCurrentAppUser().userId)
+                val tagsReference = tagsDatabaseReference(it.userId)
                 createTags.forEach {
                     val newTagReference = tagsReference.push()
                     val firebaseTag = it.toFirebaseTag(newTagReference.key)
@@ -42,7 +42,7 @@ class FirebaseTagsWriteService(private val appUserService: AppUserService) : Tag
                 val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toMap() else null })
                 val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toMap() else null })
 
-                val appUserId = appUserService.getCurrentAppUser().userId
+                val appUserId = it.userId
                 if (tagsToUpdate.isNotEmpty()) tagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
                 if (archivedTagsToUpdate.isNotEmpty()) archivedTagsDatabaseReference(appUserId).updateChildren(archivedTagsToUpdate)
             }
