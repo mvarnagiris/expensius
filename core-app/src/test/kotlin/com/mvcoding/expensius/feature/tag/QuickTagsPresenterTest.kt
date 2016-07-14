@@ -14,10 +14,8 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.aTag
-import com.mvcoding.expensius.model.aTransaction
-import com.mvcoding.expensius.model.withTags
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.TagsService
 import com.nhaarman.mockito_kotlin.mock
@@ -26,79 +24,88 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import rx.Observable.just
+import rx.lang.kotlin.BehaviorSubject
+import rx.lang.kotlin.PublishSubject
 
 class QuickTagsPresenterTest {
-    //    val toggleSelectableTagSubject = PublishSubject<SelectableTag>()
-    //    val selectedTagsUpdatedSubject = BehaviorSubject<Set<Tag>>(setOf())
-    val tags = listOf(aTag(), aTag())
-    val transaction = aTransaction().withTags(setOf(tags.first()))
-    val selectableTags = tags.map { SelectableTag(it, transaction.tags.contains(it)) }
+    val toggleSelectableTagSubject = PublishSubject<SelectableTag>()
+    val selectedTagsUpdatedSubject = BehaviorSubject<Set<Tag>>(setOf())
+    val defaultTags = listOf(aTag(), aTag())
+    val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }
     val tagsService: TagsService = mock()
     val view: QuickTagsPresenter.View = mock()
-    val presenter = presenter()
+    val presenter = QuickTagsPresenter(tagsService, rxSchedulers())
 
     @Before
     fun setUp() {
-        //        given(view.onSelectableTagToggled()).willReturn(toggleSelectableTagSubject)
-        //        given(view.onShowSelectedTags()).willReturn(selectedTagsUpdatedSubject)
-
+        whenever(view.selectableTagToggles()).thenReturn(toggleSelectableTagSubject)
+        whenever(view.selectedTagsUpdates()).thenReturn(selectedTagsUpdatedSubject)
+        whenever(tagsService.items()).thenReturn(just(defaultTags))
     }
 
     @Test
-    fun initiallyShowsTagsSelectedForThatTransactionEvenIfTheyAreNotInTagsService() {
-        val extraTag = aTag()
-        val tags = listOf(aTag(), aTag())
-        val transactionTags = setOf(extraTag, tags.first())
-        val selectableTags = transactionTags.plus(tags).map { SelectableTag(it, transactionTags.contains(it)) }.sortedBy { it.tag.order }
-        val transaction = aTransaction().withTags(transactionTags)
-        whenever(tagsService.items()).thenReturn(just(tags))
+    fun initiallyShowsAllTagsUnselected() {
+        presenter.attach(view)
 
-        presenter(transaction).attach(view)
-
-        verify(view).showSelectableTags(selectableTags)
+        verify(view).showSelectableTags(defaultSelectableTags)
     }
 
-    //    @Test
-    //    fun canSelectTag() {
-    //        val selectableTag = defaultSelectableTags[0]
-    //        presenter.attach(view)
-    //
-    //        toggleSelectableTag(selectableTag)
-    //
-    //        verify(view).showUpdatedSelectableTag(selectableTag, selectableTag.withSelected(true))
-    //    }
-    //
-    //    @Test
-    //    fun canDeselectTag() {
-    //        val selectableTag = defaultSelectableTags[0]
-    //        presenter.attach(view)
-    //        toggleSelectableTag(selectableTag)
-    //
-    //        toggleSelectableTag(selectableTag.withSelected(true))
-    //
-    //        verify(view).showUpdatedSelectableTag(selectableTag.withSelected(true), selectableTag)
-    //    }
-    //
-    //    @Test
-    //    fun tagSelectionStateIsRestoredAfterReattach() {
-    //        val selectableTag = defaultSelectableTags[0]
-    //        val expectedSelectableTags = defaultSelectableTags.map { if (it == selectableTag) it.toggled() else it }
-    //        presenter.attach(view)
-    //        toggleSelectableTag(selectableTag)
-    //
-    //        presenter.detach(view)
-    //        presenter.attach(view)
-    //
-    //        verify(view).showSelectableTags(expectedSelectableTags)
-    //    }
-    //
-    //    private fun toggleSelectableTag(selectableTag: SelectableTag) {
-    //        toggleSelectableTagSubject.onNext(selectableTag)
-    //    }
-    //
-    //    private fun updateSelectedTags(selectedTags: Set<Tag>) {
-    //        selectedTagsUpdatedSubject.onNext(selectedTags)
-    //    }
+    @Test
+    fun showsAllSelectedTagsEvenIfTheyAreNotPartOfTagsProvider() {
+        val extraTag = aTag()
+        presenter.attach(view)
 
-    private fun presenter(transaction: Transaction = aTransaction()) = QuickTagsPresenter(transaction, tagsService, rxSchedulers())
+        updateSelectedTags(setOf(defaultTags[1], extraTag))
+
+        verify(view).showSelectableTags(listOf(
+                SelectableTag(defaultTags[0], false),
+                SelectableTag(defaultTags[1], true),
+                SelectableTag(extraTag, true))
+                .sortedBy { it.tag.order })
+    }
+
+    @Test
+    fun canSelectTag() {
+        val selectableTag = defaultSelectableTags[0]
+        presenter.attach(view)
+
+        toggleSelectableTag(selectableTag)
+
+        verify(view).showUpdatedSelectableTag(selectableTag, selectableTag.withSelected(true))
+    }
+
+    @Test
+    fun canDeselectTag() {
+        val selectableTag = defaultSelectableTags[0]
+        presenter.attach(view)
+        toggleSelectableTag(selectableTag)
+
+        toggleSelectableTag(selectableTag.withSelected(true))
+
+        verify(view).showUpdatedSelectableTag(selectableTag.withSelected(true), selectableTag)
+    }
+
+    @Test
+    fun tagSelectionStateIsRestoredAfterReattach() {
+        val selectableTag = defaultSelectableTags[0]
+        val expectedSelectableTags = defaultSelectableTags.map { if (it == selectableTag) it.toggled() else it }.sortedBy { it.tag.order }
+        presenter.attach(view)
+        toggleSelectableTag(selectableTag)
+
+        presenter.detach(view)
+        presenter.attach(view)
+
+        verify(view).showSelectableTags(expectedSelectableTags)
+    }
+
+    @Test
+    fun closesTagsServiceOnDestroy() {
+        presenter.onDestroy()
+
+        verify(tagsService).close()
+    }
+
+    private fun toggleSelectableTag(selectableTag: SelectableTag) = toggleSelectableTagSubject.onNext(selectableTag)
+    private fun updateSelectedTags(selectedTags: Set<Tag>) = selectedTagsUpdatedSubject.onNext(selectedTags)
+    private fun SelectableTag.withSelected(selected: Boolean) = copy(isSelected = selected)
 }

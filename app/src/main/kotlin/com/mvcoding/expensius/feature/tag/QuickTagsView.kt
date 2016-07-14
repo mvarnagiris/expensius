@@ -49,8 +49,7 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
                     QuickTag("Non-essential", getColor(context, R.color.red_500)),
                     QuickTag("Food", getColor(context, R.color.lime_500)),
                     QuickTag("Going out", getColor(context, R.color.blue_500)),
-                    QuickTag("Some other very long tag that can take up a few lines, but how?",
-                            getColor(context, R.color.orange_500))))
+                    QuickTag("Some other very long tag that can take up a few lines, but how?", getColor(context, R.color.orange_500))))
 
             getChildAt(1).isSelected = true
             getChildAt(2).isSelected = true
@@ -140,9 +139,9 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
-    override fun onSelectableTagToggled() = selectableTagToggledSubject
+    override fun selectableTagToggles() = selectableTagToggledSubject
 
-    override fun onShowSelectedTags() = selectedTagsUpdatedSubject
+    override fun selectedTagsUpdates() = selectedTagsUpdatedSubject
 
     override fun showSelectableTags(selectableTags: List<SelectableTag>) {
         this.selectableTags.clear()

@@ -20,48 +20,42 @@ import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
+import rx.Observable.combineLatest
 
 class QuickTagsPresenter(
         private val tagsService: TagsService,
         private val schedulers: RxSchedulers) : Presenter<QuickTagsPresenter.View>(), Destroyable {
 
-    //    private val toggledTags = hashMapOf(*transaction.tags.map { it to true }.toTypedArray())
+    private val toggledTags = hashMapOf<Tag, Boolean>()
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        //        tagsService.items().withLatestFrom(toggledTags.toSingletonObservable(),
-        //                { tags, toggledTags -> tags.union(toggledTags.keys).toList().sortedBy { it.order } })
-        //                .subscribeOn(schedulers.io)
-        //                .map { it.toSelectableTags() }
-        //                .observeOn(schedulers.main)
-        //                .subscribeUntilDetached { view.showSelectableTags(it) }
+        val selectedTags = view.selectedTagsUpdates().doOnNext { it.forEach { toggledTags.put(it, true) } }
+        val allTags = combineLatest(tagsService.items(), selectedTags, {
+            serviceTags, selectedTags ->
+            serviceTags.plus(selectedTags.filterNot { serviceTags.contains(it) }).sortedBy { it.order }
+        })
 
-        //        val selectedTags = view.onShowSelectedTags().doOnNext { it.forEach { toggledTags.put(it, true) } }
-        //        val allTags = combineLatest(tagsService.tags(), selectedTags, {
-        //            providerTags, selectedTags ->
-        //            providerTags.plus(selectedTags.filterNot { providerTags.contains(it) }).sortedBy { it.order.value }
-        //        })
-        //
-        //        unsubscribeOnDetach(allTags
-        //                .subscribeOn(rxSchedulers.io)
-        //                .map { toSelectableTags(it) }
-        //                .observeOn(rxSchedulers.main)
-        //                .subscribe { view.showSelectableTags(it) })
-        //        unsubscribeOnDetach(view.onSelectableTagToggled()
-        //                .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
-        //                .subscribe { view.showUpdatedSelectableTag(it, it.toggled()) })
+        allTags.subscribeOn(schedulers.io)
+                .map { toSelectableTags(it) }
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showSelectableTags(it) }
+
+        view.selectableTagToggles()
+                .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
+                .subscribeUntilDetached { view.showUpdatedSelectableTag(it, it.toggled()) }
     }
 
     override fun onDestroy() {
         tagsService.close()
     }
 
-    //    private fun List<Tag>.toSelectableTags() = map { SelectableTag(it, toggledTags.getOrElse(it, { false })) }
+    private fun toSelectableTags(tags: List<Tag>) = tags.map { SelectableTag(it, toggledTags.getOrElse(it, { false })) }
 
     interface View : Presenter.View {
-        fun onShowSelectedTags(): Observable<Set<Tag>>
-        fun onSelectableTagToggled(): Observable<SelectableTag>
+        fun selectedTagsUpdates(): Observable<Set<Tag>>
+        fun selectableTagToggles(): Observable<SelectableTag>
         fun showSelectableTags(selectableTags: List<SelectableTag>)
         fun showUpdatedSelectableTag(oldSelectableTag: SelectableTag, newSelectableTag: SelectableTag)
     }
