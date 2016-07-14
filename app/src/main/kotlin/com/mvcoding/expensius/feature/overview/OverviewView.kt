@@ -26,8 +26,8 @@ import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.report.TagsReportView
 import com.mvcoding.expensius.feature.settings.SettingsActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
-import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
+import com.mvcoding.expensius.model.TransactionType
 import kotlinx.android.synthetic.main.toolbar.view.*
 import kotlinx.android.synthetic.main.view_overview.view.*
 import net.danlew.android.joda.DateUtils

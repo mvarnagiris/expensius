@@ -15,6 +15,8 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.TransactionState
+import com.mvcoding.expensius.model.TransactionType
 import org.joda.time.Interval
 
 data class TransactionsFilter(

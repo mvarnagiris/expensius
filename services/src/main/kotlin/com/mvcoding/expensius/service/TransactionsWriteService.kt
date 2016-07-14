@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2016 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,8 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.service
 
-enum class TransactionType {
-    EXPENSE, INCOME
+import com.mvcoding.expensius.model.CreateTransaction
+import com.mvcoding.expensius.model.Transaction
+import rx.Observable
+
+interface TransactionsWriteService {
+    fun createTransactions(createTransactions: Set<CreateTransaction>): Observable<Unit>
+    fun saveTransactions(updateTransactions: Set<Transaction>): Observable<Unit>
 }

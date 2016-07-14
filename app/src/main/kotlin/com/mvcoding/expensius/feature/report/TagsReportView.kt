@@ -23,9 +23,9 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
-import com.mvcoding.expensius.feature.transaction.TransactionType
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.TransactionType
+import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
 import com.mvcoding.expensius.provideSettings

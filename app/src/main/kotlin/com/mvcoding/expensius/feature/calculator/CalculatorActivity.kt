@@ -25,8 +25,6 @@ import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.BACK
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
-import com.mvcoding.expensius.feature.transaction.TransactionActivity
-import com.mvcoding.expensius.model.Transaction
 import kotlinx.android.synthetic.main.activity_calculator.*
 import java.math.BigDecimal
 
@@ -94,13 +92,13 @@ class CalculatorActivity : BaseActivity(), CalculatorPresenter.View {
     override fun showExpression(expression: String) = resultTextView.let { it.text = expression }
     override fun showState(state: CalculatorPresenter.State) = equalsFloatingActionButton.let { it.isSelected = state == CalculatorPresenter.State.CALCULATE }
 
-    override fun startResult(number: BigDecimal) {
+    override fun displayResult(number: BigDecimal) {
         setResult(Activity.RESULT_OK, Intent().apply { putExtra(RESULT_EXTRA_AMOUNT, number) })
         finish()
     }
 
-    override fun startTransaction(transaction: Transaction) {
-        TransactionActivity.start(this, transaction)
-        finish()
+    override fun displayTransaction(number: BigDecimal) {
+        //        TransactionActivity.start(this, transaction)
+        //        finish()
     }
 }

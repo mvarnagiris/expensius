@@ -33,14 +33,16 @@ import com.mvcoding.expensius.extension.toBaseActivity
 import com.mvcoding.expensius.feature.DateDialogFragment
 import com.mvcoding.expensius.feature.DateDialogFragment.DateDialogResult
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
-import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
-import com.mvcoding.expensius.feature.transaction.TransactionState.PENDING
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
-import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.TransactionState
+import com.mvcoding.expensius.model.TransactionState.CONFIRMED
+import com.mvcoding.expensius.model.TransactionState.PENDING
+import com.mvcoding.expensius.model.TransactionType
+import com.mvcoding.expensius.model.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.TransactionType.INCOME
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
 import com.mvcoding.expensius.provideRxBus
@@ -114,7 +116,7 @@ class TransactionView @JvmOverloads constructor(context: Context, attrs: Attribu
         presenter.detach(this)
     }
 
-    override fun onTransactionStateChanged(): Observable<TransactionState> {
+    override fun transactionStateChanges(): Observable<TransactionState> {
         return transactionStateCheckBox
                 .checkedChanges()
                 .filter {
@@ -128,21 +130,21 @@ class TransactionView @JvmOverloads constructor(context: Context, attrs: Attribu
                 .map { if (transactionState == CONFIRMED) PENDING else CONFIRMED }
     }
 
-    override fun onTransactionTypeChanged() = transactionTypeFloatingActionButton.clicks()
+    override fun transactionTypeChanges() = transactionTypeFloatingActionButton.clicks()
             .map { if (transactionType == EXPENSE) INCOME else EXPENSE }
 
-    override fun onTimestampChanged() = rxBus.observe(DateDialogResult::class)
+    override fun timestampChanges() = rxBus.observe(DateDialogResult::class)
             .map { DateTime(timestamp).withYear(it.year).withMonthOfYear(it.monthOfYear).withDayOfMonth(it.dayOfMonth).millis }
 
-    override fun onCurrencyChangeRequested() = currencyButton.clicks()
-    override fun onExchangeRateChanged() = exchangeRateSubject.asObservable()
-    override fun onAmountChanged() = amountSubject.asObservable()
-    override fun onTagsChanged() = quickTagsView.selectedTagsChanges()
-    override fun onNoteChanged() = noteEditText.textChanges().map { it.toString() }.distinctUntilChanged()
-    override fun onToggleArchive() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
-    override fun onSave() = saveButton.clicks()
+    override fun currencyChangeRequests() = currencyButton.clicks()
+    override fun exchangeRateChanges() = exchangeRateSubject.asObservable()
+    override fun amountChanges() = amountSubject.asObservable()
+    override fun tagsChanges() = quickTagsView.selectedTagsChanges()
+    override fun noteChanges() = noteEditText.textChanges().map { it.toString() }.distinctUntilChanged()
+    override fun archiveToggles() = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
+    override fun saveRequests() = saveButton.clicks()
 
-    override fun requestCurrency(currencies: List<Currency>): Observable<Currency> = Observable.create {
+    override fun currencyChanges(currencies: List<Currency>): Observable<Currency> = Observable.create {
         val displayCurrencies = currencies.map { it.displayName() }
         val itemHeight = getDimensionFromTheme(context, R.attr.actionBarSize)
         val keyline = resources.getDimensionPixelSize(R.dimen.keyline)

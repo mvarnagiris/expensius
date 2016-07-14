@@ -2,32 +2,34 @@ package com.mvcoding.expensius.extension
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.mvcoding.expensius.feature.transaction.TransactionState
-import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.model.Color
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.Note
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.TagId
 import com.mvcoding.expensius.model.Title
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.TransactionId
+import com.mvcoding.expensius.model.TransactionState
+import com.mvcoding.expensius.model.TransactionType
 import com.mvcoding.expensius.provider.database.table.TagsTable
 import com.mvcoding.expensius.provider.database.table.TransactionsTable
 import java.math.BigDecimal
 
 fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentValues {
     val contentValues = ContentValues()
-    contentValues.put(transactionsTable.id.name, id)
-    contentValues.put(transactionsTable.modelState.name, modelState.name)
-    contentValues.put(transactionsTable.transactionType.name, transactionType.name)
-    contentValues.put(transactionsTable.transactionState.name, transactionState.name)
-    contentValues.put(transactionsTable.timestamp.name, timestamp)
-    contentValues.put(transactionsTable.currency.name, currency.code)
-    contentValues.put(transactionsTable.exchangeRate.name, exchangeRate.toPlainString())
-    contentValues.put(transactionsTable.amount.name, amount.toPlainString())
-    contentValues.put(transactionsTable.tags.name, tags.joinToString(separator = ",", transform = { it.tagId.id }))
-    contentValues.put(transactionsTable.note.name, note)
+    //    contentValues.put(transactionsTable.id.name, id)
+    //    contentValues.put(transactionsTable.modelState.name, modelState.name)
+    //    contentValues.put(transactionsTable.transactionType.name, transactionType.name)
+    //    contentValues.put(transactionsTable.transactionState.name, transactionState.name)
+    //    contentValues.put(transactionsTable.timestamp.name, timestamp)
+    //    contentValues.put(transactionsTable.currency.name, currency.code)
+    //    contentValues.put(transactionsTable.exchangeRate.name, exchangeRate.toPlainString())
+    //    contentValues.put(transactionsTable.amount.name, amount.toPlainString())
+    //    contentValues.put(transactionsTable.tags.name, tags.joinToString(separator = ",", transform = { it.tagId.id }))
+    //    contentValues.put(transactionsTable.note.name, note)
     return contentValues
 }
 
@@ -51,5 +53,5 @@ fun Cursor.toTransaction(transactionsTable: TransactionsTable, tagsTable: TagsTa
                 Order(tagValues[4].toInt()))
     }?.toSet() ?: emptySet<Tag>()
     val note = getString(getColumnIndex(transactionsTable.note.name))
-    return Transaction(id, modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
+    return Transaction(TransactionId(id), modelState, transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, Note(note))
 }

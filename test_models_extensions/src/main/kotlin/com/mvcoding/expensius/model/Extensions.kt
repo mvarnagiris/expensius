@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.model
 
+import java.math.BigDecimal
 import java.util.*
 
 fun aString() = UUID.randomUUID().toString()
@@ -25,5 +26,6 @@ fun aLong(limit: Int) = anInt(limit).toLong()
 fun anInt() = Random().nextInt()
 fun anInt(limit: Int) = Random().nextInt(limit)
 fun aLongTimestamp() = System.currentTimeMillis() - anInt(1000 * 60 * 60 * 24)
+fun anAmount() = BigDecimal(anInt(100))
 fun aBoolean() = Math.random() >= 0.5
 fun <T> Array<T>.aRandomItem() = get(anInt(size - 1))

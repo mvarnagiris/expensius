@@ -20,7 +20,6 @@ import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
 import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.FilterData
-import com.mvcoding.expensius.feature.transaction.TransactionState.CONFIRMED
 import com.mvcoding.expensius.feature.transaction.TransactionsFilter
 import com.mvcoding.expensius.feature.transaction.TransactionsProvider
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -28,6 +27,7 @@ import com.mvcoding.expensius.model.NullModels
 import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable

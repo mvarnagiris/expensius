@@ -19,8 +19,8 @@ import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.mvcoding.expensius.feature.Filter
-import com.mvcoding.expensius.feature.transaction.TransactionType
 import com.mvcoding.expensius.feature.transaction.provideTransactionsProvider
+import com.mvcoding.expensius.model.TransactionType
 import com.mvcoding.expensius.provideRxSchedulers
 import com.mvcoding.expensius.provideSettings
 import memoizrlabs.com.shankandroid.withActivityScope

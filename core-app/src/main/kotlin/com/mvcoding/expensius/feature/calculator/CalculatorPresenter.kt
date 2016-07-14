@@ -18,7 +18,6 @@ import com.mvcoding.expensius.Settings
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
-import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.merge
@@ -78,11 +77,10 @@ class CalculatorPresenter(
     }
 
     private fun getCurrentState() = if (calculator.isEmptyOrSingleNumber()) SAVE else CALCULATE
-    private fun prepareTransaction(it: BigDecimal) = Transaction(currency = settings.mainCurrency, amount = it)
 
     private fun displayResult(view: View, amount: BigDecimal) =
-            if (resultDestination == TRANSACTION) view.startTransaction(prepareTransaction(amount))
-            else view.startResult(amount)
+            if (resultDestination == TRANSACTION) view.displayTransaction(amount)
+            else view.displayResult(amount)
 
     enum class State { SAVE, CALCULATE }
 
@@ -110,7 +108,7 @@ class CalculatorPresenter(
 
         fun showExpression(expression: String)
         fun showState(state: State)
-        fun startResult(number: BigDecimal)
-        fun startTransaction(transaction: Transaction)
+        fun displayResult(number: BigDecimal)
+        fun displayTransaction(number: BigDecimal)
     }
 }

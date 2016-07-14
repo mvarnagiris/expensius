@@ -14,41 +14,50 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.aTag
+import com.mvcoding.expensius.model.aTransaction
+import com.mvcoding.expensius.model.withTags
+import com.mvcoding.expensius.rxSchedulers
+import com.mvcoding.expensius.service.TagsService
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
+import org.junit.Before
+import org.junit.Test
+import rx.Observable.just
+
 class QuickTagsPresenterTest {
     //    val toggleSelectableTagSubject = PublishSubject<SelectableTag>()
     //    val selectedTagsUpdatedSubject = BehaviorSubject<Set<Tag>>(setOf())
-    //    val defaultTags = listOf(aTag(), aTag())
-    //    val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }
-    //    val tagsCache = mock(TagsProvider::class.java)
-    //    val view = mock(QuickTagsPresenter.View::class.java)
-    //    val presenter = QuickTagsPresenter(tagsCache, rxSchedulers())
-    //
-    //    @Before
-    //    fun setUp() {
-    //        given(view.onSelectableTagToggled()).willReturn(toggleSelectableTagSubject)
-    //        given(view.onShowSelectedTags()).willReturn(selectedTagsUpdatedSubject)
-    //        given(tagsCache.tags()).willReturn(just(defaultTags))
-    //    }
-    //
-    //    @Test
-    //    fun initiallyShowsAllTagsUnselected() {
-    //        presenter.attach(view)
-    //
-    //        verify(view).showSelectableTags(defaultSelectableTags)
-    //    }
-    //
-    //    @Test
-    //    fun showsAllSelectedTagsEvenIfTheyAreNotPartOfTagsProvider() {
-    //        val extraTag = aTag()
-    //        presenter.attach(view)
-    //
-    //        updateSelectedTags(setOf(defaultTags[1], extraTag))
-    //
-    //        verify(view).showSelectableTags(listOf(SelectableTag(defaultTags[0], false),
-    //                SelectableTag(defaultTags[1], true),
-    //                SelectableTag(extraTag, true)))
-    //    }
-    //
+    val tags = listOf(aTag(), aTag())
+    val transaction = aTransaction().withTags(setOf(tags.first()))
+    val selectableTags = tags.map { SelectableTag(it, transaction.tags.contains(it)) }
+    val tagsService: TagsService = mock()
+    val view: QuickTagsPresenter.View = mock()
+    val presenter = presenter()
+
+    @Before
+    fun setUp() {
+        //        given(view.onSelectableTagToggled()).willReturn(toggleSelectableTagSubject)
+        //        given(view.onShowSelectedTags()).willReturn(selectedTagsUpdatedSubject)
+
+    }
+
+    @Test
+    fun initiallyShowsTagsSelectedForThatTransactionEvenIfTheyAreNotInTagsService() {
+        val extraTag = aTag()
+        val tags = listOf(aTag(), aTag())
+        val transactionTags = setOf(extraTag, tags.first())
+        val selectableTags = transactionTags.plus(tags).map { SelectableTag(it, transactionTags.contains(it)) }.sortedBy { it.tag.order }
+        val transaction = aTransaction().withTags(transactionTags)
+        whenever(tagsService.items()).thenReturn(just(tags))
+
+        presenter(transaction).attach(view)
+
+        verify(view).showSelectableTags(selectableTags)
+    }
+
     //    @Test
     //    fun canSelectTag() {
     //        val selectableTag = defaultSelectableTags[0]
@@ -90,4 +99,6 @@ class QuickTagsPresenterTest {
     //    private fun updateSelectedTags(selectedTags: Set<Tag>) {
     //        selectedTagsUpdatedSubject.onNext(selectedTags)
     //    }
+
+    private fun presenter(transaction: Transaction = aTransaction()) = QuickTagsPresenter(transaction, tagsService, rxSchedulers())
 }

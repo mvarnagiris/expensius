@@ -21,7 +21,6 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCU
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.Currency
 import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.argThat
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.times
@@ -624,8 +623,8 @@ class CalculatorPresenterTest {
         save()
 
         verify(view).showExpression("2")
-        verify(view, never()).startResult(any())
-        verify(view, never()).startTransaction(any())
+        verify(view, never()).displayResult(any())
+        verify(view, never()).displayTransaction(any())
     }
 
     @Test
@@ -638,7 +637,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        verify(view).startResult(BigDecimal(2))
+        verify(view).displayResult(BigDecimal(2))
     }
 
     @Test
@@ -652,7 +651,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        verify(view).startTransaction(argThat { amount == BigDecimal(2) })
+        verify(view).displayTransaction(BigDecimal(2))
     }
 
     @Test

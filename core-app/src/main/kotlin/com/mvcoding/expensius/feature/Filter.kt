@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.feature.transaction.TransactionType
+import com.mvcoding.expensius.model.TransactionType
 import org.joda.time.Interval
 import rx.Observable
 import rx.lang.kotlin.BehaviorSubject

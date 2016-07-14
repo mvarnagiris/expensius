@@ -14,9 +14,9 @@ import android.widget.LinearLayout
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.inflate
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
 import kotlinx.android.synthetic.main.item_view_transaction.view.*

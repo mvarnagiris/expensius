@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import org.joda.time.Interval
 import org.junit.Test
 import rx.observers.TestSubscriber

@@ -38,19 +38,19 @@ class TagPresenter(private var tag: Tag, private val tagsWriteService: TagsWrite
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        view.showArchiveEnabled(tag.isExistingTag())
+        view.showArchiveEnabled(tag.isExisting())
         view.showModelState(tag.modelState)
 
         val titles = view.titleChanges().map { Title(it) }.startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.trimmed() }
         val colors = view.colorChanges().map { Color(it) }.startWith(tagColorOrDefault()).doOnNext { view.showColor(it) }
-        val order = if (tag.isExistingTag()) tag.order else Order(VERY_HIGH_ORDER)
+        val order = if (tag.isExisting()) tag.order else Order(VERY_HIGH_ORDER)
 
         val tag = combineLatest(titles, colors, { title, color -> tag.copy(title = title, color = color, order = order) }).doOnNext { tag = it }
 
         view.saveRequests()
                 .withLatestFrom(tag, { unit, tag -> tag })
                 .filter { validate(it, view) }
-                .switchMap { if (it.isExistingTag()) tagsWriteService.saveTags(setOf(it)) else tagsWriteService.createTags(setOf(it.toCreateTag())) }
+                .switchMap { if (it.isExisting()) tagsWriteService.saveTags(setOf(it)) else tagsWriteService.createTags(setOf(it.toCreateTag())) }
                 .subscribeUntilDetached { view.displayResult() }
 
         view.archiveToggles()
@@ -67,7 +67,7 @@ class TagPresenter(private var tag: Tag, private val tagsWriteService: TagsWrite
             if (tag.title.text.isBlank()) view.showTitleCannotBeEmptyError().let { false }
             else true
 
-    private fun Tag.isExistingTag() = this.tagId != noTagId
+    private fun Tag.isExisting() = this.tagId != noTagId
     private fun Tag.toCreateTag() = CreateTag(title, color, order)
 
     interface View : Presenter.View {

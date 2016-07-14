@@ -17,8 +17,8 @@ package com.mvcoding.expensius.feature.report
 import android.content.Context
 import android.support.v4.widget.NestedScrollView
 import android.util.AttributeSet
-import com.mvcoding.expensius.feature.transaction.TransactionType.EXPENSE
-import com.mvcoding.expensius.feature.transaction.TransactionType.INCOME
+import com.mvcoding.expensius.model.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.TransactionType.INCOME
 import kotlinx.android.synthetic.main.view_reports.view.*
 
 class ReportsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
