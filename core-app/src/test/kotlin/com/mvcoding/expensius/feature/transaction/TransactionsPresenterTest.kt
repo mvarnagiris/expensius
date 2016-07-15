@@ -14,84 +14,177 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.aTimestampProvider
+import com.mvcoding.expensius.model.aTransaction
+import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
+import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.ItemMoved
+import com.mvcoding.expensius.service.ItemsAdded
+import com.mvcoding.expensius.service.ItemsChanged
+import com.mvcoding.expensius.service.ItemsRemoved
+import com.mvcoding.expensius.service.TransactionsService
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
+import org.junit.Test
+import org.mockito.InOrder
+import rx.Observable.empty
+import rx.Observable.from
+import rx.Observable.just
+import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class TransactionsPresenterTest {
-    val createTransactionSubject = PublishSubject<Unit>()
-    val selectTransactionSubject = PublishSubject<Transaction>()
-    val displayArchivedTransactionsSubject = PublishSubject<Unit>()
+    val someTransactions = listOf(aTransaction(), aTransaction(), aTransaction())
+    val someOtherTransactions = listOf(aTransaction(), aTransaction())
+    val appUser = anAppUser()
 
-    val transactionsProvider = mock<TransactionsProvider>()
-    val view = mock<TransactionsPresenter.View>()
+    val createTransactionRequestsSubject = PublishSubject<Unit>()
+    val transactionSelectsSubject = PublishSubject<Transaction>()
+    val archivedTransactionsRequestsSubject = PublishSubject<Unit>()
+    val transactionsSubject = BehaviorSubject(someTransactions)
+
+    val appUserService: AppUserService = mock()
+    val transactionsService: TransactionsService = mock()
+    val timestampProvider = aTimestampProvider()
+    val view: TransactionsPresenter.View = mock()
+    val inOrder: InOrder = inOrder(view)
 
     @Before
     fun setUp() {
-        //        whenever(transactionsProvider.transactions(argThat { modelState == NONE })).thenReturn(just(listOf(aTransaction())))
-        //        whenever(transactionsProvider.transactions(argThat { modelState == ARCHIVED }))
-        //                .thenReturn(just(listOf(aTransaction().withModelState(ARCHIVED))))
-        //        whenever(view.onCreateTransaction()).thenReturn(createTransactionSubject)
-        //        whenever(view.onTransactionSelected()).thenReturn(selectTransactionSubject)
-        //        whenever(view.onDisplayArchivedTransactions()).thenReturn(displayArchivedTransactionsSubject)
+        whenever(transactionsService.items()).thenReturn(transactionsSubject)
+        whenever(transactionsService.addedItems()).thenReturn(empty())
+        whenever(transactionsService.changedItems()).thenReturn(empty())
+        whenever(transactionsService.removedItems()).thenReturn(empty())
+        whenever(transactionsService.movedItems()).thenReturn(empty())
+        whenever(appUserService.appUser()).thenReturn(just(appUser))
+
+        whenever(view.transactionSelects()).thenReturn(transactionSelectsSubject)
+        whenever(view.createTransactionRequests()).thenReturn(createTransactionRequestsSubject)
+        whenever(view.archivedTransactionsRequests()).thenReturn(archivedTransactionsRequestsSubject)
     }
 
-    //    @Test
-    //    fun showsModelDisplayType() {
-    //        presenterWithModelDisplayTypeArchived().attach(view)
-    //
-    //        verify(view).showModelDisplayType(VIEW_ARCHIVED)
-    //    }
-    //
-    //    @Test
-    //    fun showsTransactions() {
-    //        presenterWithModelDisplayTypeView().attach(view)
-    //
-    //        verify(view).showTransactions(argThat { size == 1 })
-    //    }
-    //
-    //    @Test
-    //    fun showsArchivedTransactions() {
-    //        presenterWithModelDisplayTypeArchived().attach(view)
-    //
-    //        verify(view).showTransactions(argThat { size == 1 && first().modelState == ARCHIVED })
-    //    }
-    //
-    //    @Test
-    //    fun displaysCreateTransactionOnCreateTransaction() {
-    //        presenterWithModelDisplayTypeView().attach(view)
-    //
-    //        createTransaction()
-    //
-    //        verify(view).displayCreateTransaction()
-    //    }
-    //
-    //    @Test
-    //    fun displaysTransactionEditOnTransactionSelected() {
-    //        val transaction = aTransaction()
-    //        presenterWithModelDisplayTypeView().attach(view)
-    //
-    //        selectTransaction(transaction)
-    //
-    //        verify(view).displayTransactionEdit(transaction)
-    //    }
-    //
-    //    @Test
-    //    fun displaysArchivedTransactions() {
-    //        presenterWithModelDisplayTypeView().attach(view)
-    //
-    //        displayArchivedTransactions()
-    //
-    //        verify(view).displayArchivedTransactions()
-    //    }
+    @Test
+    fun showsModelDisplayType() {
+        presenter(VIEW_ARCHIVED).attach(view)
 
-    private fun selectTransaction(transaction: Transaction) = selectTransactionSubject.onNext(transaction)
-    private fun createTransaction() = createTransactionSubject.onNext(Unit)
-    private fun displayArchivedTransactions() = displayArchivedTransactionsSubject.onNext(Unit)
-    private fun presenterWithModelDisplayTypeView() = TransactionsPresenter(transactionsProvider, VIEW_NOT_ARCHIVED, rxSchedulers())
-    private fun presenterWithModelDisplayTypeArchived() = TransactionsPresenter(transactionsProvider, VIEW_ARCHIVED, rxSchedulers())
+        verify(view).showModelDisplayType(VIEW_ARCHIVED)
+    }
+
+    @Test
+    fun showsInitialTransactionsOnlyOnce() {
+        presenter().attach(view)
+        transactions(someOtherTransactions)
+
+        inOrder.verify(view).showLoading()
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).showItems(someTransactions)
+        verify(view, times(1)).showItems(any())
+    }
+
+    @Test
+    fun showsAddedTransactions() {
+        val someItemsAdded = ItemsAdded(0, someTransactions)
+        val someOtherItemsAdded = ItemsAdded(someTransactions.size, someOtherTransactions)
+        whenever(transactionsService.addedItems()).thenReturn(from(listOf(someItemsAdded, someOtherItemsAdded)))
+
+        presenter().attach(view)
+
+        inOrder.verify(view).showAddedItems(someItemsAdded.position, someItemsAdded.items)
+        inOrder.verify(view).showAddedItems(someOtherItemsAdded.position, someOtherItemsAdded.items)
+    }
+
+    @Test
+    fun showsChangedTransactions() {
+        val someItemsChanged = ItemsChanged(0, someTransactions)
+        val someOtherItemsChanged = ItemsChanged(someTransactions.size, someOtherTransactions)
+        whenever(transactionsService.changedItems()).thenReturn(from(listOf(someItemsChanged, someOtherItemsChanged)))
+
+        presenter().attach(view)
+
+        inOrder.verify(view).showChangedItems(someItemsChanged.position, someItemsChanged.items)
+        inOrder.verify(view).showChangedItems(someOtherItemsChanged.position, someOtherItemsChanged.items)
+    }
+
+    @Test
+    fun showsRemovedTransactions() {
+        val someItemsRemoved = ItemsRemoved(0, someTransactions)
+        val someOtherItemsRemoved = ItemsRemoved(someTransactions.size, someOtherTransactions)
+        whenever(transactionsService.removedItems()).thenReturn(from(listOf(someItemsRemoved, someOtherItemsRemoved)))
+
+        presenter().attach(view)
+
+        inOrder.verify(view).showRemovedItems(someItemsRemoved.position, someItemsRemoved.items)
+        inOrder.verify(view).showRemovedItems(someOtherItemsRemoved.position, someOtherItemsRemoved.items)
+    }
+
+    @Test
+    fun showsMovedTransactions() {
+        val inOrder = inOrder(view)
+        val someTransaction = aTransaction()
+        val someOtherTransaction = aTransaction()
+        val movedTransactions = listOf(ItemMoved(0, 1, someTransaction), ItemMoved(1, 2, someOtherTransaction))
+        whenever(transactionsService.movedItems()).thenReturn(from(movedTransactions))
+
+        presenter().attach(view)
+
+        inOrder.verify(view).showMovedItem(0, 1, someTransaction)
+        inOrder.verify(view).showMovedItem(1, 2, someOtherTransaction)
+    }
+
+    @Test
+    fun displaysTransactionEditWhenSelectingTransaction() {
+        val transaction = aTransaction()
+        presenter().attach(view)
+
+        selectTransaction(transaction)
+
+        verify(view).displayTransactionEdit(transaction)
+    }
+
+    @Test
+    fun displaysTransactionEditOnCreateTransaction() {
+        presenter().attach(view)
+
+        createTransaction()
+
+        verify(view).displayTransactionEdit(newTransaction(appUser, timestampProvider))
+    }
+
+    @Test
+    fun displaysArchivedTransactions() {
+        presenter().attach(view)
+
+        requestArchivedTransactions()
+
+        verify(view).displayArchivedTransactions()
+    }
+
+    @Test
+    fun closesTagsServiceOnDestroy() {
+        presenter().onDestroy()
+
+        verify(transactionsService).close()
+    }
+
+    private fun selectTransaction(transaction: Transaction) = transactionSelectsSubject.onNext(transaction)
+    private fun createTransaction() = createTransactionRequestsSubject.onNext(Unit)
+    private fun requestArchivedTransactions() = archivedTransactionsRequestsSubject.onNext(Unit)
+    private fun transactions(transactions: List<Transaction>) = transactionsSubject.onNext(transactions)
+    private fun presenter(modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) = TransactionsPresenter(
+            modelDisplayType,
+            appUserService,
+            transactionsService,
+            timestampProvider,
+            rxSchedulers())
 }

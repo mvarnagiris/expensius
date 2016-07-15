@@ -19,6 +19,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.NullModels.newTransaction
+import com.mvcoding.expensius.model.aTimestampProvider
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.service.AppUserService
 import com.nhaarman.mockito_kotlin.any
@@ -55,7 +56,8 @@ class CalculatorPresenterTest {
     val view: CalculatorPresenter.View = mock()
     val calculator = Calculator(Interpreter())
     val appUserService: AppUserService = mock()
-    val presenter = CalculatorPresenter(calculator, resultDestination, appUserService)
+    val timestampProvider = aTimestampProvider()
+    val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider)
 
     @Before
     fun setUp() {
@@ -95,7 +97,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsInitialNumberWhenThereIsInitialNumber() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider, BigDecimal.TEN)
 
         presenter.attach(view)
 
@@ -104,7 +106,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsInitialNumberAfterReattach() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider, BigDecimal.TEN)
         presenter.attach(view)
 
         presenter.detach(view)
@@ -115,7 +117,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun clearsExpression() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider, BigDecimal.TEN)
         presenter.attach(view)
 
         clear()
@@ -125,7 +127,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun showsUpdatedExpressionAfterReattach() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider, BigDecimal.TEN)
         presenter.attach(view)
         clear()
 
@@ -137,7 +139,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun deletesLastSymbolFromExpression() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.TEN)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider, BigDecimal.TEN)
         presenter.attach(view)
 
         delete()
@@ -147,7 +149,7 @@ class CalculatorPresenterTest {
 
     @Test
     fun deletesLastSymbol() {
-        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, BigDecimal.ONE)
+        val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider, BigDecimal.ONE)
         presenter.attach(view)
 
         delete()
@@ -644,7 +646,7 @@ class CalculatorPresenterTest {
     fun startsTransactionWithCurrentlyDisplayedNumber() {
         val appUser = anAppUser()
         whenever(appUserService.getCurrentAppUser()).thenReturn(appUser)
-        val presenter = CalculatorPresenter(calculator, TRANSACTION, appUserService)
+        val presenter = CalculatorPresenter(calculator, TRANSACTION, appUserService, timestampProvider)
         presenter.attach(view)
         digit1()
         add()
@@ -653,7 +655,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        verify(view).displayTransaction(newTransaction(appUser).withAmount(BigDecimal(2)))
+        verify(view).displayTransaction(newTransaction(appUser, timestampProvider).withAmount(BigDecimal(2)))
     }
 
     @Test

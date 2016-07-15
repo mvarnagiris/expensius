@@ -90,7 +90,7 @@ class TagsPresenterTest {
     }
 
     @Test
-    fun showsArchivedTagsOnlyNce() {
+    fun showsArchivedTagsOnlyOnce() {
         presenterWithModelDisplayTypeArchived().attach(view)
         tags(someOtherTags)
 
@@ -141,8 +141,8 @@ class TagsPresenterTest {
         val inOrder = inOrder(view)
         val someTag = aTag()
         val someOtherTag = aTag()
-        val movedComments = listOf(ItemMoved(0, 1, someTag), ItemMoved(1, 2, someOtherTag))
-        whenever(tagsService.movedItems()).thenReturn(from(movedComments))
+        val movedTags = listOf(ItemMoved(0, 1, someTag), ItemMoved(1, 2, someOtherTag))
+        whenever(tagsService.movedItems()).thenReturn(from(movedTags))
 
         presenterWithModelDisplayTypeView().attach(view)
 

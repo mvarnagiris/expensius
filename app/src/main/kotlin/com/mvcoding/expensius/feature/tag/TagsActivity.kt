@@ -63,16 +63,13 @@ class TagsActivity : BaseActivity(), TagsPresenter.View {
                 tagMoveSubject,
                 { current, target -> target.adapterPosition < adapter.itemCount - 1 })
         ItemTouchHelper(touchCallback).attachToRecyclerView(recyclerView)
-    }
 
-    override fun onStart() {
-        super.onStart()
         presenter.attach(this)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
         presenter.detach(this)
+        super.onDestroy()
     }
 
     override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {

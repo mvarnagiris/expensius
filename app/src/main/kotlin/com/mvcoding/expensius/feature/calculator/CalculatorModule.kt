@@ -19,6 +19,7 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.provideAppUserService
+import com.mvcoding.expensius.provideTimestampProvider
 import memoizrlabs.com.shankandroid.withThisScope
 import java.math.BigDecimal
 
@@ -29,7 +30,7 @@ class CalculatorModule : ShankModule {
 
     private fun calculatorPresenter() = registerFactory(CalculatorPresenter::class) {
         initialNumber: BigDecimal?, resultDestination: CalculatorPresenter.ResultDestination ->
-        CalculatorPresenter(Calculator(Interpreter()), resultDestination, provideAppUserService(), initialNumber)
+        CalculatorPresenter(Calculator(Interpreter()), resultDestination, provideAppUserService(), provideTimestampProvider(), initialNumber)
     }
 }
 

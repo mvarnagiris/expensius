@@ -44,14 +44,11 @@ class TagsAdapter() : BaseClickableAdapter<Tag, ClickableViewHolder<View>>() {
         return if (isTagPosition(position)) VIEW_TYPE_DEFAULT else VIEW_TYPE_ARCHIVED
     }
 
-    override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int,
-            positionClickedSubject: PublishSubject<Int>) = ClickableViewHolder(
-            if (viewType == VIEW_TYPE_DEFAULT) TagItemView.inflate(parent)
-            else LayoutInflater.from(parent.context).inflate(R.layout.item_view_archived,
-                                                             parent,
-                                                             false), positionClickedSubject)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, positionClickedSubject: PublishSubject<Int>): ClickableViewHolder<View> =
+            ClickableViewHolder(
+                    if (viewType == VIEW_TYPE_DEFAULT) TagItemView.inflate(parent)
+                    else LayoutInflater.from(parent.context).inflate(R.layout.item_view_archived, parent, false),
+                    positionClickedSubject)
 
     override fun onBindViewHolder(holder: ClickableViewHolder<View>, position: Int) {
         if (holder.view is TagItemView) {

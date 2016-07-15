@@ -116,6 +116,7 @@ fun provideSettings() = provideGlobalSingleton<Settings>()
 fun provideDatabase() = provideGlobalSingleton<Database>()
 fun provideDateFormatter() = provideGlobalSingleton<DateFormatter>()
 fun provideAmountFormatter() = provideGlobalSingleton<AmountFormatter>()
+fun provideTimestampProvider() = SystemTimestampProvider()
 
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideLoginService(): LoginService = provideFirebaseAppUserService()

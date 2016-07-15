@@ -27,15 +27,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jakewharton.rxbinding.support.v4.view.pageSelections
-import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.forEachTabIndexed
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.feature.transaction.TransactionsView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
@@ -55,8 +52,8 @@ class MainActivity : BaseActivity() {
         val defaultTabColor = getColorFromTheme(tabLayout.context, R.attr.colorActionIcon)
         val selectedTabColor = getColorFromTheme(tabLayout.context, R.attr.colorAccent)
         val screens = listOf(
-                Screen(reportsInflater(), R.drawable.ic_action_reports),
-                Screen(transactionsInflater(), R.drawable.ic_action_transactions)
+                Screen(reportsInflater(), R.drawable.ic_action_reports)
+                //                Screen(transactionsInflater(), R.drawable.ic_action_transactions)
                 //                Screen(tagsInflater(), R.drawable.ic_action_tag),
                 //                Screen(settingsInflater(), R.drawable.ic_action_settings)
         )
@@ -91,10 +88,10 @@ class MainActivity : BaseActivity() {
     }
 
     private fun transactionsInflater() = {
-        layoutInflater: LayoutInflater, parent: ViewGroup ->
-        parent.inflate<TransactionsView>(R.layout.view_transactions).apply {
-            init(VIEW_NOT_ARCHIVED, addTransactionFloatingActionButton.clicks())
-        }
+        //        layoutInflater: LayoutInflater, parent: ViewGroup ->
+        //        parent.inflate<TransactionsView>(R.layout.activity_transactions).apply {
+        //            init(VIEW_NOT_ARCHIVED, addTransactionFloatingActionButton.clicks())
+        //        }
     }
 
     private fun tagsInflater() = {

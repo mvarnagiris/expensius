@@ -24,8 +24,10 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provideAppUserService
+import com.mvcoding.expensius.provideArchivedTransactionsService
 import com.mvcoding.expensius.provideDatabase
 import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideTimestampProvider
 import com.mvcoding.expensius.provideTransactionsService
 import com.mvcoding.expensius.provideTransactionsWriteService
 import com.mvcoding.expensius.provider.DatabaseTransactionsProvider
@@ -52,7 +54,12 @@ class TransactionModule : ShankModule {
     }
 
     private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class) { modelDisplayType: ModelDisplayType ->
-        TransactionsPresenter(provideTransactionsProvider(), modelDisplayType, provideRxSchedulers())
+        TransactionsPresenter(
+                modelDisplayType,
+                provideAppUserService(),
+                if (modelDisplayType == ModelDisplayType.VIEW_ARCHIVED) provideArchivedTransactionsService() else provideTransactionsService(),
+                provideTimestampProvider(),
+                provideRxSchedulers())
     }
 
     private fun transactionPresenter() = registerFactory(TransactionPresenter::class) {
@@ -66,6 +73,6 @@ class TransactionModule : ShankModule {
 }
 
 fun provideTransactionsProvider(): TransactionsProvider = provideGlobalSingleton()
+fun Activity.provideTransactionsPresenter(modelDisplayType: ModelDisplayType): TransactionsPresenter = withThisScope.provideSingletonFor(modelDisplayType)
 fun Activity.provideTransactionPresenter(transaction: Transaction): TransactionPresenter = withThisScope.provideSingletonFor(transaction)
 fun View.provideTransactionsOverviewPresenter() = withActivityScope.provideSingletonFor<TransactionsOverviewPresenter>()
-fun View.provideTransactionsPresenter(modelDisplayType: ModelDisplayType): TransactionsPresenter = withActivityScope.provideSingletonFor(modelDisplayType)

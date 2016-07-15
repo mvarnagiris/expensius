@@ -16,16 +16,23 @@ package com.mvcoding.expensius.feature.transaction
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
+import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.DividerItemDecoration
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import kotlinx.android.synthetic.main.view_transactions.*
-import rx.Observable.never
+import com.mvcoding.expensius.model.Transaction
+import kotlinx.android.synthetic.main.activity_transactions.*
+import rx.Observable
+import rx.Observable.empty
 
-class TransactionsActivity : BaseActivity() {
+class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
     companion object {
         private const val EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE"
 
@@ -38,14 +45,40 @@ class TransactionsActivity : BaseActivity() {
                 .start()
     }
 
+    private val presenter by lazy { provideTransactionsPresenter(intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as ModelDisplayType) }
+    private val adapter by lazy { TransactionsAdapter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_transactions)
+        setContentView(R.layout.activity_transactions)
 
-        val displayType = intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as ModelDisplayType
-        transactionsView.init(displayType, never())
-        supportActionBar?.title =
-                if (displayType == VIEW_ARCHIVED) getString(R.string.archived_transactions)
-                else getString(R.string.transactions)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addItemDecoration(DividerItemDecoration(getColorFromTheme(R.attr.colorDivider), resources.getDimensionPixelSize(R.dimen.divider)))
+        recyclerView.adapter = adapter
+
+        presenter.attach(this)
     }
+
+    override fun onDestroy() {
+        presenter.detach(this)
+        super.onDestroy()
+    }
+
+    override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {
+        supportActionBar?.title = if (modelDisplayType == VIEW_ARCHIVED) getString(R.string.archived_transactions) else getString(R.string.transactions)
+    }
+
+    override fun transactionSelects(): Observable<Transaction> = adapter.itemPositionClicks().map { adapter.getItem(it) }
+    override fun archivedTransactionsRequests(): Observable<Unit> = empty()
+    override fun createTransactionRequests(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
+    override fun showItems(items: List<Transaction>): Unit = adapter.set(items)
+    override fun showAddedItems(position: Int, items: List<Transaction>): Unit = adapter.add(position, items)
+    override fun showChangedItems(position: Int, items: List<Transaction>): Unit = adapter.change(position, items)
+    override fun showRemovedItems(position: Int, items: List<Transaction>): Unit = adapter.remove(position, items.size)
+    override fun showMovedItem(fromPosition: Int, toPosition: Int, item: Transaction): Unit = adapter.move(fromPosition, toPosition)
+    override fun showLoading(): Unit = with(progressBar) { visibility = View.VISIBLE }
+    override fun hideLoading(): Unit = with(progressBar) { visibility = View.GONE }
+    override fun displayTransactionEdit(transaction: Transaction): Unit = TransactionActivity.start(this, transaction)
+    override fun displayArchivedTransactions(): Unit = TransactionsActivity.startArchived(this)
 }

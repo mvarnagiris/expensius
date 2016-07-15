@@ -15,52 +15,75 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.feature.Destroyable
+import com.mvcoding.expensius.feature.ItemsView
+import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.model.ModelState.ARCHIVED
-import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.NullModels.newTransaction
+import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.TransactionsService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class TransactionsPresenter(
-        private val transactionsProvider: TransactionsProvider,
         private val modelDisplayType: ModelDisplayType,
-        private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>() {
+        private val appUserService: AppUserService,
+        private val transactionsService: TransactionsService,
+        private val timestampProvider: TimestampProvider,
+        private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>(), Destroyable {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
         view.showModelDisplayType(modelDisplayType)
-
-        unsubscribeOnDetach(transactionsProvider.transactions(modelDisplayType.toTransactionsFilter())
+        view.showLoading()
+        transactionsService.items()
+                .first()
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-                .subscribe { view.showTransactions(it) })
-        unsubscribeOnDetach(view.onCreateTransaction().subscribe { view.displayCreateTransaction() })
-        unsubscribeOnDetach(view.onDisplayArchivedTransactions().subscribe { view.displayArchivedTransactions() })
-        unsubscribeOnDetach(view.onTransactionSelected().subscribe { view.displayTransactionEdit(it) })
+                .doOnNext { view.hideLoading() }
+                .subscribeUntilDetached { view.showItems(it) }
+
+        transactionsService.addedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
+
+        transactionsService.changedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
+
+        transactionsService.removedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
+
+        transactionsService.movedItems()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
+
+        view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
+
+        val newTransactions = view.createTransactionRequests()
+                .withLatestFrom(appUserService.appUser()) { unit, appUser -> newTransaction(appUser, timestampProvider) }
+        view.transactionSelects().mergeWith(newTransactions).subscribeUntilDetached { view.displayTransactionEdit(it) }
     }
 
-    private fun ModelDisplayType.toTransactionsFilter() = when (this) {
-        VIEW_NOT_ARCHIVED -> TransactionsFilter(NONE)
-        VIEW_ARCHIVED -> TransactionsFilter(ARCHIVED)
+    override fun onDestroy() {
+        transactionsService.close()
     }
 
-    enum class PagingEdge {
-        START, END
-    }
-
-    interface View : Presenter.View {
-        fun onTransactionSelected(): Observable<Transaction>
-        fun onCreateTransaction(): Observable<Unit>
-        fun onDisplayArchivedTransactions(): Observable<Unit>
+    interface View : Presenter.View, ItemsView<Transaction>, LoadingView {
+        fun transactionSelects(): Observable<Transaction>
+        fun createTransactionRequests(): Observable<Unit>
+        fun archivedTransactionsRequests(): Observable<Unit>
 
         fun showModelDisplayType(modelDisplayType: ModelDisplayType)
-        fun showTransactions(transactions: List<Transaction>)
 
-        fun displayCreateTransaction()
         fun displayTransactionEdit(transaction: Transaction)
         fun displayArchivedTransactions()
     }
