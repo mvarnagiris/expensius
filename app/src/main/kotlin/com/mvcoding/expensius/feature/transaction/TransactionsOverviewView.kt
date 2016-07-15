@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.transaction
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.model.Transaction
 
 class TransactionsOverviewView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -30,7 +31,7 @@ class TransactionsOverviewView @JvmOverloads constructor(context: Context, attrs
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter.attach(this)
+        doNotInEditMode { presenter.attach(this) }
     }
 
     override fun onDetachedFromWindow() {
@@ -40,6 +41,6 @@ class TransactionsOverviewView @JvmOverloads constructor(context: Context, attrs
 
     override fun showTransactions(transactions: List<Transaction>) {
         removeAllViews()
-        transactions.forEach { addView(TransactionItemView.inflate(this).apply { setTransaction(it) }) }
+        transactions.forEach { addView(TransactionItemView.inflate(this).apply { background = null }.apply { setTransaction(it) }) }
     }
 }
