@@ -12,7 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.overview.OverviewView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -37,8 +37,10 @@
                 android:layout_margin="@dimen/keyline_half">
 
                 <com.mvcoding.expensius.feature.transaction.TransactionsOverviewView
+                    android:id="@+id/transactionsOverviewView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackground" />
 
             </android.support.v7.widget.CardView>
 
@@ -72,4 +74,4 @@
         android:layout_margin="@dimen/keyline"
         app:srcCompat="@drawable/ic_action_add" />
 
-</com.mvcoding.expensius.feature.overview.OverviewView>
+</android.support.design.widget.CoordinatorLayout>

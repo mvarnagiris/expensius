@@ -14,12 +14,12 @@
 
 package com.mvcoding.expensius.feature.overview
 
-import android.view.View
+import android.app.Activity
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.mvcoding.expensius.feature.Filter
-import memoizrlabs.com.shankandroid.withActivityScope
+import memoizrlabs.com.shankandroid.withThisScope
 import org.joda.time.DateTime
 import org.joda.time.Interval
 
@@ -38,4 +38,4 @@ class OverviewModule() : ShankModule {
     })
 }
 
-fun View.provideOverviewPresenter(): OverviewPresenter = withActivityScope.provideSingletonFor()
+fun Activity.provideOverviewPresenter() = withThisScope.provideSingletonFor<OverviewPresenter>()

@@ -18,25 +18,60 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.Menu
+import com.jakewharton.rxbinding.support.v7.widget.itemClicks
+import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.calculator.CalculatorActivity
+import com.mvcoding.expensius.feature.settings.SettingsActivity
+import com.mvcoding.expensius.feature.tag.TagsActivity
+import com.mvcoding.expensius.feature.transaction.TransactionsActivity
+import kotlinx.android.synthetic.main.activity_overview.*
+import kotlinx.android.synthetic.main.toolbar.*
+import net.danlew.android.joda.DateUtils
+import org.joda.time.Interval
+import rx.Observable
 
-class OverviewActivity : BaseActivity() {
+class OverviewActivity : BaseActivity(), OverviewPresenter.View {
     companion object {
         fun start(context: Context) = ActivityStarter(context, OverviewActivity::class).start()
     }
 
+    private val presenter by lazy { provideOverviewPresenter() }
+    private val toolbarClicks by lazy { toolbar.itemClicks().share() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.view_overview)
+        setContentView(R.layout.activity_overview)
         removeUpArrowFromToolbar()
+        presenter.attach(this)
+    }
+
+    override fun onDestroy() {
+        presenter.detach(this)
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.overview, menu)
-        return true;
+        return true
+    }
+
+    override fun createTransactionSelects(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
+    override fun transactionsSelects(): Observable<Unit> = transactionsOverviewView.clicks()
+    override fun tagsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
+    override fun settingsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_settings }.map { Unit }
+    override fun displayCreateTransaction(): Unit = CalculatorActivity.start(this)
+    override fun displayTransactions(): Unit = TransactionsActivity.start(this)
+    override fun displayTags(): Unit = TagsActivity.startView(this)
+    override fun displaySettings(): Unit = SettingsActivity.start(this)
+
+    override fun showInterval(interval: Interval) {
+        val start = DateUtils.formatDateTime(this, interval.start, DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_DATE)
+        val end = DateUtils.formatDateTime(this, interval.end.minusMillis(1), DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_DATE)
+        supportActionBar?.title = "$start - $end"
     }
 
     private fun removeUpArrowFromToolbar() {
