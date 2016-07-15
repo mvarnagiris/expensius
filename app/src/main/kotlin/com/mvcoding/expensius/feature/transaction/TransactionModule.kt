@@ -68,7 +68,7 @@ class TransactionModule : ShankModule {
     }
 
     private fun transactionsOverviewPresenter() = registerFactory(TransactionsOverviewPresenter::class) { ->
-        TransactionsOverviewPresenter(provideTransactionsService(3))
+        TransactionsOverviewPresenter(provideTransactionsService())
     }
 }
 

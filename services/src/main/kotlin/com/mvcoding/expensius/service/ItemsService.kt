@@ -15,9 +15,8 @@
 package com.mvcoding.expensius.service
 
 import rx.Observable
-import java.io.Closeable
 
-interface ItemsService<ITEM> : Closeable {
+interface ItemsService<ITEM> {
     fun items(): Observable<List<ITEM>>
     fun addedItems(): Observable<ItemsAdded<ITEM>>
     fun changedItems(): Observable<ItemsChanged<ITEM>>

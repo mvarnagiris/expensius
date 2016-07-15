@@ -77,8 +77,8 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { -> FirebaseTagsWriteService(provideAppUserService()) }
 
-    private fun firebaseTransactionsService() = registerFactory(FirebaseTransactionsService::class) { archived: Boolean, limit: Int ->
-        FirebaseTransactionsService(provideAppUserService(), archived, limit, provideTagsService(), provideArchivedTagsService())
+    private fun firebaseTransactionsService() = registerFactory(FirebaseTransactionsService::class) { archived: Boolean ->
+        FirebaseTransactionsService(provideAppUserService(), archived, provideTagsService(), provideArchivedTagsService())
     }
 
     private fun firebaseTransactionsWriteService() = registerFactory(FirebaseTransactionsWriteService::class) { ->
@@ -123,14 +123,14 @@ fun provideLoginService(): LoginService = provideFirebaseAppUserService()
 fun provideTagsService(): TagsService = provideFirebaseTagsService(false)
 fun provideArchivedTagsService(): TagsService = provideFirebaseTagsService(true)
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
-fun provideTransactionsService(limit: Int = 0): TransactionsService = provideFirebaseTransactionsService(false, limit)
+fun provideTransactionsService(): TransactionsService = provideFirebaseTransactionsService(false)
 fun provideArchivedTransactionsService(): TransactionsService = provideFirebaseTransactionsService(true)
 fun provideTransactionsWriteService(): TransactionsWriteService = provideFirebaseTransactionsWriteService()
 fun provideAppUserWriteService(): AppUserWriteService = provideFirebaseAppUserWriteService()
 
 private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
-private fun provideFirebaseTagsService(archived: Boolean) = provideNew<FirebaseTagsService>(archived)
+private fun provideFirebaseTagsService(archived: Boolean) = provideGlobalSingleton<FirebaseTagsService>(archived)
 private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()
-private fun provideFirebaseTransactionsService(archived: Boolean, limit: Int = 0) = provideNew<FirebaseTransactionsService>(archived, limit)
+private fun provideFirebaseTransactionsService(archived: Boolean) = provideGlobalSingleton<FirebaseTransactionsService>(archived)
 private fun provideFirebaseTransactionsWriteService() = provideNew<FirebaseTransactionsWriteService>()
 private fun provideFirebaseAppUserWriteService() = provideNew<FirebaseAppUserWriteService>()

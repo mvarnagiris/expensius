@@ -47,11 +47,4 @@ class TransactionsOverviewPresenterTest {
         verify(view).showTransactions(exactly3Transactions)
         verify(view).showTransactions(moreThan3Transactions.take(3))
     }
-
-    @Test
-    fun closesTransactionsServiceOnDestroy() {
-        presenter.onDestroy()
-
-        verify(transactionsService).close()
-    }
 }

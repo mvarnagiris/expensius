@@ -28,7 +28,7 @@ class FirebaseTransactionsWriteService(private val appUserService: AppUserServic
     override fun createTransactions(createTransactions: Set<CreateTransaction>): Observable<Unit> = appUserService.appUser()
             .first()
             .map {
-                val transactionsReference = transactionsDatabaseReference(appUserService.getCurrentAppUser().userId)
+                val transactionsReference = transactionsDatabaseReference(it.userId)
                 createTransactions.forEach {
                     val newTransactionReference = transactionsReference.push()
                     val firebaseTransaction = it.toFirebaseTransaction(newTransactionReference.key)

@@ -202,13 +202,6 @@ class TagsPresenterTest {
         verify(tagsWriteService).saveTags(reorderedTags.toSet())
     }
 
-    @Test
-    fun closesTagsServiceOnDestroy() {
-        presenterWithModelDisplayTypeView().onDestroy()
-
-        verify(tagsService).close()
-    }
-
     private fun tags(tags: List<Tag>) = itemsSubject.onNext(tags)
 
     private fun selectTag(tagToSelect: Tag) = tagSelectsSubject.onNext(tagToSelect)

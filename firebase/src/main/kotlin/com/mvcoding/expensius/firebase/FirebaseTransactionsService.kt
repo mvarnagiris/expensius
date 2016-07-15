@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.UserId
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.ItemMoved
 import com.mvcoding.expensius.service.ItemsAdded
@@ -27,13 +28,14 @@ import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TransactionsService
 import rx.Observable
 import rx.Observable.combineLatest
+import rx.lang.kotlin.BehaviorSubject
+import java.util.concurrent.atomic.AtomicReference
 
 class FirebaseTransactionsService(
         appUserService: AppUserService,
         archived: Boolean,
-        limit: Int,
-        private val tagsService: TagsService,
-        private val archivedTagsService: TagsService) : TransactionsService {
+        tagsService: TagsService,
+        archivedTagsService: TagsService) : TransactionsService {
 
     private val allTags = combineLatest(
             tagsService.items(),
@@ -42,40 +44,44 @@ class FirebaseTransactionsService(
             .replay(1)
             .autoConnect()
 
-    private val firebaseList by lazy {
-        FirebaseList(
-                (if (archived) archivedTransactionsDatabaseReference(appUserService.getCurrentAppUser().userId)
-                else transactionsDatabaseReference(appUserService.getCurrentAppUser().userId))
-                        .orderByChild("timestampInverse")
-                        .apply { if (limit > 0) limitToLast(limit) }) { it }
+    private val transformation: (DataSnapshot) -> DataSnapshot = { it }
+    private val oldFirebaseList = AtomicReference<FirebaseList<DataSnapshot>>()
+    private val firebaseListSubject = BehaviorSubject<FirebaseList<DataSnapshot>>()
+
+    init {
+        appUserService.appUser()
+                .map { it.userId }
+                .distinctUntilChanged()
+                .map { query(it, archived) }
+                .map { FirebaseList(it, transformation) }
+                .subscribe {
+                    oldFirebaseList.getAndSet(it)?.close()
+                    firebaseListSubject.onNext(it)
+                }
     }
 
-    override fun close() {
-        firebaseList.close()
-        tagsService.close()
-        archivedTagsService.close()
-    }
+    override fun items(): Observable<List<Transaction>> = firebaseListSubject
+            .flatMap { it.items() }
+            .withLatestFrom(allTags) { firebaseItems, items -> firebaseItems.toTransactions(items) }
 
-    override fun items(): Observable<List<Transaction>> = firebaseList.items().withLatestFrom(allTags) { firebaseTransactions, tags ->
-        firebaseTransactions.toTransactions(tags)
-    }
+    override fun addedItems(): Observable<ItemsAdded<Transaction>> = firebaseListSubject
+            .flatMap { it.addedItems().map { ItemsAdded(it.position, it.items) } }
+            .withLatestFrom(allTags) { added, items -> ItemsAdded(added.position, added.items.toTransactions(items)) }
 
-    override fun addedItems(): Observable<ItemsAdded<Transaction>> = firebaseList.addedItems().withLatestFrom(allTags) { firebaseItemsAdded, tags ->
-        ItemsAdded(firebaseItemsAdded.position, firebaseItemsAdded.items.toTransactions(tags))
-    }
+    override fun changedItems(): Observable<ItemsChanged<Transaction>> = firebaseListSubject
+            .flatMap { it.changedItems().map { ItemsChanged(it.position, it.items) } }
+            .withLatestFrom(allTags) { changed, items -> ItemsChanged(changed.position, changed.items.toTransactions(items)) }
 
-    override fun changedItems(): Observable<ItemsChanged<Transaction>> = firebaseList.changedItems().withLatestFrom(allTags) { firebaseItemsChanged, tags ->
-        ItemsChanged(firebaseItemsChanged.position, firebaseItemsChanged.items.toTransactions(tags))
-    }
+    override fun removedItems(): Observable<ItemsRemoved<Transaction>> = firebaseListSubject
+            .flatMap { it.removedItems().map { ItemsRemoved(it.position, it.items) } }
+            .withLatestFrom(allTags) { removed, transactions -> ItemsRemoved(removed.position, removed.items.toTransactions(transactions)) }
 
-    override fun removedItems(): Observable<ItemsRemoved<Transaction>> = firebaseList.removedItems().withLatestFrom(allTags) { firebaseItemsRemoved, tags ->
-        ItemsRemoved(firebaseItemsRemoved.position, firebaseItemsRemoved.items.toTransactions(tags))
-    }
-
-    override fun movedItems(): Observable<ItemMoved<Transaction>> = firebaseList.movedItems().withLatestFrom(allTags) { firebaseItemMoved, tags ->
-        ItemMoved(firebaseItemMoved.fromPosition, firebaseItemMoved.toPosition, firebaseItemMoved.item.toTransaction(tags))
-    }
+    override fun movedItems(): Observable<ItemMoved<Transaction>> = firebaseListSubject
+            .flatMap { it.movedItems().map { ItemMoved(it.fromPosition, it.toPosition, it.item) } }
+            .withLatestFrom(allTags) { moved, tags -> ItemMoved(moved.fromPosition, moved.toPosition, moved.item.toTransaction(tags)) }
 
     private fun List<DataSnapshot>.toTransactions(tagsCache: Map<String, Tag>) = map { it.toTransaction(tagsCache) }
     private fun DataSnapshot.toTransaction(tagsCache: Map<String, Tag>) = getValue(FirebaseTransaction::class.java).toTransaction(tagsCache)
+    private fun query(userId: UserId, archived: Boolean) =
+            (if (archived) archivedTransactionsDatabaseReference(userId) else transactionsDatabaseReference(userId)).orderByChild("timestampInverse")
 }

@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.Destroyable
 import com.mvcoding.expensius.feature.ItemsView
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
@@ -32,7 +31,7 @@ class TransactionsPresenter(
         private val appUserService: AppUserService,
         private val transactionsService: TransactionsService,
         private val timestampProvider: TimestampProvider,
-        private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>(), Destroyable {
+        private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -71,10 +70,6 @@ class TransactionsPresenter(
         val newTransactions = view.createTransactionRequests()
                 .withLatestFrom(appUserService.appUser()) { unit, appUser -> newTransaction(appUser, timestampProvider) }
         view.transactionSelects().mergeWith(newTransactions).subscribeUntilDetached { view.displayTransactionEdit(it) }
-    }
-
-    override fun onDestroy() {
-        transactionsService.close()
     }
 
     interface View : Presenter.View, ItemsView<Transaction>, LoadingView {

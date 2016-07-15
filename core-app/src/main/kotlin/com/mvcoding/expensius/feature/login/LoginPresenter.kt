@@ -97,7 +97,6 @@ class LoginPresenter(
 
     private fun createDefaultTagsIfNecessary(): Observable<Unit> = tagsService.items()
             .first()
-            .doOnNext { tagsService.close() }
             .switchMap { if (it.isNotEmpty()) just(Unit) else tagsWriteService.createTags(defaultTags.getDefaultTags()).onErrorReturn { Unit } }
 
     private fun <T> Observable<T>.handleError(view: View): Observable<T> = onErrorResumeNext {

@@ -30,6 +30,7 @@ import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
+import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 import java.math.BigDecimal
 
@@ -79,6 +80,7 @@ class CalculatorPresenterTest {
         whenever(view.deleteRequests()).thenReturn(deleteObservable)
         whenever(view.clearRequests()).thenReturn(clearObservable)
         whenever(view.saveRequests()).thenReturn(saveObservable)
+        whenever(appUserService.appUser()).thenReturn(just(anAppUser()))
     }
 
     @Test
@@ -645,7 +647,7 @@ class CalculatorPresenterTest {
     @Test
     fun startsTransactionWithCurrentlyDisplayedNumber() {
         val appUser = anAppUser()
-        whenever(appUserService.getCurrentAppUser()).thenReturn(appUser)
+        whenever(appUserService.appUser()).thenReturn(just(appUser))
         val presenter = CalculatorPresenter(calculator, TRANSACTION, appUserService, timestampProvider)
         presenter.attach(view)
         digit1()

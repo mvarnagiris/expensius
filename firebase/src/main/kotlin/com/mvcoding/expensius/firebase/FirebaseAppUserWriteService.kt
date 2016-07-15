@@ -21,19 +21,13 @@ import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.AppUserWriteService
 import rx.Observable
-import rx.lang.kotlin.deferredObservable
-import rx.lang.kotlin.observable
 
 class FirebaseAppUserWriteService(private val appUserService: AppUserService) : AppUserWriteService {
-    override fun saveSettings(settings: Settings): Observable<Unit> = deferredObservable {
-        observable<Unit> { subscriber ->
-            val appUser = appUserService.getCurrentAppUser().withSettings(settings)
-            val userReference = userDatabaseReference(appUser.userId)
-            userReference.setValue(appUser.toFirebaseUserData())
-
-            subscriber.onNext(Unit)
-            subscriber.onCompleted()
-        }
+    override fun saveSettings(settings: Settings): Observable<Unit> = appUserService.appUser().first().map {
+        val appUser = it.withSettings(settings)
+        val userReference = userDatabaseReference(appUser.userId)
+        userReference.setValue(appUser.toFirebaseUserData())
+        Unit
     }
 
     private fun AppUser.toFirebaseUserData() = FirebaseUserData(userId.id, settings.toFirebaseSettings())

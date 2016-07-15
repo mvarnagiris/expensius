@@ -213,7 +213,6 @@ class LoginPresenterTest {
         successfulLoginWithGoogle()
 
         verify(tagsWriteService).createTags(someCreateTags)
-        verify(tagsService).close()
     }
 
     @Test
@@ -224,7 +223,6 @@ class LoginPresenterTest {
         requestSkipLogin()
 
         verify(tagsWriteService).createTags(someCreateTags)
-        verify(tagsService).close()
     }
 
     @Test

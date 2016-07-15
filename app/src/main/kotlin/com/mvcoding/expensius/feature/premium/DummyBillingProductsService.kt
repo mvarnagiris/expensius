@@ -24,19 +24,16 @@ import rx.Observable.just
 
 class DummyBillingProductsService(private val appUserService: AppUserService) : BillingProductsService, BillingFlow {
 
-    override fun billingProducts(): Observable<List<BillingProduct>> = just(listOf(
-            BillingProduct("premium_1",
-                    FREE,
-                    "Premium 1",
-                    "Unlocks all features",
-                    "3.99",
-                    appUserService.getCurrentAppUser().settings.subscriptionType == PREMIUM_PAID),
-            BillingProduct("premium_2", FREE, "Premium 2", "Unlocks all features", "5.99", false),
-            BillingProduct("premium_3", FREE, "Premium 3", "Unlocks all features", "7.99", false),
-            BillingProduct("donation_1", PREMIUM_PAID, "Donation 1", "Donation", "1.99", false),
-            BillingProduct("donation_2", PREMIUM_PAID, "Donation 2", "Donation", "3.99", false),
-            BillingProduct("donation_3", PREMIUM_PAID, "Donation 3", "Donation", "4.99", false),
-            BillingProduct("donation_4", PREMIUM_PAID, "Donation 4", "Donation", "7.99", false)))
+    override fun billingProducts(): Observable<List<BillingProduct>> = appUserService.appUser().first().map {
+        listOf(
+                BillingProduct("premium_1", FREE, "Premium 1", "Unlocks all features", "3.99", it.settings.subscriptionType == PREMIUM_PAID),
+                BillingProduct("premium_2", FREE, "Premium 2", "Unlocks all features", "5.99", false),
+                BillingProduct("premium_3", FREE, "Premium 3", "Unlocks all features", "7.99", false),
+                BillingProduct("donation_1", PREMIUM_PAID, "Donation 1", "Donation", "1.99", false),
+                BillingProduct("donation_2", PREMIUM_PAID, "Donation 2", "Donation", "3.99", false),
+                BillingProduct("donation_3", PREMIUM_PAID, "Donation 3", "Donation", "4.99", false),
+                BillingProduct("donation_4", PREMIUM_PAID, "Donation 4", "Donation", "7.99", false))
+    }
 
     override fun close() = Unit
     override fun startPurchase(activity: Activity, requestCode: Int, productId: String): Observable<Unit> = just(Unit)

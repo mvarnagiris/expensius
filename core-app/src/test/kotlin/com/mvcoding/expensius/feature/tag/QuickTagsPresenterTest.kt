@@ -31,7 +31,7 @@ class QuickTagsPresenterTest {
     val toggleSelectableTagSubject = PublishSubject<SelectableTag>()
     val selectedTagsUpdatedSubject = BehaviorSubject<Set<Tag>>(setOf())
     val defaultTags = listOf(aTag(), aTag())
-    val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }
+    val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }.sortedBy { it.tag.order }
     val tagsService: TagsService = mock()
     val view: QuickTagsPresenter.View = mock()
     val presenter = QuickTagsPresenter(tagsService, rxSchedulers())
@@ -96,13 +96,6 @@ class QuickTagsPresenterTest {
         presenter.attach(view)
 
         verify(view).showSelectableTags(expectedSelectableTags)
-    }
-
-    @Test
-    fun closesTagsServiceOnDestroy() {
-        presenter.onDestroy()
-
-        verify(tagsService).close()
     }
 
     private fun toggleSelectableTag(selectableTag: SelectableTag) = toggleSelectableTagSubject.onNext(selectableTag)

@@ -170,13 +170,6 @@ class TransactionsPresenterTest {
         verify(view).displayArchivedTransactions()
     }
 
-    @Test
-    fun closesTagsServiceOnDestroy() {
-        presenter().onDestroy()
-
-        verify(transactionsService).close()
-    }
-
     private fun selectTransaction(transaction: Transaction) = transactionSelectsSubject.onNext(transaction)
     private fun createTransaction() = createTransactionRequestsSubject.onNext(Unit)
     private fun requestArchivedTransactions() = archivedTransactionsRequestsSubject.onNext(Unit)

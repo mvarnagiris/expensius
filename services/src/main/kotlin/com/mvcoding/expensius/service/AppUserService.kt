@@ -19,5 +19,4 @@ import rx.Observable
 
 interface AppUserService {
     fun appUser(): Observable<AppUser>
-    fun getCurrentAppUser(): AppUser
 }

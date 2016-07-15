@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.calculator
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.Transaction
@@ -77,16 +78,17 @@ class CalculatorPresenter(
 
         saves.filter { val result = canSave; canSave = true; result }
                 .withLatestFrom(alteredExpressions, { unit, number -> number })
-                .subscribeUntilDetached { displayResult(view, it) }
+                .withLatestFrom(appUserService.appUser(), { number, appUser -> displayResult(view, number, appUser) })
+                .subscribeUntilDetached()
     }
 
     private fun getCurrentState() = if (calculator.isEmptyOrSingleNumber()) SAVE else CALCULATE
 
-    private fun displayResult(view: View, amount: BigDecimal) =
-            if (resultDestination == TRANSACTION) view.displayTransaction(newTransaction(amount))
+    private fun displayResult(view: View, amount: BigDecimal, appUser: AppUser) =
+            if (resultDestination == TRANSACTION) view.displayTransaction(newTransaction(amount, appUser))
             else view.displayResult(amount)
 
-    private fun newTransaction(amount: BigDecimal) = newTransaction(appUserService.getCurrentAppUser(), timestampProvider).withAmount(amount)
+    private fun newTransaction(amount: BigDecimal, appUser: AppUser) = newTransaction(appUser, timestampProvider).withAmount(amount)
 
     enum class State { SAVE, CALCULATE }
 

@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.Destroyable
 import com.mvcoding.expensius.feature.ItemsView
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
@@ -34,7 +33,7 @@ class TagsPresenter(
         private val modelDisplayType: ModelDisplayType,
         private val tagsService: TagsService,
         private val tagsWriteService: TagsWriteService,
-        private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>(), Destroyable {
+        private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -78,8 +77,6 @@ class TagsPresenter(
         merge(view.tagSelects(), view.createTagRequests().map { noTag }).subscribeUntilDetached { view.displayTagEdit(it) }
         view.archivedTagsRequests().subscribeUntilDetached { view.displayArchivedTags() }
     }
-
-    override fun onDestroy() = tagsService.close()
 
     private fun reorderTags(tagMove: TagMove, tags: List<Tag>): List<Tag> {
         val fromPosition = tagMove.fromPosition

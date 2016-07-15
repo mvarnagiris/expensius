@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.Destroyable
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.mvp.Presenter
@@ -24,7 +23,7 @@ import rx.Observable.combineLatest
 
 class QuickTagsPresenter(
         private val tagsService: TagsService,
-        private val schedulers: RxSchedulers) : Presenter<QuickTagsPresenter.View>(), Destroyable {
+        private val schedulers: RxSchedulers) : Presenter<QuickTagsPresenter.View>() {
 
     private val toggledTags = hashMapOf<Tag, Boolean>()
 
@@ -45,10 +44,6 @@ class QuickTagsPresenter(
         view.selectableTagToggles()
                 .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
                 .subscribeUntilDetached { view.showUpdatedSelectableTag(it, it.toggled()) }
-    }
-
-    override fun onDestroy() {
-        tagsService.close()
     }
 
     private fun toSelectableTags(tags: List<Tag>) = tags.map { SelectableTag(it, toggledTags.getOrElse(it, { false })) }
