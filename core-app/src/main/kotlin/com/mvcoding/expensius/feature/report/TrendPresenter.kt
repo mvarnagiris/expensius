@@ -14,4 +14,18 @@
 
 package com.mvcoding.expensius.feature.report
 
-class TrendsPresenterTest
+import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.service.AppUserService
+import com.mvcoding.expensius.service.TransactionsService
+import com.mvcoding.mvp.Presenter
+import java.math.BigDecimal
+
+class TrendPresenter(
+        private val appUserService: AppUserService,
+        private val transactionsService: TransactionsService,
+        private val filter: Filter) : Presenter<TrendPresenter.View>() {
+
+    interface View : Presenter.View {
+        fun showTrends(totalAmount: BigDecimal, currentAmounts: List<BigDecimal>, previousAmounts: List<BigDecimal>)
+    }
+}

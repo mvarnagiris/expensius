@@ -23,9 +23,11 @@ interface User {
 
 data class UserId(val id: String) : Serializable
 
-data class Settings(val currency: Currency, val reportGroup: ReportGroup, val subscriptionType: SubscriptionType) : Serializable {
+data class Settings(
+        val currency: Currency,
+        val subscriptionType: SubscriptionType) : Serializable {
+
     fun withCurrency(currency: Currency) = copy(currency = currency)
-    fun withReportGroup(reportGroup: ReportGroup) = copy(reportGroup = reportGroup)
     fun withSubscriptionType(subscriptionType: SubscriptionType) = copy(subscriptionType = subscriptionType)
 }
 

@@ -15,5 +15,5 @@
 package com.mvcoding.expensius.model
 
 enum class ReportGroup {
-    DAY, WEEK, MONTH, YEAR;
+    DAY
 }

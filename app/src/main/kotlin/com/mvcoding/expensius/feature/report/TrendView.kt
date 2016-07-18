@@ -25,11 +25,11 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideSettings
-import kotlinx.android.synthetic.main.view_expenses_trend.view.*
+import kotlinx.android.synthetic.main.view_trend.view.*
 import java.math.BigDecimal
 import java.util.*
 
-class ExpensesTrendView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class TrendView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr) {
 
     private val amountFormatter by lazy { provideAmountFormatter() }

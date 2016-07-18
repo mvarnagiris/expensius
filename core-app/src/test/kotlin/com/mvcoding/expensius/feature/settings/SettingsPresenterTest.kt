@@ -20,9 +20,6 @@ import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
 import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ReportGroup
-import com.mvcoding.expensius.model.ReportGroup.DAY
-import com.mvcoding.expensius.model.ReportGroup.WEEK
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.model.anAppUser
@@ -46,11 +43,9 @@ class SettingsPresenterTest {
 
     val appUserSubject = BehaviorSubject(appUser)
     val mainCurrencyRequestsSubject = PublishSubject<Unit>()
-    val reportStepRequestsSubject = PublishSubject<Unit>()
     val supportDeveloperRequestsSubject = PublishSubject<Unit>()
     val aboutRequestsSubject = PublishSubject<Unit>()
     val chooseMainCurrencySubject = PublishSubject<Currency>()
-    val chooseReportGroupSubject = PublishSubject<ReportGroup>()
 
     val appUserService: AppUserService = mock()
     val appUserWriteService: AppUserWriteService = mock()
@@ -61,11 +56,9 @@ class SettingsPresenterTest {
     @Before
     fun setUp() {
         whenever(view.mainCurrencyRequests()).thenReturn(mainCurrencyRequestsSubject)
-        whenever(view.reportStepRequests()).thenReturn(reportStepRequestsSubject)
         whenever(view.supportDeveloperRequests()).thenReturn(supportDeveloperRequestsSubject)
         whenever(view.aboutRequests()).thenReturn(aboutRequestsSubject)
         whenever(view.chooseMainCurrency(any())).thenReturn(chooseMainCurrencySubject)
-        whenever(view.chooseReportGroup(any())).thenReturn(chooseReportGroupSubject)
         whenever(appUserService.appUser()).thenReturn(appUserSubject)
         whenever(appUserWriteService.saveSettings(any())).thenReturn(just(Unit))
     }
@@ -90,28 +83,6 @@ class SettingsPresenterTest {
 
         verify(view).chooseMainCurrency(allCurrencies)
         verify(view).showMainCurrency(newCurrency)
-        verify(appUserWriteService).saveSettings(updatedSettings)
-    }
-
-    @Test
-    fun showsReportGroup() {
-        presenter.attach(view)
-
-        verify(view).showReportGroup(appUser.settings.reportGroup)
-    }
-
-    @Test
-    fun canSelectNewReportStep() {
-        val updatedSettings = appUser.settings.withReportGroup(WEEK)
-        updateAppUser(appUser.withSettings(appUser.settings.withReportGroup(DAY)))
-        presenter.attach(view)
-
-        requestReportGroup()
-        chooseReportGroup(WEEK)
-        updateAppUser(appUser.withSettings(updatedSettings))
-
-        verify(view).chooseReportGroup(ReportGroup.values().toList())
-        verify(view).showReportGroup(WEEK)
         verify(appUserWriteService).saveSettings(updatedSettings)
     }
 
@@ -163,9 +134,7 @@ class SettingsPresenterTest {
 
     private fun updateAppUser(appUser: AppUser) = appUserSubject.onNext(appUser)
     private fun requestMainCurrency() = mainCurrencyRequestsSubject.onNext(Unit)
-    private fun requestReportGroup() = reportStepRequestsSubject.onNext(Unit)
     private fun requestSupportDeveloper() = supportDeveloperRequestsSubject.onNext(Unit)
     private fun requestAbout() = aboutRequestsSubject.onNext(Unit)
     private fun chooseMainCurrency(currency: Currency) = chooseMainCurrencySubject.onNext(currency)
-    private fun chooseReportGroup(reportGroup: ReportGroup) = chooseReportGroupSubject.onNext(reportGroup)
 }

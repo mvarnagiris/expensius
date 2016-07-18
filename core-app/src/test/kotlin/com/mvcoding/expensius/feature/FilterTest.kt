@@ -14,13 +14,14 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import org.joda.time.Interval
 import org.junit.Test
 import rx.observers.TestSubscriber
 
 class FilterTest {
-    val subscriber = TestSubscriber.create<FilterData>()
+    val subscriber: TestSubscriber<FilterData> = TestSubscriber.create<FilterData>()
     val filter = Filter()
 
     @Test
@@ -35,9 +36,10 @@ class FilterTest {
         filter.filterData().subscribe(subscriber)
 
         filter.setTransactionType(EXPENSE)
+        filter.setTransactionState(PENDING)
         filter.setInterval(Interval(0, 1))
 
-        subscriber.assertValues(FilterData(), FilterData(EXPENSE), FilterData(EXPENSE, Interval(0, 1)))
+        subscriber.assertValues(FilterData(), FilterData(EXPENSE), FilterData(EXPENSE, PENDING), FilterData(EXPENSE, PENDING, Interval(0, 1)))
     }
 
     @Test
@@ -45,14 +47,18 @@ class FilterTest {
         filter.filterData().subscribe(subscriber)
 
         filter.setTransactionType(EXPENSE)
+        filter.setTransactionState(PENDING)
         filter.setInterval(Interval(0, 1))
         filter.clearTransactionType()
+        filter.clearTransactionState()
         filter.clearInterval()
 
         subscriber.assertValues(
                 FilterData(),
                 FilterData(EXPENSE),
-                FilterData(EXPENSE, Interval(0, 1)),
+                FilterData(EXPENSE, PENDING),
+                FilterData(EXPENSE, PENDING, Interval(0, 1)),
+                FilterData(transactionState = PENDING, interval = Interval(0, 1)),
                 FilterData(interval = Interval(0, 1)),
                 FilterData())
     }

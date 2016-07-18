@@ -12,7 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.report.ExpensesTrendView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.expensius.feature.report.TrendView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -22,19 +22,15 @@
         android:layout_width="match_parent"
         android:layout_height="112dp" />
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/thisPeriodAmountTextView"
+        style="@style/TextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#13000000">
+        android:background="?colorOverlay"
+        android:gravity="end|center_vertical"
+        android:paddingBottom="@dimen/grid_1x"
+        android:paddingLeft="@dimen/keyline"
+        android:paddingRight="@dimen/keyline"
+        android:textAppearance="@style/Text.Display1" />
 
-        <TextView
-            android:id="@+id/thisPeriodAmountTextView"
-            style="@style/TextView"
-            android:layout_gravity="end"
-            android:layout_marginBottom="@dimen/grid_1x"
-            android:layout_marginLeft="@dimen/keyline"
-            android:layout_marginRight="@dimen/keyline"
-            android:textAppearance="@style/Text.Display1" />
-    </FrameLayout>
-
-</com.mvcoding.expensius.feature.report.ExpensesTrendView>
+</com.mvcoding.expensius.feature.report.TrendView>

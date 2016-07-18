@@ -60,7 +60,7 @@
             app:layout_scrollFlags="scroll" />
 
         <include
-            layout="@layout/view_expenses_trend"
+            layout="@layout/view_trend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll" />

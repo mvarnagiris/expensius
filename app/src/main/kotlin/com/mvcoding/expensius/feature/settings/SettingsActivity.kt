@@ -33,11 +33,6 @@ import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.premium.PremiumActivity
 import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ReportGroup
-import com.mvcoding.expensius.model.ReportGroup.DAY
-import com.mvcoding.expensius.model.ReportGroup.MONTH
-import com.mvcoding.expensius.model.ReportGroup.WEEK
-import com.mvcoding.expensius.model.ReportGroup.YEAR
 import com.mvcoding.expensius.model.SubscriptionType
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.chromium.customtabsclient.CustomTabsActivityHelper
@@ -57,9 +52,6 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
 
         with(mainCurrencySettingsItemView as SettingsItemView) {
             setTitle(getString(R.string.main_currency))
-        }
-        with(reportStepSettingsItemView as SettingsItemView) {
-            setTitle(getString(R.string.report_grouping))
         }
         with(supportDeveloperSettingsItemView as SettingsItemView) {
             setTitle(getString(R.string.support_developer))
@@ -81,7 +73,6 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
     }
 
     override fun mainCurrencyRequests() = mainCurrencySettingsItemView.clicks()
-    override fun reportStepRequests() = reportStepSettingsItemView.clicks()
     override fun supportDeveloperRequests() = supportDeveloperSettingsItemView.clicks()
     override fun aboutRequests() = versionSettingsItemView.clicks()
 
@@ -102,25 +93,7 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
         popupWindow.show()
     }
 
-    override fun chooseReportGroup(reportGroups: List<ReportGroup>): Observable<ReportGroup> = Observable.create {
-        val displayCurrencies = reportGroups.map { it.displayName() }
-        val itemHeight = getDimensionFromTheme(this, R.attr.actionBarSize)
-        val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
-        val keylineHalf = resources.getDimensionPixelOffset(R.dimen.keyline_half)
-        val popupWindow = ListPopupWindow(this)
-        popupWindow.anchorView = reportStepSettingsItemView
-        popupWindow.setAdapter(ArrayAdapter<String>(this, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
-        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(reportGroups[position]); popupWindow.dismiss() }
-        popupWindow.setOnDismissListener { it.onCompleted() }
-        popupWindow.width = contentView.width - keyline
-        popupWindow.height = min(contentView.height - reportStepSettingsItemView.bottom - itemHeight - keylineHalf, itemHeight * reportGroups.size)
-        popupWindow.isModal = true
-        popupWindow.horizontalOffset = keylineHalf
-        popupWindow.show()
-    }
-
     override fun showMainCurrency(mainCurrency: Currency) = with(mainCurrencySettingsItemView as SettingsItemView) { setSubtitle(mainCurrency.displayName()) }
-    override fun showReportGroup(reportGroup: ReportGroup) = with(reportStepSettingsItemView as SettingsItemView) { setSubtitle(reportGroup.displayName()) }
     override fun showSubscriptionType(subscriptionType: SubscriptionType) = with(supportDeveloperSettingsItemView as SettingsItemView) {
         setSubtitle(when (subscriptionType) {
             SubscriptionType.FREE -> getString(R.string.long_user_is_using_free_version)
@@ -145,11 +118,4 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
     }
 
     private fun openUrl(uri: Uri): Unit = this.startActivity(Intent(Intent.ACTION_VIEW, uri))
-
-    private fun ReportGroup.displayName() = when (this) {
-        DAY -> getString(R.string.day)
-        WEEK -> getString(R.string.week)
-        MONTH -> getString(R.string.month)
-        YEAR -> getString(R.string.year)
-    }
 }

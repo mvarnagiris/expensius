@@ -15,25 +15,17 @@
 package com.mvcoding.expensius.extensions
 
 import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.ReportGroup.DAY
 import org.joda.time.Days
 import org.joda.time.Interval
-import org.joda.time.Months
 import org.joda.time.Period
-import org.joda.time.Weeks
-import org.joda.time.Years
 
 fun ReportGroup.toPeriod(): Period = when (this) {
-    ReportGroup.DAY -> Period.days(1)
-    ReportGroup.WEEK -> Period.weeks(1)
-    ReportGroup.MONTH -> Period.months(1)
-    ReportGroup.YEAR -> Period.years(1)
+    DAY -> Period.days(1)
 }
 
 fun ReportGroup.toNumberOfGroups(interval: Interval) = when (this) {
-    ReportGroup.DAY -> Days.daysIn(interval).days
-    ReportGroup.WEEK -> Weeks.weeksIn(interval).weeks
-    ReportGroup.MONTH -> Months.monthsIn(interval).months
-    ReportGroup.YEAR -> Years.yearsIn(interval).years
+    DAY -> Days.daysIn(interval).days
 }
 
 fun ReportGroup.splitIntoGroupIntervals(interval: Interval): List<Interval> {
@@ -44,10 +36,7 @@ fun ReportGroup.splitIntoGroupIntervals(interval: Interval): List<Interval> {
     val normalizedInterval =
             if (interval.startMillis != startInterval.startMillis)
                 when (this) {
-                    ReportGroup.DAY -> interval.withStart(interval.start.plusDays(1).withTimeAtStartOfDay())
-                    ReportGroup.WEEK -> interval.withStart(interval.start.plusWeeks(1).withDayOfWeek(1).withTimeAtStartOfDay())
-                    ReportGroup.MONTH -> interval.withStart(interval.start.plusMonths(1).withDayOfMonth(1).withTimeAtStartOfDay())
-                    ReportGroup.YEAR -> interval.withStart(interval.start.plusYears(1).withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay())
+                    DAY -> interval.withStart(interval.start.plusDays(1).withTimeAtStartOfDay())
                 }
             else interval
 
@@ -59,9 +48,6 @@ fun ReportGroup.splitIntoGroupIntervals(interval: Interval): List<Interval> {
 
 fun ReportGroup.toInterval(timestamp: Long) = org.joda.time.DateTime(timestamp).let {
     when (this) {
-        ReportGroup.DAY -> it.withTimeAtStartOfDay()
-        ReportGroup.WEEK -> it.withDayOfWeek(1).withTimeAtStartOfDay()
-        ReportGroup.MONTH -> it.withDayOfMonth(1).withTimeAtStartOfDay()
-        ReportGroup.YEAR -> it.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay()
+        DAY -> it.withTimeAtStartOfDay()
     }
 }.let { Interval(it, toPeriod()) }

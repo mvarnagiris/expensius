@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.model
 
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.ReportGroup.DAY
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionState.PENDING
@@ -25,7 +24,7 @@ import java.math.BigDecimal.ZERO
 
 object NullModels {
     val noCurrency = Currency("")
-    val noSettings = Settings(noCurrency, DAY, FREE)
+    val noSettings = Settings(noCurrency, FREE)
 
     val noUserId = UserId("")
     val noAppUser = AppUser(noUserId, noSettings, emptySet())

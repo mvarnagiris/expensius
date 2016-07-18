@@ -20,9 +20,6 @@ import com.mvcoding.expensius.extensions.toNumberOfGroups
 import com.mvcoding.expensius.extensions.toPeriod
 import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.ReportGroup.DAY
-import com.mvcoding.expensius.model.ReportGroup.MONTH
-import com.mvcoding.expensius.model.ReportGroup.WEEK
-import com.mvcoding.expensius.model.ReportGroup.YEAR
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.DateTime
 import org.joda.time.Interval
@@ -72,9 +69,6 @@ class ReportGroupTest {
             val interval = it.toInterval(timestamp)
             val expectedInterval = when (it) {
                 DAY -> Interval(now.withTimeAtStartOfDay(), Period.days(1))
-                WEEK -> Interval(now.withDayOfWeek(1).withTimeAtStartOfDay(), Period.weeks(1))
-                MONTH -> Interval(now.withDayOfMonth(1).withTimeAtStartOfDay(), Period.months(1))
-                YEAR -> Interval(now.withMonthOfYear(1).withDayOfMonth(1).withTimeAtStartOfDay(), Period.years(1))
             }
             assertThat("$it", interval, equalTo(expectedInterval))
         }

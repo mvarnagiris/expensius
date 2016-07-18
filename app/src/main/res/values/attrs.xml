@@ -24,6 +24,7 @@
         <attr name="colorIncome" format="color" />
         <attr name="colorBackgroundPrimary" format="color" />
         <attr name="colorBackgroundSecondary" format="color" />
+        <attr name="colorOverlay" format="color" />
     </declare-styleable>
 
     <declare-styleable name="QuickTagsView">

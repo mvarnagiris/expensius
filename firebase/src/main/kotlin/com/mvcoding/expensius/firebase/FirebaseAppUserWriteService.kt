@@ -31,5 +31,5 @@ class FirebaseAppUserWriteService(private val appUserService: AppUserService) : 
     }
 
     private fun AppUser.toFirebaseUserData() = FirebaseUserData(userId.id, settings.toFirebaseSettings())
-    private fun Settings.toFirebaseSettings() = FirebaseSettings(currency.code, reportGroup.name, subscriptionType.name)
+    private fun Settings.toFirebaseSettings() = FirebaseSettings(currency.code, subscriptionType.name)
 }

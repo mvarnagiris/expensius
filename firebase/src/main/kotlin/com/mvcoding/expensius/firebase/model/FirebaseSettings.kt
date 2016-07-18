@@ -15,8 +15,6 @@
 package com.mvcoding.expensius.firebase.model
 
 import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ReportGroup
-import com.mvcoding.expensius.model.ReportGroup.DAY
 import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
@@ -24,14 +22,12 @@ import java.util.*
 
 data class FirebaseSettings(
         val currencyCode: String? = null,
-        val reportGroup: String? = null,
         val subscriptionType: String? = null)
 
 fun FirebaseSettings?.toSettings() =
-        if (this == null) Settings(defaultCurrency(), DAY, FREE)
+        if (this == null) Settings(defaultCurrency(), FREE)
         else Settings(
                 currencyCode?.let { Currency(it) } ?: defaultCurrency(),
-                reportGroup?.let { ReportGroup.valueOf(it) } ?: ReportGroup.DAY,
                 subscriptionType?.let { SubscriptionType.valueOf(it) } ?: SubscriptionType.FREE)
 
 fun defaultCurrency(): Currency = try {

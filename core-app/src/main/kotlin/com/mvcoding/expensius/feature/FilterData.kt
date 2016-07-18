@@ -14,9 +14,11 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionType
 import org.joda.time.Interval
 
 data class FilterData(
         val transactionType: TransactionType? = null,
+        val transactionState: TransactionState? = null,
         val interval: Interval? = null)

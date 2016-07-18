@@ -32,6 +32,7 @@ import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
 import rx.Observable.combineLatest
+import rx.Observable.just
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 import java.util.*
@@ -75,11 +76,11 @@ class TagsReportPresenter(
 
     private fun combineFilteredTransactionsAndReportStep(
             filteredTransactions: Observable<IntervalAndTransactions>) =
-            combineLatest(filteredTransactions, settings.reportSteps(), {
-                intervalAndTransactions, step ->
+            combineLatest(filteredTransactions, just(ReportGroup.DAY), {
+                intervalAndTransactions, reportGroup ->
                 IntervalAndTransactionsAndReportStep(
                         intervalAndTransactions.interval,
-                        intervalAndTransactions.transactions, step)
+                        intervalAndTransactions.transactions, reportGroup)
             })
 
     private fun convertToReportData(

@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionType
 import org.joda.time.Interval
 import rx.Observable
@@ -30,13 +31,23 @@ class Filter {
         filterDataSubject.onNext(filterData)
     }
 
-    fun clearTransactionType() {
-        filterData = filterData.copy(transactionType = null)
+    fun setTransactionState(transactionState: TransactionState) {
+        filterData = filterData.copy(transactionState = transactionState)
         filterDataSubject.onNext(filterData)
     }
 
     fun setInterval(interval: Interval) {
         filterData = filterData.copy(interval = interval)
+        filterDataSubject.onNext(filterData)
+    }
+
+    fun clearTransactionType() {
+        filterData = filterData.copy(transactionType = null)
+        filterDataSubject.onNext(filterData)
+    }
+
+    fun clearTransactionState() {
+        filterData = filterData.copy(transactionState = null)
         filterDataSubject.onNext(filterData)
     }
 

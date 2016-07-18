@@ -19,7 +19,6 @@ import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
 import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.AppUserWriteService
@@ -41,7 +40,6 @@ class SettingsPresenter(
                 .observeOn(schedulers.main)
                 .subscribeUntilDetached {
                     view.showMainCurrency(it.currency)
-                    view.showReportGroup(it.reportGroup)
                     view.showSubscriptionType(it.subscriptionType)
                 }
 
@@ -53,14 +51,6 @@ class SettingsPresenter(
                 .switchMap { appUserWriteService.saveSettings(it) }
                 .subscribeUntilDetached { }
 
-        view.reportStepRequests()
-                .map { ReportGroup.values().toList() }
-                .switchMap { view.chooseReportGroup(it) }
-                .observeOn(schedulers.io)
-                .withLatestFrom(appUserService.appUser().map { it.settings }, { newReportGroup, settings -> settings.withReportGroup(newReportGroup) })
-                .switchMap { appUserWriteService.saveSettings(it) }
-                .subscribeUntilDetached { }
-
         view.supportDeveloperRequests().withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser }).subscribeUntilDetached {
             if (it.isWithNonAnonymousAccount()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER)
         }
@@ -69,15 +59,12 @@ class SettingsPresenter(
 
     interface View : Presenter.View {
         fun mainCurrencyRequests(): Observable<Unit>
-        fun reportStepRequests(): Observable<Unit>
         fun supportDeveloperRequests(): Observable<Unit>
         fun aboutRequests(): Observable<Unit>
 
         fun chooseMainCurrency(currencies: List<Currency>): Observable<Currency>
-        fun chooseReportGroup(reportGroups: List<ReportGroup>): Observable<ReportGroup>
 
         fun showMainCurrency(mainCurrency: Currency)
-        fun showReportGroup(reportGroup: ReportGroup)
         fun showSubscriptionType(subscriptionType: SubscriptionType)
 
         fun displayLogin(destination: Destination)
