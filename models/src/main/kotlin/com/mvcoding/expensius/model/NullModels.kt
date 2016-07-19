@@ -43,7 +43,7 @@ object NullModels {
             NONE,
             EXPENSE,
             CONFIRMED,
-            timestampProvider.timestamp(),
+            timestampProvider.currentTimestamp(),
             appUser.settings.currency,
             ONE,
             ZERO,

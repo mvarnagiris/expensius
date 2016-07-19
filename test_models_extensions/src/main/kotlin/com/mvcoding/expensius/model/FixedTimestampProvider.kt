@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.model
 
 private class FixedTimestampProvider : TimestampProvider {
-    override fun timestamp(): Long = 1234
+    override fun currentTimestamp(): Long = 1234
 }
 
 fun aTimestampProvider(): TimestampProvider = FixedTimestampProvider()

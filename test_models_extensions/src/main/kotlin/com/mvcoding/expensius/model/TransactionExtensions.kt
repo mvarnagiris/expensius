@@ -33,3 +33,4 @@ fun aTransaction() = Transaction(
         aNote())
 
 fun Transaction.withTags(tags: Set<Tag>) = copy(tags = tags)
+fun Transaction.withTimestamp(timestamp: Long) = copy(timestamp = timestamp)

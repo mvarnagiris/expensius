@@ -26,33 +26,25 @@ class Filter {
 
     fun filterData(): Observable<FilterData> = filterDataSubject
 
-    fun setTransactionType(transactionType: TransactionType) {
-        filterData = filterData.copy(transactionType = transactionType)
+    fun setTransactionType(transactionType: TransactionType?): Filter {
+        filterData = filterData.withTransactionType(transactionType)
         filterDataSubject.onNext(filterData)
+        return this
     }
 
-    fun setTransactionState(transactionState: TransactionState) {
-        filterData = filterData.copy(transactionState = transactionState)
+    fun setTransactionState(transactionState: TransactionState?): Filter {
+        filterData = filterData.withTransactionState(transactionState)
         filterDataSubject.onNext(filterData)
+        return this
     }
 
-    fun setInterval(interval: Interval) {
-        filterData = filterData.copy(interval = interval)
+    fun setInterval(interval: Interval?): Filter {
+        filterData = filterData.withInterval(interval)
         filterDataSubject.onNext(filterData)
+        return this
     }
 
-    fun clearTransactionType() {
-        filterData = filterData.copy(transactionType = null)
-        filterDataSubject.onNext(filterData)
-    }
-
-    fun clearTransactionState() {
-        filterData = filterData.copy(transactionState = null)
-        filterDataSubject.onNext(filterData)
-    }
-
-    fun clearInterval() {
-        filterData = filterData.copy(interval = null)
-        filterDataSubject.onNext(filterData)
-    }
+    fun clearTransactionType(): Filter = setTransactionType(null)
+    fun clearTransactionState(): Filter = setTransactionState(null)
+    fun clearInterval(): Filter = setInterval(null)
 }

@@ -15,5 +15,5 @@
 package com.mvcoding.expensius.model
 
 interface TimestampProvider {
-    fun timestamp(): Long
+    fun currentTimestamp(): Long
 }

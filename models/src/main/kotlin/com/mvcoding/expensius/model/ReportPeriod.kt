@@ -12,10 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.TimestampProvider
-
-class SystemTimestampProvider : TimestampProvider {
-    override fun currentTimestamp(): Long = System.currentTimeMillis()
+enum class ReportPeriod {
+    MONTH
 }

@@ -23,15 +23,17 @@ import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.extension.getColorFromTheme
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.provideAmountFormatter
-import com.mvcoding.expensius.provideSettings
 import kotlinx.android.synthetic.main.view_trend.view.*
 import java.math.BigDecimal
-import java.util.*
 
 class TrendView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        LinearLayout(context, attrs, defStyleAttr) {
+        LinearLayout(context, attrs, defStyleAttr), TrendPresenter.View {
 
+    private val presenter by lazy { provideExpensesTrendsPresenter() }
     private val amountFormatter by lazy { provideAmountFormatter() }
 
     override fun onFinishInflate() {
@@ -59,18 +61,29 @@ class TrendView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         lineChart.xAxis.setDrawLabels(false)
         lineChart.xAxis.setDrawLimitLinesBehindData(false)
         lineChart.animateY(700, Easing.EasingOption.EaseOutCubic)
+    }
 
-        val random = Random()
-        val lineDataSet = LineDataSet((0..13).map { Entry(random.nextInt(100).toFloat(), it) }, "")
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        doNotInEditMode { presenter.attach(this) }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        presenter.detach(this)
+    }
+
+    override fun showTrends(currency: Currency, totalAmount: BigDecimal, currentAmounts: List<BigDecimal>, previousAmounts: List<BigDecimal>) {
+        val lineDataSet = LineDataSet(currentAmounts.mapIndexed { index, amount -> Entry(amount.toFloat(), index) }, "")
         lineDataSet.setDrawCubic(true)
         lineDataSet.setDrawCircles(false)
         lineDataSet.setDrawValues(false)
         lineDataSet.setDrawHighlightIndicators(false)
         lineDataSet.setDrawFilled(false)
-        lineDataSet.color = Color.WHITE
+        lineDataSet.color = getColorFromTheme(android.R.attr.textColorPrimary)
         lineDataSet.lineWidth = 3f
 
-        val lastLineDataSet = LineDataSet((0..13).map { Entry(random.nextInt(200).toFloat(), it) }, "")
+        val lastLineDataSet = LineDataSet(previousAmounts.mapIndexed { index, amount -> Entry(amount.toFloat(), index) }, "")
         lastLineDataSet.setDrawCubic(true)
         lastLineDataSet.setDrawCircles(false)
         lastLineDataSet.setDrawValues(false)
@@ -80,14 +93,12 @@ class TrendView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         lastLineDataSet.fillAlpha = 20
         lastLineDataSet.setColor(Color.BLACK, 1)
 
-        val lineData = LineData((0..13).map { "" }, listOf(lastLineDataSet, lineDataSet))
+        val lineData = LineData(currentAmounts.map { "" }, listOf(lastLineDataSet, lineDataSet))
         lineChart.data = lineData
 
-        val amount = BigDecimal.valueOf(random.nextDouble() * 1000)
         val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(700)
         animator.addUpdateListener {
-            thisPeriodAmountTextView.text = amountFormatter.format(amount.multiply(BigDecimal.valueOf(it.animatedFraction.toDouble())),
-                    provideSettings().mainCurrency)
+            thisPeriodAmountTextView.text = amountFormatter.format(totalAmount.multiply(BigDecimal.valueOf(it.animatedFraction.toDouble())), currency)
         }
         animator.start()
     }

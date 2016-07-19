@@ -14,12 +14,14 @@
 
 package com.mvcoding.expensius.provider.database.table
 
-import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.*
+import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.DATE_TIME
+import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.REAL
+import com.mvcoding.expensius.provider.database.table.ValueColumn.Type.TEXT
 
 class TransactionsTable : ModelTable("transactions") {
     val transactionType = ValueColumn(this, "transactionType", TEXT)
     val transactionState = ValueColumn(this, "transactionState", TEXT)
-    val timestamp = ValueColumn(this, "timestamp", DATE_TIME)
+    val timestamp = ValueColumn(this, "currentTimestamp", DATE_TIME)
     val currency = ValueColumn(this, "currency", TEXT)
     val exchangeRate = ValueColumn(this, "exchange_rate", REAL)
     val amount = ValueColumn(this, "amount", REAL)

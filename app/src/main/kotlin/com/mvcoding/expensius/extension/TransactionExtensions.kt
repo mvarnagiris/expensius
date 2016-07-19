@@ -24,7 +24,7 @@ fun Transaction.toContentValues(transactionsTable: TransactionsTable): ContentVa
     //    contentValues.put(transactionsTable.modelState.name, modelState.name)
     //    contentValues.put(transactionsTable.transactionType.name, transactionType.name)
     //    contentValues.put(transactionsTable.transactionState.name, transactionState.name)
-    //    contentValues.put(transactionsTable.timestamp.name, timestamp)
+    //    contentValues.put(transactionsTable.currentTimestamp.name, currentTimestamp)
     //    contentValues.put(transactionsTable.currency.name, currency.code)
     //    contentValues.put(transactionsTable.exchangeRate.name, exchangeRate.toPlainString())
     //    contentValues.put(transactionsTable.amount.name, amount.toPlainString())

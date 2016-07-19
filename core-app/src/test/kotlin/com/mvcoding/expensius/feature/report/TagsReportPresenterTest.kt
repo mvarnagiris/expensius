@@ -114,13 +114,13 @@ class TagsReportPresenterTest {
     //                .thenReturn(just(transactions))
     //    }
     //
-    //    private fun aTransaction(amount: String, timestamp: Long, vararg tags: Tag): Transaction {
+    //    private fun aTransaction(amount: String, currentTimestamp: Long, vararg tags: Tag): Transaction {
     //        return aTransaction()
     //                .withAmount(BigDecimal(amount))
     //                .withCurrency(mainCurrency)
     //                .withExchangeRate(TEN)
     //                .withTags(*tags)
-    //                .withTimestamp(timestamp)
+    //                .withTimestamp(currentTimestamp)
     //                .withTransactionType(EXPENSE)
     //    }
     //
