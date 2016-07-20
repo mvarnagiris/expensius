@@ -15,6 +15,8 @@
 package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.model.ReportPeriod
+import com.mvcoding.expensius.model.ReportPeriod.MONTH
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
@@ -25,7 +27,7 @@ class OverviewPresenter(private val filter: Filter) : Presenter<OverviewPresente
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        filter.filterData().map { it.interval }.filterNotNull().distinctUntilChanged().subscribeUntilDetached { view.showInterval(it) }
+        filter.filterData().map { it.interval }.filterNotNull().distinctUntilChanged().subscribeUntilDetached { view.showInterval(MONTH, it) }
         view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
@@ -38,7 +40,7 @@ class OverviewPresenter(private val filter: Filter) : Presenter<OverviewPresente
         fun tagsSelects(): Observable<Unit>
         fun settingsSelects(): Observable<Unit>
 
-        fun showInterval(interval: Interval)
+        fun showInterval(reportPeriod: ReportPeriod, interval: Interval)
 
         fun displayCreateTransaction()
         fun displayTransactions()

@@ -18,10 +18,8 @@ import android.app.Activity
 import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
-import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.provideFilter
 import memoizrlabs.com.shankandroid.withThisScope
-import org.joda.time.DateTime
-import org.joda.time.Interval
 
 class OverviewModule() : ShankModule {
     override fun registerFactories() {
@@ -29,12 +27,7 @@ class OverviewModule() : ShankModule {
     }
 
     private fun overviewPresenter() = registerFactory(OverviewPresenter::class.java, { ->
-        // TODO: This is a temporary filter until global filter comes.
-        val startOfTomorrow = DateTime.now().plusDays(1).withTimeAtStartOfDay()
-        val last30Days = Interval(startOfTomorrow.minusDays(30), startOfTomorrow)
-        val filter = Filter()
-        filter.setInterval(last30Days)
-        OverviewPresenter(filter)
+        OverviewPresenter(provideFilter())
     })
 }
 

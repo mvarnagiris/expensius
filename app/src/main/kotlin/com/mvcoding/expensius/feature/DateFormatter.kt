@@ -18,8 +18,14 @@ import android.content.Context
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.isTomorrow
 import com.mvcoding.expensius.extension.isYesterday
-import net.danlew.android.joda.DateUtils.*
+import com.mvcoding.expensius.model.ReportPeriod
+import net.danlew.android.joda.DateUtils.FORMAT_ABBREV_ALL
+import net.danlew.android.joda.DateUtils.FORMAT_SHOW_DATE
+import net.danlew.android.joda.DateUtils.FORMAT_SHOW_WEEKDAY
+import net.danlew.android.joda.DateUtils.formatDateTime
+import net.danlew.android.joda.DateUtils.isToday
 import org.joda.time.DateTime
+import org.joda.time.Interval
 
 class DateFormatter(private val context: Context) {
     fun formatDateRelativeToToday(timestamp: Long): String {
@@ -38,4 +44,7 @@ class DateFormatter(private val context: Context) {
 
     fun formatDateShort(dateTime: DateTime) = formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_ABBREV_ALL)
 
+    fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String {
+        return interval.start.monthOfYear().asText
+    }
 }

@@ -27,9 +27,10 @@ import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.settings.SettingsActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
+import com.mvcoding.expensius.model.ReportPeriod
+import com.mvcoding.expensius.provideDateFormatter
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
-import net.danlew.android.joda.DateUtils
 import org.joda.time.Interval
 import rx.Observable
 
@@ -39,6 +40,7 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
     }
 
     private val presenter by lazy { provideOverviewPresenter() }
+    private val dateFormatter by lazy { provideDateFormatter() }
     private val toolbarClicks by lazy { toolbar.itemClicks().share() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,10 +70,8 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
     override fun displayTags(): Unit = TagsActivity.startView(this)
     override fun displaySettings(): Unit = SettingsActivity.start(this)
 
-    override fun showInterval(interval: Interval) {
-        val start = DateUtils.formatDateTime(this, interval.start, DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_DATE)
-        val end = DateUtils.formatDateTime(this, interval.end.minusMillis(1), DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_SHOW_DATE)
-        supportActionBar?.title = "$start - $end"
+    override fun showInterval(reportPeriod: ReportPeriod, interval: Interval) {
+        supportActionBar?.title = dateFormatter.formatInterval(reportPeriod, interval)
     }
 
     private fun removeUpArrowFromToolbar() {

@@ -21,8 +21,10 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.extensions.interval
 import com.mvcoding.expensius.feature.AmountFormatter
 import com.mvcoding.expensius.feature.DateFormatter
+import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import com.mvcoding.expensius.firebase.FirebaseAppUserService
 import com.mvcoding.expensius.firebase.FirebaseAppUserWriteService
@@ -30,6 +32,7 @@ import com.mvcoding.expensius.firebase.FirebaseTagsService
 import com.mvcoding.expensius.firebase.FirebaseTagsWriteService
 import com.mvcoding.expensius.firebase.FirebaseTransactionsService
 import com.mvcoding.expensius.firebase.FirebaseTransactionsWriteService
+import com.mvcoding.expensius.model.ReportPeriod.MONTH
 import com.mvcoding.expensius.provider.database.DBHelper
 import com.mvcoding.expensius.provider.database.Database
 import com.mvcoding.expensius.provider.database.SqliteDatabase
@@ -53,6 +56,10 @@ class AppModule(val context: Context) : ShankModule {
     override fun registerFactories() {
         appContext()
         rxSchedulers()
+        dateFormatter()
+        amountFormatter()
+        filter()
+
         firebaseAppUserService()
         firebaseTagsService()
         firebaseTagsWriteService()
@@ -61,10 +68,13 @@ class AppModule(val context: Context) : ShankModule {
         firebaseAppUserWriteService()
 
         rxBus()
-        dateFormatter()
         settings()
         database()
-        amountFormatter()
+    }
+
+    private fun filter() = registerFactory(Filter::class) { ->
+        val reportPeriod = MONTH
+        Filter().setInterval(reportPeriod.interval(provideTimestampProvider().currentTimestamp()))
     }
 
 
@@ -117,6 +127,7 @@ fun provideDatabase() = provideGlobalSingleton<Database>()
 fun provideDateFormatter() = provideGlobalSingleton<DateFormatter>()
 fun provideAmountFormatter() = provideGlobalSingleton<AmountFormatter>()
 fun provideTimestampProvider() = SystemTimestampProvider()
+fun provideFilter() = provideNew<Filter>()
 
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideLoginService(): LoginService = provideFirebaseAppUserService()
