@@ -42,9 +42,6 @@ class DateFormatter(private val context: Context) {
         return formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_SHOW_WEEKDAY or FORMAT_ABBREV_ALL)
     }
 
-    fun formatDateShort(dateTime: DateTime) = formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_ABBREV_ALL)
-
-    fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String {
-        return interval.start.monthOfYear().asText
-    }
+    fun formatDateShort(dateTime: DateTime): String = formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_ABBREV_ALL)
+    fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String = interval.start.monthOfYear().asText
 }
