@@ -95,6 +95,7 @@ class TrendView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
         val lineData = LineData(currentAmounts.map { "" }, listOf(lastLineDataSet, lineDataSet))
         lineChart.data = lineData
+        lineChart.animateY(700)
 
         val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(700)
         animator.addUpdateListener {
