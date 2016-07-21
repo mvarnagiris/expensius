@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.model
 
-fun aSettings() = Settings(aCurrency(), SubscriptionType.values().aRandomItem())
+fun aSettings() = Settings(aCurrency(), ReportPeriod.MONTH, ReportGroup.DAY, SubscriptionType.values().aRandomItem())
 fun aUserId() = UserId(aStringId())
 fun anAuthProvider() = AuthProvider.values().aRandomItem()
 fun aGoogleToken() = GoogleToken(aString("token"))

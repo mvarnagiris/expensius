@@ -19,7 +19,7 @@ import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.aTimestampProvider
+import com.mvcoding.expensius.model.aFixedTimestampProvider
 import com.mvcoding.expensius.model.aTransaction
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
@@ -56,7 +56,7 @@ class TransactionsPresenterTest {
 
     val appUserService: AppUserService = mock()
     val transactionsService: TransactionsService = mock()
-    val timestampProvider = aTimestampProvider()
+    val timestampProvider = aFixedTimestampProvider()
     val view: TransactionsPresenter.View = mock()
     val inOrder: InOrder = inOrder(view)
 

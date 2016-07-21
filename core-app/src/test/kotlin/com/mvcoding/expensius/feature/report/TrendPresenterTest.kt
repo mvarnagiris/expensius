@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.report
 import com.mvcoding.expensius.extensions.interval
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.model.ReportPeriod
-import com.mvcoding.expensius.model.aTimestampProvider
+import com.mvcoding.expensius.model.aFixedTimestampProvider
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.AppUserService
@@ -41,7 +41,7 @@ class TrendPresenterTest {
     val transactionsService: TransactionsService = mock()
     val filter: Filter = Filter()
     val view: TrendPresenter.View = mock()
-    val presenter = TrendPresenter(appUserService, transactionsService, filter, aTimestampProvider(), rxSchedulers())
+    val presenter = TrendPresenter(appUserService, transactionsService, filter, aFixedTimestampProvider(), rxSchedulers())
 
     @Before
     fun setUp() {

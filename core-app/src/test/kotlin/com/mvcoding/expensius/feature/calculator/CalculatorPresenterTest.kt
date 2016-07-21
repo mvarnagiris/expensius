@@ -19,7 +19,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
 import com.mvcoding.expensius.model.NullModels.newTransaction
-import com.mvcoding.expensius.model.aTimestampProvider
+import com.mvcoding.expensius.model.aFixedTimestampProvider
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.service.AppUserService
 import com.nhaarman.mockito_kotlin.any
@@ -57,7 +57,7 @@ class CalculatorPresenterTest {
     val view: CalculatorPresenter.View = mock()
     val calculator = Calculator(Interpreter())
     val appUserService: AppUserService = mock()
-    val timestampProvider = aTimestampProvider()
+    val timestampProvider = aFixedTimestampProvider()
     val presenter = CalculatorPresenter(calculator, resultDestination, appUserService, timestampProvider)
 
     @Before

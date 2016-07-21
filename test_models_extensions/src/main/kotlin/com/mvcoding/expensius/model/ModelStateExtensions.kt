@@ -14,18 +14,4 @@
 
 package com.mvcoding.expensius.model
 
-fun aTransactionId() = TransactionId(aStringId())
-fun aTransactionType() = TransactionType.values().aRandomItem()
-fun aTransactionState() = TransactionState.values().aRandomItem()
-fun aTimestamp() = Timestamp(aLongTimestamp())
-fun aMoney() = Money(anAmount(), aCurrency(), anAmount())
-fun aNote() = Note(aString("note"))
-fun aTransaction() = Transaction(
-        aTransactionId(),
-        aModelState(),
-        aTransactionType(),
-        aTransactionState(),
-        aTimestamp(),
-        aMoney(),
-        someTags(),
-        aNote())
+fun aModelState() = ModelState.values().aRandomItem()

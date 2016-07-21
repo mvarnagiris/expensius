@@ -14,11 +14,10 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.ModelState.NONE
-
 fun aTagId() = TagId(aStringId())
 fun aTitle() = Title(aString("title"))
 fun aColor() = Color(anInt())
 fun anOrder() = Order(anInt(100))
 fun aCreateTag() = CreateTag(aTitle(), aColor(), anOrder())
-fun aTag() = Tag(aTagId(), NONE, aTitle(), aColor(), anOrder())
+fun aTag() = Tag(aTagId(), aModelState(), aTitle(), aColor(), anOrder())
+fun someTags() = (0..anInt(5)).map { aTag() }.toSet()
