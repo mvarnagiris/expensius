@@ -62,7 +62,7 @@ class TagsPresenter(
                 .observeOn(schedulers.main)
                 .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
 
-        tagsService.movedItems()
+        tagsService.movedItem()
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
                 .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }

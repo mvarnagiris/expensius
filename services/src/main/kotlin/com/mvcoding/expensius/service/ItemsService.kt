@@ -18,14 +18,14 @@ import rx.Observable
 
 interface ItemsService<ITEM> {
     fun items(): Observable<List<ITEM>>
-    fun addedItems(): Observable<ItemsAdded<ITEM>>
-    fun changedItems(): Observable<ItemsChanged<ITEM>>
-    fun removedItems(): Observable<ItemsRemoved<ITEM>>
-    fun movedItems(): Observable<ItemMoved<ITEM>>
+    fun addedItems(): Observable<AddedItems<ITEM>>
+    fun changedItems(): Observable<ChangedItems<ITEM>>
+    fun removedItems(): Observable<RemovedItems<ITEM>>
+    fun movedItem(): Observable<MovedItem<ITEM>>
 }
 
 
-data class ItemsAdded<out ITEM>(val position: Int, val items: List<ITEM>)
-data class ItemsChanged<out ITEM>(val position: Int, val items: List<ITEM>)
-data class ItemsRemoved<out ITEM>(val position: Int, val items: List<ITEM>)
-data class ItemMoved<out ITEM>(val fromPosition: Int, val toPosition: Int, val item: ITEM)
+data class AddedItems<out ITEM>(val position: Int, val items: List<ITEM>)
+data class ChangedItems<out ITEM>(val position: Int, val items: List<ITEM>)
+data class RemovedItems<out ITEM>(val position: Int, val items: List<ITEM>)
+data class MovedItem<out ITEM>(val fromPosition: Int, val toPosition: Int, val item: ITEM)

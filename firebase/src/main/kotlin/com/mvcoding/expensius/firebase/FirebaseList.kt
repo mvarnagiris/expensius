@@ -25,16 +25,14 @@ import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 import java.io.Closeable
 
-class FirebaseList<ITEM>(
-        private val query: Query,
-        private val transformer: (DataSnapshot) -> ITEM) : ValueEventListener, ChildEventListener, Closeable {
+class FirebaseList(private val query: Query) : ValueEventListener, ChildEventListener, Closeable {
 
     private val childrenDataSnapshots = arrayListOf<DataSnapshot>()
-    private val itemsSubject = BehaviorSubject<List<ITEM>>()
-    private val addedItemsSubject = PublishSubject<FirebaseItemsAdded<ITEM>>()
-    private val changedItemsSubject = PublishSubject<FirebaseItemsChanged<ITEM>>()
-    private val removedItemsSubject = PublishSubject<FirebaseItemsRemoved<ITEM>>()
-    private val movedItemsSubject = PublishSubject<FirebaseItemMoved<ITEM>>()
+    private val itemsSubject = BehaviorSubject<List<DataSnapshot>>()
+    private val addedItemsSubject = PublishSubject<FirebaseAddedItems>()
+    private val changedItemsSubject = PublishSubject<FirebaseChangedItems>()
+    private val removedItemsSubject = PublishSubject<FirebaseRemovedItems>()
+    private val movedItemsSubject = PublishSubject<FirebaseMovedItem>()
     private var ignoreChildEvents = true
 
     init {
@@ -42,16 +40,16 @@ class FirebaseList<ITEM>(
         query.addListenerForSingleValueEvent(this)
     }
 
-    fun items(): Observable<List<ITEM>> = itemsSubject.onBackpressureBuffer()
-    fun addedItems(): Observable<FirebaseItemsAdded<ITEM>> = addedItemsSubject.onBackpressureBuffer()
-    fun changedItems(): Observable<FirebaseItemsChanged<ITEM>> = changedItemsSubject.onBackpressureBuffer()
-    fun removedItems(): Observable<FirebaseItemsRemoved<ITEM>> = removedItemsSubject.onBackpressureBuffer()
-    fun movedItems(): Observable<FirebaseItemMoved<ITEM>> = movedItemsSubject.onBackpressureBuffer()
+    fun items(): Observable<List<DataSnapshot>> = itemsSubject.onBackpressureBuffer()
+    fun addedItems(): Observable<FirebaseAddedItems> = addedItemsSubject.onBackpressureBuffer()
+    fun changedItems(): Observable<FirebaseChangedItems> = changedItemsSubject.onBackpressureBuffer()
+    fun removedItems(): Observable<FirebaseRemovedItems> = removedItemsSubject.onBackpressureBuffer()
+    fun movedItem(): Observable<FirebaseMovedItem> = movedItemsSubject.onBackpressureBuffer()
 
     override fun onDataChange(dataSnapshot: DataSnapshot) {
         childrenDataSnapshots.clear()
         childrenDataSnapshots.addAll(dataSnapshot.children)
-        itemsSubject.onNext(childrenDataSnapshots.map { it.let(transformer) })
+        notifyItemsChanged()
         ignoreChildEvents = false
     }
 
@@ -59,27 +57,24 @@ class FirebaseList<ITEM>(
         if (ignoreChildEvents) return
         val position = previousChildKey?.let { getPositionForKey(it) + 1 } ?: 0
         childrenDataSnapshots.add(position, dataSnapshot)
-        val item = dataSnapshot.let(transformer)
-        addedItemsSubject.onNext(FirebaseItemsAdded(position, listOf(item)))
-        itemsSubject.onNext(childrenDataSnapshots.map { it.let(transformer) })
+        addedItemsSubject.onNext(FirebaseAddedItems(position, listOf(dataSnapshot)))
+        notifyItemsChanged()
     }
 
     override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildKey: String?) {
         if (ignoreChildEvents) return
         val position = getPositionForKey(dataSnapshot.key)
         childrenDataSnapshots[position] = dataSnapshot
-        val item = dataSnapshot.let(transformer)
-        changedItemsSubject.onNext(FirebaseItemsChanged(position, listOf(item)))
-        itemsSubject.onNext(childrenDataSnapshots.map { it.let(transformer) })
+        changedItemsSubject.onNext(FirebaseChangedItems(position, listOf(dataSnapshot)))
+        notifyItemsChanged()
     }
 
     override fun onChildRemoved(dataSnapshot: DataSnapshot) {
         if (ignoreChildEvents) return
         val position = getPositionForKey(dataSnapshot.key)
         childrenDataSnapshots.removeAt(position)
-        val item = dataSnapshot.let(transformer)
-        removedItemsSubject.onNext(FirebaseItemsRemoved(position, listOf(item)))
-        itemsSubject.onNext(childrenDataSnapshots.map { it.let(transformer) })
+        removedItemsSubject.onNext(FirebaseRemovedItems(position, listOf(dataSnapshot)))
+        notifyItemsChanged()
     }
 
     override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildKey: String?) {
@@ -88,9 +83,8 @@ class FirebaseList<ITEM>(
         childrenDataSnapshots.removeAt(oldPosition)
         val newPosition = previousChildKey?.let { getPositionForKey(it) + 1 } ?: 0
         childrenDataSnapshots.add(newPosition, dataSnapshot)
-        val item = dataSnapshot.let(transformer)
-        movedItemsSubject.onNext(FirebaseItemMoved(oldPosition, newPosition, item))
-        itemsSubject.onNext(childrenDataSnapshots.map { it.let(transformer) })
+        movedItemsSubject.onNext(FirebaseMovedItem(oldPosition, newPosition, dataSnapshot))
+        notifyItemsChanged()
     }
 
     override fun onCancelled(databaseError: DatabaseError) {
@@ -98,12 +92,12 @@ class FirebaseList<ITEM>(
         itemsSubject.onNext(emptyList())
     }
 
-    override fun close() = query.removeEventListener(this as ChildEventListener)
-
+    override fun close(): Unit = query.removeEventListener(this as ChildEventListener)
     private fun getPositionForKey(key: String): Int = childrenDataSnapshots.indexOfFirst { it.key == key }
+    private fun notifyItemsChanged(): Unit = itemsSubject.onNext(childrenDataSnapshots)
 
-    data class FirebaseItemsAdded<out ITEM>(val position: Int, val items: List<ITEM>)
-    data class FirebaseItemsChanged<out ITEM>(val position: Int, val items: List<ITEM>)
-    data class FirebaseItemsRemoved<out ITEM>(val position: Int, val items: List<ITEM>)
-    data class FirebaseItemMoved<out ITEM>(val fromPosition: Int, val toPosition: Int, val item: ITEM)
+    data class FirebaseAddedItems(val position: Int, val items: List<DataSnapshot>)
+    data class FirebaseChangedItems(val position: Int, val items: List<DataSnapshot>)
+    data class FirebaseRemovedItems(val position: Int, val items: List<DataSnapshot>)
+    data class FirebaseMovedItem(val fromPosition: Int, val toPosition: Int, val item: DataSnapshot)
 }

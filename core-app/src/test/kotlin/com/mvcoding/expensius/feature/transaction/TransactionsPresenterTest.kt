@@ -23,11 +23,11 @@ import com.mvcoding.expensius.model.aTimestampProvider
 import com.mvcoding.expensius.model.aTransaction
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
+import com.mvcoding.expensius.service.AddedItems
 import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.ItemMoved
-import com.mvcoding.expensius.service.ItemsAdded
-import com.mvcoding.expensius.service.ItemsChanged
-import com.mvcoding.expensius.service.ItemsRemoved
+import com.mvcoding.expensius.service.ChangedItems
+import com.mvcoding.expensius.service.MovedItem
+import com.mvcoding.expensius.service.RemovedItems
 import com.mvcoding.expensius.service.TransactionsService
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.inOrder
@@ -66,7 +66,7 @@ class TransactionsPresenterTest {
         whenever(transactionsService.addedItems()).thenReturn(empty())
         whenever(transactionsService.changedItems()).thenReturn(empty())
         whenever(transactionsService.removedItems()).thenReturn(empty())
-        whenever(transactionsService.movedItems()).thenReturn(empty())
+        whenever(transactionsService.movedItem()).thenReturn(empty())
         whenever(appUserService.appUser()).thenReturn(just(appUser))
 
         whenever(view.transactionSelects()).thenReturn(transactionSelectsSubject)
@@ -94,8 +94,8 @@ class TransactionsPresenterTest {
 
     @Test
     fun showsAddedTransactions() {
-        val someItemsAdded = ItemsAdded(0, someTransactions)
-        val someOtherItemsAdded = ItemsAdded(someTransactions.size, someOtherTransactions)
+        val someItemsAdded = AddedItems(0, someTransactions)
+        val someOtherItemsAdded = AddedItems(someTransactions.size, someOtherTransactions)
         whenever(transactionsService.addedItems()).thenReturn(from(listOf(someItemsAdded, someOtherItemsAdded)))
 
         presenter().attach(view)
@@ -106,8 +106,8 @@ class TransactionsPresenterTest {
 
     @Test
     fun showsChangedTransactions() {
-        val someItemsChanged = ItemsChanged(0, someTransactions)
-        val someOtherItemsChanged = ItemsChanged(someTransactions.size, someOtherTransactions)
+        val someItemsChanged = ChangedItems(0, someTransactions)
+        val someOtherItemsChanged = ChangedItems(someTransactions.size, someOtherTransactions)
         whenever(transactionsService.changedItems()).thenReturn(from(listOf(someItemsChanged, someOtherItemsChanged)))
 
         presenter().attach(view)
@@ -118,8 +118,8 @@ class TransactionsPresenterTest {
 
     @Test
     fun showsRemovedTransactions() {
-        val someItemsRemoved = ItemsRemoved(0, someTransactions)
-        val someOtherItemsRemoved = ItemsRemoved(someTransactions.size, someOtherTransactions)
+        val someItemsRemoved = RemovedItems(0, someTransactions)
+        val someOtherItemsRemoved = RemovedItems(someTransactions.size, someOtherTransactions)
         whenever(transactionsService.removedItems()).thenReturn(from(listOf(someItemsRemoved, someOtherItemsRemoved)))
 
         presenter().attach(view)
@@ -133,8 +133,8 @@ class TransactionsPresenterTest {
         val inOrder = inOrder(view)
         val someTransaction = aTransaction()
         val someOtherTransaction = aTransaction()
-        val movedTransactions = listOf(ItemMoved(0, 1, someTransaction), ItemMoved(1, 2, someOtherTransaction))
-        whenever(transactionsService.movedItems()).thenReturn(from(movedTransactions))
+        val movedTransactions = listOf(MovedItem(0, 1, someTransaction), MovedItem(1, 2, someOtherTransaction))
+        whenever(transactionsService.movedItem()).thenReturn(from(movedTransactions))
 
         presenter().attach(view)
 

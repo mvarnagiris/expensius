@@ -12,9 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.firebase
+package com.mvcoding.expensius.firebase.service
 
+import com.mvcoding.expensius.firebase.archivedTagsDatabaseReference
 import com.mvcoding.expensius.firebase.model.FirebaseTag
+import com.mvcoding.expensius.firebase.tagsDatabaseReference
 import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -47,11 +49,10 @@ class FirebaseTagsWriteService(private val appUserService: AppUserService) : Tag
                 if (archivedTagsToUpdate.isNotEmpty()) archivedTagsDatabaseReference(appUserId).updateChildren(archivedTagsToUpdate)
             }
 
-    private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, NONE.name, title.text, color.rgb, order.value)
+    private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
     private fun Tag.toMap() = mapOf(
             "id" to tagId.id,
-            "modelState" to modelState.name,
             "title" to title.text,
-            "color" to color.rgb,
+            "build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/res/color" to color.rgb,
             "order" to order.value)
 }

@@ -21,10 +21,10 @@ import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.rxSchedulers
-import com.mvcoding.expensius.service.ItemMoved
-import com.mvcoding.expensius.service.ItemsAdded
-import com.mvcoding.expensius.service.ItemsChanged
-import com.mvcoding.expensius.service.ItemsRemoved
+import com.mvcoding.expensius.service.AddedItems
+import com.mvcoding.expensius.service.ChangedItems
+import com.mvcoding.expensius.service.MovedItem
+import com.mvcoding.expensius.service.RemovedItems
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
 import com.nhaarman.mockito_kotlin.any
@@ -67,7 +67,7 @@ class TagsPresenterTest {
         whenever(tagsService.addedItems()).thenReturn(empty())
         whenever(tagsService.changedItems()).thenReturn(empty())
         whenever(tagsService.removedItems()).thenReturn(empty())
-        whenever(tagsService.movedItems()).thenReturn(empty())
+        whenever(tagsService.movedItem()).thenReturn(empty())
         whenever(tagsWriteService.saveTags(any())).thenReturn(just(Unit))
     }
 
@@ -102,8 +102,8 @@ class TagsPresenterTest {
 
     @Test
     fun showsAddedTags() {
-        val someItemsAdded = ItemsAdded(0, someTags)
-        val someOtherItemsAdded = ItemsAdded(someTags.size, someOtherTags)
+        val someItemsAdded = AddedItems(0, someTags)
+        val someOtherItemsAdded = AddedItems(someTags.size, someOtherTags)
         whenever(tagsService.addedItems()).thenReturn(from(listOf(someItemsAdded, someOtherItemsAdded)))
 
         presenterWithModelDisplayTypeView().attach(view)
@@ -114,8 +114,8 @@ class TagsPresenterTest {
 
     @Test
     fun showsChangedTags() {
-        val someItemsChanged = ItemsChanged(0, someTags)
-        val someOtherItemsChanged = ItemsChanged(someTags.size, someOtherTags)
+        val someItemsChanged = ChangedItems(0, someTags)
+        val someOtherItemsChanged = ChangedItems(someTags.size, someOtherTags)
         whenever(tagsService.changedItems()).thenReturn(from(listOf(someItemsChanged, someOtherItemsChanged)))
 
         presenterWithModelDisplayTypeView().attach(view)
@@ -126,8 +126,8 @@ class TagsPresenterTest {
 
     @Test
     fun showsRemovedTags() {
-        val someItemsRemoved = ItemsRemoved(0, someTags)
-        val someOtherItemsRemoved = ItemsRemoved(someTags.size, someOtherTags)
+        val someItemsRemoved = RemovedItems(0, someTags)
+        val someOtherItemsRemoved = RemovedItems(someTags.size, someOtherTags)
         whenever(tagsService.removedItems()).thenReturn(from(listOf(someItemsRemoved, someOtherItemsRemoved)))
 
         presenterWithModelDisplayTypeView().attach(view)
@@ -141,8 +141,8 @@ class TagsPresenterTest {
         val inOrder = inOrder(view)
         val someTag = aTag()
         val someOtherTag = aTag()
-        val movedTags = listOf(ItemMoved(0, 1, someTag), ItemMoved(1, 2, someOtherTag))
-        whenever(tagsService.movedItems()).thenReturn(from(movedTags))
+        val movedTags = listOf(MovedItem(0, 1, someTag), MovedItem(1, 2, someOtherTag))
+        whenever(tagsService.movedItem()).thenReturn(from(movedTags))
 
         presenterWithModelDisplayTypeView().attach(view)
 

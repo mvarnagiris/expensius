@@ -12,11 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.firebase
+package com.mvcoding.expensius.firebase.service
 
 import com.mvcoding.expensius.firebase.model.FirebaseSettings
 import com.mvcoding.expensius.firebase.model.FirebaseUserData
-import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.firebase.userDatabaseReference
 import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.AppUserWriteService
@@ -24,12 +24,10 @@ import rx.Observable
 
 class FirebaseAppUserWriteService(private val appUserService: AppUserService) : AppUserWriteService {
     override fun saveSettings(settings: Settings): Observable<Unit> = appUserService.appUser().first().map {
-        val appUser = it.withSettings(settings)
-        val userReference = userDatabaseReference(appUser.userId)
-        userReference.setValue(appUser.toFirebaseUserData())
+        val userReference = userDatabaseReference(it.userId)
+        userReference.setValue(FirebaseUserData(it.userId.id, settings.toFirebaseSettings()))
         Unit
     }
 
-    private fun AppUser.toFirebaseUserData() = FirebaseUserData(userId.id, settings.toFirebaseSettings())
-    private fun Settings.toFirebaseSettings() = FirebaseSettings(currency.code, subscriptionType.name)
+    private fun Settings.toFirebaseSettings() = FirebaseSettings(mainCurrency.code, subscriptionType.name)
 }

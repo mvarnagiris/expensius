@@ -12,23 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.firebase
 
-import java.io.Serializable
+import com.mvcoding.expensius.model.Currency
+import java.util.*
 
-data class UserId(val id: String) : Serializable
-data class GoogleToken(val token: String) : Serializable
-enum class AuthProvider { ANONYMOUS, GOOGLE }
-
-interface User {
-    val userId: UserId
-}
-
-data class AppUser(
-        override val userId: UserId,
-        val settings: Settings,
-        val authProviders: Set<AuthProvider>) : User, Serializable {
-
-    fun isLoggedIn(): Boolean = authProviders.isNotEmpty()
-    fun isNotLoggedIn(): Boolean = !isLoggedIn()
+fun defaultCurrency(): Currency = try {
+    java.util.Currency.getInstance(Locale.getDefault()).let { Currency(it.currencyCode) }
+} catch (e: Exception) {
+    Currency("USD")
 }

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.firebase
+package com.mvcoding.expensius.firebase.service
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -23,13 +23,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.mvcoding.expensius.firebase.model.FirebaseUserData
-import com.mvcoding.expensius.firebase.model.toSettings
+import com.mvcoding.expensius.firebase.userDatabaseReference
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.AuthProvider
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.NullModels.noAppUser
+import com.mvcoding.expensius.model.NullModels.noSettings
 import com.mvcoding.expensius.model.NullModels.noUserId
 import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
@@ -58,8 +59,8 @@ class FirebaseAppUserService : AppUserService, LoginService {
     init {
         firebaseAuth.addAuthStateListener(authStateListener)
         appUserObservable = combineLatest(firebaseUserSubject, firebaseUserDataSubject) { firebaseUser, firebaseUserData ->
-            val settings = firebaseUserData?.settings.toSettings()
-            firebaseUser?.toAppUser(settings) ?: noAppUser.withSettings(settings)
+            val settings = firebaseUserData?.settings?.toSettings() ?: noSettings
+            firebaseUser?.toAppUser(settings) ?: noAppUser.copy(settings = settings)
         }.distinctUntilChanged()
     }
 

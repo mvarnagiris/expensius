@@ -60,7 +60,7 @@ class TransactionsPresenter(
                 .observeOn(schedulers.main)
                 .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
 
-        transactionsService.movedItems()
+        transactionsService.movedItem()
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
                 .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }

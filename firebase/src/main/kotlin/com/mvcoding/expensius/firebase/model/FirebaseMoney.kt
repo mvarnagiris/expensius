@@ -16,17 +16,18 @@ package com.mvcoding.expensius.firebase.model
 
 import com.mvcoding.expensius.firebase.defaultCurrency
 import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ReportGroup
-import com.mvcoding.expensius.model.ReportPeriod
-import com.mvcoding.expensius.model.Settings
-import com.mvcoding.expensius.model.SubscriptionType
-import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.Money
+import java.math.BigDecimal
+import java.math.BigDecimal.ONE
+import java.math.BigDecimal.ZERO
 
-data class FirebaseSettings(val mainCurrency: String? = null, val subscriptionType: String? = null) {
+data class FirebaseMoney(
+        val amount: String? = null,
+        val currency: String? = null,
+        val exchangeRate: String? = null) {
 
-    fun toSettings() = Settings(
-            mainCurrency?.let { Currency(it) } ?: defaultCurrency(),
-            ReportPeriod.MONTH,
-            ReportGroup.DAY,
-            subscriptionType?.let { SubscriptionType.valueOf(it) } ?: FREE)
+    fun toMoney() = Money(
+            amount?.let { BigDecimal(it) } ?: ZERO,
+            currency?.let { Currency(it) } ?: defaultCurrency(),
+            exchangeRate?.let { BigDecimal(it) } ?: ONE)
 }

@@ -12,12 +12,16 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.firebase
+package com.mvcoding.expensius.firebase.service
 
+import com.mvcoding.expensius.firebase.archivedTransactionsDatabaseReference
+import com.mvcoding.expensius.firebase.model.FirebaseMoney
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
+import com.mvcoding.expensius.firebase.transactionsDatabaseReference
 import com.mvcoding.expensius.model.CreateTransaction
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.TransactionsWriteService
@@ -47,29 +51,34 @@ class FirebaseTransactionsWriteService(private val appUserService: AppUserServic
                 if (archivedTransactions.isNotEmpty()) archivedTransactionsDatabaseReference(appUserId).updateChildren(archivedTransactions)
             }
 
+    private fun Money.toFirebaseMoney() = FirebaseMoney(
+            amount.toPlainString(),
+            currency.code,
+            exchangeRate.toPlainString())
+
+    private fun Money.toMap() = mapOf(
+            "amount" to amount.toPlainString(),
+            "currency" to currency.code,
+            "exchangeRate" to exchangeRate.toPlainString()
+    )
+
     private fun CreateTransaction.toFirebaseTransaction(id: String) = FirebaseTransaction(
             id,
-            NONE.name,
             transactionType.name,
             transactionState.name,
-            timestamp,
-            -timestamp,
-            currency.code,
-            exchangeRate.toPlainString(),
-            amount.toPlainString(),
+            timestamp.millis,
+            -timestamp.millis,
+            money.toFirebaseMoney(),
             tags.map { it.tagId.id },
             note.text)
 
     private fun Transaction.toMap() = mapOf(
             "id" to transactionId.id,
-            "modelState" to modelState.name,
             "transactionType" to transactionType.name,
             "transactionState" to transactionState.name,
-            "timestamp" to timestamp,
-            "timestampInverse" to -timestamp,
-            "currency" to currency.code,
-            "exchangeRate" to exchangeRate.toPlainString(),
-            "amount" to amount.toPlainString(),
+            "timestamp" to timestamp.millis,
+            "timestampInverse" to -timestamp.millis,
+            "money" to money.toMap(),
             "tags" to tags.map { it.tagId.id },
             "note" to note.text)
 }
