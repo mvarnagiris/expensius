@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.model.ReportPeriod
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.joda.time.DateTime
@@ -47,7 +48,7 @@ class OverviewPresenterTest {
     fun showsInterval() {
         presenter.attach(view)
 
-        verify(view).showInterval(interval)
+        verify(view).showInterval(ReportPeriod.MONTH, interval)
     }
 
     @Test

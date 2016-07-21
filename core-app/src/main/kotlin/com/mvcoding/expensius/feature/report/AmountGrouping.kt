@@ -16,25 +16,43 @@ package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
 import com.mvcoding.expensius.extensions.toInterval
+import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import org.joda.time.Interval
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
+import java.util.*
 
 class AmountGrouping {
 
-    fun groupAmounts(
-            transactions: List<Transaction>,
-            reportGroup: ReportGroup,
-            interval: Interval): Map<Interval, BigDecimal> {
-
-        val groupedAmounts = calculateTotals(reportGroup, transactions)
+    fun groupAmountsInIntervals(transactions: List<Transaction>, reportGroup: ReportGroup, interval: Interval): List<AmountGroup<Interval>> {
         val defaultValue = { ZERO }
-        return reportGroup.splitIntoGroupIntervals(interval).associateBy({ it }, { groupedAmounts.getOrElse(it, defaultValue) })
+        val groupedAmounts = groupAmountsIntoIntervals(reportGroup, transactions)
+        return reportGroup.splitIntoGroupIntervals(interval)
+                .associateBy({ it }, { groupedAmounts.getOrElse(it, defaultValue) })
+                .map { AmountGroup(it.key, it.value) }
     }
 
-    private fun calculateTotals(reportGroup: ReportGroup, transactions: List<Transaction>): Map<Interval, BigDecimal> = transactions
-            .groupBy { reportGroup.toInterval(it.timestamp) }
-            .mapValues { it.value.fold(ZERO) { totalAmount, transaction -> totalAmount + transaction.amount } }
+    private fun groupAmountsIntoIntervals(reportGroup: ReportGroup, transactions: List<Transaction>): Map<Interval, BigDecimal> = transactions
+            .groupBy({ reportGroup.toInterval(it.timestamp) }, { it.amount })
+            .sumAmounts()
+
+    fun groupAmountsInTags(transactions: List<Transaction>): List<AmountGroup<Tag>> = transactions
+            .fold(hashMapOf<Tag, ArrayList<BigDecimal>>()) { map, transaction -> transaction.appendAmountToTags(map) }
+            .sumAmounts()
+            .map { AmountGroup(it.key, it.value) }
+            .sortedBy { -it.amount }
+
+    private fun Transaction.appendAmountToTags(map: HashMap<Tag, ArrayList<BigDecimal>>) = tagsOrNoTag()
+            .forEach { map.appendAmountToTag(it, amount) }
+            .let { map }
+
+    private fun Transaction.tagsOrNoTag() = tags.let { if (it.isEmpty()) setOf(noTag) else it }
+
+    private fun HashMap<Tag, ArrayList<BigDecimal>>.appendAmountToTag(tag: Tag, amount: BigDecimal) = getOrPut(tag, { arrayListOf() }).add(amount)
+    private fun <KEY> Map<KEY, List<BigDecimal>>.sumAmounts() = mapValues { it.value.fold(ZERO) { totalAmount, amount -> totalAmount + amount } }
 }
+
+data class AmountGroup<out GROUP>(val group: GROUP, val amount: BigDecimal)

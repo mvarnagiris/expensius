@@ -82,7 +82,7 @@ class TrendPresenter(
             transactionsWithFilterData.filterData.interval ?: reportPeriod.interval(timestampProvider.currentTimestamp())
 
     private fun groupAmounts(interval: Interval, reportGroup: ReportGroup, transactionsWithFilterData: TransactionsWithFilterData) =
-            amountGrouping.groupAmounts(transactionsWithFilterData.transactions, reportGroup, interval).values.toList()
+            amountGrouping.groupAmountsInIntervals(transactionsWithFilterData.transactions, reportGroup, interval).map { it.amount }
 
     interface View : Presenter.View {
         fun showTrends(currency: Currency, totalAmount: BigDecimal, currentAmounts: List<BigDecimal>, previousAmounts: List<BigDecimal>)

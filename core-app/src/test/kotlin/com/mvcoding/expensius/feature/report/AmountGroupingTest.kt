@@ -16,8 +16,11 @@ package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.extensions.toPeriod
+import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.model.aTransaction
+import com.mvcoding.expensius.model.withTags
 import com.mvcoding.expensius.model.withTimestamp
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.Interval
@@ -44,14 +47,43 @@ class AmountGroupingTest {
         val tooLate = aTransaction().withAmount(BigDecimal(17)).withTimestamp(interval.endMillis)
         val transactions = listOf(tooEarly, groupA1, groupA2, groupB1, groupC1, groupC2, groupC3, tooLate)
 
-        val expectedGroupedAmounts = mapOf(
-                Interval(interval.start, period) to BigDecimal(23),
-                Interval(interval.start.plus(period), period) to BigDecimal(13),
-                Interval(interval.start.plus(period.multipliedBy(2)), period) to ZERO,
-                Interval(interval.start.plus(period.multipliedBy(3)), period) to BigDecimal(45)
+        val expectedGroupedAmounts = listOf(
+                AmountGroup(Interval(interval.start, period), BigDecimal(23)),
+                AmountGroup(Interval(interval.start.plus(period), period), BigDecimal(13)),
+                AmountGroup(Interval(interval.start.plus(period.multipliedBy(2)), period), ZERO),
+                AmountGroup(Interval(interval.start.plus(period.multipliedBy(3)), period), BigDecimal(45))
         )
 
-        val groupedAmounts = AmountGrouping().groupAmounts(transactions, reportGroup, interval)
+        val groupedAmounts = AmountGrouping().groupAmountsInIntervals(transactions, reportGroup, interval)
+
+        assertThat(groupedAmounts, equalTo(expectedGroupedAmounts))
+    }
+
+    @Test
+    fun groupsAmountsIntoTags() {
+        val tagA = aTag()
+        val tagB = aTag()
+        val tagC = aTag()
+        val tagD = aTag()
+        val noTag = noTag
+
+        val withNoTag = aTransaction().withAmount(BigDecimal(10)).withTags(emptySet())
+        val withTagA = aTransaction().withAmount(BigDecimal(11)).withTags(setOf(tagA))
+        val withTagB1 = aTransaction().withAmount(BigDecimal(12)).withTags(setOf(tagB))
+        val withTagB2 = aTransaction().withAmount(BigDecimal(13)).withTags(setOf(tagB))
+        val withTagCD = aTransaction().withAmount(BigDecimal(14)).withTags(setOf(tagC, tagD))
+
+        val transactions = listOf(withNoTag, withTagA, withTagB1, withTagB2, withTagCD)
+
+        val expectedGroupedAmounts = listOf(
+                AmountGroup(tagB, BigDecimal(25)),
+                AmountGroup(tagC, BigDecimal(14)),
+                AmountGroup(tagD, BigDecimal(14)),
+                AmountGroup(tagA, BigDecimal(11)),
+                AmountGroup(noTag, BigDecimal(10))
+        )
+
+        val groupedAmounts = AmountGrouping().groupAmountsInTags(transactions)
 
         assertThat(groupedAmounts, equalTo(expectedGroupedAmounts))
     }
