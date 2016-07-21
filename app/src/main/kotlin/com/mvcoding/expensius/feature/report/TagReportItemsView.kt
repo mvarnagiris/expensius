@@ -17,74 +17,36 @@ package com.mvcoding.expensius.feature.report
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import com.mvcoding.expensius.model.Tag
-import java.math.BigDecimal
+import com.mvcoding.expensius.extension.doNotInEditMode
 
 class TagReportItemsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        LinearLayout(context, attrs, defStyleAttr) {
+        LinearLayout(context, attrs, defStyleAttr), TagsTotalsReportPresenter.View {
+
+    private val presenter by lazy { provideTagTotalsReportPresenter() }
 
     init {
         orientation = VERTICAL
     }
 
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-
-        //        val random = Random()
-        //        val tags = listOf(
-        //                Tag(generateModelId(), ModelState.NONE, getString(R.string.tag_fixed), ContextCompat.getColor(context, R.color.red_300)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_essential),
-        //                        ContextCompat.getColor(context, R.color.red_500)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_non_essential),
-        //                        ContextCompat.getColor(context, R.color.red_900)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_food),
-        //                        ContextCompat.getColor(context, R.color.light_green_500)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_leisure),
-        //                        ContextCompat.getColor(context, R.color.light_blue_500)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_clothes),
-        //                        ContextCompat.getColor(context, R.color.orange_500)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_transport),
-        //                        ContextCompat.getColor(context, R.color.yellow_500)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_household),
-        //                        ContextCompat.getColor(context, R.color.purple_500)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_health_and_beauty),
-        //                        ContextCompat.getColor(context, R.color.pink_500)),
-        //                Tag(generateModelId(),
-        //                        ModelState.NONE,
-        //                        getString(R.string.tag_bills_and_utilities),
-        //                        ContextCompat.getColor(context, R.color.brown_500)),
-        //                Tag(generateModelId(), ModelState.NONE, getString(R.string.tag_pets), ContextCompat.getColor(context, R.color.teal_500)))
-        //                .sortedWith(Comparator { left, right -> -1 + random.nextInt(3) })
-        //
-        //        val tagsToShow = (1 + random.nextInt(tags.size - 1)).downTo(1)
-        //                .map { TagAmount(tags[it], BigDecimal(3000 * random.nextDouble())) }
-        //                .sortedWith(Comparator { left, right -> right.amount.compareTo(left.amount) })
-        //
-        //        val maxAmount = tagsToShow[0].amount
-        //        tagsToShow.forEach {
-        //            val tagReportItemView = inflate<TagReportItemView>(R.layout.view_tag_report_item)
-        //            addView(tagReportItemView)
-        //            tagReportItemView.setTag(it.tag)
-        //            tagReportItemView.setAmount(it.amount)
-        //            tagReportItemView.setProgress(it.amount.toFloat() / maxAmount.toFloat())
-        //        }
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        doNotInEditMode { presenter.attach(this) }
     }
 
-    private data class TagAmount(val tag: Tag, val amount: BigDecimal)
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        presenter.detach(this)
+    }
+
+    override fun showTagsTotals(tagAmounts: List<TagsTotalsReportPresenter.TagAmount>) {
+        removeAllViews()
+        val maxAmount = tagAmounts.first().amount
+        tagAmounts.forEach {
+            val tagReportItemView = TagReportItemView.inflate(this)
+            addView(tagReportItemView)
+            tagReportItemView.setTag(it.tag)
+            tagReportItemView.setAmount(it.amount)
+            tagReportItemView.setProgress(it.amount.toFloat() / maxAmount.toFloat())
+        }
+    }
 }

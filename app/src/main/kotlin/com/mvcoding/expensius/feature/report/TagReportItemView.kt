@@ -16,7 +16,10 @@ package com.mvcoding.expensius.feature.report
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
 import android.widget.RelativeLayout
+import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.extension.makeOutlineProviderOval
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideAmountFormatter
@@ -26,6 +29,10 @@ import java.math.BigDecimal
 
 class TagReportItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         RelativeLayout(context, attrs, defStyleAttr) {
+
+    companion object {
+        fun inflate(parent: ViewGroup) = parent.inflate<TagReportItemView>(R.layout.view_tag_report_item)
+    }
 
     private val amountFormatter by lazy { provideAmountFormatter() }
 

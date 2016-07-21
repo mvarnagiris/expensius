@@ -36,15 +36,7 @@ class ReportsModule : ShankModule {
     override fun registerFactories() {
         tagsReportPresenter()
         trendsPresenter()
-    }
-
-    private fun trendsPresenter() = registerFactory(TrendPresenter::class) { ->
-        TrendPresenter(
-                provideAppUserService(),
-                provideTransactionsService(),
-                Filter().setTransactionType(EXPENSE).setTransactionState(CONFIRMED),
-                provideTimestampProvider(),
-                provideRxSchedulers())
+        tagTotalsReportPresenter()
     }
 
     private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class, { transactionType: TransactionType ->
@@ -56,9 +48,27 @@ class ReportsModule : ShankModule {
         filter.setTransactionType(transactionType)
         TagsReportPresenter(filter, provideTransactionsProvider(), provideSettings(), provideRxSchedulers())
     })
+
+    private fun trendsPresenter() = registerFactory(TrendPresenter::class) { ->
+        TrendPresenter(
+                provideAppUserService(),
+                provideTransactionsService(),
+                Filter().setTransactionType(EXPENSE).setTransactionState(CONFIRMED),
+                provideTimestampProvider(),
+                provideRxSchedulers())
+    }
+
+    private fun tagTotalsReportPresenter() = registerFactory(TagsTotalsReportPresenter::class) { ->
+        TagsTotalsReportPresenter(
+                provideAppUserService(),
+                provideTransactionsService(),
+                Filter().setTransactionState(CONFIRMED),
+                provideRxSchedulers())
+    }
 }
 
 fun View.provideTagsReportPresenter(transactionType: TransactionType): TagsReportPresenter =
         withActivityScope.provideSingletonFor(transactionType)
 
 fun View.provideExpensesTrendsPresenter() = withActivityScope.provideSingletonFor<TrendPresenter>()
+fun View.provideTagTotalsReportPresenter() = withActivityScope.provideSingletonFor<TagsTotalsReportPresenter>()
