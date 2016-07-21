@@ -28,7 +28,7 @@ fun FirebaseSettings?.toSettings() =
         if (this == null) Settings(defaultCurrency(), FREE)
         else Settings(
                 currencyCode?.let { Currency(it) } ?: defaultCurrency(),
-                subscriptionType?.let { SubscriptionType.valueOf(it) } ?: SubscriptionType.FREE)
+                subscriptionType?.let { SubscriptionType.valueOf(it) } ?: FREE)
 
 fun defaultCurrency(): Currency = try {
     java.util.Currency.getInstance(Locale.getDefault()).let { Currency(it.currencyCode) }

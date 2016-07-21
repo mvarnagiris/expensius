@@ -18,15 +18,18 @@ import java.io.Serializable
 import java.math.BigDecimal
 
 data class TransactionId(val id: String) : Serializable
+data class Timestamp(val millis: Long) : Serializable
 data class Note(val text: String) : Serializable
+data class Currency(val code: String = "") : Serializable
+data class Money(val amount: BigDecimal, val currency: Currency, val exchangeRate: BigDecimal) : Serializable
+enum class TransactionState { CONFIRMED, PENDING }
+enum class TransactionType { EXPENSE, INCOME }
 
 data class CreateTransaction(
         val transactionType: TransactionType,
         val transactionState: TransactionState,
-        val timestamp: Long,
-        val currency: Currency,
-        val exchangeRate: BigDecimal,
-        val amount: BigDecimal,
+        val timestamp: Timestamp,
+        val money: Money,
         val tags: Set<Tag>,
         val note: Note) : Serializable
 
@@ -35,23 +38,11 @@ data class Transaction(
         val modelState: ModelState,
         val transactionType: TransactionType,
         val transactionState: TransactionState,
-        val timestamp: Long,
-        val currency: Currency,
-        val exchangeRate: BigDecimal,
-        val amount: BigDecimal,
+        val timestamp: Timestamp,
+        val money: Money,
         val tags: Set<Tag>,
-        val note: Note) : Serializable {
+        val note: Note) : Serializable
 
-    fun withCurrency(currency: Currency) = copy(currency = currency)
-    fun withAmount(amount: BigDecimal) = copy(amount = amount)
-    fun withModelState(modelState: ModelState) = copy(modelState = modelState)
-    fun getAmountForCurrency(currency: Currency): BigDecimal = if (this.currency == currency) amount else amount.multiply(exchangeRate)
-}
-
-enum class TransactionState {
-    CONFIRMED, PENDING
-}
-
-enum class TransactionType {
-    EXPENSE, INCOME
+interface TimestampProvider {
+    fun currentTimestamp(): Timestamp
 }

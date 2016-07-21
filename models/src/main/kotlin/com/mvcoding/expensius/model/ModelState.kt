@@ -14,6 +14,4 @@
 
 package com.mvcoding.expensius.model
 
-enum class ModelState {
-    NONE, ARCHIVED
-}
+enum class ModelState { NONE, ARCHIVED }

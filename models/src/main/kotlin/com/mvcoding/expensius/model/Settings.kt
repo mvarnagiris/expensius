@@ -14,6 +14,14 @@
 
 package com.mvcoding.expensius.model
 
-enum class ReportPeriod {
-    MONTH
-}
+import java.io.Serializable
+
+enum class SubscriptionType { FREE, PREMIUM_PAID }
+enum class ReportPeriod { MONTH }
+enum class ReportGroup { DAY }
+
+data class Settings(
+        val mainCurrency: Currency,
+        val reportPeriod: ReportPeriod,
+        val reportGroup: ReportGroup,
+        val subscriptionType: SubscriptionType) : Serializable

@@ -19,12 +19,11 @@ import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
-import java.math.BigDecimal.ONE
 import java.math.BigDecimal.ZERO
 
 object NullModels {
     val noCurrency = Currency("")
-    val noSettings = Settings(noCurrency, FREE)
+    val noSettings = Settings(noCurrency, ReportPeriod.MONTH, ReportGroup.DAY, FREE)
 
     val noUserId = UserId("")
     val noAppUser = AppUser(noUserId, noSettings, emptySet())
@@ -36,17 +35,18 @@ object NullModels {
     val noTag = Tag(noTagId, NONE, noTitle, noColor, noOrder)
 
     val noTransactionId = TransactionId("")
+    val noTimestamp = Timestamp(0)
+    val noMoney = Money(ZERO, noCurrency, ZERO)
     val noNote = Note("")
-    val noTransaction = Transaction(noTransactionId, NONE, EXPENSE, PENDING, 0, noCurrency, ZERO, ZERO, emptySet(), noNote)
-    fun newTransaction(appUser: AppUser, timestampProvider: TimestampProvider) = Transaction(
+    val noTransaction = Transaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
+
+    fun newTransaction(timestamp: Timestamp, money: Money) = Transaction(
             noTransactionId,
             NONE,
             EXPENSE,
             CONFIRMED,
-            timestampProvider.currentTimestamp(),
-            appUser.settings.currency,
-            ONE,
-            ZERO,
+            timestamp,
+            money,
             emptySet(),
             noNote)
 }

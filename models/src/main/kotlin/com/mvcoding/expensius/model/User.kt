@@ -14,37 +14,17 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import java.io.Serializable
+
+data class UserId(val id: String) : Serializable
+data class GoogleToken(val token: String) : Serializable
+enum class AuthProvider { ANONYMOUS, GOOGLE }
 
 interface User {
     val userId: UserId
 }
 
-data class UserId(val id: String) : Serializable
-
-data class Settings(
-        val currency: Currency,
-        val subscriptionType: SubscriptionType) : Serializable {
-
-    fun withCurrency(currency: Currency) = copy(currency = currency)
-    fun withSubscriptionType(subscriptionType: SubscriptionType) = copy(subscriptionType = subscriptionType)
-}
-
 data class AppUser(
         override val userId: UserId,
         val settings: Settings,
-        val authProviders: Set<AuthProvider>) : User, Serializable {
-
-    fun isLoggedIn(): Boolean = authProviders.isNotEmpty()
-    fun isNotLoggedIn(): Boolean = !isLoggedIn()
-    fun isWithNonAnonymousAccount() = authProviders.any { it != ANONYMOUS }
-    fun withSubscriptionType(subscriptionType: SubscriptionType) = withSettings(settings.withSubscriptionType(subscriptionType))
-    fun withSettings(settings: Settings) = copy(settings = settings)
-}
-
-data class GoogleToken(val token: String) : Serializable
-
-enum class AuthProvider {
-    ANONYMOUS, GOOGLE
-}
+        val authProviders: Set<AuthProvider>) : User, Serializable

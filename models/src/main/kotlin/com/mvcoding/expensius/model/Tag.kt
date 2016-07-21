@@ -18,10 +18,7 @@ import java.io.Serializable
 
 data class TagId(val id: String) : Serializable
 data class Color(val rgb: Int) : Serializable
-data class Title(val text: String) : Serializable {
-    fun trimmed() = copy(text = text.trim())
-}
-
+data class Title(val text: String) : Serializable
 data class Order(val value: Int) : Serializable, Comparable<Order> {
     override fun compareTo(other: Order): Int = value.compareTo(other.value)
 }
@@ -32,9 +29,4 @@ data class Tag(
         val modelState: ModelState,
         val title: Title,
         val color: Color,
-        val order: Order) : Serializable {
-
-    fun withModelState(modelState: ModelState) = copy(modelState = modelState)
-    fun withOrder(order: Int) = withOrder(Order(order))
-    fun withOrder(order: Order) = copy(order = order)
-}
+        val order: Order) : Serializable
