@@ -72,21 +72,16 @@ class TrendReportView @JvmOverloads constructor(context: Context, attrs: Attribu
         presenter.detach(this)
     }
 
+    private val ANIMATION_DURATION_MILLIS = 500
+
     override fun showTrends(totalMoney: Money, currentMoney: List<Money>, previousMoney: List<Money>) {
-        val lineDataSet = LineDataSet(currentMoney.mapIndexed { index, money -> Entry(money.amount.toFloat(), index) }, "")
-        lineDataSet.setDrawCubic(true)
-        lineDataSet.setDrawCircles(false)
-        lineDataSet.setDrawValues(false)
-        lineDataSet.setDrawHighlightIndicators(false)
+        val lineDataSet = lineDataSet(currentMoney)
+
         lineDataSet.setDrawFilled(false)
         lineDataSet.color = getColorFromTheme(android.R.attr.textColorPrimary)
         lineDataSet.lineWidth = 3f
 
-        val lastLineDataSet = LineDataSet(previousMoney.mapIndexed { index, money -> Entry(money.amount.toFloat(), index) }, "")
-        lastLineDataSet.setDrawCubic(true)
-        lastLineDataSet.setDrawCircles(false)
-        lastLineDataSet.setDrawValues(false)
-        lastLineDataSet.setDrawHighlightIndicators(false)
+        val lastLineDataSet = lineDataSet(previousMoney)
         lastLineDataSet.setDrawFilled(true)
         lastLineDataSet.fillColor = Color.BLACK
         lastLineDataSet.fillAlpha = 20
@@ -94,10 +89,19 @@ class TrendReportView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         val lineData = LineData(currentMoney.map { "" }, listOf(lastLineDataSet, lineDataSet))
         lineChart.data = lineData
-        lineChart.animateY(700)
+        lineChart.animateY(ANIMATION_DURATION_MILLIS)
 
-        val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(700)
+        val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(ANIMATION_DURATION_MILLIS.toLong())
         animator.addUpdateListener { thisPeriodAmountTextView.text = moneyFormatter.format(totalMoney.multiply(it.animatedFraction)) }
         animator.start()
+    }
+
+    private fun lineDataSet(moneys: List<Money>): LineDataSet {
+        val lineDataSet = LineDataSet(moneys.mapIndexed { index, money -> Entry(money.amount.toFloat(), index) }, "")
+        lineDataSet.setDrawCubic(true)
+        lineDataSet.setDrawCircles(false)
+        lineDataSet.setDrawValues(false)
+        lineDataSet.setDrawHighlightIndicators(false)
+        return lineDataSet
     }
 }
