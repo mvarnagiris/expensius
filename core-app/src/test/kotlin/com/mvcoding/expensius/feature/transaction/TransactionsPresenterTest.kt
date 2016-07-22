@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.aFixedTimestampProvider
@@ -43,6 +44,7 @@ import rx.Observable.from
 import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
+import java.math.BigDecimal.ZERO
 
 class TransactionsPresenterTest {
     val someTransactions = listOf(aTransaction(), aTransaction(), aTransaction())
@@ -158,7 +160,7 @@ class TransactionsPresenterTest {
 
         createTransaction()
 
-        verify(view).displayTransactionEdit(newTransaction(appUser, timestampProvider))
+        verify(view).displayTransactionEdit(newTransaction(timestampProvider.currentTimestamp(), Money(ZERO, appUser.settings.mainCurrency)))
     }
 
     @Test

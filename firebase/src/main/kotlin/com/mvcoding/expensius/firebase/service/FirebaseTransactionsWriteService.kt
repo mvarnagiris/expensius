@@ -53,14 +53,11 @@ class FirebaseTransactionsWriteService(private val appUserService: AppUserServic
 
     private fun Money.toFirebaseMoney() = FirebaseMoney(
             amount.toPlainString(),
-            currency.code,
-            exchangeRate.toPlainString())
+            currency.code)
 
     private fun Money.toMap() = mapOf(
             "amount" to amount.toPlainString(),
-            "currency" to currency.code,
-            "exchangeRate" to exchangeRate.toPlainString()
-    )
+            "currency" to currency.code)
 
     private fun CreateTransaction.toFirebaseTransaction(id: String) = FirebaseTransaction(
             id,

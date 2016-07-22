@@ -17,7 +17,9 @@ package com.mvcoding.expensius.firebase.service
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.mvcoding.expensius.firebase.FirebaseItemsService
+import com.mvcoding.expensius.firebase.archivedTagsDatabaseReference
 import com.mvcoding.expensius.firebase.model.FirebaseTag
+import com.mvcoding.expensius.firebase.tagsDatabaseReference
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
@@ -30,7 +32,7 @@ import com.mvcoding.expensius.service.TagsService
 import rx.Observable
 import rx.Observable.Transformer
 
-class FirebaseTagsService(appUserService: AppUserService, private val databaseReference: (UserId) -> DatabaseReference) : TagsService {
+abstract class BaseFirebaseTagsService(appUserService: AppUserService, private val databaseReference: (UserId) -> DatabaseReference) : TagsService {
 
     private val firebaseItemsService = FirebaseItemsService(queries(appUserService), transformer())
 
@@ -46,3 +48,6 @@ class FirebaseTagsService(appUserService: AppUserService, private val databaseRe
         it.map { dataSnapshots -> dataSnapshots.map { dataSnapshot -> dataSnapshot.getValue(FirebaseTag::class.java).toTag(NONE) } }
     }
 }
+
+class FirebaseTagsService(appUserService: AppUserService) : BaseFirebaseTagsService(appUserService, { tagsDatabaseReference(it) })
+class FirebaseArchivedTagsService(appUserService: AppUserService) : BaseFirebaseTagsService(appUserService, { archivedTagsDatabaseReference(it) })

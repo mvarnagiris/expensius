@@ -84,7 +84,7 @@ class PremiumPresenter(
             if (shouldUpdateToPremiumPaid()) updateToPremiumPaid(settings).map { this }
             else just(this)
 
-    private fun updateToPremiumPaid(settings: Settings) = appUserWriteService.saveSettings(settings.withSubscriptionType(PREMIUM_PAID))
+    private fun updateToPremiumPaid(settings: Settings) = appUserWriteService.saveSettings(settings.copy(subscriptionType = PREMIUM_PAID))
 
     private data class BillingData(val settings: Settings, private val billingProducts: List<BillingProduct>) {
         fun subscriptionType() =

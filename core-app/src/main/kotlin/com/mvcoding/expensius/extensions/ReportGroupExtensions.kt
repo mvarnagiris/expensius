@@ -16,6 +16,7 @@ package com.mvcoding.expensius.extensions
 
 import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.Timestamp
 import org.joda.time.DateTime
 import org.joda.time.Days
 import org.joda.time.Interval
@@ -47,7 +48,8 @@ fun ReportGroup.splitIntoGroupIntervals(interval: Interval): List<Interval> {
     }
 }
 
-fun ReportGroup.toInterval(timestamp: Long) = DateTime(timestamp).let {
+fun ReportGroup.toInterval(timestamp: Timestamp) = toInterval(timestamp.millis)
+fun ReportGroup.toInterval(millis: Long) = DateTime(millis).let {
     when (this) {
         DAY -> it.withTimeAtStartOfDay()
     }

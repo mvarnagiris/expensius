@@ -20,6 +20,7 @@ import com.mvcoding.expensius.feature.tag.TagsPresenter.TagMove
 import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.aTag
+import com.mvcoding.expensius.model.withOrder
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.AddedItems
 import com.mvcoding.expensius.service.ChangedItems

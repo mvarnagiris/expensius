@@ -18,6 +18,7 @@ import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.ItemsView
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.Transaction
@@ -25,6 +26,7 @@ import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.TransactionsService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
+import java.math.BigDecimal.ZERO
 
 class TransactionsPresenter(
         private val modelDisplayType: ModelDisplayType,
@@ -68,7 +70,9 @@ class TransactionsPresenter(
         view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
 
         val newTransactions = view.createTransactionRequests()
-                .withLatestFrom(appUserService.appUser()) { unit, appUser -> newTransaction(appUser, timestampProvider) }
+                .withLatestFrom(appUserService.appUser()) { unit, appUser ->
+                    newTransaction(timestampProvider.currentTimestamp(), Money(ZERO, appUser.settings.mainCurrency))
+                }
         view.transactionSelects().mergeWith(newTransactions).subscribeUntilDetached { view.displayTransactionEdit(it) }
     }
 

@@ -12,19 +12,18 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.firebase.model
+package com.mvcoding.expensius.feature.report
 
+import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.NullModels.noCurrency
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 
-data class FirebaseMoney(
-        val amount: String? = null,
-        val currency: String? = null) {
+fun List<Money>.sumMoney(currency: Currency, exchangeRatesProvider: ExchangeRatesProvider): Money =
+        fold(Money(ZERO, currency)) { totalMoney, money -> totalMoney.plus(money, exchangeRatesProvider) }
 
-    fun toMoney() = Money(
-            amount?.let { BigDecimal(it) } ?: ZERO,
-            currency?.let { Currency(it) } ?: noCurrency)
-}
+fun Money.plus(other: Money, exchangeRatesProvider: ExchangeRatesProvider) =
+        Money(amount + other.amount.multiply(exchangeRatesProvider.getExchangeRate(currency, other.currency)), currency)
+
+fun Money.multiply(multiplyBy: Float) = Money(amount.multiply(BigDecimal.valueOf(multiplyBy.toDouble())), currency)

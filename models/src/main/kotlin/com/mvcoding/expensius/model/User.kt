@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.model
 
+import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import java.io.Serializable
 
 data class UserId(val id: String) : Serializable
@@ -31,4 +32,5 @@ data class AppUser(
 
     fun isLoggedIn(): Boolean = authProviders.isNotEmpty()
     fun isNotLoggedIn(): Boolean = !isLoggedIn()
+    fun isWithProperAccount(): Boolean = authProviders.any { it != ANONYMOUS }
 }

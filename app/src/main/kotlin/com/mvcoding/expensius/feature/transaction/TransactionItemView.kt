@@ -17,8 +17,8 @@ import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
-import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
+import com.mvcoding.expensius.provideMoneyFormatter
 import kotlinx.android.synthetic.main.item_view_transaction.view.*
 
 class TransactionItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -26,7 +26,7 @@ class TransactionItemView @JvmOverloads constructor(context: Context, attrs: Att
 
     private val NON_BREAKABLE_SPACE = "\u00A0"
 
-    private val amountFormatter by lazy { provideAmountFormatter() }
+    private val moneyFormatter by lazy { provideMoneyFormatter() }
     private val dateFormatter by lazy { provideDateFormatter() }
     private val expenseTextColor by lazy { getColorFromTheme(context, R.attr.colorExpense) }
     private val incomeTextColor by lazy { getColorFromTheme(context, R.attr.colorIncome) }
@@ -40,9 +40,9 @@ class TransactionItemView @JvmOverloads constructor(context: Context, attrs: Att
         noteTextView.text = transactionOrDefaultNote(transaction)
         tagsTextView.text = formatTags(transaction.tags)
         tagsTextView.visibility = if (tagsTextView.text.isBlank()) GONE else VISIBLE
-        amountTextView.text = amountFormatter.format(transaction.amount, transaction.currency)
+        amountTextView.text = moneyFormatter.format(transaction.money)
         amountTextView.setTextColor(amountTextColor(transaction))
-        dateTextView.text = dateFormatter.formatDateRelativeToToday(transaction.timestamp)
+        dateTextView.text = dateFormatter.formatDateRelativeToToday(transaction.timestamp.millis)
     }
 
     private fun transactionOrDefaultNote(transaction: Transaction) =

@@ -67,19 +67,19 @@ class SettingsPresenterTest {
     fun showsMainCurrency() {
         presenter.attach(view)
 
-        verify(view).showMainCurrency(appUser.settings.currency)
+        verify(view).showMainCurrency(appUser.settings.mainCurrency)
     }
 
     @Test
     fun canSelectNewMainCurrency() {
         val allCurrencies = TestSubscriber<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
         val newCurrency = Currency("NEW")
-        val updatedSettings = appUser.settings.withCurrency(newCurrency)
+        val updatedSettings = appUser.settings.copy(mainCurrency = newCurrency)
         presenter.attach(view)
 
         requestMainCurrency()
         chooseMainCurrency(newCurrency)
-        updateAppUser(appUser.withSettings(updatedSettings))
+        updateAppUser(appUser.copy(settings = updatedSettings))
 
         verify(view).chooseMainCurrency(allCurrencies)
         verify(view).showMainCurrency(newCurrency)
@@ -95,10 +95,10 @@ class SettingsPresenterTest {
 
     @Test
     fun showsUpdatedSubscriptionType() {
-        updateAppUser(appUser.withSettings(appUser.settings.withSubscriptionType(FREE)))
+        updateAppUser(appUser.copy(settings = appUser.settings.copy(subscriptionType = FREE)))
         presenter.attach(view)
 
-        updateAppUser(appUser.withSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID)))
+        updateAppUser(appUser.copy(settings = appUser.settings.copy(subscriptionType = PREMIUM_PAID)))
 
         verify(view).showSubscriptionType(PREMIUM_PAID)
     }

@@ -33,7 +33,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".feature.login.LoginActivity" />
-        <activity android:name=".feature.main.MainActivity" />
         <activity android:name=".feature.overview.OverviewActivity" />
         <activity
             android:name=".feature.tag.TagsActivity"

@@ -12,12 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.extension
 
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.TimestampProvider
-import java.lang.System.currentTimeMillis
+import com.mvcoding.expensius.extensions.toSystemCurrency
+import com.mvcoding.expensius.model.Currency
 
-class SystemTimestampProvider : TimestampProvider {
-    override fun currentTimestamp(): Timestamp = Timestamp(currentTimeMillis())
-}
+fun Currency.displayName(): String = "${this.code}${toSystemCurrency()?.let { " - ${it.displayName}" }}"

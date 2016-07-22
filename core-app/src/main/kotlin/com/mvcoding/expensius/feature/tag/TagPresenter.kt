@@ -41,7 +41,7 @@ class TagPresenter(private var tag: Tag, private val tagsWriteService: TagsWrite
         view.showArchiveEnabled(tag.isExisting())
         view.showModelState(tag.modelState)
 
-        val titles = view.titleChanges().map { Title(it) }.startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.trimmed() }
+        val titles = view.titleChanges().map { Title(it) }.startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.copy(text = it.text.trim()) }
         val colors = view.colorChanges().map { Color(it) }.startWith(tagColorOrDefault()).doOnNext { view.showColor(it) }
         val order = if (tag.isExisting()) tag.order else Order(VERY_HIGH_ORDER)
 
@@ -60,8 +60,7 @@ class TagPresenter(private var tag: Tag, private val tagsWriteService: TagsWrite
     }
 
     private fun tagColorOrDefault() = if (tag.color == noColor) Color(color(0x607d8b)) else tag.color
-
-    private fun tagWithToggledArchiveState() = tag.withModelState(if (tag.modelState == NONE) ARCHIVED else NONE)
+    private fun tagWithToggledArchiveState() = tag.copy(modelState = if (tag.modelState == NONE) ARCHIVED else NONE)
 
     private fun validate(tag: Tag, view: View) =
             if (tag.title.text.isBlank()) view.showTitleCannotBeEmptyError().let { false }

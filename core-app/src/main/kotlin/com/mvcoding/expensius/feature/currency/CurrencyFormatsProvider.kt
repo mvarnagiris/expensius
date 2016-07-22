@@ -14,9 +14,9 @@
 
 package com.mvcoding.expensius.feature.currency
 
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.CurrencyFormat
-import rx.Observable
 
 interface CurrencyFormatsProvider {
-    fun currencyFormats(): Observable<List<CurrencyFormat>>
+    fun getCurrencyFormat(currency: Currency): CurrencyFormat
 }

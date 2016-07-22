@@ -109,7 +109,7 @@ class PremiumPresenterTest {
         inOrder.verify(view).hideLoading()
         inOrder.verify(view).hideEmptyView()
         inOrder.verify(view).showBillingProducts(billingProducts.filter { it.subscriptionType == PREMIUM_PAID })
-        verify(appUserWriteService).saveSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID))
+        verify(appUserWriteService).saveSettings(appUser.settings.copy(subscriptionType = PREMIUM_PAID))
     }
 
     @Test
@@ -204,7 +204,7 @@ class PremiumPresenterTest {
         makeSuccessfulPurchase()
 
         verify(view).displayBuyProcess(billingProducts.first().id)
-        verify(appUserWriteService).saveSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID))
+        verify(appUserWriteService).saveSettings(appUser.settings.copy(subscriptionType = PREMIUM_PAID))
     }
 
     @Test
@@ -237,10 +237,12 @@ class PremiumPresenterTest {
         selectBillingProduct(billingProducts.first())
         makeSuccessfulPurchase()
 
-        verify(appUserWriteService).saveSettings(appUser.settings.withSubscriptionType(PREMIUM_PAID))
+        verify(appUserWriteService).saveSettings(appUser.settings.copy(subscriptionType = PREMIUM_PAID))
     }
 
-    private fun setSubscriptionType(subscriptionType: SubscriptionType) = appUserSubject.onNext(appUser.withSubscriptionType(subscriptionType))
+    private fun setSubscriptionType(subscriptionType: SubscriptionType) =
+            appUserSubject.onNext(appUser.copy(settings = appUser.settings.copy(subscriptionType = subscriptionType)))
+
     private fun selectBillingProduct(billingProduct: BillingProduct) = billingProductSubject.onNext(billingProduct)
     private fun refresh() = refreshSubject.onNext(Unit)
     private fun makeSuccessfulPurchase() = purchaseSubject.onNext(Unit)

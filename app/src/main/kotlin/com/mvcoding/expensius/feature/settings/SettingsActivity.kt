@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.displayName
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.getDimensionFromTheme
 import com.mvcoding.expensius.extension.getString

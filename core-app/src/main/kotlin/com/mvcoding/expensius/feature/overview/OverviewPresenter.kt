@@ -16,18 +16,21 @@ package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.model.ReportPeriod
-import com.mvcoding.expensius.model.ReportPeriod.MONTH
+import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
-import rx.lang.kotlin.filterNotNull
+import rx.Observable.combineLatest
 
-class OverviewPresenter(private val filter: Filter) : Presenter<OverviewPresenter.View>() {
+class OverviewPresenter(private val appUserService: AppUserService, private val filter: Filter) : Presenter<OverviewPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        filter.filterData().map { it.interval }.filterNotNull().distinctUntilChanged().subscribeUntilDetached { view.showInterval(MONTH, it) }
+        val filters = filter.filterData().map { it.interval }.distinctUntilChanged()
+        val reportPeriods = appUserService.appUser().map { it.settings.reportPeriod }.distinctUntilChanged()
+        combineLatest(filters, reportPeriods) { interval, reportPeriod -> interval to reportPeriod }
+                .subscribeUntilDetached { view.showInterval(it.second, it.first) }
         view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }

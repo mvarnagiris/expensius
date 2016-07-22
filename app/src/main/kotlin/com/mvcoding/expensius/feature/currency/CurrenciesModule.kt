@@ -18,17 +18,19 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.provider.DatabaseCurrencyFormatsProvider
 
 class CurrenciesModule : ShankModule {
     override fun registerFactories() {
         currenciesProvider()
         currencyFormatsProvider()
+        exchangeRatesProvider()
     }
 
     private fun currenciesProvider() = registerFactory(CurrenciesProvider::class) { -> CurrenciesProvider() }
-    private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> DatabaseCurrencyFormatsProvider() }
+    private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> SystemCurrencyFormatsProvider() }
+    private fun exchangeRatesProvider() = registerFactory(ExchangeRatesProvider::class) { -> StupidExchangeRatesProvider() }
 }
 
 fun provideCurrenciesProvider(): CurrenciesProvider = provideNew()
 fun provideCurrencyFormatsProvider(): CurrencyFormatsProvider = provideGlobalSingleton()
+fun provideExchangeRatesProvider(): ExchangeRatesProvider = provideGlobalSingleton()

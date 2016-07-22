@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.model
 
+import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
+import com.mvcoding.expensius.model.AuthProvider.GOOGLE
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import org.junit.Test
@@ -27,5 +29,16 @@ class UserTest {
     @Test
     fun appUserIsLoggedInWhenAuthProvidersAreNotEmpty() {
         assertThat(anAppUser().withAuthProvider(anAuthProvider()).isLoggedIn(), equalTo(true))
+    }
+
+    @Test
+    fun appUserIsWithProperAccountWhenAtLeastOneAuthProviderIsNotAnonymous() {
+        assertThat(anAppUser().withAuthProvider(GOOGLE).isWithProperAccount(), equalTo(true))
+    }
+
+    @Test
+    fun appUserIsNotWithProperAccountWhenNotLoggedInOrAuthProviderIsAnonymous() {
+        assertThat(anAppUser().withNoAuthProviders().isWithProperAccount(), equalTo(false))
+        assertThat(anAppUser().withAuthProvider(ANONYMOUS).isWithProperAccount(), equalTo(false))
     }
 }

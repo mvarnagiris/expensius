@@ -36,7 +36,7 @@ object NullModels {
 
     val noTransactionId = TransactionId("")
     val noTimestamp = Timestamp(0)
-    val noMoney = Money(ZERO, noCurrency, ZERO)
+    val noMoney = Money(ZERO, noCurrency)
     val noNote = Note("")
     val noTransaction = Transaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
 

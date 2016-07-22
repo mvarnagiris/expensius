@@ -39,7 +39,7 @@ class SettingsPresenter(
                 .map { it.settings }
                 .observeOn(schedulers.main)
                 .subscribeUntilDetached {
-                    view.showMainCurrency(it.currency)
+                    view.showMainCurrency(it.mainCurrency)
                     view.showSubscriptionType(it.subscriptionType)
                 }
 
@@ -47,13 +47,14 @@ class SettingsPresenter(
                 .switchMap { currenciesProvider.currencies() }
                 .switchMap { view.chooseMainCurrency(it) }
                 .observeOn(schedulers.io)
-                .withLatestFrom(appUserService.appUser().map { it.settings }, { newCurrency, settings -> settings.withCurrency(newCurrency) })
+                .withLatestFrom(appUserService.appUser().map { it.settings }, { newCurrency, settings -> settings.copy(mainCurrency = newCurrency) })
                 .switchMap { appUserWriteService.saveSettings(it) }
                 .subscribeUntilDetached { }
 
-        view.supportDeveloperRequests().withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser }).subscribeUntilDetached {
-            if (it.isWithNonAnonymousAccount()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER)
-        }
+        view.supportDeveloperRequests()
+                .withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser })
+                .subscribeUntilDetached { if (it.isWithProperAccount()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER) }
+
         view.aboutRequests().subscribeUntilDetached { view.displayAbout() }
     }
 

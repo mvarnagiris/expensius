@@ -19,14 +19,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.ListPopupWindow
 import android.view.Menu
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.widget.ArrayAdapter
 import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.displayName
 import com.mvcoding.expensius.extension.getDimensionFromTheme
 import com.mvcoding.expensius.extension.setTextIfChanged
 import com.mvcoding.expensius.feature.ActivityStarter
@@ -35,9 +34,10 @@ import com.mvcoding.expensius.feature.DateDialogFragment
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.Note
-import com.mvcoding.expensius.model.NullModels.noCurrency
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Timestamp
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
@@ -46,8 +46,8 @@ import com.mvcoding.expensius.model.TransactionType
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.TransactionType.INCOME
 import com.mvcoding.expensius.observe
-import com.mvcoding.expensius.provideAmountFormatter
 import com.mvcoding.expensius.provideDateFormatter
+import com.mvcoding.expensius.provideMoneyFormatter
 import com.mvcoding.expensius.provideRxBus
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -56,7 +56,6 @@ import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import rx.lang.kotlin.observable
 import java.math.BigDecimal
-import java.math.BigDecimal.ONE
 import java.math.BigDecimal.ZERO
 
 class TransactionActivity : BaseActivity(), TransactionPresenter.View {
@@ -75,7 +74,7 @@ class TransactionActivity : BaseActivity(), TransactionPresenter.View {
     }
 
     private val presenter by lazy { provideTransactionPresenter(intent.getSerializableExtra(EXTRA_TRANSACTION) as Transaction) }
-    private val amountFormatter by lazy { provideAmountFormatter() }
+    private val moneyFormatter by lazy { provideMoneyFormatter() }
     private val dateFormatter by lazy { provideDateFormatter() }
     private val amountSubject by lazy { PublishSubject<BigDecimal>() }
     private val exchangeRateSubject by lazy { PublishSubject<BigDecimal>() }
@@ -83,17 +82,14 @@ class TransactionActivity : BaseActivity(), TransactionPresenter.View {
 
     private var isArchiveToggleVisible = true
     private var archiveToggleTitle: String? = null
-    private var amount = ZERO
-    private var currency = noCurrency
-    private var exchangeRate = ONE
     private var timestamp = 0L
+    private var amount = ZERO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction)
 
         amountTextView.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(this, REQUEST_AMOUNT, amount) }
-        exchangeRateButton.clicks().subscribe { CalculatorActivity.startWithInitialNumberForResult(this, REQUEST_EXCHANGE_RATE, exchangeRate) }
         dateButton.clicks().subscribe { DateDialogFragment.show(supportFragmentManager, REQUEST_DATE, rxBus, timestamp) }
 
         presenter.attach(this)
@@ -169,32 +165,20 @@ class TransactionActivity : BaseActivity(), TransactionPresenter.View {
         toolbar.menu.findItem(R.id.action_archive)?.title = archiveToggleTitle
     }
 
-    override fun showTimestamp(timestamp: Long) {
-        this.timestamp = timestamp
-        dateButton.text = dateFormatter.formatDateRelativeToToday(timestamp)
+    override fun showTimestamp(timestamp: Timestamp) {
+        this.timestamp = timestamp.millis
+        dateButton.text = dateFormatter.formatDateRelativeToToday(timestamp.millis)
     }
 
-    override fun showCurrency(currency: Currency) {
-        this.currency = currency
-        currencyButton.text = currency.displayName()
-        updateAmount()
+    override fun showMoney(money: Money) {
+        amount = money.amount
+        amountTextView.text = moneyFormatter.format(money)
+        currencyButton.text = money.currency.displayName()
     }
 
-    override fun showExchangeRate(exchangeRate: BigDecimal) {
-        this.exchangeRate = exchangeRate
-        exchangeRateButton.text = exchangeRate.toPlainString()
-    }
-
-    override fun showAmount(amount: BigDecimal) {
-        this.amount = amount
-        updateAmount()
-    }
-
-    override fun showExchangeRateVisible(visible: Boolean): Unit = with(exchangeRateButton) { visibility = if (visible) VISIBLE else GONE }
     override fun showTransactionState(transactionState: TransactionState): Unit = with(transactionStateCheckBox) { isChecked = transactionState == CONFIRMED }
     override fun showTransactionType(transactionType: TransactionType): Unit = with(transactionTypeFloatingActionButton) { isSelected = transactionType == INCOME }
     override fun showTags(tags: Set<Tag>): Unit = quickTagsView.showSelectedTags(tags)
     override fun showNote(note: Note): Unit = noteEditText.setTextIfChanged(note.text)
     override fun displayResult(): Unit = finish()
-    private fun updateAmount(): Unit = with(amountTextView) { text = amountFormatter.format(amount, currency) }
 }

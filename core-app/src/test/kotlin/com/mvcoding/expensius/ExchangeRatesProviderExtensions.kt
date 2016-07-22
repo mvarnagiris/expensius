@@ -14,10 +14,11 @@
 
 package com.mvcoding.expensius
 
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.TimestampProvider
-import java.lang.System.currentTimeMillis
+import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
+import com.mvcoding.expensius.model.Currency
+import java.math.BigDecimal
+import java.math.BigDecimal.ONE
 
-class SystemTimestampProvider : TimestampProvider {
-    override fun currentTimestamp(): Timestamp = Timestamp(currentTimeMillis())
+fun anAlwaysOneExchangeRateProvider() = object : ExchangeRatesProvider {
+    override fun getExchangeRate(fromCurrency: Currency, toCurrency: Currency): BigDecimal = ONE
 }

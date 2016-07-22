@@ -16,9 +16,12 @@ package com.mvcoding.expensius.extensions
 
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.model.ReportPeriod.MONTH
+import com.mvcoding.expensius.model.Timestamp
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.Period.months
+
+fun ReportPeriod.interval(timestamp: Timestamp): Interval = interval(timestamp.millis)
 
 fun ReportPeriod.interval(millis: Long): Interval = when (this) {
     MONTH -> DateTime(millis).let { Interval(it.withDayOfMonth(1).withTimeAtStartOfDay(), months(1)) }

@@ -14,11 +14,13 @@
 
 package com.mvcoding.expensius.model
 
+import java.math.BigDecimal
+
 fun aTransactionId() = TransactionId(aStringId())
 fun aTransactionType() = TransactionType.values().aRandomItem()
 fun aTransactionState() = TransactionState.values().aRandomItem()
 fun aTimestamp() = Timestamp(aLongTimestamp())
-fun aMoney() = Money(anAmount(), aCurrency(), anAmount())
+fun aMoney() = Money(anAmount(), aCurrency())
 fun aNote() = Note(aString("note"))
 fun aTransaction() = Transaction(
         aTransactionId(),
@@ -29,3 +31,10 @@ fun aTransaction() = Transaction(
         aMoney(),
         someTags(),
         aNote())
+
+fun Transaction.withAmount(amount: Int) = withAmount(amount.toDouble())
+fun Transaction.withAmount(amount: Double) = copy(money = money.copy(amount = BigDecimal.valueOf(amount)))
+fun Transaction.withTimestamp(millis: Long) = copy(timestamp = Timestamp(millis))
+fun Transaction.withTransactionType(transactionType: TransactionType) = copy(transactionType = transactionType)
+fun Transaction.withTransactionState(transactionState: TransactionState) = copy(transactionState = transactionState)
+fun Transaction.withTags(tags: Set<Tag>) = copy(tags = tags)

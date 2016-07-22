@@ -20,17 +20,17 @@ import com.mvcoding.expensius.model.TransactionType
 import org.joda.time.Interval
 
 data class FilterData(
+        val interval: Interval,
         val transactionType: TransactionType? = null,
-        val transactionState: TransactionState? = null,
-        val interval: Interval? = null) {
+        val transactionState: TransactionState? = null) {
 
+    fun withInterval(interval: Interval) = copy(interval = interval)
     fun withTransactionType(transactionType: TransactionType?) = copy(transactionType = transactionType)
     fun withTransactionState(transactionState: TransactionState?) = copy(transactionState = transactionState)
-    fun withInterval(interval: Interval?) = copy(interval = interval)
 
     fun filter(transactions: List<Transaction>): List<Transaction> = transactions.filter { transaction ->
-        transactionType?.let { transaction.transactionType == it } ?: true
+        interval.let { it.contains(transaction.timestamp.millis) }
+                && transactionType?.let { transaction.transactionType == it } ?: true
                 && transactionState?.let { transaction.transactionState == it } ?: true
-                && interval?.let { it.contains(transaction.timestamp) } ?: true
     }
 }

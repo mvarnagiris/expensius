@@ -17,7 +17,9 @@ package com.mvcoding.expensius.firebase.service
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.mvcoding.expensius.firebase.FirebaseItemsService
+import com.mvcoding.expensius.firebase.archivedTransactionsDatabaseReference
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
+import com.mvcoding.expensius.firebase.transactionsDatabaseReference
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.UserId
@@ -32,7 +34,7 @@ import rx.Observable
 import rx.Observable.Transformer
 import rx.Observable.combineLatest
 
-class FirebaseTransactionsService(
+abstract class BaseFirebaseTransactionsService(
         appUserService: AppUserService,
         tagsService: TagsService,
         archivedTagsService: TagsService,
@@ -58,3 +60,9 @@ class FirebaseTransactionsService(
         }
     }
 }
+
+class FirebaseTransactionsService(appUserService: AppUserService, tagsService: TagsService, archivedTagsService: TagsService) :
+        BaseFirebaseTransactionsService(appUserService, tagsService, archivedTagsService, { transactionsDatabaseReference(it) })
+
+class FirebaseArchivedTransactionsService(appUserService: AppUserService, tagsService: TagsService, archivedTagsService: TagsService) :
+        BaseFirebaseTransactionsService(appUserService, tagsService, archivedTagsService, { archivedTransactionsDatabaseReference(it) })

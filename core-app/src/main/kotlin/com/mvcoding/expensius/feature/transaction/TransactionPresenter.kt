@@ -20,13 +20,14 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.Note
 import com.mvcoding.expensius.model.NullModels.noTransactionId
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Timestamp
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionType
-import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.TransactionsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
@@ -36,7 +37,6 @@ import java.math.BigDecimal
 class TransactionPresenter(
         private var transaction: Transaction,
         private val transactionsWriteService: TransactionsWriteService,
-        private val appUserService: AppUserService,
         private val currenciesProvider: CurrenciesProvider) : Presenter<TransactionPresenter.View>() {
 
     override fun onViewAttached(view: View) {
@@ -47,30 +47,23 @@ class TransactionPresenter(
 
         val transactionStates = view.transactionStateChanges().startWith(transaction.transactionState).doOnNext { view.showTransactionState(it) }
         val transactionTypes = view.transactionTypeChanges().startWith(transaction.transactionType).doOnNext { view.showTransactionType(it) }
-        val timestamps = view.timestampChanges().startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
+        val timestamps = view.timestampChanges().map { Timestamp(it) }.startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
+        val amounts = view.amountChanges().startWith(transaction.money.amount)
         val currencies = view.currencyChangeRequests()
                 .flatMap { currenciesProvider.currencies() }
                 .flatMap { view.currencyChanges(it) }
-                .startWith(transaction.currency)
-                .doOnNext { view.showCurrency(it) }
-                .withLatestFrom(appUserService.appUser(), { currency, appUser ->
-                    view.showExchangeRateVisible(currency != appUser.settings.currency)
-                    currency
-                })
-        val exchangeRates = view.exchangeRateChanges().startWith(transaction.exchangeRate).doOnNext { view.showExchangeRate(it) }
-        val amounts = view.amountChanges().startWith(transaction.amount).doOnNext { view.showAmount(it) }
+                .startWith(transaction.money.currency)
+        val money = combineLatest(amounts, currencies) { amount, currency -> Money(amount, currency) }.doOnNext { view.showMoney(it) }
         val tags = view.tagsChanges().startWith(transaction.tags).doOnNext { view.showTags(it) }
         val notes = view.noteChanges().map { Note(it) }.startWith(transaction.note).doOnNext { view.showNote(it) }
 
-        val transaction = combineLatest(transactionStates, transactionTypes, timestamps, currencies, exchangeRates, amounts, tags, notes, {
-            transactionState, transactionType, timestamp, currency, exchangeRate, amount, tags, note ->
+        val transaction = combineLatest(transactionStates, transactionTypes, timestamps, money, tags, notes, {
+            transactionState, transactionType, timestamp, money, tags, note ->
             transaction.copy(
                     transactionState = transactionState,
                     transactionType = transactionType,
                     timestamp = timestamp,
-                    currency = currency,
-                    exchangeRate = exchangeRate,
-                    amount = amount,
+                    money = money,
                     tags = tags,
                     note = note)
         }).doOnNext { transaction = it }
@@ -91,8 +84,8 @@ class TransactionPresenter(
             else transactionsWriteService.createTransactions(setOf(transaction.toCreateTransaction()))
 
     private fun Transaction.isExisting() = this.transactionId != noTransactionId
-    private fun Transaction.toCreateTransaction() = CreateTransaction(transactionType, transactionState, timestamp, currency, exchangeRate, amount, tags, note)
-    private fun transactionWithToggledArchiveState() = transaction.withModelState(if (transaction.modelState == NONE) ARCHIVED else NONE)
+    private fun Transaction.toCreateTransaction() = CreateTransaction(transactionType, transactionState, timestamp, money, tags, note)
+    private fun transactionWithToggledArchiveState() = transaction.copy(modelState = if (transaction.modelState == NONE) ARCHIVED else NONE)
 
     interface View : Presenter.View {
         fun transactionStateChanges(): Observable<TransactionState>
@@ -111,11 +104,8 @@ class TransactionPresenter(
         fun showModelState(modelState: ModelState)
         fun showTransactionState(transactionState: TransactionState)
         fun showTransactionType(transactionType: TransactionType)
-        fun showTimestamp(timestamp: Long)
-        fun showCurrency(currency: Currency)
-        fun showExchangeRate(exchangeRate: BigDecimal)
-        fun showExchangeRateVisible(visible: Boolean)
-        fun showAmount(amount: BigDecimal)
+        fun showTimestamp(timestamp: Timestamp)
+        fun showMoney(money: Money)
         fun showTags(tags: Set<Tag>)
         fun showNote(note: Note)
 

@@ -18,6 +18,7 @@ import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDesti
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.aFixedTimestampProvider
 import com.mvcoding.expensius.model.anAppUser
@@ -657,7 +658,7 @@ class CalculatorPresenterTest {
 
         save()
 
-        verify(view).displayTransaction(newTransaction(appUser, timestampProvider).withAmount(BigDecimal(2)))
+        verify(view).displayTransaction(newTransaction(timestampProvider.currentTimestamp(), Money(BigDecimal(2), appUser.settings.mainCurrency)))
     }
 
     @Test

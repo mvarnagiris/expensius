@@ -165,7 +165,7 @@ class TagPresenterTest {
 
     @Test
     fun archivesTagAndDisplaysResult() {
-        val archivedTag = tag.withModelState(ARCHIVED)
+        val archivedTag = tag.copy(modelState = ARCHIVED)
         presenter.attach(view)
 
         toggleArchive()
@@ -176,8 +176,8 @@ class TagPresenterTest {
 
     @Test
     fun restoresTagAndDisplaysResult() {
-        val archivedTag = tag.withModelState(ARCHIVED)
-        val restoredTag = tag.withModelState(NONE)
+        val archivedTag = tag.copy(modelState = ARCHIVED)
+        val restoredTag = tag.copy(modelState = NONE)
         val presenter = TagPresenter(archivedTag, tagsWriteService)
         presenter.attach(view)
 

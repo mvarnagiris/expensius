@@ -12,12 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.feature.currency
 
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.TimestampProvider
-import java.lang.System.currentTimeMillis
+import com.mvcoding.expensius.model.Currency
+import java.math.BigDecimal
 
-class SystemTimestampProvider : TimestampProvider {
-    override fun currentTimestamp(): Timestamp = Timestamp(currentTimeMillis())
+
+interface ExchangeRatesProvider {
+    fun getExchangeRate(fromCurrency: Currency, toCurrency: Currency): BigDecimal
 }

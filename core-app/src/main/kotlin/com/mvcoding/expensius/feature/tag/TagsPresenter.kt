@@ -85,9 +85,9 @@ class TagsPresenter(
         val maxPosition = max(fromPosition, toPosition)
         return tags.mapIndexed { position, tag ->
             when {
-                position == fromPosition -> tag.withOrder(Order(toPosition))
-                position >= minPosition && position <= maxPosition -> tag.withOrder(Order(position + if (fromPosition > toPosition) 1 else -1))
-                else -> tag.withOrder(Order(position))
+                position == fromPosition -> tag.copy(order = Order(toPosition))
+                position >= minPosition && position <= maxPosition -> tag.copy(order = Order(position + if (fromPosition > toPosition) 1 else -1))
+                else -> tag.copy(order = Order(position))
             }
         }
     }

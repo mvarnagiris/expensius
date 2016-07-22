@@ -19,9 +19,11 @@ import com.mvcoding.expensius.model.CreateTransaction
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.Note
 import com.mvcoding.expensius.model.NullModels.noTransaction
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Timestamp
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionState.PENDING
@@ -95,9 +97,7 @@ class TransactionPresenterTest {
         verify(view).showTransactionState(transaction.transactionState)
         verify(view).showTransactionType(transaction.transactionType)
         verify(view).showTimestamp(transaction.timestamp)
-        verify(view).showCurrency(transaction.currency)
-        verify(view).showExchangeRate(transaction.exchangeRate)
-        verify(view).showAmount(transaction.amount)
+        verify(view).showMoney(transaction.money)
         verify(view).showTags(transaction.tags)
         verify(view).showNote(transaction.note)
     }
@@ -106,6 +106,7 @@ class TransactionPresenterTest {
     fun showsUpdatedValues() {
         val tags = setOf(aTag(), aTag())
         val currency = Currency("EUR")
+        val money = Money(TEN, currency)
         presenter.attach(view)
 
         updateTransactionState(PENDING)
@@ -123,11 +124,9 @@ class TransactionPresenterTest {
 
         verify(view, atLeast(2)).showTransactionState(PENDING)
         verify(view, atLeast(2)).showTransactionType(INCOME)
-        verify(view, atLeast(2)).showTimestamp(1)
+        verify(view, atLeast(2)).showTimestamp(Timestamp(1))
         verify(view).currencyChanges(allCurrencies())
-        verify(view, atLeast(2)).showCurrency(currency)
-        verify(view, atLeast(2)).showExchangeRate(TEN)
-        verify(view, atLeast(2)).showAmount(TEN)
+        verify(view, atLeast(2)).showMoney(money)
         verify(view, atLeast(2)).showTags(tags)
         verify(view, atLeast(2)).showNote(Note("Updated note"))
     }
@@ -160,7 +159,9 @@ class TransactionPresenterTest {
         updateNote(note.text)
         save()
 
-        verify(transactionsWriteService).createTransactions(argThat { first() == CreateTransaction(INCOME, PENDING, 1, currency, TEN, TEN, tags, note) })
+        verify(transactionsWriteService).createTransactions(argThat {
+            first() == CreateTransaction(INCOME, PENDING, Timestamp(1), Money(TEN, currency), tags, note)
+        })
         verify(view).displayResult()
     }
 
@@ -180,7 +181,7 @@ class TransactionPresenterTest {
 
     @Test
     fun archivesTransactionAndDisplaysResult() {
-        val archivedTransaction = transaction.withModelState(ARCHIVED)
+        val archivedTransaction = transaction.copy(modelState = ARCHIVED)
         presenter.attach(view)
 
         toggleArchive()
@@ -191,24 +192,14 @@ class TransactionPresenterTest {
 
     @Test
     fun restoresTransactionAndDisplaysResult() {
-        val archivedTransaction = transaction.withModelState(ARCHIVED)
-        val restoredTransaction = transaction.withModelState(NONE)
+        val archivedTransaction = transaction.copy(modelState = ARCHIVED)
+        val restoredTransaction = transaction.copy(modelState = NONE)
         presenter(archivedTransaction).attach(view)
 
         toggleArchive()
 
         verify(transactionsWriteService).saveTransactions(argThat { first() == restoredTransaction })
         verify(view).displayResult()
-    }
-
-    @Test
-    fun showsExchangeRateOnlyWhenCurrencyIsNotMain() {
-        presenter(transaction.withCurrency(appUser.settings.currency)).attach(view)
-        verify(view).showExchangeRateVisible(false)
-
-        requestCurrencyChange()
-        updateCurrency(Currency("OTHER"))
-        verify(view).showExchangeRateVisible(true)
     }
 
     private fun toggleArchive() = toggleArchiveSubject.onNext(Unit)
@@ -224,9 +215,5 @@ class TransactionPresenterTest {
     private fun updateNote(note: String) = noteSubject.onNext(note)
     private fun save() = saveSubject.onNext(Unit)
     private fun allCurrencies() = TestSubscriber.create<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
-    private fun presenter(transaction: Transaction = aTransaction()) = TransactionPresenter(
-            transaction,
-            transactionsWriteService,
-            appUserService,
-            currenciesProvider)
+    private fun presenter(transaction: Transaction = aTransaction()) = TransactionPresenter(transaction, transactionsWriteService, currenciesProvider)
 }

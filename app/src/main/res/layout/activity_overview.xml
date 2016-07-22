@@ -44,7 +44,7 @@
                 style="@style/Card"
                 android:layout_margin="@dimen/keyline_half">
 
-                <com.mvcoding.expensius.feature.report.TagReportItemsView
+                <com.mvcoding.expensius.feature.report.TagsTotalsReportView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackground" />
@@ -67,7 +67,7 @@
             app:layout_scrollFlags="scroll" />
 
         <include
-            layout="@layout/view_trend"
+            layout="@layout/view_trend_report"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll" />

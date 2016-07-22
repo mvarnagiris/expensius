@@ -14,17 +14,36 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.extensions.interval
+import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionType
+import com.mvcoding.expensius.service.AppUserService
 import org.joda.time.Interval
 import rx.Observable
 import rx.lang.kotlin.BehaviorSubject
+import kotlin.Long.Companion.MAX_VALUE
+import kotlin.Long.Companion.MIN_VALUE
 
-class Filter {
-    private var filterData: FilterData = FilterData()
+class Filter(appUserService: AppUserService, timestampProvider: TimestampProvider) {
+    private var filterData: FilterData = FilterData(Interval(MIN_VALUE, MAX_VALUE))
     private val filterDataSubject = BehaviorSubject(filterData)
 
+    init {
+        appUserService.appUser()
+                .first()
+                .map { it.settings.reportPeriod }
+                .map { it.interval(timestampProvider.currentTimestamp()) }
+                .subscribe { setInterval(it) }
+    }
+
     fun filterData(): Observable<FilterData> = filterDataSubject
+
+    fun setInterval(interval: Interval): Filter {
+        filterData = filterData.withInterval(interval)
+        filterDataSubject.onNext(filterData)
+        return this
+    }
 
     fun setTransactionType(transactionType: TransactionType?): Filter {
         filterData = filterData.withTransactionType(transactionType)
@@ -38,13 +57,6 @@ class Filter {
         return this
     }
 
-    fun setInterval(interval: Interval?): Filter {
-        filterData = filterData.withInterval(interval)
-        filterDataSubject.onNext(filterData)
-        return this
-    }
-
     fun clearTransactionType(): Filter = setTransactionType(null)
     fun clearTransactionState(): Filter = setTransactionState(null)
-    fun clearInterval(): Filter = setInterval(null)
 }

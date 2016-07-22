@@ -40,6 +40,7 @@ class App : MultiDexApplication() {
         Fabric.with(this, Crashlytics())
         initializeModules(
                 AppModule(this),
+                ServicesModule(),
                 SplashModule(),
                 LoginModule(),
                 CalculatorModule(),

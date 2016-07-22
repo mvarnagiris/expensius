@@ -14,21 +14,32 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.extensions.interval
 import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.aFixedTimestampProvider
+import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.service.AppUserService
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import org.joda.time.Interval
 import org.junit.Test
+import rx.Observable.just
 import rx.observers.TestSubscriber
 
 class FilterTest {
     val subscriber: TestSubscriber<FilterData> = TestSubscriber.create<FilterData>()
-    val filter = Filter()
+    val appUser = anAppUser()
+    val appUserService: AppUserService = mock<AppUserService>().apply { whenever(this.appUser()).thenReturn(just(appUser)) }
+    val timestampProvider = aFixedTimestampProvider()
+    val defaultFilterData = FilterData(anAppUser().settings.reportPeriod.interval(timestampProvider.currentTimestamp()))
+    val filter = Filter(appUserService, timestampProvider)
 
     @Test
     fun initiallyGivesEmptyFilterData() {
         filter.filterData().subscribe(subscriber)
 
-        subscriber.assertValue(FilterData())
+        subscriber.assertValue(defaultFilterData)
     }
 
     @Test
@@ -39,27 +50,26 @@ class FilterTest {
         filter.setTransactionState(PENDING)
         filter.setInterval(Interval(0, 1))
 
-        subscriber.assertValues(FilterData(), FilterData(EXPENSE), FilterData(EXPENSE, PENDING), FilterData(EXPENSE, PENDING, Interval(0, 1)))
+        subscriber.assertValues(
+                defaultFilterData,
+                defaultFilterData.copy(transactionType = EXPENSE),
+                defaultFilterData.copy(transactionType = EXPENSE, transactionState = PENDING),
+                defaultFilterData.copy(Interval(0, 1), EXPENSE, PENDING))
     }
 
     @Test
     fun clearingFilterValuesEmitsUpdatedFilter() {
-        filter.filterData().subscribe(subscriber)
-
+        filter.setInterval(Interval(0, 1))
         filter.setTransactionType(EXPENSE)
         filter.setTransactionState(PENDING)
-        filter.setInterval(Interval(0, 1))
+        filter.filterData().subscribe(subscriber)
+
         filter.clearTransactionType()
         filter.clearTransactionState()
-        filter.clearInterval()
 
         subscriber.assertValues(
-                FilterData(),
-                FilterData(EXPENSE),
-                FilterData(EXPENSE, PENDING),
-                FilterData(EXPENSE, PENDING, Interval(0, 1)),
-                FilterData(transactionState = PENDING, interval = Interval(0, 1)),
-                FilterData(interval = Interval(0, 1)),
-                FilterData())
+                FilterData(Interval(0, 1), EXPENSE, PENDING),
+                FilterData(Interval(0, 1), transactionState = PENDING),
+                FilterData(Interval(0, 1)))
     }
 }

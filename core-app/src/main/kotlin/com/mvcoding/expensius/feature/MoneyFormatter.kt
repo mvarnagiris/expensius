@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2015 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,12 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.TimestampProvider
-import java.lang.System.currentTimeMillis
+import com.mvcoding.expensius.feature.currency.CurrencyFormatsProvider
+import com.mvcoding.expensius.model.Money
 
-class SystemTimestampProvider : TimestampProvider {
-    override fun currentTimestamp(): Timestamp = Timestamp(currentTimeMillis())
+class MoneyFormatter(private val currencyFormatsProvider: CurrencyFormatsProvider) {
+    fun format(money: Money): String = currencyFormatsProvider.getCurrencyFormat(money.currency).format(money.amount)
 }

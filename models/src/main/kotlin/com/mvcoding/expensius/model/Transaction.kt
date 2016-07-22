@@ -21,7 +21,7 @@ data class TransactionId(val id: String) : Serializable
 data class Timestamp(val millis: Long) : Serializable
 data class Note(val text: String) : Serializable
 data class Currency(val code: String = "") : Serializable
-data class Money(val amount: BigDecimal, val currency: Currency, val exchangeRate: BigDecimal) : Serializable
+data class Money(val amount: BigDecimal, val currency: Currency) : Serializable
 enum class TransactionState { CONFIRMED, PENDING }
 enum class TransactionType { EXPENSE, INCOME }
 

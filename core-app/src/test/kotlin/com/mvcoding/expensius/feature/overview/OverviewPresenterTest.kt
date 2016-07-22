@@ -15,7 +15,9 @@
 package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.feature.Filter
-import com.mvcoding.expensius.model.ReportPeriod
+import com.mvcoding.expensius.model.aFixedTimestampProvider
+import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.service.AppUserService
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.joda.time.DateTime
@@ -23,6 +25,7 @@ import org.joda.time.Interval
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.verify
+import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
 class OverviewPresenterTest {
@@ -32,9 +35,11 @@ class OverviewPresenterTest {
     val settingsSelectedSubject = PublishSubject<Unit>()
 
     val interval = Interval(DateTime.now().minusDays(1), DateTime.now())
-    val filter = Filter().apply { setInterval(interval) }
-    val view = mock<OverviewPresenter.View>()
-    val presenter = OverviewPresenter(filter)
+    val appUser = anAppUser()
+    val appUserService: AppUserService = mock<AppUserService>().apply { whenever(appUser()).thenReturn(just(appUser)) }
+    val filter = Filter(appUserService, aFixedTimestampProvider()).setInterval(interval)
+    val view: OverviewPresenter.View = mock()
+    val presenter = OverviewPresenter(appUserService, filter)
 
     @Before
     fun setUp() {
@@ -48,7 +53,7 @@ class OverviewPresenterTest {
     fun showsInterval() {
         presenter.attach(view)
 
-        verify(view).showInterval(ReportPeriod.MONTH, interval)
+        verify(view).showInterval(appUser.settings.reportPeriod, interval)
     }
 
     @Test
