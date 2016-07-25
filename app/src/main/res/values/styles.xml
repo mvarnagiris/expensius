@@ -29,6 +29,25 @@
         <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
     </style>
 
+    <style name="Text.Tag.Small">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Text.ListItemTitle" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Text.ListItemSubtitle" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+    </style>
+
+    <style name="Text.Money" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+    </style>
+
     <style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textSize">14sp</item>

@@ -34,16 +34,14 @@
 
         <TextView
             android:id="@+id/noteTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/Text.Subhead"
+            style="@style/TextView"
+            android:textAppearance="@style/Text.ListItemTitle"
             tools:text="This is a note for this transaction" />
 
         <TextView
             android:id="@+id/tagsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/Text.Caption"
+            style="@style/TextView"
+            android:textAppearance="@style/Text.Tag.Small"
             tools:text="• Essential  • Food  • Lunch" />
 
     </LinearLayout>
@@ -57,19 +55,16 @@
 
         <TextView
             android:id="@+id/amountTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextView"
             android:gravity="end"
-            android:textAppearance="@style/Text.Body2"
+            android:textAppearance="@style/Text.Money"
             tools:text="1,234.56 $" />
 
         <TextView
             android:id="@+id/dateTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TextView"
             android:gravity="end"
-            android:textAppearance="@style/Text.Caption"
-            android:textColor="?android:textColorSecondary"
+            android:textAppearance="@style/Text.ListItemSubtitle"
             tools:text="Today" />
     </LinearLayout>
 
