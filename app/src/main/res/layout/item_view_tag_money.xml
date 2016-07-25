@@ -38,7 +38,7 @@
             android:id="@+id/amountTextView"
             style="@style/TextView"
             android:layout_alignParentEnd="true"
-            android:textAppearance="@style/Text.Body2"
+            android:textAppearance="@style/Text.Money"
             tools:text="$ 258.36" />
 
         <TextView
@@ -46,7 +46,7 @@
             style="@style/TextView"
             android:layout_width="match_parent"
             android:layout_toStartOf="@+id/amountTextView"
-            android:textAppearance="@style/Text.Body1"
+            android:textAppearance="@style/Text.Tag"
             tools:text="Essential" />
 
         <ProgressBar
@@ -54,7 +54,8 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:layout_below="@id/titleTextView" />
+            android:layout_below="@id/titleTextView"
+            android:layout_marginTop="@dimen/grid_quarter" />
 
     </RelativeLayout>
 

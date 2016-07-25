@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.report
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -44,6 +45,7 @@ class TagMoneyItemView @JvmOverloads constructor(context: Context, attrs: Attrib
     fun setTag(tag: Tag) {
         colorImageView.setColorFilter(tag.color.rgb)
         titleTextView.text = tag.title.text
+        progressBar.progressTintList = ColorStateList.valueOf(tag.color.rgb)
     }
 
     fun setMoney(money: Money) {
