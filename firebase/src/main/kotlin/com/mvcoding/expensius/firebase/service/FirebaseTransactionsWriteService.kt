@@ -15,13 +15,11 @@
 package com.mvcoding.expensius.firebase.service
 
 import com.mvcoding.expensius.firebase.archivedTransactionsDatabaseReference
-import com.mvcoding.expensius.firebase.model.FirebaseMoney
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
 import com.mvcoding.expensius.firebase.transactionsDatabaseReference
 import com.mvcoding.expensius.model.CreateTransaction
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.TransactionsWriteService
@@ -51,21 +49,14 @@ class FirebaseTransactionsWriteService(private val appUserService: AppUserServic
                 if (archivedTransactions.isNotEmpty()) archivedTransactionsDatabaseReference(appUserId).updateChildren(archivedTransactions)
             }
 
-    private fun Money.toFirebaseMoney() = FirebaseMoney(
-            amount.toPlainString(),
-            currency.code)
-
-    private fun Money.toMap() = mapOf(
-            "amount" to amount.toPlainString(),
-            "currency" to currency.code)
-
     private fun CreateTransaction.toFirebaseTransaction(id: String) = FirebaseTransaction(
             id,
             transactionType.name,
             transactionState.name,
             timestamp.millis,
             -timestamp.millis,
-            money.toFirebaseMoney(),
+            money.amount.toPlainString(),
+            money.currency.code,
             tags.map { it.tagId.id },
             note.text)
 
@@ -75,7 +66,8 @@ class FirebaseTransactionsWriteService(private val appUserService: AppUserServic
             "transactionState" to transactionState.name,
             "timestamp" to timestamp.millis,
             "timestampInverse" to -timestamp.millis,
-            "money" to money.toMap(),
+            "amount" to money.amount.toPlainString(),
+            "currency" to money.currency.code,
             "tags" to tags.map { it.tagId.id },
             "note" to note.text)
 }

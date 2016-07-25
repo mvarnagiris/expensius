@@ -14,9 +14,11 @@
 
 package com.mvcoding.expensius.firebase.model
 
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.Note
-import com.mvcoding.expensius.model.NullModels.noMoney
+import com.mvcoding.expensius.model.NullModels
 import com.mvcoding.expensius.model.NullModels.noNote
 import com.mvcoding.expensius.model.NullModels.noTimestamp
 import com.mvcoding.expensius.model.NullModels.noTransactionId
@@ -28,6 +30,7 @@ import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
+import java.math.BigDecimal
 
 data class FirebaseTransaction(
         val id: String? = null,
@@ -35,7 +38,8 @@ data class FirebaseTransaction(
         val transactionState: String? = null,
         val timestamp: Long? = 0,
         val timestampInverse: Long? = 0,
-        val money: FirebaseMoney? = null,
+        val amount: String? = null,
+        val currency: String? = null,
         val tags: List<String>? = null,
         val note: String? = null) {
 
@@ -45,7 +49,7 @@ data class FirebaseTransaction(
             transactionType?.let { TransactionType.valueOf(it) } ?: EXPENSE,
             transactionState?.let { TransactionState.valueOf(it) } ?: PENDING,
             timestamp?.let { Timestamp(it) } ?: noTimestamp,
-            money?.let { it.toMoney() } ?: noMoney,
+            Money(amount?.let { BigDecimal(it) } ?: BigDecimal.ZERO, currency?.let { Currency(it) } ?: NullModels.noCurrency),
             (tags ?: emptyList()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
             note?.let { Note(it) } ?: noNote
     )
