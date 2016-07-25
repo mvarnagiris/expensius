@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:textAppearance="@style/Text.Subhead"
+        android:textAppearance="@style/Text.Tag"
         tools:text="Essential" />
 
 </com.mvcoding.expensius.feature.tag.TagItemView>

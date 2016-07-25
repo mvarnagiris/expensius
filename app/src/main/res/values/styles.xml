@@ -24,6 +24,11 @@
     <!-- Text -->
     <!-- =============================================================================================================================== -->
 
+    <style name="Text.Tag" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+    </style>
+
     <style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textSize">14sp</item>
@@ -147,6 +152,12 @@
         <item name="cardUseCompatPadding">false</item>
         <item name="cardElevation">@dimen/elevation_card</item>
         <item name="cardBackgroundColor">?colorBackgroundPrimary</item>
+    </style>
+
+    <style name="Card.EdgeToEdge">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">0dp</item>
     </style>
 
     <!-- EditText -->
