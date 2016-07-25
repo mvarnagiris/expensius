@@ -45,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/title"
                 android:imeOptions="flagNoExtractUi"
-                android:inputType="textCapWords" />
+                android:inputType="textCapWords"
+                android:textAppearance="@style/Text.Tag.Big" />
         </FrameLayout>
 
         <com.larswerkman.lobsterpicker.LobsterPicker

@@ -53,7 +53,7 @@
                     android:gravity="end|center_vertical"
                     android:maxLines="1"
                     android:padding="@dimen/keyline"
-                    android:textAppearance="@style/Text.Display3"
+                    android:textAppearance="@style/Text.Money.Big"
                     tools:text="£1,234.56" />
 
             </LinearLayout>
@@ -61,10 +61,7 @@
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/transactionTypeFloatingActionButton"
                 style="@style/Button.Fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/fab_mini_vertical_padding_negative"
-                android:layout_marginStart="@dimen/fab_mini_horizontal_margin"
+                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/fab_mini_height_half_negative"
                 android:src="@drawable/ic_action_transaction_type"
                 app:backgroundTint="@color/transaction_type"

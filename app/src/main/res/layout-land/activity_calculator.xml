@@ -36,7 +36,7 @@
             android:layout_margin="@dimen/keyline"
             android:gravity="end|center_vertical"
             android:maxLines="1"
-            android:textAppearance="@style/Text.Display2"
+            android:textAppearance="@style/Text.Money.Big"
             tools:text="123.45" />
 
         <FrameLayout

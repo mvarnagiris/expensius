@@ -31,6 +31,6 @@
         android:paddingLeft="@dimen/keyline"
         android:paddingRight="@dimen/keyline"
         android:paddingTop="@dimen/space_normal"
-        android:textAppearance="@style/Text.Body2" />
+        android:textAppearance="@style/Text.Tag.Button" />
 
 </com.mvcoding.expensius.feature.tag.QuickTagView>

@@ -26,11 +26,20 @@
 
     <style name="Text.Tag" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+        <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    </style>
+
+    <style name="Text.Tag.Button" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">?android:textColorPrimary</item>
     </style>
 
     <style name="Text.Tag.Small">
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Text.Tag.Big" parent="TextAppearance.AppCompat.Display1">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
     </style>
 
     <style name="Text.ListItemTitle" parent="TextAppearance.AppCompat.Subhead">
@@ -45,6 +54,11 @@
     <style name="Text.Money" parent="TextAppearance.AppCompat.Body2">
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+    </style>
+
+    <style name="Text.Money.Big" parent="TextAppearance.AppCompat.Display3">
+        <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
     </style>
 
@@ -125,6 +139,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
         <item name="android:textAppearance">@style/Text.Display1</item>
     </style>
 
@@ -136,7 +151,10 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">bottom|end</item>
-        <item name="android:layout_margin">@dimen/keyline</item>
+        <item name="android:layout_marginLeft">@dimen/keyline</item>
+        <item name="android:layout_marginRight">@dimen/keyline</item>
+        <item name="android:layout_marginTop">@dimen/keyline</item>
+        <item name="android:layout_marginBottom">@dimen/keyline</item>
         <item name="android:tint">?colorActionIcon</item>
         <item name="elevation">@dimen/elevation_fab</item>
         <item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>
