@@ -43,7 +43,6 @@ android {
         multiDexEnabled true
         versionCode 8
         versionName "0.4.0"
-        buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "${privateProperties['GOOGLE_WEB_CLIENT_ID']}"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 
@@ -55,10 +54,12 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "${privateProperties['GOOGLE_WEB_CLIENT_ID_DEBUG']}"
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
         }
         release {
+            buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "${privateProperties['GOOGLE_WEB_CLIENT_ID']}"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
