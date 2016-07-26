@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.settings
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.view_settings_item.view.*
+import kotlinx.android.synthetic.main.item_view_settings.view.*
 
 class SettingsItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr) {

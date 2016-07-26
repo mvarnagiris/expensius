@@ -33,6 +33,7 @@ import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.premium.PremiumActivity
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.SubscriptionType
 import kotlinx.android.synthetic.main.activity_settings.*
@@ -73,6 +74,7 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
         presenter.detach(this)
     }
 
+    override fun loginRequests() = userSettingsItemView.clicks()
     override fun mainCurrencyRequests() = mainCurrencySettingsItemView.clicks()
     override fun supportDeveloperRequests() = supportDeveloperSettingsItemView.clicks()
     override fun aboutRequests() = versionSettingsItemView.clicks()
@@ -92,6 +94,13 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
         popupWindow.isModal = true
         popupWindow.horizontalOffset = keylineHalf
         popupWindow.show()
+    }
+
+    override fun showAppUser(appUser: AppUser) {
+        with(userSettingsItemView as SettingsItemView) {
+            setTitle(getString(if (appUser.isWithProperAccount()) R.string.logged_in_as else R.string.login))
+            setSubtitle(if (appUser.isWithProperAccount()) appUser.email.address else "")
+        }
     }
 
     override fun showMainCurrency(mainCurrency: Currency) = with(mainCurrencySettingsItemView as SettingsItemView) { setSubtitle(mainCurrency.displayName()) }

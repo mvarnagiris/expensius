@@ -25,20 +25,26 @@
         <include layout="@layout/toolbar" />
 
         <include
+            android:id="@+id/userSettingsItemView"
+            layout="@layout/item_view_settings" />
+
+        <View style="@style/Divider" />
+
+        <include
             android:id="@+id/mainCurrencySettingsItemView"
-            layout="@layout/view_settings_item" />
+            layout="@layout/item_view_settings" />
 
         <View style="@style/Divider" />
 
         <include
             android:id="@+id/supportDeveloperSettingsItemView"
-            layout="@layout/view_settings_item" />
+            layout="@layout/item_view_settings" />
 
         <View style="@style/Divider" />
 
         <include
             android:id="@+id/versionSettingsItemView"
-            layout="@layout/view_settings_item" />
+            layout="@layout/item_view_settings" />
 
     </LinearLayout>
 

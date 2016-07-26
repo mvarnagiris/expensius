@@ -27,17 +27,14 @@
 
     <TextView
         android:id="@+id/titleTextView"
-        style="@style/Text.Subhead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView"
+        android:textAppearance="@style/Text.ListItemTitle"
         tools:text="Title" />
 
     <TextView
         android:id="@+id/subtitleTextView"
-        style="@style/Text.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?android:textColorSecondary"
+        style="@style/TextView"
+        android:textAppearance="@style/Text.ListItemSubtitle"
         tools:text="Subtitle" />
 
 </com.mvcoding.expensius.feature.settings.SettingsItemView>

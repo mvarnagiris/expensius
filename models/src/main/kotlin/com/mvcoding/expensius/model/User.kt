@@ -19,6 +19,7 @@ import java.io.Serializable
 
 data class UserId(val id: String) : Serializable
 data class GoogleToken(val token: String) : Serializable
+data class Email(val address: String) : Serializable
 enum class AuthProvider { ANONYMOUS, GOOGLE }
 
 interface User {
@@ -27,10 +28,12 @@ interface User {
 
 data class AppUser(
         override val userId: UserId,
+        val email: Email,
         val settings: Settings,
         val authProviders: Set<AuthProvider>) : User, Serializable {
 
     fun isLoggedIn(): Boolean = authProviders.isNotEmpty()
     fun isNotLoggedIn(): Boolean = !isLoggedIn()
     fun isWithProperAccount(): Boolean = authProviders.any { it != ANONYMOUS }
+    fun isNotWithProperAccount(): Boolean = !isWithProperAccount()
 }

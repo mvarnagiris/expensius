@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
@@ -24,11 +25,13 @@ import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.model.withAuthProvider
+import com.mvcoding.expensius.model.withNoAuthProviders
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.AppUserWriteService
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
@@ -42,6 +45,7 @@ class SettingsPresenterTest {
     val appUser = anAppUser()
 
     val appUserSubject = BehaviorSubject(appUser)
+    val loginRequestsSubject = PublishSubject<Unit>()
     val mainCurrencyRequestsSubject = PublishSubject<Unit>()
     val supportDeveloperRequestsSubject = PublishSubject<Unit>()
     val aboutRequestsSubject = PublishSubject<Unit>()
@@ -55,12 +59,42 @@ class SettingsPresenterTest {
 
     @Before
     fun setUp() {
+        whenever(view.loginRequests()).thenReturn(loginRequestsSubject)
         whenever(view.mainCurrencyRequests()).thenReturn(mainCurrencyRequestsSubject)
         whenever(view.supportDeveloperRequests()).thenReturn(supportDeveloperRequestsSubject)
         whenever(view.aboutRequests()).thenReturn(aboutRequestsSubject)
         whenever(view.chooseMainCurrency(any())).thenReturn(chooseMainCurrencySubject)
         whenever(appUserService.appUser()).thenReturn(appUserSubject)
         whenever(appUserWriteService.saveSettings(any())).thenReturn(just(Unit))
+    }
+
+    @Test
+    fun showsAppUser() {
+        presenter.attach(view)
+
+        verify(view).showAppUser(appUser)
+    }
+
+    @Test
+    fun loginRequestsAreIgnoredWhenUserIsAlreadyLoggedIn() {
+        val appUser = appUser.withAuthProvider(GOOGLE)
+        updateAppUser(appUser)
+        presenter.attach(view)
+
+        requestLogin()
+
+        verify(view, never()).displayLogin(any())
+    }
+
+    @Test
+    fun displaysLoginWhenUserIsNotLoggedIn() {
+        val appUser = appUser.withNoAuthProviders()
+        updateAppUser(appUser)
+        presenter.attach(view)
+
+        requestLogin()
+
+        verify(view).displayLogin(RETURN)
     }
 
     @Test
@@ -133,6 +167,7 @@ class SettingsPresenterTest {
     }
 
     private fun updateAppUser(appUser: AppUser) = appUserSubject.onNext(appUser)
+    private fun requestLogin() = loginRequestsSubject.onNext(Unit)
     private fun requestMainCurrency() = mainCurrencyRequestsSubject.onNext(Unit)
     private fun requestSupportDeveloper() = supportDeveloperRequestsSubject.onNext(Unit)
     private fun requestAbout() = aboutRequestsSubject.onNext(Unit)

@@ -125,7 +125,7 @@ class LoginPresenter(
     }
 
     enum class Destination {
-        APP, SUPPORT_DEVELOPER
+        RETURN, APP, SUPPORT_DEVELOPER
     }
 
     private data class ForceGoogleToken(val googleToken: GoogleToken, val forceLogin: Boolean)

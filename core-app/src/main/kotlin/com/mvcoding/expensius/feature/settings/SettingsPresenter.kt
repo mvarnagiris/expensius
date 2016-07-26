@@ -17,7 +17,9 @@ package com.mvcoding.expensius.feature.settings
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.service.AppUserService
@@ -36,12 +38,16 @@ class SettingsPresenter(
 
         appUserService.appUser()
                 .subscribeOn(schedulers.io)
-                .map { it.settings }
                 .observeOn(schedulers.main)
                 .subscribeUntilDetached {
-                    view.showMainCurrency(it.mainCurrency)
-                    view.showSubscriptionType(it.subscriptionType)
+                    view.showAppUser(it)
+                    view.showMainCurrency(it.settings.mainCurrency)
+                    view.showSubscriptionType(it.settings.subscriptionType)
                 }
+
+        view.loginRequests()
+                .withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser })
+                .subscribeUntilDetached { if (it.isNotWithProperAccount()) view.displayLogin(RETURN) }
 
         view.mainCurrencyRequests()
                 .switchMap { currenciesProvider.currencies() }
@@ -59,14 +65,16 @@ class SettingsPresenter(
     }
 
     interface View : Presenter.View {
+        fun loginRequests(): Observable<Unit>
         fun mainCurrencyRequests(): Observable<Unit>
         fun supportDeveloperRequests(): Observable<Unit>
         fun aboutRequests(): Observable<Unit>
 
-        fun chooseMainCurrency(currencies: List<Currency>): Observable<Currency>
-
+        fun showAppUser(appUser: AppUser)
         fun showMainCurrency(mainCurrency: Currency)
         fun showSubscriptionType(subscriptionType: SubscriptionType)
+
+        fun chooseMainCurrency(currencies: List<Currency>): Observable<Currency>
 
         fun displayLogin(destination: Destination)
         fun displaySupportDeveloper()

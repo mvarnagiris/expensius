@@ -16,8 +16,9 @@ package com.mvcoding.expensius.model
 
 fun aSettings() = Settings(aCurrency(), ReportPeriod.MONTH, ReportGroup.DAY, SubscriptionType.values().aRandomItem())
 fun aUserId() = UserId(aStringId())
+fun anEmail() = Email(aString("email"))
 fun anAuthProvider() = AuthProvider.values().aRandomItem()
 fun aGoogleToken() = GoogleToken(aString("token"))
-fun anAppUser() = AppUser(aUserId(), aSettings(), setOf(anAuthProvider()))
+fun anAppUser() = AppUser(aUserId(), anEmail(), aSettings(), setOf(anAuthProvider()))
 fun AppUser.withNoAuthProviders() = copy(authProviders = emptySet())
 fun AppUser.withAuthProvider(authProvider: AuthProvider) = copy(authProviders = setOf(authProvider))

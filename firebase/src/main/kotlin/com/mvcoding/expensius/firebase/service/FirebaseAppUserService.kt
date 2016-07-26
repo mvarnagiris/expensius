@@ -28,8 +28,10 @@ import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.AuthProvider
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
+import com.mvcoding.expensius.model.Email
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.NullModels.noAppUser
+import com.mvcoding.expensius.model.NullModels.noEmail
 import com.mvcoding.expensius.model.NullModels.noSettings
 import com.mvcoding.expensius.model.NullModels.noUserId
 import com.mvcoding.expensius.model.Settings
@@ -134,7 +136,12 @@ class FirebaseAppUserService : AppUserService, LoginService {
         userDatabaseReference(userId).addValueEventListener(userDataListener)
     }
 
-    private fun FirebaseUser.toAppUser(settings: Settings) = AppUser(UserId(uid), settings, providerData.map { it.providerId.toAuthProvider() }.toSet())
+    private fun FirebaseUser.toAppUser(settings: Settings) = AppUser(
+            UserId(uid),
+            email?.let { Email(it) } ?: noEmail,
+            settings,
+            providerData.map { it.providerId.toAuthProvider() }.toSet())
+
     private fun String.toAuthProvider(): AuthProvider = when (this) {
         GoogleAuthProvider.PROVIDER_ID -> GOOGLE
         else -> ANONYMOUS
