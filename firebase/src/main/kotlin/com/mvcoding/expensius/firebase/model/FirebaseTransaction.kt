@@ -14,11 +14,11 @@
 
 package com.mvcoding.expensius.firebase.model
 
+import com.mvcoding.expensius.firebase.defaultCurrency
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.Note
-import com.mvcoding.expensius.model.NullModels
 import com.mvcoding.expensius.model.NullModels.noNote
 import com.mvcoding.expensius.model.NullModels.noTimestamp
 import com.mvcoding.expensius.model.NullModels.noTransactionId
@@ -49,7 +49,7 @@ data class FirebaseTransaction(
             transactionType?.let { TransactionType.valueOf(it) } ?: EXPENSE,
             transactionState?.let { TransactionState.valueOf(it) } ?: PENDING,
             timestamp?.let { Timestamp(it) } ?: noTimestamp,
-            Money(amount?.let { BigDecimal(it) } ?: BigDecimal.ZERO, currency?.let { Currency(it) } ?: NullModels.noCurrency),
+            Money(amount?.let { BigDecimal(it) } ?: BigDecimal.ZERO, currency?.let { Currency(it) } ?: defaultCurrency()),
             (tags ?: emptyList()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
             note?.let { Note(it) } ?: noNote
     )

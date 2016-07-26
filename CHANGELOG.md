@@ -1,3 +1,6 @@
+### v0.4.1
+- `fix` Setting default currency instead of null.
+
 ### v0.4.0
 - `new` Completely new look.
 - `new` Login and never lose your data.
