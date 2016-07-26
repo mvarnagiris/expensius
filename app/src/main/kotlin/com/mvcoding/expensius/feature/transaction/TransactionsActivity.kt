@@ -27,6 +27,7 @@ import com.mvcoding.expensius.feature.DividerItemDecoration
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.model.Transaction
 import kotlinx.android.synthetic.main.activity_transactions.*
 import rx.Observable
@@ -79,6 +80,6 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
     override fun showMovedItem(fromPosition: Int, toPosition: Int, item: Transaction): Unit = adapter.move(fromPosition, toPosition)
     override fun showLoading(): Unit = with(progressBar) { visibility = View.VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = View.GONE }
-    override fun displayTransactionEdit(transaction: Transaction): Unit = TransactionActivity.start(this, transaction)
+    override fun displayTransactionEdit(transaction: Transaction): Unit = CalculatorActivity.start(this)
     override fun displayArchivedTransactions(): Unit = TransactionsActivity.startArchived(this)
 }
