@@ -1,0 +1,78 @@
+<!--
+  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<resources>
+    <string name="app_name">Expensius</string>
+    <string name="skip">跳过</string>
+    <string name="login">登录</string>
+    <string name="save">保存</string>
+    <string name="tags">标签</string>
+    <string name="color">颜色</string>
+    <string name="title">名称</string>
+    <string name="tag">标签</string>
+    <string name="error_title_empty">名称不能为空.</string>
+    <string name="create">创建</string>
+    <string name="undo">撤销</string>
+    <string name="restore">恢复</string>
+    <string name="tag_restored">标签已恢复</string>
+    <string name="tag_archived">标签已归档</string>
+    <string name="archived_tags">已归档标签</string>
+    <string name="archived_transactions">已归档交易记录</string>
+    <string name="archive">存档</string>
+    <string name="calculator">计算器</string>
+    <string name="add_a_note">添加备注</string>
+    <string name="expense">支出</string>
+    <string name="expenses">支出</string>
+    <string name="income">收入</string>
+    <string name="date">日期</string>
+    <string name="confirmed">已确认</string>
+    <string name="transaction">交易记录</string>
+    <string name="transactions">交易记录</string>
+    <string name="select_tags">选择标签</string>
+    <string name="today">今天</string>
+    <string name="yesterday">昨天</string>
+    <string name="tomorrow">明天</string>
+    <string name="more_options">更多选项</string>
+    <string name="show_archived_tags">显示已归档标签</string>
+    <string name="main_currency">主货币</string>
+    <string name="delete">删除</string>
+    <string name="about">关于</string>
+    <string name="support_developer">支持开发者</string>
+    <string name="report_grouping">分组报告</string>
+    <string name="day">每日</string>
+    <string name="week">每周</string>
+    <string name="month">每月</string>
+    <string name="year">每年</string>
+    <string name="settings">设置</string>
+
+    <string name="long_user_is_using_free_version">您正在使用免费版</string>
+    <string name="long_user_is_using_premium_version">感谢您使用高级版</string>
+    <string name="long_no_purchases_available">当前无可购买功能. 请以后再来查看.</string>
+
+    <string name="error_refreshing_purchases">目前无法获取可购买功能. 请以后再来查看.</string>
+    <string name="error_user_already_linked">如登录您将丢失所有当前数据.</string>
+
+    <string name="tag_fixed">固定支出</string>
+    <string name="tag_essential">必要支出</string>
+    <string name="tag_non_essential">非必要支出</string>
+    <string name="tag_food">食物</string>
+    <string name="tag_leisure">娱乐</string>
+    <string name="tag_clothes">服饰</string>
+    <string name="tag_transport">交通</string>
+    <string name="tag_household">家居</string>
+    <string name="tag_health_and_beauty">健康 &amp; 美容</string>
+    <string name="tag_bills_and_utilities">账单 &amp; 公共服务</string>
+    <string name="tag_pets">宠物</string>
+    <string name="sign_in_with_google">使用 Google 帐号登录</string>
+</resources>
