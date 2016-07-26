@@ -41,8 +41,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 24
         multiDexEnabled true
-        versionCode 8
-        versionName "0.4.0"
+        versionCode 9
+        versionName "0.4.1"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 
