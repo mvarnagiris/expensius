@@ -42,7 +42,7 @@ android {
         targetSdkVersion 24
         multiDexEnabled true
         versionCode 8
-        versionName "0.3.2"
+        versionName "0.4.0"
         buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", "${privateProperties['GOOGLE_WEB_CLIENT_ID']}"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }

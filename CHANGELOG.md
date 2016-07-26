@@ -1,3 +1,7 @@
+### v0.4.0
+- `new` Completely new look.
+- `new` Login and never lose your data.
+
 ### v0.3.1
 - `fix` Fixed premium version purchase and restore purchase.
 
