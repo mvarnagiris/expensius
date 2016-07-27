@@ -36,6 +36,10 @@ android {
     compileSdkVersion 24
     buildToolsVersion '24.0.1'
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         applicationId "com.mvcoding.expensius"
         minSdkVersion 21
