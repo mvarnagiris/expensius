@@ -1,6 +1,7 @@
 ### v0.4.1
 - `fix` Setting default currency instead of null.
 - `fix` Transactions can be modified.
+- `fix` Default tags will be created properly.
 - `new` Added ability to login after skipping login.
 - `new` Simplified Chinese translations (at least that's what the translator told me).
 

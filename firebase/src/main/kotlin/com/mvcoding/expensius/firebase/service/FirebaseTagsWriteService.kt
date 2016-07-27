@@ -53,6 +53,6 @@ class FirebaseTagsWriteService(private val appUserService: AppUserService) : Tag
     private fun Tag.toMap() = mapOf(
             "id" to tagId.id,
             "title" to title.text,
-            "build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/res/color" to color.rgb,
+            "color" to color.rgb,
             "order" to order.value)
 }
