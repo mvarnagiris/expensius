@@ -17,15 +17,10 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.aFixedTimestampProvider
 import com.mvcoding.expensius.model.aTransaction
-import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
 import com.mvcoding.expensius.service.AddedItems
-import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.ChangedItems
 import com.mvcoding.expensius.service.MovedItem
 import com.mvcoding.expensius.service.RemovedItems
@@ -41,24 +36,19 @@ import org.junit.Test
 import org.mockito.InOrder
 import rx.Observable.empty
 import rx.Observable.from
-import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
-import java.math.BigDecimal.ZERO
 
 class TransactionsPresenterTest {
     val someTransactions = listOf(aTransaction(), aTransaction(), aTransaction())
     val someOtherTransactions = listOf(aTransaction(), aTransaction())
-    val appUser = anAppUser()
 
     val createTransactionRequestsSubject = PublishSubject<Unit>()
     val transactionSelectsSubject = PublishSubject<Transaction>()
     val archivedTransactionsRequestsSubject = PublishSubject<Unit>()
     val transactionsSubject = BehaviorSubject(someTransactions)
 
-    val appUserService: AppUserService = mock()
     val transactionsService: TransactionsService = mock()
-    val timestampProvider = aFixedTimestampProvider()
     val view: TransactionsPresenter.View = mock()
     val inOrder: InOrder = inOrder(view)
 
@@ -69,7 +59,6 @@ class TransactionsPresenterTest {
         whenever(transactionsService.changedItems()).thenReturn(empty())
         whenever(transactionsService.removedItems()).thenReturn(empty())
         whenever(transactionsService.movedItem()).thenReturn(empty())
-        whenever(appUserService.appUser()).thenReturn(just(appUser))
 
         whenever(view.transactionSelects()).thenReturn(transactionSelectsSubject)
         whenever(view.createTransactionRequests()).thenReturn(createTransactionRequestsSubject)
@@ -155,12 +144,12 @@ class TransactionsPresenterTest {
     }
 
     @Test
-    fun displaysTransactionEditOnCreateTransaction() {
+    fun displaysCalculatorOnCreateTransaction() {
         presenter().attach(view)
 
         createTransaction()
 
-        verify(view).displayTransactionEdit(newTransaction(timestampProvider.currentTimestamp(), Money(ZERO, appUser.settings.mainCurrency)))
+        verify(view).displayCalculator()
     }
 
     @Test
@@ -178,8 +167,6 @@ class TransactionsPresenterTest {
     private fun transactions(transactions: List<Transaction>) = transactionsSubject.onNext(transactions)
     private fun presenter(modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) = TransactionsPresenter(
             modelDisplayType,
-            appUserService,
             transactionsService,
-            timestampProvider,
             rxSchedulers())
 }

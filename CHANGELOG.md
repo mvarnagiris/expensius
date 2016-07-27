@@ -1,5 +1,6 @@
 ### v0.4.1
 - `fix` Setting default currency instead of null.
+- `fix` Transactions can be modified.
 - `new` Added ability to login after skipping login.
 
 ### v0.4.0

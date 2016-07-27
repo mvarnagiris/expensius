@@ -80,6 +80,7 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
     override fun showMovedItem(fromPosition: Int, toPosition: Int, item: Transaction): Unit = adapter.move(fromPosition, toPosition)
     override fun showLoading(): Unit = with(progressBar) { visibility = View.VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = View.GONE }
-    override fun displayTransactionEdit(transaction: Transaction): Unit = CalculatorActivity.start(this)
+    override fun displayTransactionEdit(transaction: Transaction): Unit = TransactionActivity.start(this, transaction)
+    override fun displayCalculator(): Unit = CalculatorActivity.start(this)
     override fun displayArchivedTransactions(): Unit = TransactionsActivity.startArchived(this)
 }
