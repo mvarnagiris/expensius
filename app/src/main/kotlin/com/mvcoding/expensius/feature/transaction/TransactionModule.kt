@@ -22,10 +22,8 @@ import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.provideAppUserService
 import com.mvcoding.expensius.provideArchivedTransactionsService
 import com.mvcoding.expensius.provideRxSchedulers
-import com.mvcoding.expensius.provideTimestampProvider
 import com.mvcoding.expensius.provideTransactionsService
 import com.mvcoding.expensius.provideTransactionsWriteService
 import memoizrlabs.com.shankandroid.withActivityScope
@@ -41,9 +39,7 @@ class TransactionModule : ShankModule {
     private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class) { modelDisplayType: ModelDisplayType ->
         TransactionsPresenter(
                 modelDisplayType,
-                provideAppUserService(),
                 if (modelDisplayType == ModelDisplayType.VIEW_ARCHIVED) provideArchivedTransactionsService() else provideTransactionsService(),
-                provideTimestampProvider(),
                 provideRxSchedulers())
     }
 
