@@ -1,5 +1,6 @@
 ### v0.4.2
 - `fix` Setting default currency instead of null.
+- `fix` UI fixes for tags report.
 
 ### v0.4.1
 - `fix` Transactions can be modified.

@@ -20,9 +20,12 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.extension.getColorFromTheme
+import com.mvcoding.expensius.extension.getString
 import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.extension.makeOutlineProviderOval
 import com.mvcoding.expensius.model.Money
+import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideMoneyFormatter
 import kotlinx.android.synthetic.main.item_view_tag_money.view.*
@@ -43,9 +46,17 @@ class TagMoneyItemView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun setTag(tag: Tag) {
-        colorImageView.setColorFilter(tag.color.rgb)
-        titleTextView.text = tag.title.text
-        progressBar.progressTintList = ColorStateList.valueOf(tag.color.rgb)
+        if (tag == noTag) {
+            val color = getColorFromTheme(R.attr.colorAccent)
+            colorImageView.setColorFilter(color)
+            progressBar.progressTintList = ColorStateList.valueOf(color)
+            titleTextView.text = getString(R.string.no_tags)
+        } else {
+            val color = tag.color.rgb
+            colorImageView.setColorFilter(color)
+            progressBar.progressTintList = ColorStateList.valueOf(color)
+            titleTextView.text = tag.title.text
+        }
     }
 
     fun setMoney(money: Money) {
