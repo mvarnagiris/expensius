@@ -1,5 +1,7 @@
-### v0.4.1
+### v0.4.2
 - `fix` Setting default currency instead of null.
+
+### v0.4.1
 - `fix` Transactions can be modified.
 - `fix` Default tags will be created properly.
 - `new` Added ability to login after skipping login.

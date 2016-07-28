@@ -22,6 +22,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.mvcoding.expensius.firebase.defaultCurrency
 import com.mvcoding.expensius.firebase.model.FirebaseUserData
 import com.mvcoding.expensius.firebase.userDatabaseReference
 import com.mvcoding.expensius.model.AppUser
@@ -61,7 +62,7 @@ class FirebaseAppUserService : AppUserService, LoginService {
     init {
         firebaseAuth.addAuthStateListener(authStateListener)
         appUserObservable = combineLatest(firebaseUserSubject, firebaseUserDataSubject) { firebaseUser, firebaseUserData ->
-            val settings = firebaseUserData?.settings?.toSettings() ?: noSettings
+            val settings = firebaseUserData?.settings?.toSettings() ?: noSettings.copy(mainCurrency = defaultCurrency())
             firebaseUser?.toAppUser(settings) ?: noAppUser.copy(settings = settings)
         }.distinctUntilChanged()
     }
