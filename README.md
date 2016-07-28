@@ -1,4 +1,5 @@
 # Expensius <img src="web_icon.png" width="40" height="40">
+<img src="screenshot1.png" width="198" height="352"> <img src="screenshot2.png" width="198" height="352"> <img src="screenshot3.png" width="198" height="352">
 # Project setup
 - Create a file `private.properties` in root directory.
 ```
