@@ -34,6 +34,7 @@ class OverviewPresenter(private val appUserService: AppUserService, private val 
         view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
+        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
         view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
     }
 
@@ -41,6 +42,7 @@ class OverviewPresenter(private val appUserService: AppUserService, private val 
         fun createTransactionSelects(): Observable<Unit>
         fun transactionsSelects(): Observable<Unit>
         fun tagsSelects(): Observable<Unit>
+        fun tagsReportSelects(): Observable<Unit>
         fun settingsSelects(): Observable<Unit>
 
         fun showInterval(reportPeriod: ReportPeriod, interval: Interval)
@@ -48,6 +50,7 @@ class OverviewPresenter(private val appUserService: AppUserService, private val 
         fun displayCreateTransaction()
         fun displayTransactions()
         fun displayTags()
+        fun displayTagsReport()
         fun displaySettings()
     }
 }

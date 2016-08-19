@@ -55,6 +55,9 @@
         <activity
             android:name=".feature.settings.SettingsActivity"
             android:label="@string/settings" />
+        <activity
+            android:name=".feature.report.TagTotalsReportActivity"
+            android:label="@string/tags_report" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

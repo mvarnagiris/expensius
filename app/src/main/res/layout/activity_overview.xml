@@ -33,6 +33,7 @@
                 android:layout_marginTop="@dimen/keyline">
 
                 <com.mvcoding.expensius.feature.report.TagsTotalsReportView
+                    android:id="@+id/tagsTotalsReportView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackground" />

@@ -28,10 +28,11 @@ import org.mockito.BDDMockito.verify
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
-class OverviewPresenterTest {
+class OverviewPresenterTest() {
     val newTransactionSelectedSubject = PublishSubject<Unit>()
     val transactionsSelectedSubject = PublishSubject<Unit>()
     val tagsSelectedSubject = PublishSubject<Unit>()
+    val tagsReportSelectedSubject = PublishSubject<Unit>()
     val settingsSelectedSubject = PublishSubject<Unit>()
 
     val interval = Interval(DateTime.now().minusDays(1), DateTime.now())
@@ -46,18 +47,19 @@ class OverviewPresenterTest {
         whenever(view.createTransactionSelects()).thenReturn(newTransactionSelectedSubject)
         whenever(view.transactionsSelects()).thenReturn(transactionsSelectedSubject)
         whenever(view.tagsSelects()).thenReturn(tagsSelectedSubject)
+        whenever(view.tagsReportSelects()).thenReturn(tagsReportSelectedSubject)
         whenever(view.settingsSelects()).thenReturn(settingsSelectedSubject)
     }
 
     @Test
-    fun showsInterval() {
+    fun `shows interval`() {
         presenter.attach(view)
 
         verify(view).showInterval(appUser.settings.reportPeriod, interval)
     }
 
     @Test
-    fun displaysCreateTransaction() {
+    fun `shows create transaction`() {
         presenter.attach(view)
 
         selectNewTransaction()
@@ -66,7 +68,7 @@ class OverviewPresenterTest {
     }
 
     @Test
-    fun displaysTransactions() {
+    fun `displays transactions`() {
         presenter.attach(view)
 
         selectTransactions()
@@ -75,7 +77,7 @@ class OverviewPresenterTest {
     }
 
     @Test
-    fun displaysTags() {
+    fun `displays tags`() {
         presenter.attach(view)
 
         selectTags()
@@ -84,7 +86,16 @@ class OverviewPresenterTest {
     }
 
     @Test
-    fun displaysSettings() {
+    fun `displays tags report`() {
+        presenter.attach(view)
+
+        selectTagsReport()
+
+        verify(view).displayTagsReport()
+    }
+
+    @Test
+    fun `displays settings`() {
         presenter.attach(view)
 
         selectSettings()
@@ -95,5 +106,6 @@ class OverviewPresenterTest {
     private fun selectNewTransaction() = newTransactionSelectedSubject.onNext(Unit)
     private fun selectTransactions() = transactionsSelectedSubject.onNext(Unit)
     private fun selectTags() = tagsSelectedSubject.onNext(Unit)
+    private fun selectTagsReport() = tagsReportSelectedSubject.onNext(Unit)
     private fun selectSettings() = settingsSelectedSubject.onNext(Unit)
 }

@@ -24,6 +24,7 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
+import com.mvcoding.expensius.feature.report.TagTotalsReportActivity
 import com.mvcoding.expensius.feature.settings.SettingsActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
@@ -35,6 +36,7 @@ import org.joda.time.Interval
 import rx.Observable
 
 class OverviewActivity : BaseActivity(), OverviewPresenter.View {
+
     companion object {
         fun start(context: Context) = ActivityStarter(context, OverviewActivity::class).start()
     }
@@ -64,10 +66,12 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
     override fun createTransactionSelects(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
     override fun transactionsSelects(): Observable<Unit> = transactionsOverviewView.clicks()
     override fun tagsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
+    override fun tagsReportSelects(): Observable<Unit> = tagsTotalsReportView.clicks()
     override fun settingsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_settings }.map { Unit }
     override fun displayCreateTransaction(): Unit = CalculatorActivity.start(this)
     override fun displayTransactions(): Unit = TransactionsActivity.start(this)
     override fun displayTags(): Unit = TagsActivity.startView(this)
+    override fun displayTagsReport(): Unit = TagTotalsReportActivity.start(this)
     override fun displaySettings(): Unit = SettingsActivity.start(this)
 
     override fun showInterval(reportPeriod: ReportPeriod, interval: Interval) {
