@@ -16,12 +16,12 @@ apply plugin: 'com.android.library'
 apply plugin: "kotlin-android"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion "$build_tools_version"
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 24
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
 
