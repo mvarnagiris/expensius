@@ -14,7 +14,10 @@
 
 package com.mvcoding.expensius.feature.calculator
 
-import com.mvcoding.expensius.feature.calculator.Interpreter.Operator.*
+import com.mvcoding.expensius.feature.calculator.Interpreter.Operator.ADD
+import com.mvcoding.expensius.feature.calculator.Interpreter.Operator.DIVIDE
+import com.mvcoding.expensius.feature.calculator.Interpreter.Operator.MULTIPLY
+import com.mvcoding.expensius.feature.calculator.Interpreter.Operator.SUBTRACT
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode

@@ -74,7 +74,7 @@ android {
 }
 
 dependencies {
-    compile project(':core-app')
+    compile project(':app-core')
     compile project(':billing')
     compile project(':firebase')
     compile 'com.android.support:multidex:1.0.1'

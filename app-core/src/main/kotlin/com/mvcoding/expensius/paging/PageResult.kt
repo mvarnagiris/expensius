@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.paging
 
 data class PageResult<T>(private val page: Page, val items: List<T>, val isInvalidated: Boolean) {
-    val position = page.first;
+    val position = page.first
 
     fun hasPreviousPage() = page.first > 0
     fun hasNextPage() = page.size <= items.size

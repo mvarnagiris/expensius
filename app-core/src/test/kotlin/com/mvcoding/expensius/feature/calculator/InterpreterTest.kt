@@ -19,7 +19,9 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Test
 import java.math.BigDecimal
-import java.math.BigDecimal.*
+import java.math.BigDecimal.ONE
+import java.math.BigDecimal.TEN
+import java.math.BigDecimal.ZERO
 
 class InterpreterTest {
     val interpreter = Interpreter()

@@ -28,7 +28,7 @@ import org.mockito.BDDMockito.verify
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
-class OverviewPresenterTest() {
+class OverviewPresenterTest {
     val newTransactionSelectedSubject = PublishSubject<Unit>()
     val transactionsSelectedSubject = PublishSubject<Unit>()
     val tagsSelectedSubject = PublishSubject<Unit>()

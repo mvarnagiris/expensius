@@ -14,7 +14,9 @@
 
 package com.mvcoding.expensius.paging
 
-import java.lang.Math.*
+import java.lang.Math.abs
+import java.lang.Math.max
+import java.lang.Math.min
 
 data class Page(
         val first: Int,
