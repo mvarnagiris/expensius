@@ -78,7 +78,7 @@ class CalculatorPresenter(
                 .map { calculator.calculate() }
 
         saves.filter { val result = canSave; canSave = true; result }
-                .withLatestFrom(alteredExpressions, { unit, number -> number })
+                .withLatestFrom(alteredExpressions, { _, number -> number })
                 .withLatestFrom(appUserService.appUser(), { number, appUser -> displayResult(view, appUser, number) })
                 .subscribeUntilDetached()
     }

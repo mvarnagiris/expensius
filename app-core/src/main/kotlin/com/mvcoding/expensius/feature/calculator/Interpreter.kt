@@ -29,7 +29,7 @@ class Interpreter {
     private val mathContext = MathContext(10, RoundingMode.HALF_UP)
 
     fun evaluate(expression: String): BigDecimal {
-        if (expression.isBlank() || expression.equals("-")) {
+        if (expression.isBlank() || expression == "-") {
             return BigDecimal.ZERO
         }
 

@@ -29,7 +29,7 @@ class Calculator(private val interpreter: Interpreter) {
     }
 
     fun delete() {
-        if (expression.length >= 1) {
+        if (expression.isNotEmpty()) {
             expression = expression.substring(0, expression.length - 1)
         }
     }
@@ -105,7 +105,6 @@ class Calculator(private val interpreter: Interpreter) {
     }
 
     fun isEmptyOrSingleNumber() = interpreter.isEmptyOrSingleNumber(expression)
-
     fun calculate() = interpreter.evaluate(expression)
 
     private fun operator(operator: String) {
@@ -124,11 +123,8 @@ class Calculator(private val interpreter: Interpreter) {
         expression = expression.replaceRange(expression.length - 1, expression.length, operator)
     }
 
-    private fun expressionIsEmpty() = expression.length == 0
-
+    private fun expressionIsEmpty() = expression.isEmpty()
     private fun expressionLengthIsOne() = expression.length == 1
-
     private fun expressionEndsWithOperator() = expressionIsEmpty().not() && expression.substring(expression.length - 1).matches(operatorRegex)
-
     private fun lastNumberHasDecimal() = expressionIsEmpty().not() && expression.split(operatorRegex).last().contains(".")
 }
