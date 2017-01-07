@@ -22,7 +22,7 @@ dependencies {
     compile 'joda-time:joda-time:2.9.2'
     compile 'com.github.mvarnagiris:mvp:162ade81a4'
 
-    testCompile project(':test_models_extensions')
+    testCompile project(':test-models')
     testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "com.nhaarman:mockito-kotlin:0.5.1"

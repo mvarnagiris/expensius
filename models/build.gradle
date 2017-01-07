@@ -17,7 +17,7 @@ apply plugin: "kotlin"
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    testCompile project(':test_models_extensions')
+    testCompile project(':test-models')
     testCompile "junit:junit:$junit_version"
     testCompile "com.natpryce:hamkrest:$hamkrest_version"
 }
