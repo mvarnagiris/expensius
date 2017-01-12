@@ -11,8 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
-package com.mvcoding.expensius.feature.login
+package com.mvcoding.expensius.datasource
 
 import rx.Observable
 

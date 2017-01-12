@@ -14,17 +14,19 @@
 
 package com.mvcoding.expensius.feature.login
 
-import com.mvcoding.expensius.feature.login.LoginPresenter2.Login
-import com.mvcoding.expensius.feature.login.LoginPresenter2.Login.AnonymousLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter2.Login.ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists
-import com.mvcoding.expensius.feature.login.LoginPresenter2.Login.GetGoogleToken
-import com.mvcoding.expensius.feature.login.LoginPresenter2.Login.GoogleLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter2.LoginState
-import com.mvcoding.expensius.feature.login.LoginPresenter2.LoginState.FailedLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter2.LoginState.Idle
-import com.mvcoding.expensius.feature.login.LoginPresenter2.LoginState.LoggingInAnonymously
-import com.mvcoding.expensius.feature.login.LoginPresenter2.LoginState.SuccessfulLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter2.LoginState.WaitingGoogleToken
+import com.mvcoding.expensius.datasource.DataSource
+import com.mvcoding.expensius.datawriter.DataWriter
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login.AnonymousLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login.ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login.GetGoogleToken
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login.GoogleLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.FailedLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.Idle
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInAnonymously
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.SuccessfulLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.WaitingGoogleToken
 import com.mvcoding.expensius.model.GoogleToken
 import rx.Observable
 import rx.lang.kotlin.BehaviorSubject

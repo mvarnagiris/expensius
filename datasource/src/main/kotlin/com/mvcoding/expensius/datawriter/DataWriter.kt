@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.login
+package com.mvcoding.expensius.datawriter
 
 interface DataWriter<in DATA> {
     fun write(data: DATA)

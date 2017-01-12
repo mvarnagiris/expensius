@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,118 +15,108 @@
 package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.datasource.DataSource
+import com.mvcoding.expensius.datawriter.DataWriter
 import com.mvcoding.expensius.feature.ErrorView
-import com.mvcoding.expensius.feature.LoadingView
-import com.mvcoding.expensius.feature.Resolution.POSITIVE
+import com.mvcoding.expensius.feature.Resolution
 import com.mvcoding.expensius.feature.ResolvableErrorView
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login.ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.FailedLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.Idle
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInAnonymously
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInWithGoogle
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.SuccessfulLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.WaitingGoogleToken
 import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
-import com.mvcoding.expensius.service.LoginService
-import com.mvcoding.expensius.service.TagsService
-import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
-import rx.Observable.empty
-import rx.Observable.just
-import rx.lang.kotlin.PublishSubject
-import rx.lang.kotlin.toSingletonObservable
+import rx.Observable.merge
 
 class LoginPresenter(
         private val destination: Destination,
-        private val loginService: LoginService,
-        private val tagsService: TagsService,
-        private val tagsWriteService: TagsWriteService,
-        private val defaultTags: DefaultTags,
+        private val loginStateSource: DataSource<LoginState>,
+        private val loginWriter: DataWriter<Login>,
         private val schedulers: RxSchedulers) : Presenter<LoginPresenter.View>() {
-
-    private val forceGoogleLoginSubject = PublishSubject<Boolean>()
-
-    private var isGoogleLoginInProgress = false
-    private var isAnonymousLoginInProgress = false
-    private var googleToken: GoogleToken? = null
-    private var loginRequest: Observable<Unit>? = null
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        if (destination == Destination.APP) view.showSkipEnabled() else view.showSkipDisabled()
-
-        view.loginWithGoogleRequests().map { false }.mergeWith(forceGoogleLoginSubject)
-                .startWith(isGoogleLoginInProgress.toSingletonObservable().filter { it }.map { false })
-                .doOnNext { isGoogleLoginInProgress = true }
-                .doOnNext { view.showLoading() }
-                .switchMap { requestGoogleToken(view, it) }
-                .observeOn(schedulers.io)
-                .switchMap { loginWithGoogle(it.googleToken, it.forceLogin).observeOn(schedulers.main).handleError(view) }
-                .observeOn(schedulers.io)
-                .switchMap { createDefaultTagsIfNecessary() }
+        loginStateSource.data()
+                .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-                .doOnNext { view.hideLoading() }
-                .doOnNext { isGoogleLoginInProgress = false }
-                .subscribeUntilDetached { view.displayDestination(destination) }
+                .subscribeUntilDetached { loginState ->
+                    when (loginState) {
+                        is Idle -> showIdle(view)
+                        is WaitingGoogleToken -> requestGoogleTokenAndLogin(view)
+                        is LoggingInAnonymously -> view.showLoggingInAnonymously()
+                        is LoggingInWithGoogle -> view.showLoggingInWithGoogle()
+                        is SuccessfulLogin -> view.displayDestination(destination)
+                        is FailedLogin -> showError(view, loginState)
+                    }
+                }
 
-        view.skipLoginRequests()
-                .startWith(isAnonymousLoginInProgress.toSingletonObservable().filter { it }.map { Unit })
-                .doOnNext { isAnonymousLoginInProgress = true }
-                .doOnNext { view.showLoading() }
+        merge(
+                view.loginWithGoogleRequests().map { Login.GetGoogleToken },
+                view.skipLoginRequests().map { Login.AnonymousLogin })
                 .observeOn(schedulers.io)
-                .switchMap { loginAnonymously().observeOn(schedulers.main).handleError(view) }
+                .subscribeUntilDetached { loginWriter.write(it) }
+    }
+
+    private fun requestGoogleTokenAndLogin(view: View) {
+        view.showGoogleTokenRequest()
                 .observeOn(schedulers.io)
-                .switchMap { createDefaultTagsIfNecessary() }
-                .observeOn(schedulers.main)
-                .doOnNext { view.hideLoading() }
-                .doOnNext { isAnonymousLoginInProgress = false }
-                .subscribeUntilDetached { view.displayDestination(destination) }
+                .first()
+                .subscribe { loginWriter.write(Login.GoogleLogin(it)) }
     }
 
-    private fun requestGoogleToken(view: View, forceLogin: Boolean): Observable<ForceGoogleToken> = googleToken?.let { just(ForceGoogleToken(it, forceLogin)) }
-            ?: view.showLoginWithGoogle().handleError(view).doOnNext { googleToken = it }.map { ForceGoogleToken(it, forceLogin) }
-
-    private fun loginWithGoogle(googleToken: GoogleToken, forceLogin: Boolean): Observable<Unit> {
-        val loginRequest = loginRequest ?: loginService.loginWithGoogle(googleToken, forceLogin).cache()
-        this.loginRequest = loginRequest
-        return loginRequest
+    private fun showIdle(view: View) {
+        if (destination == APP) view.showAllLoginOptions() else view.showAllLoginOptionsExceptSkip()
     }
 
-    private fun loginAnonymously(): Observable<Unit> {
-        val loginRequest = loginRequest ?: loginService.loginAnonymously().cache()
-        this.loginRequest = loginRequest
-        return loginRequest
-    }
-
-    private fun createDefaultTagsIfNecessary(): Observable<Unit> = tagsService.items()
-            .first()
-            .switchMap { if (it.isNotEmpty()) just(Unit) else tagsWriteService.createTags(defaultTags.getDefaultTags()).onErrorReturn { Unit } }
-
-    private fun <T> Observable<T>.handleError(view: View): Observable<T> = onErrorResumeNext {
-        view.hideLoading()
-        isGoogleLoginInProgress = false
-        loginRequest = null
-
-        if (it is UserAlreadyLinkedException) {
-            view.showResolvableError(it.toError()).doOnNext { if (it == POSITIVE) forceGoogleLoginSubject.onNext(true) }.switchMap { empty<T>() }
+    private fun showError(view: View, loginState: FailedLogin) {
+        if (loginState.throwable is UserAlreadyLinkedException) {
+            view.showResolvableError(loginState.throwable.toError())
+                    .first()
+                    .filter { it == Resolution.POSITIVE }
+                    .observeOn(schedulers.io)
+                    .subscribe { loginWriter.write(ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists) }
         } else {
-            googleToken = null
-            view.showError(it.toError())
-            empty<T>()
+            view.showError(loginState.throwable.toError())
         }
     }
 
-    interface View : Presenter.View, LoadingView, ErrorView, ResolvableErrorView {
+    interface View : Presenter.View, ErrorView, ResolvableErrorView {
         fun loginWithGoogleRequests(): Observable<Unit>
         fun skipLoginRequests(): Observable<Unit>
 
-        fun showLoginWithGoogle(): Observable<GoogleToken>
-        fun showSkipEnabled()
-        fun showSkipDisabled()
-
+        fun showGoogleTokenRequest(): Observable<GoogleToken>
+        fun showAllLoginOptions()
+        fun showAllLoginOptionsExceptSkip()
+        fun showLoggingInWithGoogle()
+        fun showLoggingInAnonymously()
         fun displayDestination(destination: Destination)
+    }
+
+    sealed class LoginState {
+        object Idle : LoginState()
+        object WaitingGoogleToken : LoginState()
+        object LoggingInWithGoogle : LoginState()
+        object LoggingInAnonymously : LoginState()
+        object SuccessfulLogin : LoginState()
+        data class FailedLogin(val throwable: Throwable) : LoginState()
+    }
+
+    sealed class Login {
+        object AnonymousLogin : Login()
+        object ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists : Login()
+        object GetGoogleToken : Login()
+        data class GoogleLogin(val googleToken: GoogleToken) : Login()
     }
 
     enum class Destination {
         RETURN, APP, SUPPORT_DEVELOPER
     }
-
-    private data class ForceGoogleToken(val googleToken: GoogleToken, val forceLogin: Boolean)
 }

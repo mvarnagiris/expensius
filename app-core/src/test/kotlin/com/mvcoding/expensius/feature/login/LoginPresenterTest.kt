@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,292 +14,176 @@
 
 package com.mvcoding.expensius.feature.login
 
+import com.mvcoding.expensius.datasource.DataSource
+import com.mvcoding.expensius.datawriter.DataWriter
 import com.mvcoding.expensius.feature.Resolution
-import com.mvcoding.expensius.feature.Resolution.POSITIVE
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login.AnonymousLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.Login.GoogleLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.FailedLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.Idle
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInAnonymously
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInWithGoogle
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.SuccessfulLogin
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.WaitingGoogleToken
 import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
-import com.mvcoding.expensius.model.aCreateTag
 import com.mvcoding.expensius.model.aGoogleToken
-import com.mvcoding.expensius.model.aTag
 import com.mvcoding.expensius.rxSchedulers
-import com.mvcoding.expensius.service.LoginService
-import com.mvcoding.expensius.service.TagsService
-import com.mvcoding.expensius.service.TagsWriteService
 import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.eq
-import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
-import org.mockito.InOrder
-import rx.Observable.error
-import rx.Observable.just
+import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class LoginPresenterTest {
-    val someCreateTags = setOf(aCreateTag(), aCreateTag())
 
+    val loginStateSubject = BehaviorSubject<LoginState>()
     val loginWithGoogleRequestsSubject = PublishSubject<Unit>()
-    val skipLoginRequestsSubject = PublishSubject<Unit>()
     val googleTokenSubject = PublishSubject<GoogleToken>()
-    val resolutionSubject = PublishSubject<Resolution>()
+    val skipLoginRequestsSubject = PublishSubject<Unit>()
+    val errorResolutionSubject = PublishSubject<Resolution>()
 
-    val loginService: LoginService = mock()
-    val tagsService: TagsService = mock()
-    val tagsWriteService: TagsWriteService = mock()
-    val defaultTags: DefaultTags = mock()
-
-    val view: LoginPresenter.View = mock()
-    val inOrder: InOrder = inOrder(view, tagsWriteService, loginService)
-    val presenter = presenter()
+    val loginStateSource = mock<DataSource<LoginState>>()
+    val loginWriter = mock<DataWriter<Login>>()
+    val view = mock<LoginPresenter.View>()
 
     @Before
     fun setUp() {
+        whenever(loginStateSource.data()).thenReturn(loginStateSubject)
         whenever(view.loginWithGoogleRequests()).thenReturn(loginWithGoogleRequestsSubject)
         whenever(view.skipLoginRequests()).thenReturn(skipLoginRequestsSubject)
-        whenever(view.showLoginWithGoogle()).thenReturn(googleTokenSubject)
-        whenever(view.showResolvableError(any())).thenReturn(resolutionSubject)
-
-        whenever(loginService.loginWithGoogle(any(), any())).thenReturn(just(Unit))
-        whenever(loginService.loginAnonymously()).thenReturn(just(Unit))
-        whenever(tagsService.items()).thenReturn(just(emptyList()))
-        whenever(tagsWriteService.createTags(any())).thenReturn(just(Unit))
-        whenever(defaultTags.getDefaultTags()).thenReturn(someCreateTags)
+        whenever(view.showGoogleTokenRequest()).thenReturn(googleTokenSubject)
+        whenever(view.showResolvableError(any())).thenReturn(errorResolutionSubject)
     }
 
     @Test
-    fun canLoginWithGoogle() {
-        val googleToken = aGoogleToken()
-        presenter.attach(view)
+    fun `shows all login options when destination is APP and login state is Idle`() {
+        presenter(APP).attach(view)
 
-        requestLoginWithGoogle()
-        successfulLoginWithGoogle(googleToken)
+        receiveLoginState(Idle)
 
-        inOrder.verify(view).showLoading()
-        inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).displayDestination(APP)
+        verify(view).showAllLoginOptions()
     }
 
     @Test
-    fun canLoginAnonymously() {
-        presenter.attach(view)
+    fun `shows all login options except skip when destination is RETURN and login state is Idle`() {
+        presenter(RETURN).attach(view)
 
-        requestSkipLogin()
+        receiveLoginState(Idle)
 
-        inOrder.verify(view).showLoading()
-        inOrder.verify(loginService).loginAnonymously()
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).displayDestination(APP)
+        verify(view).showAllLoginOptionsExceptSkip()
     }
 
     @Test
-    fun handlesAndRecoversFromLoginWithGoogleErrors() {
-        val viewThrowable = Throwable()
-        val loginThrowable = Throwable()
-        val googleToken = aGoogleToken()
-        whenever(view.showLoginWithGoogle()).thenReturn(error(viewThrowable), just(googleToken))
-        whenever(loginService.loginWithGoogle(googleToken, false)).thenReturn(error(loginThrowable), just(Unit))
-        presenter.attach(view)
-
-        requestLoginWithGoogle()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).showError(viewThrowable.toError())
-
-        requestLoginWithGoogle()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).showError(loginThrowable.toError())
-
-        requestLoginWithGoogle()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).displayDestination(APP)
-    }
-
-    @Test
-    fun handlesAndRecoversFromLoginAnonymouslyErrors() {
-        val loginThrowable = Throwable()
-        whenever(loginService.loginAnonymously()).thenReturn(error(loginThrowable), just(Unit))
-        presenter.attach(view)
-
-        requestSkipLogin()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(loginService).loginAnonymously()
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).showError(loginThrowable.toError())
-
-        requestSkipLogin()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(loginService).loginAnonymously()
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).displayDestination(APP)
-    }
-
-    @Test
-    fun continuesGoogleLoginAfterReattach() {
-        val googleTokenSubject = PublishSubject<GoogleToken>()
-        val googleLoginSubject = PublishSubject<Unit>()
-        val googleToken = aGoogleToken()
-        whenever(view.showLoginWithGoogle()).thenReturn(googleTokenSubject)
-        whenever(loginService.loginWithGoogle(googleToken, false)).thenReturn(googleLoginSubject)
-        presenter.attach(view)
-
-        requestLoginWithGoogle()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(view).showLoginWithGoogle()
-
-        presenter.detach(view)
-        presenter.attach(view)
-        inOrder.verify(view).showLoading()
-        inOrder.verify(view).showLoginWithGoogle()
-
-        googleTokenSubject.onNext(googleToken)
-        inOrder.verify(loginService).loginWithGoogle(googleToken, false)
-
-        presenter.detach(view)
-        presenter.attach(view)
-        inOrder.verify(view).showLoading()
-
-        googleLoginSubject.onNext(Unit)
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).displayDestination(APP)
-
-        verify(view, times(2)).showLoginWithGoogle()
-        verify(loginService, times(1)).loginWithGoogle(any(), any())
-    }
-
-    @Test
-    fun continuesAnonymousLoginAfterReattach() {
-        val anonymousLoginSubject = PublishSubject<Unit>()
-        whenever(loginService.loginAnonymously()).thenReturn(anonymousLoginSubject)
-        presenter.attach(view)
-
-        requestSkipLogin()
-        inOrder.verify(view).showLoading()
-
-        presenter.detach(view)
-        presenter.attach(view)
-        inOrder.verify(view).showLoading()
-
-        anonymousLoginSubject.onNext(Unit)
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).displayDestination(APP)
-
-        verify(loginService, times(1)).loginAnonymously()
-    }
-
-    @Test
-    fun createsTagsForUserThatDoesNotHaveAnyTagsWhenLoggingInWithGoogle() {
-        whenever(tagsService.items()).thenReturn(just(emptyList()))
-        presenter.attach(view)
-
-        requestLoginWithGoogle()
-        successfulLoginWithGoogle()
-
-        verify(tagsWriteService).createTags(someCreateTags)
-    }
-
-    @Test
-    fun createsTagsForUserThatDoesNotHaveAnyTagsWhenLoggingInAnonymously() {
-        whenever(tagsService.items()).thenReturn(just(emptyList()))
-        presenter.attach(view)
-
-        requestSkipLogin()
-
-        verify(tagsWriteService).createTags(someCreateTags)
-    }
-
-    @Test
-    fun doesNotCreatesTagsForUserThatDoesHaveTagsWhenLoggingInWithGoogle() {
-        whenever(tagsService.items()).thenReturn(just(listOf(aTag())))
-        presenter.attach(view)
-
-        requestLoginWithGoogle()
-        successfulLoginWithGoogle()
-
-        verify(tagsWriteService, never()).createTags(any())
-    }
-
-    @Test
-    fun doesNotCreatesTagsForUserThatDoesHaveTagsWhenLoggingInAnonymously() {
-        whenever(tagsService.items()).thenReturn(just(listOf(aTag())))
-        presenter.attach(view)
-
-        requestSkipLogin()
-
-        verify(tagsWriteService, never()).createTags(any())
-    }
-
-    @Test
-    fun ignoresTagCreationErrors() {
-        whenever(tagsWriteService.createTags(any())).thenReturn(error(Throwable()))
-        presenter.attach(view)
-
-        requestSkipLogin()
-
-        verify(view).displayDestination(APP)
-    }
-
-    @Test
-    fun showsSkipEnabledWhenDestinationIsApp() {
-        presenter.attach(view)
-
-        verify(view).showSkipEnabled()
-    }
-
-    @Test
-    fun showsSkipDisabledWhenDestinationIsNotApp() {
+    fun `shows all login options except skip when destination is SUPPORT_DEVELOPER and login state is Idle`() {
         presenter(SUPPORT_DEVELOPER).attach(view)
 
-        verify(view).showSkipDisabled()
+        receiveLoginState(Idle)
+
+        verify(view).showAllLoginOptionsExceptSkip()
     }
 
     @Test
-    fun allowsUserToForceLogInWhenUserAccountIsAlreadyLinked() {
-        val userAlreadyLinkedException = UserAlreadyLinkedException(Throwable())
-        whenever(loginService.loginWithGoogle(any(), any())).thenReturn(error(userAlreadyLinkedException), just(Unit))
-        presenter.attach(view)
+    fun `shows waiting google token request when login state is WaitingGoogleToken`() {
+        presenter().attach(view)
 
-        requestLoginWithGoogle()
-        successfulLoginWithGoogle()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(view).showLoginWithGoogle()
-        inOrder.verify(loginService).loginWithGoogle(any(), eq(false))
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).showResolvableError(userAlreadyLinkedException.toError())
+        receiveLoginState(WaitingGoogleToken)
 
-        resolveError()
-        inOrder.verify(view).showLoading()
-        inOrder.verify(loginService).loginWithGoogle(any(), eq(true))
-        inOrder.verify(view).hideLoading()
-        inOrder.verify(view).displayDestination(APP)
+        verify(view).showGoogleTokenRequest()
     }
 
-    private fun requestLoginWithGoogle() = loginWithGoogleRequestsSubject.onNext(Unit)
-    private fun requestSkipLogin() = skipLoginRequestsSubject.onNext(Unit)
-    private fun successfulLoginWithGoogle(googleToken: GoogleToken = aGoogleToken()) = googleTokenSubject.onNext(googleToken)
-    private fun resolveError() = resolutionSubject.onNext(POSITIVE)
-    private fun presenter(destination: Destination = APP) = LoginPresenter(
-            destination,
-            loginService,
-            tagsService,
-            tagsWriteService,
-            defaultTags,
-            rxSchedulers())
+    @Test
+    fun `shows logging in anonymously when login state is LoggingInAnonymously`() {
+        presenter().attach(view)
+
+        receiveLoginState(LoggingInAnonymously)
+
+        verify(view).showLoggingInAnonymously()
+    }
+
+    @Test
+    fun `shows logging in with google when login state is LoggingInWithGoogle`() {
+        presenter().attach(view)
+
+        receiveLoginState(LoggingInWithGoogle)
+
+        verify(view).showLoggingInWithGoogle()
+    }
+
+    @Test
+    fun `displays destination when login state is SuccessfulLogin`() {
+        presenter(RETURN).attach(view)
+
+        receiveLoginState(SuccessfulLogin)
+
+        verify(view).displayDestination(RETURN)
+    }
+
+    @Test
+    fun `shows error when login state is FailedLogin`() {
+        val throwable = Throwable()
+        presenter().attach(view)
+
+        receiveLoginState(FailedLogin(throwable))
+
+        verify(view).showError(throwable.toError())
+    }
+
+    @Test
+    fun `shows resolvable error and forces login if resolution is positive when login state is FailedLogin with UserAlreadyLinkedException`() {
+        val throwable = UserAlreadyLinkedException(Throwable())
+        presenter().attach(view)
+
+        receiveLoginState(FailedLogin(throwable))
+        resolveError(Resolution.POSITIVE)
+
+        verify(view).showResolvableError(throwable.toError())
+        verify(loginWriter).write(Login.ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists)
+    }
+
+    @Test
+    fun `logs in anonymously when user skips login`() {
+        presenter().attach(view)
+
+        requestSkipLogin()
+
+        verify(loginWriter).write(AnonymousLogin)
+    }
+
+    @Test
+    fun `requests google token when user requests google login`() {
+        presenter().attach(view)
+
+        requestLoginWithGoogle()
+
+        verify(loginWriter).write(Login.GetGoogleToken)
+    }
+
+    @Test
+    fun `logs in with google when google token is received`() {
+        val googleToken = aGoogleToken()
+        presenter().attach(view)
+
+        receiveLoginState(WaitingGoogleToken)
+        receiveGoogleToken(googleToken)
+
+        verify(loginWriter).write(GoogleLogin(googleToken))
+    }
+
+    fun presenter(destination: Destination = APP) = LoginPresenter(destination, loginStateSource, loginWriter, rxSchedulers())
+    fun receiveLoginState(loginState: LoginState) = loginStateSubject.onNext(loginState)
+    fun receiveGoogleToken(googleToken: GoogleToken) = googleTokenSubject.onNext(googleToken)
+    fun requestLoginWithGoogle() = loginWithGoogleRequestsSubject.onNext(Unit)
+    fun requestSkipLogin() = skipLoginRequestsSubject.onNext(Unit)
+    fun resolveError(resolution: Resolution) = errorResolutionSubject.onNext(resolution)
 }
