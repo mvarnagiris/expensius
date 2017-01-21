@@ -28,7 +28,6 @@ import com.mvcoding.expensius.firebase.service.FirebaseTransactionsService
 import com.mvcoding.expensius.firebase.service.FirebaseTransactionsWriteService
 import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.expensius.service.AppUserWriteService
-import com.mvcoding.expensius.service.LoginService
 import com.mvcoding.expensius.service.TagsService
 import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.expensius.service.TransactionsService
@@ -66,7 +65,6 @@ class ServicesModule : ShankModule {
 }
 
 fun provideAppUserWriteService(): AppUserWriteService = provideFirebaseAppUserWriteService()
-fun provideLoginService(): LoginService = provideFirebaseAppUserService()
 fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
 fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
 fun provideTagsService(): TagsService = provideFirebaseTagsService()
@@ -76,7 +74,7 @@ fun provideTransactionsService(): TransactionsService = provideFirebaseTransacti
 fun provideArchivedTransactionsService(): TransactionsService = provideFirebaseArchivedTransactionsService()
 
 private fun provideFirebaseAppUserWriteService() = provideNew<FirebaseAppUserWriteService>()
-private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
+fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
 private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()
 private fun provideFirebaseTagsService() = provideGlobalSingleton<FirebaseTagsService>()
 private fun provideFirebaseArchivedTagsService() = provideGlobalSingleton<FirebaseArchivedTagsService>()

@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.feature.login
 
+import com.mvcoding.expensius.datasource.DataSource
+import com.mvcoding.expensius.datawriter.DataWriter
 import com.mvcoding.expensius.feature.login.LoginPresenter.Login.AnonymousLogin
 import com.mvcoding.expensius.feature.login.LoginPresenter.Login.ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists
 import com.mvcoding.expensius.feature.login.LoginPresenter.Login.GetGoogleToken
@@ -25,17 +27,23 @@ import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInA
 import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInWithGoogle
 import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.SuccessfulLogin
 import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.WaitingGoogleToken
+import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
+import com.mvcoding.expensius.model.aCreateTag
 import com.mvcoding.expensius.model.aGoogleToken
+import com.mvcoding.expensius.model.aTag
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
+import rx.Observable.error
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 import rx.observers.TestSubscriber
@@ -44,9 +52,14 @@ class LoginWriterAndStateSourceTest {
     val anonymousLoginSubject = PublishSubject<Unit>()
     val googleLoginSubject = PublishSubject<Unit>()
 
+    val defaultTags = listOf(aCreateTag(), aCreateTag(), aCreateTag())
+
     val loginAnonymously = mock<() -> Observable<Unit>>()
     val loginWithGoogle = mock<(GoogleToken, Boolean) -> Observable<Unit>>()
-    val loginWriterAndStateSource = LoginWriterAndStateSource(loginAnonymously, loginWithGoogle)
+    val tagsSource = mock<DataSource<List<Tag>>>()
+    val defaultTagsSource = mock<DataSource<List<CreateTag>>>()
+    val createTagsWriter = mock<DataWriter<List<CreateTag>>>()
+    val loginWriterAndStateSource = LoginWriterAndStateSource(loginAnonymously, loginWithGoogle, tagsSource, defaultTagsSource, createTagsWriter)
     val subscriber = TestSubscriber<LoginState>()
     val anotherSubscriber = TestSubscriber<LoginState>()
     val anotherSubscriber2 = TestSubscriber<LoginState>()
@@ -56,6 +69,8 @@ class LoginWriterAndStateSourceTest {
     fun setUp() {
         whenever(loginAnonymously()).thenReturn(anonymousLoginSubject)
         whenever(loginWithGoogle(any(), any())).thenReturn(googleLoginSubject)
+        whenever(tagsSource.data()).thenReturn(just(emptyList()))
+        whenever(defaultTagsSource.data()).thenReturn(just(defaultTags))
         loginWriterAndStateSource.data().subscribe(subscriber)
     }
 
@@ -65,7 +80,7 @@ class LoginWriterAndStateSourceTest {
     }
 
     @Test
-    fun `can login anonymously`() {
+    fun `can login anonymously and writes default tags`() {
         loginWriterAndStateSource.write(AnonymousLogin)
         loginWriterAndStateSource.data().subscribe(anotherSubscriber)
 
@@ -76,6 +91,7 @@ class LoginWriterAndStateSourceTest {
         anotherSubscriber.assertValues(LoggingInAnonymously, SuccessfulLogin)
         anotherSubscriber2.assertValues(SuccessfulLogin)
         verify(loginAnonymously, times(1)).invoke()
+        verify(createTagsWriter).write(defaultTags)
     }
 
     @Test
@@ -91,7 +107,7 @@ class LoginWriterAndStateSourceTest {
     }
 
     @Test
-    fun `can login with google`() {
+    fun `can login with google and writes default tags`() {
         val googleToken = aGoogleToken()
         loginWriterAndStateSource.write(GetGoogleToken)
         loginWriterAndStateSource.data().subscribe(anotherSubscriber)
@@ -107,6 +123,7 @@ class LoginWriterAndStateSourceTest {
         anotherSubscriber2.assertValues(LoggingInWithGoogle, SuccessfulLogin)
         anotherSubscriber3.assertValues(SuccessfulLogin)
         verify(loginWithGoogle, times(1)).invoke(googleToken, false)
+        verify(createTagsWriter).write(defaultTags)
     }
 
     @Test
@@ -136,6 +153,37 @@ class LoginWriterAndStateSourceTest {
         loginWriterAndStateSource.write(ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists)
 
         subscriber.assertValues(Idle, LoggingInWithGoogle, FailedLogin(throwable), LoggingInWithGoogle, SuccessfulLogin)
+    }
+
+    @Test
+    fun `does not write default tags when tags already exist`() {
+        whenever(tagsSource.data()).thenReturn(just(listOf(aTag(), aTag(), aTag())))
+
+        loginWriterAndStateSource.write(AnonymousLogin)
+        succeedAnonymousLogin()
+
+        verify(createTagsWriter, never()).write(any())
+    }
+
+    @Test
+    fun `ignores current tag checking errors`() {
+        whenever(tagsSource.data()).thenReturn(error(Throwable()))
+
+        loginWriterAndStateSource.write(AnonymousLogin)
+        succeedAnonymousLogin()
+
+        verify(createTagsWriter, never()).write(any())
+        subscriber.assertValues(Idle, LoggingInAnonymously, SuccessfulLogin)
+    }
+
+    @Test
+    fun `ignores tag creating errors`() {
+        whenever(createTagsWriter.write(any())).thenThrow(RuntimeException())
+
+        loginWriterAndStateSource.write(AnonymousLogin)
+        succeedAnonymousLogin()
+
+        subscriber.assertValues(Idle, LoggingInAnonymously, SuccessfulLogin)
     }
 
     fun succeedAnonymousLogin() = anonymousLoginSubject.onNext(Unit)

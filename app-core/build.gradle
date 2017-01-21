@@ -25,5 +25,5 @@ dependencies {
     testCompile project(':test-models')
     testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "com.nhaarman:mockito-kotlin:1.1.0"
+    testCompile "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"
 }

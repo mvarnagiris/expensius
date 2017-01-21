@@ -27,15 +27,21 @@ import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.Idle
 import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInAnonymously
 import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.SuccessfulLogin
 import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.WaitingGoogleToken
+import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.Tag
 import rx.Observable
+import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.filterNotNull
 import rx.subjects.SerializedSubject
 
 class LoginWriterAndStateSource(
         private val loginAnonymously: () -> Observable<Unit>,
-        private val loginWithGoogle: (GoogleToken, Boolean) -> Observable<Unit>) : DataWriter<Login>, DataSource<LoginState> {
+        private val loginWithGoogle: (GoogleToken, Boolean) -> Observable<Unit>,
+        private val tagsSource: DataSource<List<Tag>>,
+        private val defaultTagsSource: DataSource<List<CreateTag>>,
+        private val createTagsWriter: DataWriter<List<CreateTag>>) : DataWriter<Login>, DataSource<LoginState> {
 
     private val loginStateSubject = SerializedSubject(BehaviorSubject<LoginState>(Idle))
     private var googleToken: GoogleToken? = null
@@ -53,7 +59,7 @@ class LoginWriterAndStateSource(
         loginStateSubject.onNext(LoggingInAnonymously)
         loginAnonymously()
                 .map { SuccessfulLogin }
-                .cast(LoginState::class.java)
+                .switchMap { createDefaultTagsIfNecessary() }
                 .onErrorReturn(::FailedLogin)
                 .first()
                 .subscribe { loginStateSubject.onNext(it) }
@@ -65,7 +71,7 @@ class LoginWriterAndStateSource(
         loginWithGoogle(googleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists)
                 .map { SuccessfulLogin }
                 .doOnNext { this.googleToken = null }
-                .cast(LoginState::class.java)
+                .switchMap { createDefaultTagsIfNecessary() }
                 .onErrorReturn(::FailedLogin)
                 .first()
                 .subscribe { loginStateSubject.onNext(it) }
@@ -78,6 +84,16 @@ class LoginWriterAndStateSource(
                 .filterNotNull()
                 .subscribe { googleLogin(it, true) }
     }
+
+    private fun createDefaultTagsIfNecessary(): Observable<LoginState> = tagsSource.data()
+            .first()
+            .switchMap {
+                if (it.isNotEmpty()) just(Unit)
+                else defaultTagsSource.data().doOnNext { createTagsWriter.write(it) }.map { Unit }
+            }
+            .map { SuccessfulLogin }
+            .onErrorReturn { SuccessfulLogin }
+            .cast(LoginState::class.java)
 
     override fun data(): Observable<LoginState> = loginStateSubject
 }

@@ -17,13 +17,17 @@ package com.mvcoding.expensius.feature.login
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import com.mvcoding.expensius.R
+import com.mvcoding.expensius.datasource.DataSource
 import com.mvcoding.expensius.model.Color
 import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Title
+import rx.Observable
+import rx.Observable.just
 
-class TranslatedDefaultTags(private val context: Context) : DefaultTags {
-    override fun getDefaultTags(): Set<CreateTag> = listOf(
+class TranslatedDefaultTagsSource(private val context: Context) : DataSource<List<CreateTag>> {
+
+    override fun data(): Observable<List<CreateTag>> = just(listOf(
             getString(R.string.tag_fixed) to getColor(R.color.red_300),
             getString(R.string.tag_essential) to getColor(R.color.red_500),
             getString(R.string.tag_non_essential) to getColor(R.color.red_900),
@@ -35,8 +39,7 @@ class TranslatedDefaultTags(private val context: Context) : DefaultTags {
             getString(R.string.tag_health_and_beauty) to getColor(R.color.pink_500),
             getString(R.string.tag_bills_and_utilities) to getColor(R.color.brown_500),
             getString(R.string.tag_pets) to getColor(R.color.teal_500))
-            .mapIndexed { position, titleAndColor -> CreateTag(Title(titleAndColor.first), Color(titleAndColor.second), Order(position)) }
-            .toSet()
+            .mapIndexed { position, titleAndColor -> CreateTag(Title(titleAndColor.first), Color(titleAndColor.second), Order(position)) })
 
     private fun getString(resId: Int) = context.getString(resId)
     private fun getColor(resId: Int) = ContextCompat.getColor(context, resId)

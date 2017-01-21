@@ -19,11 +19,8 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.provideContext
-import com.mvcoding.expensius.provideLoginService
+import com.mvcoding.expensius.provideLoginWriterAndStateSource
 import com.mvcoding.expensius.provideRxSchedulers
-import com.mvcoding.expensius.provideTagsService
-import com.mvcoding.expensius.provideTagsWriteService
 import memoizrlabs.com.shankandroid.withThisScope
 
 class LoginModule : ShankModule {
@@ -32,12 +29,11 @@ class LoginModule : ShankModule {
     }
 
     private fun loginPresenter() = registerFactory(LoginPresenter::class) { destination: Destination ->
+        val loginWriterAndStateSource = provideLoginWriterAndStateSource()
         LoginPresenter(
                 destination,
-                provideLoginService(),
-                provideTagsService(),
-                provideTagsWriteService(),
-                TranslatedDefaultTags(provideContext()),
+                loginWriterAndStateSource,
+                loginWriterAndStateSource,
                 provideRxSchedulers())
     }
 }

@@ -39,14 +39,13 @@ import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.expensius.model.UserId
 import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.LoginService
 import rx.Observable
 import rx.Observable.combineLatest
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.deferredObservable
 import rx.lang.kotlin.observable
 
-class FirebaseAppUserService : AppUserService, LoginService {
+class FirebaseAppUserService : AppUserService {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firebaseUserSubject = BehaviorSubject<FirebaseUser?>()
@@ -69,7 +68,7 @@ class FirebaseAppUserService : AppUserService, LoginService {
 
     override fun appUser(): Observable<AppUser> = appUserObservable
 
-    override fun loginAnonymously(): Observable<Unit> = deferredObservable {
+    fun loginAnonymously(): Observable<Unit> = deferredObservable {
         observable<Unit> { subscriber ->
             firebaseAuth.signInAnonymously()
                     .addOnSuccessListener {
@@ -80,8 +79,8 @@ class FirebaseAppUserService : AppUserService, LoginService {
         }
     }
 
-    override fun loginWithGoogle(googleToken: GoogleToken, noLinkLogin: Boolean): Observable<Unit> = appUser().first().switchMap {
-        if (it.isNotLoggedIn() || noLinkLogin) {
+    fun loginWithGoogle(googleToken: GoogleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists: Boolean): Observable<Unit> = appUser().first().switchMap {
+        if (it.isNotLoggedIn() || forceLoginAndLoseLocalDataIfUserAlreadyExists) {
             observable<Unit> { subscriber ->
                 val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
                 firebaseAuth.signInWithCredential(credential)
