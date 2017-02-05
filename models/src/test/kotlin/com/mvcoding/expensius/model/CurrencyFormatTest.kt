@@ -28,7 +28,7 @@ class CurrencyFormatTest {
     val value = BigDecimal("1234.567")
 
     @Test
-    fun symbolIsAtTheRightPosition() {
+    fun `symbol is at the right position`() {
         assertThat(currencyFormat.copy(
                 symbol = "$",
                 symbolPosition = SymbolPosition.START,
@@ -51,14 +51,14 @@ class CurrencyFormatTest {
     }
 
     @Test
-    fun usesCorrectDecimalSeparator() {
+    fun `uses correct decimal separator`() {
         assertThat(currencyFormat.copy(decimalSeparator = DecimalSeparator.DOT).format(value), equalTo("$ 1,234.57"))
         assertThat(currencyFormat.copy(decimalSeparator = DecimalSeparator.COMMA).format(value), equalTo("$ 1,234,57"))
         assertThat(currencyFormat.copy(decimalSeparator = DecimalSeparator.SPACE).format(value), equalTo("$ 1,234 57"))
     }
 
     @Test
-    fun usesCorrectGroupSeparator() {
+    fun `uses correct group separator`() {
         assertThat(currencyFormat.copy(groupSeparator = GroupSeparator.COMMA).format(value), equalTo("$ 1,234.57"))
         assertThat(currencyFormat.copy(groupSeparator = GroupSeparator.DOT).format(value), equalTo("$ 1.234.57"))
         assertThat(currencyFormat.copy(groupSeparator = GroupSeparator.SPACE).format(value), equalTo("$ 1 234.57"))
@@ -66,7 +66,7 @@ class CurrencyFormatTest {
     }
 
     @Test
-    fun usesCorrectMinFractionDigits() {
+    fun `uses correct min fraction digits`() {
         val value = BigDecimal("1234")
 
         assertThat(currencyFormat.copy(minFractionDigits = 0).format(value), equalTo("$ 1,234"))
@@ -76,7 +76,7 @@ class CurrencyFormatTest {
     }
 
     @Test
-    fun usesCorrectMaxFractionDigits() {
+    fun `uses correct max fraction digits`() {
         val value = BigDecimal("1234.5678")
 
         assertThat(currencyFormat.copy(maxFractionDigits = 0).format(value), equalTo("$ 1,235"))

@@ -21,22 +21,22 @@ import org.junit.Test
 
 class UserTest {
     @Test
-    fun appUserIsNotLoggedInWhenAuthProvidersAreEmpty() {
-        expect that anAppUser().withNoAuthProviders().isLoggedIn() _is true
+    fun `AppUser is not logged in when auth providers are empty`() {
+        expect that anAppUser().withNoAuthProviders().isLoggedIn() _is false
     }
 
     @Test
-    fun appUserIsLoggedInWhenAuthProvidersAreNotEmpty() {
+    fun `AppUser is logged in when auth providers are not empty`() {
         expect that anAppUser().withAuthProvider(anAuthProvider()).isLoggedIn() _is true
     }
 
     @Test
-    fun appUserIsWithProperAccountWhenAtLeastOneAuthProviderIsNotAnonymous() {
+    fun `AppUser is with proper account when at least one auth provider is not anonymous`() {
         expect that anAppUser().withAuthProvider(GOOGLE).isWithProperAccount() _is true
     }
 
     @Test
-    fun appUserIsNotWithProperAccountWhenNotLoggedInOrAuthProviderIsAnonymous() {
+    fun `AppUser is not with proper account when not logged in or auth provider is anonymous`() {
         expect that anAppUser().withNoAuthProviders().isWithProperAccount() _is false
         expect that anAppUser().withAuthProvider(ANONYMOUS).isWithProperAccount() _is false
     }
