@@ -12,4 +12,4 @@
  * GNU General Public License for more details.
  */
 
-include ':app', ':app-core', ':billing', ':datasource', ':models', ':test-models', ':firebase', ':firebase'
+include ':app', ':app-core', ':billing', ':datasource', ':models', ':firebase', ':firebase'

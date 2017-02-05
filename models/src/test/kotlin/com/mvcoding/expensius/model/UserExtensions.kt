@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,6 +13,10 @@
  */
 
 package com.mvcoding.expensius.model
+
+import com.mvcoding.expensius.aRandomItem
+import com.mvcoding.expensius.aString
+import com.mvcoding.expensius.aStringId
 
 fun aSettings() = Settings(aCurrency(), ReportPeriod.MONTH, ReportGroup.DAY, SubscriptionType.values().aRandomItem())
 fun aUserId() = UserId(aStringId())

@@ -15,9 +15,11 @@
 package com.mvcoding.expensius.datasource
 
 sealed class RealtimeData<out ITEM> {
-    data class AllItems<out ITEM>(val items: List<ITEM>) : RealtimeData<ITEM>()
-    data class AddedItems<out ITEM>(val items: List<ITEM>, val position: Int) : RealtimeData<ITEM>()
-    data class ChangedItems<out ITEM>(val items: List<ITEM>, val position: Int) : RealtimeData<ITEM>()
-    data class RemovedItems<out ITEM>(val items: List<ITEM>, val position: Int) : RealtimeData<ITEM>()
-    data class MovedItem<out ITEM>(val item: ITEM, val fromPosition: Int, val toPosition: Int) : RealtimeData<ITEM>()
+    abstract val items: List<ITEM>
+
+    data class AllItems<out ITEM>(override val items: List<ITEM>) : RealtimeData<ITEM>()
+    data class AddedItems<out ITEM>(override val items: List<ITEM>, val previousKey: String?) : RealtimeData<ITEM>()
+    data class ChangedItems<out ITEM>(override val items: List<ITEM>) : RealtimeData<ITEM>()
+    data class RemovedItems<out ITEM>(override val items: List<ITEM>) : RealtimeData<ITEM>()
+    data class MovedItems<out ITEM>(override val items: List<ITEM>, val previousKey: String?) : RealtimeData<ITEM>()
 }

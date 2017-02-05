@@ -14,31 +14,30 @@
 
 package com.mvcoding.expensius.model
 
+import com.memoizr.assertk.expect
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import org.junit.Test
 
 class UserTest {
     @Test
     fun appUserIsNotLoggedInWhenAuthProvidersAreEmpty() {
-        assertThat(anAppUser().withNoAuthProviders().isLoggedIn(), equalTo(false))
+        expect that anAppUser().withNoAuthProviders().isLoggedIn() _is true
     }
 
     @Test
     fun appUserIsLoggedInWhenAuthProvidersAreNotEmpty() {
-        assertThat(anAppUser().withAuthProvider(anAuthProvider()).isLoggedIn(), equalTo(true))
+        expect that anAppUser().withAuthProvider(anAuthProvider()).isLoggedIn() _is true
     }
 
     @Test
     fun appUserIsWithProperAccountWhenAtLeastOneAuthProviderIsNotAnonymous() {
-        assertThat(anAppUser().withAuthProvider(GOOGLE).isWithProperAccount(), equalTo(true))
+        expect that anAppUser().withAuthProvider(GOOGLE).isWithProperAccount() _is true
     }
 
     @Test
     fun appUserIsNotWithProperAccountWhenNotLoggedInOrAuthProviderIsAnonymous() {
-        assertThat(anAppUser().withNoAuthProviders().isWithProperAccount(), equalTo(false))
-        assertThat(anAppUser().withAuthProvider(ANONYMOUS).isWithProperAccount(), equalTo(false))
+        expect that anAppUser().withNoAuthProviders().isWithProperAccount() _is false
+        expect that anAppUser().withAuthProvider(ANONYMOUS).isWithProperAccount() _is false
     }
 }

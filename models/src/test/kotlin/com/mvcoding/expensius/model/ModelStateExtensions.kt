@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,9 +12,8 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: "kotlin"
+package com.mvcoding.expensius.model
 
-dependencies {
-    compile project(':models')
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-}
+import com.mvcoding.expensius.aRandomItem
+
+fun aModelState() = ModelState.values().aRandomItem()

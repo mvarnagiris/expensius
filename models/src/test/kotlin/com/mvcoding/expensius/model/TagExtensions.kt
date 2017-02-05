@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,4 +14,15 @@
 
 package com.mvcoding.expensius.model
 
-fun aModelState() = ModelState.values().aRandomItem()
+import com.mvcoding.expensius.aString
+import com.mvcoding.expensius.aStringId
+import com.mvcoding.expensius.anInt
+
+fun aTagId() = TagId(aStringId())
+fun aTitle() = Title(aString("title"))
+fun aColor() = Color(anInt())
+fun anOrder() = Order(anInt(100))
+fun aCreateTag() = CreateTag(aTitle(), aColor(), anOrder())
+fun someTags() = (0..anInt(5)).map { aTag() }.toSet()
+fun aTag() = Tag(aTagId(), aModelState(), aTitle(), aColor(), anOrder())
+fun Tag.withOrder(order: Int) = copy(order = Order(order))

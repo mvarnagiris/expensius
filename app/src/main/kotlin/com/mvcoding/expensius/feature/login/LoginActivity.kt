@@ -46,6 +46,7 @@ import rx.lang.kotlin.BehaviorSubject
 import rx.subjects.BehaviorSubject
 
 class LoginActivity : BaseActivity(), LoginPresenter.View, GoogleApiClient.OnConnectionFailedListener {
+
     companion object {
         private const val REQUEST_LOGIN_WITH_GOOGLE = 1
         private const val EXTRA_DESTINATION = "EXTRA_DESTINATION"
@@ -86,20 +87,40 @@ class LoginActivity : BaseActivity(), LoginPresenter.View, GoogleApiClient.OnCon
         presenter.detach(this)
     }
 
+    override fun showGoogleTokenRequest(): Observable<GoogleToken> {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showAllLoginOptions() {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showAllLoginOptionsExceptSkip() {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showLoggingInWithGoogle() {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
+    override fun showLoggingInAnonymously() {
+        throw UnsupportedOperationException("Not implemented")
+    }
+
     override fun loginWithGoogleRequests(): Observable<Unit> = googleLoginButton.clicks()
     override fun skipLoginRequests(): Observable<Unit> = skipLoginButton.clicks()
     override fun showError(error: Error): Unit = errorDisplayer.show(error)
     override fun showResolvableError(error: Error): Observable<Resolution> = resolvableErrorDisplayer.showError(error)
 
-    override fun showLoading(): Unit = setLoading(true)
-    override fun hideLoading(): Unit = setLoading(false)
-    override fun showSkipEnabled(): Unit = with(skipLoginButton) { visibility = VISIBLE }
-    override fun showSkipDisabled(): Unit = with(skipLoginButton) { visibility = GONE }
-
-    override fun showLoginWithGoogle(): Observable<GoogleToken> {
-        showGoogleLoginIfNecessary()
-        return loginWithGoogleSubject
-    }
+//    override fun showLoading(): Unit = setLoading(true)
+//    override fun hideLoading(): Unit = setLoading(false)
+//    override fun showSkipEnabled(): Unit = with(skipLoginButton) { visibility = VISIBLE }
+//    override fun showSkipDisabled(): Unit = with(skipLoginButton) { visibility = GONE }
+//
+//    override fun showLoginWithGoogle(): Observable<GoogleToken> {
+//        showGoogleLoginIfNecessary()
+//        return loginWithGoogleSubject
+//    }
 
     override fun displayDestination(destination: Destination) {
         when (destination) {

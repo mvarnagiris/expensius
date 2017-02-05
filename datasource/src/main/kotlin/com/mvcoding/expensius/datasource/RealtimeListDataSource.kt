@@ -24,7 +24,9 @@ import rx.lang.kotlin.observable
 import java.lang.Math.max
 import java.lang.Math.min
 
-class RealtimeListDataSource<ITEM>(private val realtimeList: RealtimeList<ITEM>) : DataSource<RealtimeData<ITEM>> {
+class RealtimeListDataSource<ITEM>(
+        private val realtimeList: RealtimeList<ITEM>,
+        private val itemToKey: (ITEM) -> String) : DataSource<RealtimeData<ITEM>> {
 
     private var items: List<ITEM>? = null
 
@@ -46,33 +48,35 @@ class RealtimeListDataSource<ITEM>(private val realtimeList: RealtimeList<ITEM>)
     private fun handleAddedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getAddedItems()
                 .skipUntil(allItems)
-                .doOnNext { items = items.orEmpty().insert(it.items, it.position) }
+                .doOnNext { items = items.orEmpty().insert(it.items, keyToPosition(it.previousKey) + 1) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
     private fun handleChangedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
-        realtimeList.getChangedItems().skipUntil(allItems)
-                .doOnNext { items = items.orEmpty().replace(it.items, it.position) }
+        realtimeList.getChangedItems()
+                .skipUntil(allItems)
+                .doOnNext { items = items.orEmpty().replace(it.items, keyToPosition(itemToKey(it.items.first()))) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
     private fun handleRemovedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getRemovedItems()
                 .skipUntil(allItems)
-                .doOnNext { items = items.orEmpty().remove(it.items, it.position) }
+                .doOnNext { items = items.orEmpty().remove(it.items, keyToPosition(itemToKey(it.items.first()))) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
     private fun handleMovedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getMovedItem()
                 .skipUntil(allItems)
-                .doOnNext { items = items.orEmpty().move(it.fromPosition, it.toPosition) }
+                .doOnNext { items = items.orEmpty().move(keyToPosition(itemToKey(it.items.first())), keyToPosition(it.previousKey) + 1) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
     override fun data(): Observable<RealtimeData<ITEM>> = observable.mergeWith(currentState())
 
     private fun currentState() = just(items).filterNotNull().map { AllItems(it) }
+    private fun keyToPosition(previousKey: String?) = previousKey?.let { key -> items.orEmpty().indexOfFirst { itemToKey(it) == key } } ?: -1
 
     private fun <T> List<T>.insert(items: List<T>, position: Int) = take(position).plus(items).plus(takeLast(size - position))
     private fun <T> List<T>.replace(items: List<T>, position: Int) = take(position).plus(items).plus(takeLast(max(size - position - items.size, 0)))

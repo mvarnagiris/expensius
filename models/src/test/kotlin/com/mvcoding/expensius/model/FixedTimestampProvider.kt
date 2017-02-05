@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,4 +14,8 @@
 
 package com.mvcoding.expensius.model
 
-fun aCurrency() = Currency(aStringCurrencyCode())
+private class FixedTimestampProvider : TimestampProvider {
+    override fun currentTimestamp(): Timestamp = Timestamp(1234)
+}
+
+fun aFixedTimestampProvider(): TimestampProvider = FixedTimestampProvider()

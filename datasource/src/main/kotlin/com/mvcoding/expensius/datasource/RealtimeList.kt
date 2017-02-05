@@ -17,7 +17,7 @@ package com.mvcoding.expensius.datasource
 import com.mvcoding.expensius.datasource.RealtimeData.AddedItems
 import com.mvcoding.expensius.datasource.RealtimeData.AllItems
 import com.mvcoding.expensius.datasource.RealtimeData.ChangedItems
-import com.mvcoding.expensius.datasource.RealtimeData.MovedItem
+import com.mvcoding.expensius.datasource.RealtimeData.MovedItems
 import com.mvcoding.expensius.datasource.RealtimeData.RemovedItems
 import rx.Observable
 
@@ -26,5 +26,5 @@ interface RealtimeList<ITEM> {
     fun getAddedItems(): Observable<AddedItems<ITEM>>
     fun getChangedItems(): Observable<ChangedItems<ITEM>>
     fun getRemovedItems(): Observable<RemovedItems<ITEM>>
-    fun getMovedItem(): Observable<MovedItem<ITEM>>
+    fun getMovedItem(): Observable<MovedItems<ITEM>>
 }
