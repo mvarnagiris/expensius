@@ -15,11 +15,10 @@
 apply plugin: "kotlin"
 
 dependencies {
-    compile project(':models')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "io.reactivex:rxkotlin:$rxkotlin_version"
 
-    testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
     testCompile "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"
 }
