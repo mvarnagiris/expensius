@@ -11,10 +11,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-package com.mvcoding.expensius.datasource
 
-import rx.Observable
+package com.mvcoding.expensius.data
 
-interface DataSource<DATA> {
-    fun data(): Observable<DATA>
+interface DataWriter<in DATA> {
+    fun write(data: DATA)
 }

@@ -19,13 +19,12 @@ import com.mvcoding.expensius.feature.ItemsView
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.service.TransactionsService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class TransactionsPresenter(
         private val modelDisplayType: ModelDisplayType,
-        private val transactionsService: TransactionsService,
+        //        private val transactionsService: TransactionsService,
         private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
@@ -33,32 +32,32 @@ class TransactionsPresenter(
 
         view.showModelDisplayType(modelDisplayType)
         view.showLoading()
-        transactionsService.items()
-                .first()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .doOnNext { view.hideLoading() }
-                .subscribeUntilDetached { view.showItems(it) }
-
-        transactionsService.addedItems()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
-
-        transactionsService.changedItems()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
-
-        transactionsService.removedItems()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
-
-        transactionsService.movedItem()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
+//        transactionsService.items()
+//                .first()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .doOnNext { view.hideLoading() }
+//                .subscribeUntilDetached { view.showItems(it) }
+//
+//        transactionsService.addedItems()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
+//
+//        transactionsService.changedItems()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
+//
+//        transactionsService.removedItems()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
+//
+//        transactionsService.movedItem()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
 
         view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
         view.createTransactionRequests().subscribeUntilDetached { view.displayCalculator() }

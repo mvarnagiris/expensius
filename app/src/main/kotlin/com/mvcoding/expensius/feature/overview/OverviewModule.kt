@@ -15,19 +15,16 @@
 package com.mvcoding.expensius.feature.overview
 
 import android.app.Activity
-import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
-import com.mvcoding.expensius.provideAppUserService
-import com.mvcoding.expensius.provideFilter
 import memoizrlabs.com.shankandroid.withThisScope
 
-class OverviewModule() : ShankModule {
+class OverviewModule : ShankModule {
     override fun registerFactories() {
-        overviewPresenter()
+//        overviewPresenter()
     }
 
-    private fun overviewPresenter() = registerFactory(OverviewPresenter::class.java, { -> OverviewPresenter(provideAppUserService(), provideFilter()) })
+//    private fun overviewPresenter() = registerFactory(OverviewPresenter::class.java, { -> OverviewPresenter(provideAppUserService(), provideFilter()) })
 }
 
 fun Activity.provideOverviewPresenter() = withThisScope.provideSingletonFor<OverviewPresenter>()

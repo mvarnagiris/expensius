@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.login
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.datasource.DataSource
+import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Color
 import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.Order

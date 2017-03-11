@@ -14,27 +14,25 @@
 
 package com.mvcoding.expensius.feature
 
-import com.mvcoding.expensius.extensions.interval
 import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionType
-import com.mvcoding.expensius.service.AppUserService
 import org.joda.time.Interval
 import rx.Observable
 import rx.lang.kotlin.BehaviorSubject
 import kotlin.Long.Companion.MAX_VALUE
 import kotlin.Long.Companion.MIN_VALUE
 
-class Filter(appUserService: AppUserService, timestampProvider: TimestampProvider) {
+class Filter(/*appUserService: AppUserService,*/ timestampProvider: TimestampProvider) {
     private var filterData: FilterData = FilterData(Interval(MIN_VALUE, MAX_VALUE))
     private val filterDataSubject = BehaviorSubject(filterData)
 
     init {
-        appUserService.appUser()
-                .first()
-                .map { it.settings.reportPeriod }
-                .map { it.interval(timestampProvider.currentTimestamp()) }
-                .subscribe { setInterval(it) }
+//        appUserService.appUser()
+//                .first()
+//                .map { it.settings.reportPeriod }
+//                .map { it.interval(timestampProvider.currentTimestamp()) }
+//                .subscribe { setInterval(it) }
     }
 
     fun filterData(): Observable<FilterData> = filterDataSubject

@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.datasource
+package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.datasource.RealtimeData.AllItems
+import com.mvcoding.expensius.data.RealtimeData.AllItems
 import rx.Observable
 import rx.Observable.just
 import rx.Subscriber

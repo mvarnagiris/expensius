@@ -21,8 +21,6 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.service.TagsService
-import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.merge
@@ -31,8 +29,8 @@ import java.lang.Math.min
 
 class TagsPresenter(
         private val modelDisplayType: ModelDisplayType,
-        private val tagsService: TagsService,
-        private val tagsWriteService: TagsWriteService,
+        //        private val tagsService: TagsService,
+//        private val tagsWriteService: TagsWriteService,
         private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
@@ -40,39 +38,39 @@ class TagsPresenter(
 
         view.showModelDisplayType(modelDisplayType)
         view.showLoading()
-        tagsService.items()
-                .first()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .doOnNext { view.hideLoading() }
-                .subscribeUntilDetached { view.showItems(it) }
+//        tagsService.items()
+//                .first()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .doOnNext { view.hideLoading() }
+//                .subscribeUntilDetached { view.showItems(it) }
 
-        tagsService.addedItems()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
+//        tagsService.addedItems()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
 
-        tagsService.changedItems()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
+//        tagsService.changedItems()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
 
-        tagsService.removedItems()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
+//        tagsService.removedItems()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
 
-        tagsService.movedItem()
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
+//        tagsService.movedItem()
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
 
-        view.tagMoves()
-                .subscribeOn(schedulers.main)
-                .observeOn(schedulers.io)
-                .withLatestFrom(tagsService.items(), { tagMove, tags -> reorderTags(tagMove, tags) })
-                .switchMap { tagsWriteService.saveTags(it.toSet()) }
-                .subscribeUntilDetached { }
+//        view.tagMoves()
+//                .subscribeOn(schedulers.main)
+//                .observeOn(schedulers.io)
+//                .withLatestFrom(tagsService.items(), { tagMove, tags -> reorderTags(tagMove, tags) })
+//                .switchMap { tagsWriteService.saveTags(it.toSet()) }
+//                .subscribeUntilDetached { }
 
         merge(view.tagSelects(), view.createTagRequests().map { noTag }).subscribeUntilDetached { view.displayTagEdit(it) }
         view.archivedTagsRequests().subscribeUntilDetached { view.displayArchivedTags() }

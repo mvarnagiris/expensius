@@ -19,20 +19,13 @@ import com.mvcoding.expensius.extensions.previousInterval
 import com.mvcoding.expensius.feature.Filter
 import com.mvcoding.expensius.feature.FilterData
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
-import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.ReportGroup
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.TransactionsService
+import com.mvcoding.expensius.model.*
 import com.mvcoding.mvp.Presenter
-import rx.Observable.combineLatest
 import java.math.BigDecimal.ZERO
 
 class TrendReportPresenter(
-        private val appUserService: AppUserService,
-        private val transactionsService: TransactionsService,
+        //        private val appUserService: AppUserService,
+//        private val transactionsService: TransactionsService,
         private val exchangeRatesProvider: ExchangeRatesProvider,
         private val filter: Filter,
         private val schedulers: RxSchedulers) : Presenter<TrendReportPresenter.View>() {
@@ -42,12 +35,12 @@ class TrendReportPresenter(
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        combineLatest(appUserService.appUser(), transactionsService.items(), filter.filterData(), moneyGroupingData())
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.computation)
-                .map { calculateTrends(it) }
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showTrends(it.totalMoney, it.currentMoney, it.previousMoney) }
+//        combineLatest(appUserService.appUser(), transactionsService.items(), filter.filterData(), moneyGroupingData())
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.computation)
+//                .map { calculateTrends(it) }
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showTrends(it.totalMoney, it.currentMoney, it.previousMoney) }
     }
 
     private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterData ->

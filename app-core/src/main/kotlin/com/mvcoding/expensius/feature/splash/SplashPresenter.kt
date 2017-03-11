@@ -16,21 +16,19 @@ package com.mvcoding.expensius.feature.splash
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
-import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.mvp.Presenter
 
 class SplashPresenter(
-        private val appUserService: AppUserService,
+        //        private val appUserService: AppUserService,
         private val schedulers: RxSchedulers) : Presenter<SplashPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        appUserService.appUser().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached {
-            if (it.isLoggedIn()) view.displayApp()
-            else view.displayLogin(APP)
-        }
+//        appUserService.appUser().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached {
+//            if (it.isLoggedIn()) view.displayApp()
+//            else view.displayLogin(APP)
+//        }
     }
 
     interface View : Presenter.View {

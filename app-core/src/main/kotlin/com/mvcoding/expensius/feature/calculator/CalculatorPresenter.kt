@@ -22,7 +22,6 @@ import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.merge
@@ -32,7 +31,7 @@ import java.math.BigDecimal
 class CalculatorPresenter(
         private val calculator: Calculator,
         private val resultDestination: ResultDestination,
-        private val appUserService: AppUserService,
+        //        private val appUserService: AppUserService,
         private val timestampProvider: TimestampProvider,
         initialNumber: BigDecimal? = null) : Presenter<CalculatorPresenter.View>() {
 
@@ -79,7 +78,7 @@ class CalculatorPresenter(
 
         saves.filter { val result = canSave; canSave = true; result }
                 .withLatestFrom(alteredExpressions, { _, number -> number })
-                .withLatestFrom(appUserService.appUser(), { number, appUser -> displayResult(view, appUser, number) })
+//                .withLatestFrom(appUserService.appUser(), { number, appUser -> displayResult(view, appUser, number) })
                 .subscribeUntilDetached()
     }
 

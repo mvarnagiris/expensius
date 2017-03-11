@@ -15,22 +15,16 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.feature.color
-import com.mvcoding.expensius.model.Color
-import com.mvcoding.expensius.model.CreateTag
-import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.NullModels.noColor
 import com.mvcoding.expensius.model.NullModels.noTagId
-import com.mvcoding.expensius.model.Order
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Title
-import com.mvcoding.expensius.service.TagsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 
-class TagPresenter(private var tag: Tag, private val tagsWriteService: TagsWriteService) : Presenter<TagPresenter.View>() {
+class TagPresenter(private var tag: Tag/*, private val tagsWriteService: TagsWriteService*/) : Presenter<TagPresenter.View>() {
     companion object {
         internal val VERY_HIGH_ORDER = 1000
     }
@@ -47,16 +41,16 @@ class TagPresenter(private var tag: Tag, private val tagsWriteService: TagsWrite
 
         val tag = combineLatest(titles, colors, { title, color -> tag.copy(title = title, color = color, order = order) }).doOnNext { tag = it }
 
-        view.saveRequests()
-                .withLatestFrom(tag, { unit, tag -> tag })
-                .filter { validate(it, view) }
-                .switchMap { if (it.isExisting()) tagsWriteService.saveTags(setOf(it)) else tagsWriteService.createTags(setOf(it.toCreateTag())) }
-                .subscribeUntilDetached { view.displayResult() }
+//        view.saveRequests()
+//                .withLatestFrom(tag, { unit, tag -> tag })
+//                .filter { validate(it, view) }
+//                .switchMap { if (it.isExisting()) tagsWriteService.saveTags(setOf(it)) else tagsWriteService.createTags(setOf(it.toCreateTag())) }
+//                .subscribeUntilDetached { view.displayResult() }
 
-        view.archiveToggles()
-                .map { tagWithToggledArchiveState() }
-                .switchMap { tagsWriteService.saveTags(setOf(it)) }
-                .subscribeUntilDetached { view.displayResult() }
+//        view.archiveToggles()
+//                .map { tagWithToggledArchiveState() }
+//                .switchMap { tagsWriteService.saveTags(setOf(it)) }
+//                .subscribeUntilDetached { view.displayResult() }
     }
 
     private fun tagColorOrDefault() = if (tag.color == noColor) Color(color(0x607d8b)) else tag.color

@@ -17,39 +17,31 @@ package com.mvcoding.expensius.feature.report
 import android.view.View
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
-import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.feature.currency.provideExchangeRatesProvider
-import com.mvcoding.expensius.model.TransactionState.CONFIRMED
-import com.mvcoding.expensius.model.TransactionType.EXPENSE
-import com.mvcoding.expensius.provideAppUserService
-import com.mvcoding.expensius.provideFilter
-import com.mvcoding.expensius.provideRxSchedulers
-import com.mvcoding.expensius.provideTransactionsService
 import memoizrlabs.com.shankandroid.withActivityScope
 
 class ReportsModule : ShankModule {
     override fun registerFactories() {
-        trendsPresenter()
-        tagTotalsReportPresenter()
+//        trendsPresenter()
+//        tagTotalsReportPresenter()
     }
 
-    private fun trendsPresenter() = registerFactory(TrendReportPresenter::class) { ->
-        TrendReportPresenter(
-                provideAppUserService(),
-                provideTransactionsService(),
-                provideExchangeRatesProvider(),
-                provideFilter().setTransactionType(EXPENSE).setTransactionState(CONFIRMED),
-                provideRxSchedulers())
-    }
-
-    private fun tagTotalsReportPresenter() = registerFactory(TagsTotalsReportPresenter::class) { ->
-        TagsTotalsReportPresenter(
-                provideAppUserService(),
-                provideTransactionsService(),
-                provideExchangeRatesProvider(),
-                provideFilter().setTransactionState(CONFIRMED),
-                provideRxSchedulers())
-    }
+//    private fun trendsPresenter() = registerFactory(TrendReportPresenter::class) { ->
+//        TrendReportPresenter(
+//                provideAppUserService(),
+//                provideTransactionsService(),
+//                provideExchangeRatesProvider(),
+//                provideFilter().setTransactionType(EXPENSE).setTransactionState(CONFIRMED),
+//                provideRxSchedulers())
+//    }
+//
+//    private fun tagTotalsReportPresenter() = registerFactory(TagsTotalsReportPresenter::class) { ->
+//        TagsTotalsReportPresenter(
+//                provideAppUserService(),
+//                provideTransactionsService(),
+//                provideExchangeRatesProvider(),
+//                provideFilter().setTransactionState(CONFIRMED),
+//                provideRxSchedulers())
+//    }
 }
 
 fun View.provideExpenseTrendReportPresenter() = withActivityScope.provideSingletonFor<TrendReportPresenter>()

@@ -15,19 +15,14 @@
 package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.datasource.DataSource
-import com.mvcoding.expensius.datawriter.DataWriter
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.feature.ErrorView
 import com.mvcoding.expensius.feature.Resolution
 import com.mvcoding.expensius.feature.ResolvableErrorView
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
 import com.mvcoding.expensius.feature.login.LoginPresenter.Login.ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.FailedLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.Idle
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInAnonymously
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInWithGoogle
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.SuccessfulLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.WaitingGoogleToken
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.*
 import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.UserAlreadyLinkedException

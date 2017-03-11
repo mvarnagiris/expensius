@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,14 +11,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+package com.mvcoding.expensius.data
 
-package com.mvcoding.expensius.firebase.model
+import rx.Observable
 
-data class FirebaseSettings(val mainCurrency: String? = null, val subscriptionType: String? = null) {
-
-//    fun toSettings() = Settings(
-//            mainCurrency?.let { Currency(it) } ?: defaultCurrency(),
-//            ReportPeriod.MONTH,
-//            ReportGroup.DAY,
-//            subscriptionType?.let { SubscriptionType.valueOf(it) } ?: FREE)
+interface DataSource<DATA> {
+    fun data(): Observable<DATA>
 }

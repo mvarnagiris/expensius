@@ -16,7 +16,7 @@ apply plugin: 'java'
 apply plugin: "kotlin"
 
 dependencies {
-    compile project(':datasource')
+    compile project(':data')
     compile project(':models')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "io.reactivex:rxkotlin:$rxkotlin_version"

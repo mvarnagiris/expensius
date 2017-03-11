@@ -12,13 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.datasource
+package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.datasource.RealtimeData.AddedItems
-import com.mvcoding.expensius.datasource.RealtimeData.AllItems
-import com.mvcoding.expensius.datasource.RealtimeData.ChangedItems
-import com.mvcoding.expensius.datasource.RealtimeData.MovedItems
-import com.mvcoding.expensius.datasource.RealtimeData.RemovedItems
+import com.mvcoding.expensius.data.RealtimeData.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever

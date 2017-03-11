@@ -14,17 +14,9 @@
 
 package com.mvcoding.expensius.firebase
 
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.Query
-import com.google.firebase.database.ValueEventListener
-import com.mvcoding.expensius.datasource.RealtimeData.AddedItems
-import com.mvcoding.expensius.datasource.RealtimeData.AllItems
-import com.mvcoding.expensius.datasource.RealtimeData.ChangedItems
-import com.mvcoding.expensius.datasource.RealtimeData.MovedItems
-import com.mvcoding.expensius.datasource.RealtimeData.RemovedItems
-import com.mvcoding.expensius.datasource.RealtimeList
+import com.google.firebase.database.*
+import com.mvcoding.expensius.data.RealtimeData.*
+import com.mvcoding.expensius.data.RealtimeList
 import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import java.io.Closeable

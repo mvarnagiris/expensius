@@ -14,7 +14,7 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@color/backgroundWindow" />
+    <item android:drawable="?colorPrimary" />
 
     <item>
         <bitmap

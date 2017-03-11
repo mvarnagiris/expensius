@@ -15,62 +15,53 @@
 package com.mvcoding.expensius.feature.premium
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.Destroyable
-import com.mvcoding.expensius.feature.EmptyView
-import com.mvcoding.expensius.feature.ErrorView
-import com.mvcoding.expensius.feature.RefreshableView
-import com.mvcoding.expensius.feature.ignoreError
-import com.mvcoding.expensius.feature.updateEmptyView
+import com.mvcoding.expensius.feature.*
 import com.mvcoding.expensius.model.Settings
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
-import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.AppUserWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
-import rx.Observable.combineLatest
-import rx.Observable.just
 
 class PremiumPresenter(
-        private val appUserService: AppUserService,
-        private val appUserWriteService: AppUserWriteService,
+        //        private val appUserService: AppUserService,
+//        private val appUserWriteService: AppUserWriteService,
         private val billingProductsService: BillingProductsService,
         private val schedulers: RxSchedulers) : Presenter<PremiumPresenter.View>(), Destroyable {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        appUserService.appUser()
-                .subscribeOn(schedulers.io)
-                .map { it.settings.subscriptionType }
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showSubscriptionType(it) }
+//        appUserService.appUser()
+//                .subscribeOn(schedulers.io)
+//                .map { it.settings.subscriptionType }
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showSubscriptionType(it) }
 
         view.refreshes()
                 .startWith(Unit)
                 .doOnNext { view.showLoading() }
                 .observeOn(schedulers.io)
-                .switchMap { billingData() }
-                .switchMap { it.updateToPremiumPaidIfNecessary() }
-                .map { it.billingProducts() }
+//                .switchMap { billingData() }
+//                .switchMap { it.updateToPremiumPaidIfNecessary() }
+//                .map { it.billingProducts() }
                 .observeOn(schedulers.main)
-                .doOnNext { view.hideLoading() }
-                .doOnNext { view.updateEmptyView(it) }
-                .subscribeUntilDetached { view.showBillingProducts(it) }
+//                .doOnNext { view.hideLoading() }
+//                .doOnNext { view.updateEmptyView(it) }
+//                .subscribeUntilDetached { view.showBillingProducts(it) }
 
         view.billingProductSelects()
                 .switchMap { view.displayBuyProcess(it.id).ignoreError() }
                 .observeOn(schedulers.io)
-                .withLatestFrom(appUserService.appUser().map { it.settings }, { unit, settings -> settings })
-                .switchMap { updateToPremiumPaid(it) }
-                .subscribeUntilDetached()
+//                .withLatestFrom(appUserService.appUser().map { it.settings }, { unit, settings -> settings })
+//                .switchMap { updateToPremiumPaid(it) }
+//                .subscribeUntilDetached()
     }
 
-    private fun billingData(): Observable<BillingData> = combineLatest(
-            appUserService.appUser().map { it.settings },
-            billingProductsService.billingProducts(),
-            { settings, billingProducts -> BillingData(settings, billingProducts) })
+//    private fun billingData(): Observable<BillingData> = combineLatest(
+//            appUserService.appUser().map { it.settings },
+//            billingProductsService.billingProducts(),
+//            { settings, billingProducts -> BillingData(settings, billingProducts) })
 
     override fun onDestroy() {
         billingProductsService.close()
@@ -80,11 +71,11 @@ class PremiumPresenter(
             if (subscriptionType == FREE) showFreeUser()
             else showPremiumUser()
 
-    private fun BillingData.updateToPremiumPaidIfNecessary(): Observable<BillingData> =
-            if (shouldUpdateToPremiumPaid()) updateToPremiumPaid(settings).map { this }
-            else just(this)
+//    private fun BillingData.updateToPremiumPaidIfNecessary(): Observable<BillingData> =
+//            if (shouldUpdateToPremiumPaid()) updateToPremiumPaid(settings).map { this }
+//            else just(this)
 
-    private fun updateToPremiumPaid(settings: Settings) = appUserWriteService.saveSettings(settings.copy(subscriptionType = PREMIUM_PAID))
+//    private fun updateToPremiumPaid(settings: Settings) = appUserWriteService.saveSettings(settings.copy(subscriptionType = PREMIUM_PAID))
 
     private data class BillingData(val settings: Settings, private val billingProducts: List<BillingProduct>) {
         fun subscriptionType() =

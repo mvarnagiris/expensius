@@ -15,18 +15,17 @@
 package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.service.AppUserService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class LoginWithAccountPresenter(
-        private val appUserService: AppUserService,
+        //        private val appUserService: AppUserService,
         private val schedulers: RxSchedulers) : Presenter<LoginWithAccountPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        appUserService.appUser().subscribeOn(schedulers.io).skip(1).observeOn(schedulers.main).subscribeUntilDetached { view.displaySupportDeveloper() }
+//        appUserService.appUser().subscribeOn(schedulers.io).skip(1).observeOn(schedulers.main).subscribeUntilDetached { view.displaySupportDeveloper() }
         view.loginFailures().subscribeUntilDetached { view.close() }
     }
 

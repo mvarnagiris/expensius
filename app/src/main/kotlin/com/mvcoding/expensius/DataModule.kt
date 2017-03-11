@@ -17,8 +17,8 @@ package com.mvcoding.expensius
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.datasource.DataSource
-import com.mvcoding.expensius.datawriter.DataWriter
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.feature.login.LoginWriterAndStateSource
 import com.mvcoding.expensius.feature.login.TranslatedDefaultTagsSource
 import com.mvcoding.expensius.model.CreateTag
@@ -27,21 +27,21 @@ import com.mvcoding.expensius.model.Tag
 class DataModule : ShankModule {
     override fun registerFactories() {
         translatedDefaultTagsSource()
-        loginWriterAndStateSource()
+//        loginWriterAndStateSource()
     }
 
     private fun translatedDefaultTagsSource() = registerFactory(TranslatedDefaultTagsSource::class) { -> TranslatedDefaultTagsSource(provideContext()) }
 
-    private fun loginWriterAndStateSource() = registerFactory(LoginWriterAndStateSource::class) { ->
-        LoginWriterAndStateSource(
-                { provideFirebaseAppUserService().loginAnonymously() },
-                { googleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists ->
-                    provideFirebaseAppUserService().loginWithGoogle(googleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists)
-                },
-                provideTagsSource(),
-                provideDefaultTagsSource(),
-                provideCreateTagsWriter())
-    }
+//    private fun loginWriterAndStateSource() = registerFactory(LoginWriterAndStateSource::class) { ->
+//        LoginWriterAndStateSource(
+//                { provideFirebaseAppUserService().loginAnonymously() },
+//                { googleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists ->
+//                    provideFirebaseAppUserService().loginWithGoogle(googleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists)
+//                },
+//                provideTagsSource(),
+//                provideDefaultTagsSource(),
+//                provideCreateTagsWriter())
+//    }
 }
 
 fun provideLoginWriterAndStateSource() = provideNew<LoginWriterAndStateSource>()

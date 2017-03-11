@@ -15,20 +15,10 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
-import com.mvcoding.expensius.model.CreateTransaction
-import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.Note
 import com.mvcoding.expensius.model.NullModels.noTransactionId
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.TransactionState
-import com.mvcoding.expensius.model.TransactionType
-import com.mvcoding.expensius.service.TransactionsWriteService
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
@@ -36,7 +26,7 @@ import java.math.BigDecimal
 
 class TransactionPresenter(
         private var transaction: Transaction,
-        private val transactionsWriteService: TransactionsWriteService,
+        //        private val transactionsWriteService: TransactionsWriteService,
         private val currenciesProvider: CurrenciesProvider) : Presenter<TransactionPresenter.View>() {
 
     override fun onViewAttached(view: View) {
@@ -68,20 +58,20 @@ class TransactionPresenter(
                     note = note)
         }).doOnNext { transaction = it }
 
-        view.saveRequests()
-                .withLatestFrom(transaction, { unit, transaction -> transaction })
-                .switchMap { saveTransaction(it) }
-                .subscribeUntilDetached { view.displayResult() }
+//        view.saveRequests()
+//                .withLatestFrom(transaction, { unit, transaction -> transaction })
+//                .switchMap { saveTransaction(it) }
+//                .subscribeUntilDetached { view.displayResult() }
 
         view.archiveToggles()
                 .map { transactionWithToggledArchiveState() }
-                .switchMap { transactionsWriteService.saveTransactions(setOf(it)) }
+//                .switchMap { transactionsWriteService.saveTransactions(setOf(it)) }
                 .subscribeUntilDetached { view.displayResult() }
     }
 
-    private fun saveTransaction(transaction: Transaction) =
-            if (transaction.isExisting()) transactionsWriteService.saveTransactions(setOf(transaction))
-            else transactionsWriteService.createTransactions(setOf(transaction.toCreateTransaction()))
+//    private fun saveTransaction(transaction: Transaction) =
+//            if (transaction.isExisting()) transactionsWriteService.saveTransactions(setOf(transaction))
+//            else transactionsWriteService.createTransactions(setOf(transaction.toCreateTransaction()))
 
     private fun Transaction.isExisting() = this.transactionId != noTransactionId
     private fun Transaction.toCreateTransaction() = CreateTransaction(transactionType, transactionState, timestamp, money, tags, note)

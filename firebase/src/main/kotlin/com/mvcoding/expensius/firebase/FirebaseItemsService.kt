@@ -16,20 +16,14 @@ package com.mvcoding.expensius.firebase
 
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.Query
-import com.mvcoding.expensius.service.AddedItems
-import com.mvcoding.expensius.service.ChangedItems
-import com.mvcoding.expensius.service.ItemsService
-import com.mvcoding.expensius.service.MovedItem
-import com.mvcoding.expensius.service.RemovedItems
 import rx.Observable
 import rx.Observable.Transformer
 import rx.lang.kotlin.BehaviorSubject
-import rx.lang.kotlin.toSingletonObservable
 import java.util.concurrent.atomic.AtomicReference
 
 class FirebaseItemsService<ITEM>(
         queries: Observable<Query>,
-        private val transformer: Transformer<List<DataSnapshot>, List<ITEM>>) : ItemsService<ITEM> {
+        private val transformer: Transformer<List<DataSnapshot>, List<ITEM>>) /*: ItemsService<ITEM>*/ {
 
     private val oldFirebaseList = AtomicReference<FirebaseList>()
     private val firebaseListSubject = BehaviorSubject<FirebaseList>()
@@ -38,23 +32,23 @@ class FirebaseItemsService<ITEM>(
         queries.map { FirebaseList(it) }.subscribe { closeOldListAndEmitNewList(it) }
     }
 
-    override fun items(): Observable<List<ITEM>> = firebaseListSubject.flatMap { it.items() }.compose(transformer)
-
-    override fun addedItems(): Observable<AddedItems<ITEM>> = firebaseListSubject.flatMap { it.addedItems() }.flatMap { addedItems ->
-        addedItems.items.toSingletonObservable().compose(transformer).map { AddedItems(addedItems.position, it) }
-    }
-
-    override fun changedItems(): Observable<ChangedItems<ITEM>> = firebaseListSubject.flatMap { it.changedItems() }.flatMap { changedItems ->
-        changedItems.items.toSingletonObservable().compose(transformer).map { ChangedItems(changedItems.position, it) }
-    }
-
-    override fun removedItems(): Observable<RemovedItems<ITEM>> = firebaseListSubject.flatMap { it.removedItems() }.flatMap { removedItems ->
-        removedItems.items.toSingletonObservable().compose(transformer).map { RemovedItems(removedItems.position, it) }
-    }
-
-    override fun movedItem(): Observable<MovedItem<ITEM>> = firebaseListSubject.flatMap { it.movedItem() }.flatMap { movedItem ->
-        listOf(movedItem.item).toSingletonObservable().compose(transformer).map { MovedItem(movedItem.fromPosition, movedItem.toPosition, it.first()) }
-    }
+//    override fun items(): Observable<List<ITEM>> = firebaseListSubject.flatMap { it.items() }.compose(transformer)
+//
+//    override fun addedItems(): Observable<AddedItems<ITEM>> = firebaseListSubject.flatMap { it.addedItems() }.flatMap { addedItems ->
+//        addedItems.items.toSingletonObservable().compose(transformer).map { AddedItems(addedItems.position, it) }
+//    }
+//
+//    override fun changedItems(): Observable<ChangedItems<ITEM>> = firebaseListSubject.flatMap { it.changedItems() }.flatMap { changedItems ->
+//        changedItems.items.toSingletonObservable().compose(transformer).map { ChangedItems(changedItems.position, it) }
+//    }
+//
+//    override fun removedItems(): Observable<RemovedItems<ITEM>> = firebaseListSubject.flatMap { it.removedItems() }.flatMap { removedItems ->
+//        removedItems.items.toSingletonObservable().compose(transformer).map { RemovedItems(removedItems.position, it) }
+//    }
+//
+//    override fun movedItem(): Observable<MovedItem<ITEM>> = firebaseListSubject.flatMap { it.movedItem() }.flatMap { movedItem ->
+//        listOf(movedItem.item).toSingletonObservable().compose(transformer).map { MovedItem(movedItem.fromPosition, movedItem.toPosition, it.first()) }
+//    }
 
     private fun closeOldListAndEmitNewList(firebaseList: FirebaseList) {
         oldFirebaseList.getAndSet(firebaseList)?.close()

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.datasource
+package com.mvcoding.expensius.data
 
 sealed class RealtimeData<out ITEM> {
     abstract val items: List<ITEM>

@@ -13,7 +13,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.1.0-beta-38'
+    ext.kotlin_version = '1.1.0'
     ext.rxjava_version = '1.1.6'
     ext.rxkotlin_version = '0.60.0'
     ext.junit_version = '4.12'
@@ -22,7 +22,7 @@ buildscript {
     ext.rxbinding_version = '0.4.0'
     ext.firebase_version = '10.0.1'
     ext.hamkrest_version = '1.2.1.0'
-    ext.assertk_version = '0.1.0'
+    ext.assertk_version = '0.1.1'
     ext.build_tools_version = '25.0.2'
     ext.compile_sdk_version = 25
     ext.target_sdk_version = 25
@@ -34,7 +34,7 @@ buildscript {
         maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:3.0.0'
     }

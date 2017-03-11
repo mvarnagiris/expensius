@@ -15,11 +15,10 @@
 package com.mvcoding.expensius.firebase
 
 import com.google.firebase.database.FirebaseDatabase
-import com.mvcoding.expensius.model.UserId
 
-internal fun tagsDatabaseReference(userId: UserId) = firebase().child("tags").child(userId.id)
-internal fun archivedTagsDatabaseReference(userId: UserId) = firebase().child("archivedTags").child(userId.id)
-internal fun transactionsDatabaseReference(userId: UserId) = firebase().child("transactions").child(userId.id)
-internal fun archivedTransactionsDatabaseReference(userId: UserId) = firebase().child("archivedTransactions").child(userId.id)
-internal fun userDatabaseReference(userId: UserId) = firebase().child("users").child(userId.id)
+//internal fun tagsDatabaseReference(userId: UserId) = firebase().child("tags").child(userId.id)
+//internal fun archivedTagsDatabaseReference(userId: UserId) = firebase().child("archivedTags").child(userId.id)
+//internal fun transactionsDatabaseReference(userId: UserId) = firebase().child("transactions").child(userId.id)
+//internal fun archivedTransactionsDatabaseReference(userId: UserId) = firebase().child("archivedTransactions").child(userId.id)
+//internal fun userDatabaseReference(userId: UserId) = firebase().child("users").child(userId.id)
 private fun firebase() = FirebaseDatabase.getInstance().reference

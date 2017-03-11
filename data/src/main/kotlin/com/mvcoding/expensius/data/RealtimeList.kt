@@ -12,8 +12,15 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.datawriter
+package com.mvcoding.expensius.data
 
-interface DataWriter<in DATA> {
-    fun write(data: DATA)
+import com.mvcoding.expensius.data.RealtimeData.*
+import rx.Observable
+
+interface RealtimeList<ITEM> {
+    fun getAllItems(): Observable<AllItems<ITEM>>
+    fun getAddedItems(): Observable<AddedItems<ITEM>>
+    fun getChangedItems(): Observable<ChangedItems<ITEM>>
+    fun getRemovedItems(): Observable<RemovedItems<ITEM>>
+    fun getMovedItem(): Observable<MovedItems<ITEM>>
 }

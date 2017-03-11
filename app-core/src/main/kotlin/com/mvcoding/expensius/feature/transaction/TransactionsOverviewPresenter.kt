@@ -15,15 +15,14 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.service.TransactionsService
 import com.mvcoding.mvp.Presenter
 
-class TransactionsOverviewPresenter(private val transactionsService: TransactionsService) : Presenter<TransactionsOverviewPresenter.View>() {
+class TransactionsOverviewPresenter : Presenter<TransactionsOverviewPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        transactionsService.items().map { it.take(3) }.subscribeUntilDetached { view.showTransactions(it) }
+//        transactionsService.items().map { it.take(3) }.subscribeUntilDetached { view.showTransactions(it) }
     }
 
     interface View : Presenter.View {

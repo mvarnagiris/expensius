@@ -14,11 +14,8 @@
 
 package com.mvcoding.expensius.firebase
 
-import com.mvcoding.expensius.model.Currency
-import java.util.*
-
-fun defaultCurrency(): Currency = try {
-    java.util.Currency.getInstance(Locale.getDefault()).let { Currency(it.currencyCode) }
-} catch (e: Exception) {
-    Currency("USD")
-}
+//fun defaultCurrency(): Currency = try {
+//    java.util.Currency.getInstance(Locale.getDefault()).let { Currency(it.currencyCode) }
+//} catch (e: Exception) {
+//    Currency("USD")
+//}

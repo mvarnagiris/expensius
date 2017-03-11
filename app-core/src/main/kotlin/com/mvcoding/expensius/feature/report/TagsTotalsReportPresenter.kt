@@ -21,14 +21,11 @@ import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.TransactionsService
 import com.mvcoding.mvp.Presenter
-import rx.Observable.combineLatest
 
 class TagsTotalsReportPresenter(
-        private val appUserService: AppUserService,
-        private val transactionsService: TransactionsService,
+        //        private val appUserService: AppUserService,
+//        private val transactionsService: TransactionsService,
         exchangeRatesProvider: ExchangeRatesProvider,
         private val filter: Filter,
         private val schedulers: RxSchedulers) : Presenter<TagsTotalsReportPresenter.View>() {
@@ -38,12 +35,12 @@ class TagsTotalsReportPresenter(
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        combineLatest(appUserService.appUser(), transactionsService.items(), filter.filterData(), moneyGroupingData())
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.computation)
-                .map { moneyGrouping.groupToTags(it.transactions, it.appUser.settings.mainCurrency, it.filterData) }
-                .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showTagsTotals(it) }
+//        combineLatest(appUserService.appUser(), transactionsService.items(), filter.filterData(), moneyGroupingData())
+//                .subscribeOn(schedulers.io)
+//                .observeOn(schedulers.computation)
+//                .map { moneyGrouping.groupToTags(it.transactions, it.appUser.settings.mainCurrency, it.filterData) }
+//                .observeOn(schedulers.main)
+//                .subscribeUntilDetached { view.showTagsTotals(it) }
     }
 
     private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterData ->

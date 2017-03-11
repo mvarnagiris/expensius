@@ -18,37 +18,31 @@ import android.app.Activity
 import android.view.View
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
-import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.provideArchivedTagsService
-import com.mvcoding.expensius.provideRxSchedulers
-import com.mvcoding.expensius.provideTagsService
-import com.mvcoding.expensius.provideTagsWriteService
 import memoizrlabs.com.shankandroid.withActivityScope
 import memoizrlabs.com.shankandroid.withThisScope
 
 class TagsModule : ShankModule {
     override fun registerFactories() {
-        quickTagsPresenter()
-        tagsPresenter()
-        tagPresenter()
+//        quickTagsPresenter()
+//        tagsPresenter()
+//        tagPresenter()
     }
 
-    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
-        QuickTagsPresenter(provideTagsService(), provideRxSchedulers())
-    }
-
-    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsWriteService()) }
-
-    private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
-        TagsPresenter(
-                modelDisplayType,
-                if (modelDisplayType == VIEW_ARCHIVED) provideArchivedTagsService() else provideTagsService(),
-                provideTagsWriteService(),
-                provideRxSchedulers())
-    }
+//    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
+//        QuickTagsPresenter(provideTagsService(), provideRxSchedulers())
+//    }
+//
+//    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsWriteService()) }
+//
+//    private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
+//        TagsPresenter(
+//                modelDisplayType,
+//                if (modelDisplayType == VIEW_ARCHIVED) provideArchivedTagsService() else provideTagsService(),
+//                provideTagsWriteService(),
+//                provideRxSchedulers())
+//    }
 }
 
 fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()

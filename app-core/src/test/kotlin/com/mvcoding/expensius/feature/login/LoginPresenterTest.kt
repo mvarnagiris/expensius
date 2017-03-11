@@ -14,23 +14,14 @@
 
 package com.mvcoding.expensius.feature.login
 
-import com.mvcoding.expensius.datasource.DataSource
-import com.mvcoding.expensius.datawriter.DataWriter
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.feature.Resolution
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
-import com.mvcoding.expensius.feature.login.LoginPresenter.Login
+import com.mvcoding.expensius.feature.login.LoginPresenter.*
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.*
 import com.mvcoding.expensius.feature.login.LoginPresenter.Login.AnonymousLogin
 import com.mvcoding.expensius.feature.login.LoginPresenter.Login.GoogleLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.FailedLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.Idle
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInAnonymously
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.LoggingInWithGoogle
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.SuccessfulLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.WaitingGoogleToken
+import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.*
 import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
