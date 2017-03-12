@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.empty
@@ -30,7 +31,9 @@ enum class Resolution {
     POSITIVE, NEGATIVE
 }
 
-data class Error(val throwable: Throwable)
+data class Error(val throwable: Throwable) {
+    fun isResolvable() = throwable is UserAlreadyLinkedException
+}
 
 fun Throwable.toError() = Error(this)
 

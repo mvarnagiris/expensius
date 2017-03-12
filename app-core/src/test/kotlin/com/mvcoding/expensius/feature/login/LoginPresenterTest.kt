@@ -14,167 +14,199 @@
 
 package com.mvcoding.expensius.feature.login
 
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.DataWriter
+import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.feature.Resolution
-import com.mvcoding.expensius.feature.login.LoginPresenter.*
+import com.mvcoding.expensius.feature.Resolution.NEGATIVE
+import com.mvcoding.expensius.feature.Resolution.POSITIVE
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.*
-import com.mvcoding.expensius.feature.login.LoginPresenter.Login.AnonymousLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter.Login.GoogleLogin
-import com.mvcoding.expensius.feature.login.LoginPresenter.LoginState.*
+import com.mvcoding.expensius.feature.login.LoginPresenter.GoogleTokenResult.FailedGoogleTokenResult
+import com.mvcoding.expensius.feature.login.LoginPresenter.GoogleTokenResult.SuccessfulGoogleTokenResult
 import com.mvcoding.expensius.feature.toError
+import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
+import com.mvcoding.expensius.model.AuthProvider.GOOGLE
 import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.Login
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.expensius.model.aGoogleToken
 import com.mvcoding.expensius.rxSchedulers
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
-import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class LoginPresenterTest {
 
-    val loginStateSubject = BehaviorSubject<LoginState>()
-    val loginWithGoogleRequestsSubject = PublishSubject<Unit>()
-    val googleTokenSubject = PublishSubject<GoogleToken>()
-    val skipLoginRequestsSubject = PublishSubject<Unit>()
+    val loginWithGoogleSubject = PublishSubject<Unit>()
+    val googleTokenSubject = PublishSubject<LoginPresenter.GoogleTokenResult>()
+    var loginSubject = PublishSubject<Unit>()
+    val skipLoginSubject = PublishSubject<Unit>()
     val errorResolutionSubject = PublishSubject<Resolution>()
 
-    val loginStateSource = mock<DataSource<LoginState>>()
-    val loginWriter = mock<DataWriter<Login>>()
+    val googleToken = aGoogleToken()
+
+    val loginSource = mock<ParameterDataSource<Login, Unit>>()
     val view = mock<LoginPresenter.View>()
+    val inOrder = inOrder(view)
 
     @Before
     fun setUp() {
-        whenever(loginStateSource.data()).thenReturn(loginStateSubject)
-        whenever(view.loginWithGoogleRequests()).thenReturn(loginWithGoogleRequestsSubject)
-        whenever(view.skipLoginRequests()).thenReturn(skipLoginRequestsSubject)
+        whenever(view.googleLogins()).thenReturn(loginWithGoogleSubject)
         whenever(view.showGoogleTokenRequest()).thenReturn(googleTokenSubject)
+        whenever(loginSource.data(any())).thenReturn(loginSubject)
+        whenever(view.skipLogins()).thenReturn(skipLoginSubject)
         whenever(view.showResolvableError(any())).thenReturn(errorResolutionSubject)
     }
 
     @Test
-    fun `shows all login options when destination is APP and login state is Idle`() {
-        presenter(APP).attach(view)
+    fun `shows all login options when destination is APP`() {
+        val presenter = presenter(APP)
+        presenter.attach(view)
 
-        receiveLoginState(Idle)
+        presenter.detach(view)
+        presenter.attach(view)
 
-        verify(view).showAllLoginOptions()
+        verify(view, times(2)).showAllLoginOptions()
     }
 
     @Test
-    fun `shows all login options except skip when destination is RETURN and login state is Idle`() {
-        presenter(RETURN).attach(view)
+    fun `shows all login options except skip when destination is RETURN`() {
+        val presenter = presenter(RETURN)
+        presenter.attach(view)
 
-        receiveLoginState(Idle)
+        presenter.detach(view)
+        presenter.attach(view)
 
-        verify(view).showAllLoginOptionsExceptSkip()
+        verify(view, times(2)).showAllLoginOptionsExceptSkip()
     }
 
     @Test
-    fun `shows all login options except skip when destination is SUPPORT_DEVELOPER and login state is Idle`() {
-        presenter(SUPPORT_DEVELOPER).attach(view)
+    fun `shows all login options except skip when destination is SUPPORT_DEVELOPER`() {
+        val presenter = presenter(SUPPORT_DEVELOPER)
+        presenter.attach(view)
 
-        receiveLoginState(Idle)
+        presenter.detach(view)
+        presenter.attach(view)
 
-        verify(view).showAllLoginOptionsExceptSkip()
+        verify(view, times(2)).showAllLoginOptionsExceptSkip()
     }
 
     @Test
-    fun `shows waiting google token request when login state is WaitingGoogleToken`() {
-        presenter().attach(view)
+    fun `can login with google`() {
+        val presenter = presenter()
+        presenter.attach(view)
 
-        receiveLoginState(WaitingGoogleToken)
+        loginWithGoogle()
+        inOrder.verify(view).showGoogleTokenRequest()
 
-        verify(view).showGoogleTokenRequest()
+        presenter.detach(view)
+        presenter.attach(view)
+        inOrder.verify(view).showGoogleTokenRequest()
+
+        receiveGoogleToken(googleToken)
+        inOrder.verify(view).showLoggingIn(GOOGLE)
+
+        presenter.detach(view)
+        presenter.attach(view)
+        inOrder.verify(view).showLoggingIn(GOOGLE)
+
+        completeLogin()
+        inOrder.verify(view).displayDestination(APP)
     }
 
     @Test
-    fun `shows logging in anonymously when login state is LoggingInAnonymously`() {
-        presenter().attach(view)
+    fun `can skip login that will login anonymously`() {
+        val presenter = presenter()
+        presenter.attach(view)
 
-        receiveLoginState(LoggingInAnonymously)
+        skipLogin()
+        inOrder.verify(view).showLoggingIn(ANONYMOUS)
 
-        verify(view).showLoggingInAnonymously()
+        presenter.detach(view)
+        presenter.attach(view)
+        inOrder.verify(view).showLoggingIn(ANONYMOUS)
+
+        completeLogin()
+        inOrder.verify(view).displayDestination(APP)
     }
 
     @Test
-    fun `shows logging in with google when login state is LoggingInWithGoogle`() {
-        presenter().attach(view)
-
-        receiveLoginState(LoggingInWithGoogle)
-
-        verify(view).showLoggingInWithGoogle()
-    }
-
-    @Test
-    fun `displays destination when login state is SuccessfulLogin`() {
-        presenter(RETURN).attach(view)
-
-        receiveLoginState(SuccessfulLogin)
-
-        verify(view).displayDestination(RETURN)
-    }
-
-    @Test
-    fun `shows error when login state is FailedLogin`() {
+    fun `handles google token failures`() {
         val throwable = Throwable()
         presenter().attach(view)
 
-        receiveLoginState(FailedLogin(throwable))
+        loginWithGoogle()
+        failGoogleTokenRequest(throwable)
 
-        verify(view).showError(throwable.toError())
+        inOrder.verify(view).showError(throwable.toError())
+        inOrder.verify(view).showAllLoginOptions()
     }
 
     @Test
-    fun `shows resolvable error and forces login if resolution is positive when login state is FailedLogin with UserAlreadyLinkedException`() {
+    fun `handles login errors when logging in with google`() {
+        val throwable = Throwable()
+        presenter().attach(view)
+
+        loginWithGoogle()
+        receiveGoogleToken(googleToken)
+        failLogin(throwable)
+
+        inOrder.verify(view).showError(throwable.toError())
+        inOrder.verify(view).showAllLoginOptions()
+    }
+
+    @Test
+    fun `handles login errors when logging in anonymously`() {
+        val throwable = Throwable()
+        presenter().attach(view)
+
+        skipLogin()
+        failLogin(throwable)
+
+        inOrder.verify(view).showError(throwable.toError())
+        inOrder.verify(view).showAllLoginOptions()
+    }
+
+    @Test
+    fun `shows resolvable error and forces login if resolution is positive when login fails with with UserAlreadyLinkedException`() {
         val throwable = UserAlreadyLinkedException(Throwable())
         presenter().attach(view)
 
-        receiveLoginState(FailedLogin(throwable))
-        resolveError(Resolution.POSITIVE)
-
-        verify(view).showResolvableError(throwable.toError())
-        verify(loginWriter).write(Login.ForcePreviousLoginAndLoseLocalDataIfUserAlreadyExists)
-    }
-
-    @Test
-    fun `logs in anonymously when user skips login`() {
-        presenter().attach(view)
-
-        requestSkipLogin()
-
-        verify(loginWriter).write(AnonymousLogin)
-    }
-
-    @Test
-    fun `requests google token when user requests google login`() {
-        presenter().attach(view)
-
-        requestLoginWithGoogle()
-
-        verify(loginWriter).write(Login.GetGoogleToken)
-    }
-
-    @Test
-    fun `logs in with google when google token is received`() {
-        val googleToken = aGoogleToken()
-        presenter().attach(view)
-
-        receiveLoginState(WaitingGoogleToken)
+        loginWithGoogle()
         receiveGoogleToken(googleToken)
+        failLogin(throwable)
+        resolveError(POSITIVE)
+        completeLogin()
 
-        verify(loginWriter).write(GoogleLogin(googleToken))
+        inOrder.verify(view).showResolvableError(throwable.toError())
+        inOrder.verify(view).showLoggingIn(GOOGLE)
+        inOrder.verify(view).displayDestination(APP)
     }
 
-    fun presenter(destination: Destination = APP) = LoginPresenter(destination, loginStateSource, loginWriter, rxSchedulers())
-    fun receiveLoginState(loginState: LoginState) = loginStateSubject.onNext(loginState)
-    fun receiveGoogleToken(googleToken: GoogleToken) = googleTokenSubject.onNext(googleToken)
-    fun requestLoginWithGoogle() = loginWithGoogleRequestsSubject.onNext(Unit)
-    fun requestSkipLogin() = skipLoginRequestsSubject.onNext(Unit)
+    @Test
+    fun `waits for login selection again when login resolution is negative after UserAlreadyLinkedException`() {
+        val throwable = UserAlreadyLinkedException(Throwable())
+        presenter().attach(view)
+
+        loginWithGoogle()
+        receiveGoogleToken(googleToken)
+        failLogin(throwable)
+        resolveError(NEGATIVE)
+
+        inOrder.verify(view).showResolvableError(throwable.toError())
+        inOrder.verify(view).showAllLoginOptions()
+    }
+
+    fun presenter(destination: Destination = APP) = LoginPresenter(destination, loginSource, rxSchedulers())
+    fun loginWithGoogle() = loginWithGoogleSubject.onNext(Unit)
+    fun skipLogin() = skipLoginSubject.onNext(Unit)
+    fun receiveGoogleToken(googleToken: GoogleToken) = googleTokenSubject.onNext(SuccessfulGoogleTokenResult(googleToken))
+    fun failGoogleTokenRequest(throwable: Throwable) = googleTokenSubject.onNext(FailedGoogleTokenResult(throwable))
+    fun completeLogin() = loginSubject.onNext(Unit)
     fun resolveError(resolution: Resolution) = errorResolutionSubject.onNext(resolution)
+    fun failLogin(throwable: Throwable) {
+        loginSubject.onError(throwable)
+        loginSubject = PublishSubject()
+        whenever(loginSource.data(any())).thenReturn(loginSubject)
+    }
 }

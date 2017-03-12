@@ -28,12 +28,7 @@ import com.google.firebase.crash.FirebaseCrash
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.BuildConfig.GOOGLE_WEB_CLIENT_ID
 import com.mvcoding.expensius.R
-import com.mvcoding.expensius.feature.ActivityStarter
-import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.Error
-import com.mvcoding.expensius.feature.ErrorDisplayer
-import com.mvcoding.expensius.feature.Resolution
-import com.mvcoding.expensius.feature.ResolvableErrorDisplayer
+import com.mvcoding.expensius.feature.*
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
@@ -108,7 +103,7 @@ class LoginActivity : BaseActivity(), LoginPresenter.View, GoogleApiClient.OnCon
     }
 
     override fun loginWithGoogleRequests(): Observable<Unit> = googleLoginButton.clicks()
-    override fun skipLoginRequests(): Observable<Unit> = skipLoginButton.clicks()
+    override fun skipLogins(): Observable<Unit> = skipLoginButton.clicks()
     override fun showError(error: Error): Unit = errorDisplayer.show(error)
     override fun showResolvableError(error: Error): Observable<Resolution> = resolvableErrorDisplayer.showError(error)
 
