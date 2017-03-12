@@ -14,22 +14,27 @@
 
 package com.mvcoding.expensius.firebase.service
 
-//abstract class BaseFirebaseTagsService(appUserService: AppUserService, private val databaseReference: (UserId) -> DatabaseReference) : TagsService {
-//
-//    private val firebaseItemsService = FirebaseItemsService(queries(appUserService), transformer())
-//
-//    override fun items(): Observable<List<Tag>> = firebaseItemsService.items()
-//    override fun addedItems(): Observable<AddedItems<Tag>> = firebaseItemsService.addedItems()
-//    override fun changedItems(): Observable<ChangedItems<Tag>> = firebaseItemsService.changedItems()
-//    override fun removedItems(): Observable<RemovedItems<Tag>> = firebaseItemsService.removedItems()
-//    override fun movedItem(): Observable<MovedItem<Tag>> = firebaseItemsService.movedItem()
-//
-//    private fun queries(appUserService: AppUserService) = appUserService.appUser().map { it.userId }.distinctUntilChanged().map { query(it) }
-//    private fun query(userId: UserId) = databaseReference(userId).orderByChild("order")
-//    private fun transformer(): Transformer<List<DataSnapshot>, List<Tag>> = Transformer {
-//        it.map { dataSnapshots -> dataSnapshots.map { dataSnapshot -> dataSnapshot.getValue(FirebaseTag::class.java).toTag(NONE) } }
-//    }
-//}
-//
-//class FirebaseTagsService(appUserService: AppUserService) : BaseFirebaseTagsService(appUserService, { tagsDatabaseReference(it) })
-//class FirebaseArchivedTagsService(appUserService: AppUserService) : BaseFirebaseTagsService(appUserService, { archivedTagsDatabaseReference(it) })
+import com.google.firebase.database.FirebaseDatabase
+import com.mvcoding.expensius.data.RealtimeList
+import com.mvcoding.expensius.firebase.FirebaseRealtimeList
+import com.mvcoding.expensius.firebase.model.FirebaseTag
+import com.mvcoding.expensius.model.CreateTag
+import com.mvcoding.expensius.model.ModelState.NONE
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.UserId
+
+class FirebaseTagsService {
+    fun getTags(userId: UserId): RealtimeList<Tag> = FirebaseRealtimeList(userId.tagsReference(), { it.getValue(FirebaseTag::class.java).toTag(NONE) })
+
+    fun createTags(userId: UserId, createTags: Set<CreateTag>) {
+        val tagsReference = userId.tagsReference()
+        createTags.forEach {
+            val newTagReference = tagsReference.push()
+            val firebaseTag = it.toFirebaseTag(newTagReference.key)
+            newTagReference.setValue(firebaseTag)
+        }
+    }
+
+    private fun UserId.tagsReference() = FirebaseDatabase.getInstance().getReference("tags").child(this.id)
+    private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
+}

@@ -17,17 +17,26 @@ package com.mvcoding.expensius.feature.tag
 import android.app.Activity
 import android.view.View
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.provideAppUserSource
+import com.mvcoding.expensius.provideFirebaseTagsService
 import memoizrlabs.com.shankandroid.withActivityScope
 import memoizrlabs.com.shankandroid.withThisScope
 
 class TagsModule : ShankModule {
     override fun registerFactories() {
+        createTagsWriter()
 //        quickTagsPresenter()
 //        tagsPresenter()
 //        tagPresenter()
+    }
+
+    private fun createTagsWriter() = registerFactory(CreateTagsWriter::class) { ->
+        CreateTagsWriter(provideAppUserSource()) { userId, createTags -> provideFirebaseTagsService().createTags(userId, createTags) }
     }
 
 //    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
@@ -45,6 +54,7 @@ class TagsModule : ShankModule {
 //    }
 }
 
+fun provideCreateTagsWriter() = provideNew<CreateTagsWriter>()
+fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)
 fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()
 fun Activity.provideTagPresenter(tag: Tag): TagPresenter = withThisScope.provideSingletonFor(tag)
-fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)

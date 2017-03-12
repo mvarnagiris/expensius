@@ -16,22 +16,42 @@ package com.mvcoding.expensius.feature.login
 
 import android.app.Activity
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.*
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.feature.tag.provideCreateTagsWriter
 import memoizrlabs.com.shankandroid.withThisScope
 
 class LoginModule : ShankModule {
     override fun registerFactories() {
+        tagsSnapshotSource()
+        loginSource()
         loginPresenter()
     }
 
+    private fun tagsSnapshotSource() = registerFactory(TagsSnapshotSource::class) { ->
+        TagsSnapshotSource(provideAppUserSource()) { provideFirebaseTagsService().getTags(it) }
+    }
+
+    private fun loginSource() = registerFactory(LoginSource::class) { ->
+        val firebaseAppUserService = provideFirebaseAppUserService()
+        LoginSource(
+                { firebaseAppUserService.login(it) },
+                { firebaseAppUserService.logout() },
+                { firebaseAppUserService.getAppUser() },
+                provideAppUserSource(),
+                provideTagsSnapshotSource(),
+                provideDefaultTagsSource(),
+                provideCreateTagsWriter())
+    }
+
     private fun loginPresenter() = registerFactory(LoginPresenter::class) { destination: Destination ->
-        LoginPresenter(
-                destination,
-                provideRxSchedulers())
+        LoginPresenter(destination, provideLoginSource(), provideRxSchedulers())
     }
 }
 
+fun provideTagsSnapshotSource() = provideNew<TagsSnapshotSource>()
+fun provideLoginSource() = provideNew<LoginSource>()
 fun Activity.provideLoginPresenter(destination: Destination) = withThisScope.provideSingletonFor<LoginPresenter>(destination)

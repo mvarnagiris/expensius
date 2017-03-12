@@ -19,39 +19,20 @@ import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.data.AppUserSource
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.DataWriter
-import com.mvcoding.expensius.feature.login.LoginWriterAndStateSource
 import com.mvcoding.expensius.feature.login.TranslatedDefaultTagsSource
-import com.mvcoding.expensius.model.CreateTag
-import com.mvcoding.expensius.model.Tag
 
 class DataModule : ShankModule {
     override fun registerFactories() {
         appUserSource()
-
-//        translatedDefaultTagsSource()
-//        loginWriterAndStateSource()
+        translatedDefaultTagsSource()
     }
 
     private fun appUserSource() = registerFactory(AppUserSource::class) { -> AppUserSource { provideFirebaseAppUserService().getAppUser() } }
-
-//    private fun translatedDefaultTagsSource() = registerFactory(TranslatedDefaultTagsSource::class) { -> TranslatedDefaultTagsSource(provideContext()) }
-
-//    private fun loginWriterAndStateSource() = registerFactory(LoginWriterAndStateSource::class) { ->
-//        LoginWriterAndStateSource(
-//                { provideFirebaseAppUserService().loginAnonymously() },
-//                { googleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists ->
-//                    provideFirebaseAppUserService().loginWithGoogle(googleToken, forceLoginAndLoseLocalDataIfUserAlreadyExists)
-//                },
-//                provideTagsSource(),
-//                provideDefaultTagsSource(),
-//                provideCreateTagsWriter())
-//    }
+    private fun translatedDefaultTagsSource() = registerFactory(TranslatedDefaultTagsSource::class) { -> TranslatedDefaultTagsSource(provideContext()) }
 }
 
 fun provideAppUserSource() = provideGlobalSingleton<AppUserSource>()
-fun provideLoginWriterAndStateSource() = provideNew<LoginWriterAndStateSource>()
-fun provideTagsSource() = provideNew<DataSource<List<Tag>>>() // TODO Provide proper tags source
 fun provideDefaultTagsSource() = provideNew<TranslatedDefaultTagsSource>()
-fun provideCreateTagsWriter() = provideNew<DataWriter<List<CreateTag>>>() // TODO Provide proper tags writer
+
+//fun provideLoginWriterAndStateSource() = provideNew<LoginWriterAndStateSource>()
+//fun provideTagsSource() = provideNew<DataSource<List<Tag>>>() // TODO Provide proper tags source

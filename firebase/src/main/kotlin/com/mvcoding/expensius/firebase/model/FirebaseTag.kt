@@ -14,17 +14,23 @@
 
 package com.mvcoding.expensius.firebase.model
 
+import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.NullModels.noColor
+import com.mvcoding.expensius.model.NullModels.noOrder
+import com.mvcoding.expensius.model.NullModels.noTagId
+import com.mvcoding.expensius.model.NullModels.noTitle
+
 data class FirebaseTag(
         val id: String? = null,
         val title: String? = null,
         val color: Int? = null,
         val order: Int? = null) {
 
-//    fun toTag(modelState: ModelState) = Tag(
-//            id?.let { TagId(it) } ?: noTagId,
-//            modelState,
-//            title?.let { Title(it) } ?: noTitle,
-//            color?.let { Color(it) } ?: noColor,
-//            order?.let { Order(it) } ?: noOrder
-//    )
+    // TODO Write tests
+    fun toTag(modelState: ModelState) = Tag(
+            id?.let(::TagId) ?: noTagId,
+            modelState,
+            title?.let(::Title) ?: noTitle,
+            color?.let(::Color) ?: noColor,
+            order?.let(::Order) ?: noOrder)
 }

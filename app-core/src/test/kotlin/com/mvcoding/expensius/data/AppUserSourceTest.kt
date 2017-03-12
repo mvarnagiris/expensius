@@ -6,7 +6,7 @@ import org.junit.Test
 class AppUserSourceTest {
 
     @Test
-    fun `behaves like memory data source`() {
-        testMemoryDataSource(anAppUser()) { AppUserSource { it.data() } }
+    fun `behaves like memory cache`() {
+        testMemoryCache(anAppUser(), anAppUser()) { AppUserSource { it.data() } }
     }
 }

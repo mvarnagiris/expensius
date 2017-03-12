@@ -19,19 +19,20 @@ import com.mvcoding.expensius.data.RealtimeData.*
 import com.mvcoding.expensius.data.RealtimeList
 import rx.Observable
 import rx.lang.kotlin.PublishSubject
-import java.io.Closeable
 
-class FirebaseRealtimeList<ITEM>(private val query: Query) : RealtimeList<ITEM>, Closeable {
+class FirebaseRealtimeList<ITEM>(
+        private val query: Query,
+        private val converter: (DataSnapshot) -> ITEM) : RealtimeList<ITEM> {
 
     private val allItemsSubject = PublishSubject<AllItems<ITEM>>()
     private val addedItemsSubject = PublishSubject<AddedItems<ITEM>>()
     private val changedItemsSubject = PublishSubject<ChangedItems<ITEM>>()
     private val removedItemsSubject = PublishSubject<RemovedItems<ITEM>>()
     private val movedItemSubject = PublishSubject<MovedItems<ITEM>>()
-    private val keys = arrayListOf<String>()
 
     private val valueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
+            allItemsSubject.onNext(dataSnapshot.children.map { converter(it) }.let { AllItems(it) })
         }
 
         override fun onCancelled(databaseError: DatabaseError) {
@@ -41,15 +42,19 @@ class FirebaseRealtimeList<ITEM>(private val query: Query) : RealtimeList<ITEM>,
 
     private val childEventListener = object : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildKey: String?) {
+            addedItemsSubject.onNext(converter(dataSnapshot).let { AddedItems(listOf(it), previousChildKey) })
         }
 
         override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildKey: String?) {
+            changedItemsSubject.onNext(converter(dataSnapshot).let { ChangedItems(listOf(it)) })
         }
 
         override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+            removedItemsSubject.onNext(converter(dataSnapshot).let { RemovedItems(listOf(it)) })
         }
 
         override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildKey: String?) {
+            movedItemSubject.onNext(converter(dataSnapshot).let { MovedItems(listOf(it), previousChildKey) })
         }
 
         override fun onCancelled(databaseError: DatabaseError) {

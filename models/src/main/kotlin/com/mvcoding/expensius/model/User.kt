@@ -18,7 +18,6 @@ import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import java.io.Serializable
 
 data class UserId(val id: String) : Serializable
-data class GoogleToken(val token: String) : Serializable
 data class Email(val address: String) : Serializable
 data class Name(val displayName: String) : Serializable
 enum class AuthProvider { ANONYMOUS, GOOGLE }
@@ -41,4 +40,9 @@ data class AppUser(
     fun isNotLoggedIn(): Boolean = !isLoggedIn()
     fun isNotAnonymous(): Boolean = authProviders.any { it != ANONYMOUS }
     fun isAnonymous(): Boolean = !isNotAnonymous()
+    fun withLoggedInUserDetails(loggedInUserDetails: LoggedInUserDetails) = copy(
+            userId = loggedInUserDetails.userId,
+            name = loggedInUserDetails.name,
+            email = loggedInUserDetails.email,
+            photo = loggedInUserDetails.photo)
 }

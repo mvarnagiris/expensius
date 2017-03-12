@@ -16,8 +16,9 @@ package com.mvcoding.expensius.data
 
 import com.mvcoding.expensius.data.RealtimeData.*
 import rx.Observable
+import java.io.Closeable
 
-interface RealtimeList<ITEM> {
+interface RealtimeList<ITEM> : Closeable {
     fun getAllItems(): Observable<AllItems<ITEM>>
     fun getAddedItems(): Observable<AddedItems<ITEM>>
     fun getChangedItems(): Observable<ChangedItems<ITEM>>

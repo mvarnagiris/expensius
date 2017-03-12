@@ -3,9 +3,10 @@ package com.mvcoding.expensius.data
 import com.mvcoding.expensius.model.AppUser
 import rx.Observable
 
-class AppUserSource(getAppUser: () -> Observable<AppUser>) : DataSource<AppUser> {
+class AppUserSource(getAppUser: () -> Observable<AppUser>) : Cache<AppUser> {
 
-    private val dataSource = MemoryDataSource(FunctionDataSource(getAppUser))
+    private val cache = MemoryCache(FunctionDataSource(getAppUser))
 
-    override fun data(): Observable<AppUser> = dataSource.data()
+    override fun write(data: AppUser): Unit = cache.write(data)
+    override fun data(): Observable<AppUser> = cache.data()
 }
