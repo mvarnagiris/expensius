@@ -14,52 +14,38 @@
 
 package com.mvcoding.expensius.feature.login
 
-import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
-import com.mvcoding.expensius.model.AuthProvider.GOOGLE
-import com.mvcoding.expensius.model.anAppUser
-import com.mvcoding.expensius.model.withAuthProvider
-import com.mvcoding.expensius.rxSchedulers
-import com.mvcoding.expensius.service.AppUserService
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Before
-import org.junit.Test
-import rx.lang.kotlin.BehaviorSubject
-import rx.lang.kotlin.PublishSubject
-
 class LoginWithAccountPresenterTest {
-    val loginFailuresSubject = PublishSubject<Unit>()
-    val appUserSubject = BehaviorSubject(anAppUser().withAuthProvider(ANONYMOUS))
-
-    val appUserService: AppUserService = mock()
-    val view: LoginWithAccountPresenter.View = mock()
-    val presenter = LoginWithAccountPresenter(appUserService, rxSchedulers())
-
-    @Before
-    fun setUp() {
-        whenever(appUserService.appUser()).thenReturn(appUserSubject)
-        whenever(view.loginFailures()).thenReturn(loginFailuresSubject)
-    }
-
-    @Test
-    fun closesWhenLoginFails() {
-        presenter.attach(view)
-
-        loginFailure()
-
-        verify(view).close()
-    }
-
-    @Test
-    fun displaysSupportDeveloperWhenLoginSucceeds() {
-        presenter.attach(view)
-
-        loginWithAccount()
-
-        verify(view).displaySupportDeveloper()
-    }
-
-    private fun loginWithAccount() = appUserSubject.onNext(anAppUser().withAuthProvider(GOOGLE))
-    private fun loginFailure() = loginFailuresSubject.onNext(Unit)
+//    val loginFailuresSubject = PublishSubject<Unit>()
+//    val appUserSubject = BehaviorSubject(anAppUser().withAuthProvider(ANONYMOUS))
+//
+//    val appUserService: AppUserService = mock()
+//    val view: LoginWithAccountPresenter.View = mock()
+//    val presenter = LoginWithAccountPresenter(appUserService, rxSchedulers())
+//
+//    @Before
+//    fun setUp() {
+//        whenever(appUserService.appUser()).thenReturn(appUserSubject)
+//        whenever(view.loginFailures()).thenReturn(loginFailuresSubject)
+//    }
+//
+//    @Test
+//    fun closesWhenLoginFails() {
+//        presenter.attach(view)
+//
+//        loginFailure()
+//
+//        verify(view).close()
+//    }
+//
+//    @Test
+//    fun displaysSupportDeveloperWhenLoginSucceeds() {
+//        presenter.attach(view)
+//
+//        loginWithAccount()
+//
+//        verify(view).displaySupportDeveloper()
+//    }
+//
+//    private fun loginWithAccount() = appUserSubject.onNext(anAppUser().withAuthProvider(GOOGLE))
+//    private fun loginFailure() = loginFailuresSubject.onNext(Unit)
 }

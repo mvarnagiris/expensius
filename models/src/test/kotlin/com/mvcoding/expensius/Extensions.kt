@@ -19,7 +19,6 @@ import java.util.*
 fun aString() = UUID.randomUUID().toString()
 fun aString(string: String) = "$string${anInt(1000)}"
 fun aStringId() = aString("id_")
-fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
 fun aLong() = Random().nextLong()
 fun aLong(limit: Int) = anInt(limit).toLong()
 fun anInt() = Random().nextInt()

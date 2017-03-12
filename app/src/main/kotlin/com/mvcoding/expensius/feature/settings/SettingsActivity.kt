@@ -98,8 +98,8 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
 
     override fun showAppUser(appUser: AppUser) {
         with(userSettingsItemView as SettingsItemView) {
-            setTitle(getString(if (appUser.isWithProperAccount()) R.string.logged_in_as else R.string.login))
-            setSubtitle(if (appUser.isWithProperAccount()) appUser.email.address else "")
+            setTitle(getString(if (appUser.isNotAnonymous()) R.string.logged_in_as else R.string.login))
+            setSubtitle(if (appUser.isNotAnonymous()) appUser.email.address else "")
         }
     }
 

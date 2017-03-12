@@ -17,7 +17,7 @@ package com.mvcoding.expensius.firebase.service
 //class FirebaseAppUserWriteService(private val appUserService: AppUserService) : AppUserWriteService {
 //    override fun saveSettings(settings: Settings): Observable<Unit> = appUserService.appUser().first().map {
 //        val userReference = userDatabaseReference(it.userId)
-//        userReference.setValue(FirebaseUserData(it.userId.id, settings.toFirebaseSettings()))
+//        userReference.setValue(FirebaseAppUser(it.userId.id, settings.toFirebaseSettings()))
 //        Unit
 //    }
 //

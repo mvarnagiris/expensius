@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.aStringCurrencyCode
+import com.mvcoding.expensius.aRandomItem
 
+fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
 fun aCurrency() = Currency(aStringCurrencyCode())

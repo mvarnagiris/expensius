@@ -14,11 +14,16 @@
 
 package com.mvcoding.expensius.firebase.model
 
-data class FirebaseSettings(val mainCurrency: String? = null, val subscriptionType: String? = null) {
+import com.mvcoding.expensius.firebase.defaultCurrency
+import com.mvcoding.expensius.model.*
 
-//    fun toSettings() = Settings(
-//            mainCurrency?.let { Currency(it) } ?: defaultCurrency(),
-//            ReportPeriod.MONTH,
-//            ReportGroup.DAY,
-//            subscriptionType?.let { SubscriptionType.valueOf(it) } ?: FREE)
+data class FirebaseSettings(
+        val mainCurrency: String? = null,
+        val subscriptionType: String? = null) {
+
+    fun toSettings() = Settings(
+            mainCurrency?.let(::Currency) ?: defaultCurrency(),
+            ReportPeriod.MONTH,
+            ReportGroup.DAY,
+            subscriptionType?.let { SubscriptionType.valueOf(it) } ?: SubscriptionType.FREE)
 }

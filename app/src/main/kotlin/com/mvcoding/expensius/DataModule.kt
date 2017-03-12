@@ -17,6 +17,7 @@ package com.mvcoding.expensius
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.data.AppUserSource
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.feature.login.LoginWriterAndStateSource
@@ -26,11 +27,15 @@ import com.mvcoding.expensius.model.Tag
 
 class DataModule : ShankModule {
     override fun registerFactories() {
-        translatedDefaultTagsSource()
+        appUserSource()
+
+//        translatedDefaultTagsSource()
 //        loginWriterAndStateSource()
     }
 
-    private fun translatedDefaultTagsSource() = registerFactory(TranslatedDefaultTagsSource::class) { -> TranslatedDefaultTagsSource(provideContext()) }
+    private fun appUserSource() = registerFactory(AppUserSource::class) { -> AppUserSource { } }
+
+//    private fun translatedDefaultTagsSource() = registerFactory(TranslatedDefaultTagsSource::class) { -> TranslatedDefaultTagsSource(provideContext()) }
 
 //    private fun loginWriterAndStateSource() = registerFactory(LoginWriterAndStateSource::class) { ->
 //        LoginWriterAndStateSource(

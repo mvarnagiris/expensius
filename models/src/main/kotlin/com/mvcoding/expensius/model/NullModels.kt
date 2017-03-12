@@ -24,10 +24,12 @@ import java.math.BigDecimal.ZERO
 object NullModels {
     val noCurrency = Currency("")
     val noEmail = Email("")
+    val noImage = UriImage("")
     val noSettings = Settings(noCurrency, ReportPeriod.MONTH, ReportGroup.DAY, FREE)
 
     val noUserId = UserId("")
-    val noAppUser = AppUser(noUserId, noEmail, noSettings, emptySet())
+    val noName = Name("")
+    val noAppUser = AppUser(noUserId, noName, noImage, noEmail, noSettings, emptySet())
 
     val noTagId = TagId("")
     val noTitle = Title("")

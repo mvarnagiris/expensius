@@ -32,12 +32,12 @@ class UserTest {
 
     @Test
     fun `AppUser is with proper account when at least one auth provider is not anonymous`() {
-        expect that anAppUser().withAuthProvider(GOOGLE).isWithProperAccount() _is true
+        expect that anAppUser().withAuthProvider(GOOGLE).isNotAnonymous() _is true
     }
 
     @Test
     fun `AppUser is not with proper account when not logged in or auth provider is anonymous`() {
-        expect that anAppUser().withNoAuthProviders().isWithProperAccount() _is false
-        expect that anAppUser().withAuthProvider(ANONYMOUS).isWithProperAccount() _is false
+        expect that anAppUser().withNoAuthProviders().isNotAnonymous() _is false
+        expect that anAppUser().withAuthProvider(ANONYMOUS).isNotAnonymous() _is false
     }
 }

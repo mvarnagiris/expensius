@@ -16,16 +16,42 @@ package com.mvcoding.expensius.firebase.service
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.mvcoding.expensius.firebase.model.FirebaseUserData
-import rx.lang.kotlin.BehaviorSubject
+import com.google.firebase.auth.GoogleAuthProvider
+import com.mvcoding.expensius.firebase.extensions.getAppUserDatabaseReference
+import com.mvcoding.expensius.firebase.extensions.observeSingleCurrentFirebaseUser
+import com.mvcoding.expensius.firebase.extensions.observeSingleValue
+import com.mvcoding.expensius.firebase.model.FirebaseAppUser
+import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.AuthProvider
+import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
+import com.mvcoding.expensius.model.AuthProvider.GOOGLE
+import com.mvcoding.expensius.model.NullModels.noAppUser
+import rx.Observable
+import rx.Observable.just
+import rx.Scheduler
 
-class FirebaseAppUserService {
+class FirebaseAppUserService(private val scheduler: Scheduler) {
 
-    private val firebaseAuth = FirebaseAuth.getInstance()
-    private val firebaseUserSubject = BehaviorSubject<FirebaseUser?>()
-    private val firebaseUserDataSubject = BehaviorSubject<FirebaseUserData?>()
+//    private val firebaseUserSubject = BehaviorSubject<FirebaseUser?>()
+//    private val firebaseUserDataSubject = BehaviorSubject<FirebaseAppUser?>()
 
-//    private val appUserObservable: Observable<AppUser>
+    fun getAppUser(): Observable<AppUser> = FirebaseAuth.getInstance()
+            .observeSingleCurrentFirebaseUser(scheduler)
+            .switchMap { if (it == null) just(noAppUser) else fetchAppUser(it) }
+            .onErrorReturn { noAppUser }
+
+    private fun fetchAppUser(firebaseUser: FirebaseUser): Observable<AppUser> = firebaseUser.getAppUserDatabaseReference()
+            .observeSingleValue(scheduler)
+            .map { it.getValue(FirebaseAppUser::class.java).toAppUser(firebaseUser.getAuthProviders()) }
+
+    private fun FirebaseUser.getAuthProviders(): Set<AuthProvider> = providerData.map {
+        when (it.providerId) {
+            GoogleAuthProvider.PROVIDER_ID -> GOOGLE
+            else -> ANONYMOUS
+        }
+    }.toSet()
+
+    //    private val appUserObservable: Observable<AppUser>
 //
 //    private val authStateListener = AuthStateListener { onFirebaseUserChanged(it.currentUser) }
 //
@@ -100,7 +126,7 @@ class FirebaseAppUserService {
 //
 //        userDataListener = object : ValueEventListener {
 //            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                firebaseUserDataSubject.onNext(dataSnapshot.getValue(FirebaseUserData::class.java))
+//                firebaseUserDataSubject.onNext(dataSnapshot.getValue(FirebaseAppUser::class.java))
 //            }
 //
 //            override fun onCancelled(databaseError: DatabaseError) {
@@ -115,9 +141,4 @@ class FirebaseAppUserService {
 //            email?.let { Email(it) } ?: noEmail,
 //            settings,
 //            providerData.map { it.providerId.toAuthProvider() }.toSet())
-//
-//    private fun String.toAuthProvider(): AuthProvider = when (this) {
-//        GoogleAuthProvider.PROVIDER_ID -> GOOGLE
-//        else -> ANONYMOUS
-//    }
 }

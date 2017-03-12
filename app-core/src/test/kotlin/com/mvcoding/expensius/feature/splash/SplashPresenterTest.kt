@@ -14,11 +14,12 @@
 
 package com.mvcoding.expensius.feature.splash
 
+import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.NullModels.noAppUser
 import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.rxSchedulers
-import com.mvcoding.expensius.service.AppUserService
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -26,13 +27,14 @@ import org.junit.Test
 import rx.Observable.just
 
 class SplashPresenterTest {
-    val appUserService: AppUserService = mock()
+
+    val appUserSource = mock<DataSource<AppUser>>()
     val view: SplashPresenter.View = mock()
-    val presenter = SplashPresenter(appUserService, rxSchedulers())
+    val presenter = SplashPresenter(appUserSource, rxSchedulers())
 
     @Test
-    fun displaysLoginIfUserIsNotLoggedIn() {
-        whenever(appUserService.appUser()).thenReturn(just(noAppUser))
+    fun `displays login if user is not loggedIn`() {
+        whenever(appUserSource.data()).thenReturn(just(noAppUser))
 
         presenter.attach(view)
 
@@ -40,8 +42,8 @@ class SplashPresenterTest {
     }
 
     @Test
-    fun displaysAppIfUserIsLoggedIn() {
-        whenever(appUserService.appUser()).thenReturn(just(anAppUser()))
+    fun `displays app if user is logged in`() {
+        whenever(appUserSource.data()).thenReturn(just(anAppUser()))
 
         presenter.attach(view)
 

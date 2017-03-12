@@ -43,7 +43,7 @@ class SettingsPresenter(
 //
 //        view.loginRequests()
 //                .withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser })
-//                .subscribeUntilDetached { if (it.isNotWithProperAccount()) view.displayLogin(RETURN) }
+//                .subscribeUntilDetached { if (it.isAnonymous()) view.displayLogin(RETURN) }
 
 //        view.mainCurrencyRequests()
 //                .switchMap { currenciesProvider.currencies() }
@@ -55,7 +55,7 @@ class SettingsPresenter(
 
 //        view.supportDeveloperRequests()
 //                .withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser })
-//                .subscribeUntilDetached { if (it.isWithProperAccount()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER) }
+//                .subscribeUntilDetached { if (it.isNotAnonymous()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER) }
 
         view.aboutRequests().subscribeUntilDetached { view.displayAbout() }
     }

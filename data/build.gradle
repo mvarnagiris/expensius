@@ -22,3 +22,16 @@ dependencies {
     testCompile "junit:junit:$junit_version"
     testCompile "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"
 }
+
+task jarTest(type: Jar) {
+    from sourceSets.test.output
+    classifier = 'test'
+}
+
+configurations {
+    testOutput
+}
+
+artifacts {
+    testOutput jarTest
+}

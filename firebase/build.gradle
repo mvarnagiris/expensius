@@ -43,9 +43,15 @@ android {
 
 dependencies {
     compile project(':data')
+    compile project(':models')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.google.firebase:firebase-core:$firebase_version"
     compile "com.google.firebase:firebase-auth:$firebase_version"
     compile "com.google.firebase:firebase-database:$firebase_version"
     compile "com.google.android.gms:play-services-auth:$firebase_version"
+
+    testCompile project(path: ':models', configuration: 'testOutput')
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+    testCompile "com.github.memoizr:assertk-core:$assertk_version"
 }

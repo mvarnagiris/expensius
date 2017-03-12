@@ -24,6 +24,7 @@ dependencies {
     compile 'com.github.mvarnagiris:mvp:162ade81a4'
 
     testCompile project(path: ':models', configuration: 'testOutput')
+    testCompile project(path: ':data', configuration: 'testOutput')
     testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"

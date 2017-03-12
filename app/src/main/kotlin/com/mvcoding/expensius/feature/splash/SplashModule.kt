@@ -17,16 +17,18 @@ package com.mvcoding.expensius.feature.splash
 import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
 class SplashModule : ShankModule {
     override fun registerFactories() {
-//        splashPresenter()
+        splashPresenter()
     }
 
-//    private fun splashPresenter() = registerFactory(SplashPresenter::class) { ->
-//        SplashPresenter(provideAppUserService(), provideRxSchedulers())
-//    }
+    private fun splashPresenter() = registerFactory(SplashPresenter::class) { ->
+        SplashPresenter(provideAppUserService(), provideRxSchedulers())
+    }
 }
 
 fun Activity.provideSplashPresenter() = withThisScope.provideSingletonFor<SplashPresenter>()
