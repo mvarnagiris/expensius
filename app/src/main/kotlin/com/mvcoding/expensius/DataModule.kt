@@ -15,6 +15,7 @@
 package com.mvcoding.expensius
 
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.data.AppUserSource
@@ -33,7 +34,7 @@ class DataModule : ShankModule {
 //        loginWriterAndStateSource()
     }
 
-    private fun appUserSource() = registerFactory(AppUserSource::class) { -> AppUserSource { } }
+    private fun appUserSource() = registerFactory(AppUserSource::class) { -> AppUserSource { provideFirebaseAppUserService().getAppUser() } }
 
 //    private fun translatedDefaultTagsSource() = registerFactory(TranslatedDefaultTagsSource::class) { -> TranslatedDefaultTagsSource(provideContext()) }
 
@@ -49,6 +50,7 @@ class DataModule : ShankModule {
 //    }
 }
 
+fun provideAppUserSource() = provideGlobalSingleton<AppUserSource>()
 fun provideLoginWriterAndStateSource() = provideNew<LoginWriterAndStateSource>()
 fun provideTagsSource() = provideNew<DataSource<List<Tag>>>() // TODO Provide proper tags source
 fun provideDefaultTagsSource() = provideNew<TranslatedDefaultTagsSource>()
