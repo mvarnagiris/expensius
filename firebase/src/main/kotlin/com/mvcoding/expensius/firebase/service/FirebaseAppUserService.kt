@@ -16,11 +16,13 @@ package com.mvcoding.expensius.firebase.service
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
+import com.google.firebase.database.FirebaseDatabase
 import com.mvcoding.expensius.firebase.extensions.getAppUserDatabaseReference
 import com.mvcoding.expensius.firebase.extensions.observeSingleCurrentFirebaseUser
 import com.mvcoding.expensius.firebase.extensions.observeSingleValue
 import com.mvcoding.expensius.firebase.extensions.observeSuccessfulComplete
 import com.mvcoding.expensius.firebase.model.FirebaseAppUser
+import com.mvcoding.expensius.firebase.model.toFirebaseAppUser
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
@@ -41,6 +43,11 @@ class FirebaseAppUserService(private val scheduler: Scheduler) {
             .observeSingleCurrentFirebaseUser(scheduler)
             .switchMap { if (it == null) just(noAppUser) else fetchAppUser(it) }
             .onErrorReturn { noAppUser }
+
+    fun setAppUser(appUser: AppUser) = FirebaseDatabase.getInstance()
+            .getReference("users")
+            .child(appUser.userId.id)
+            .setValue(appUser.toFirebaseAppUser())
 
     fun login(login: Login): Observable<LoggedInUserDetails> = FirebaseAuth.getInstance()
             .observeSingleCurrentFirebaseUser(scheduler)

@@ -40,3 +40,10 @@ data class FirebaseAppUser(
                 authProviders)
     }
 }
+
+internal fun AppUser.toFirebaseAppUser() = FirebaseAppUser(
+        id = userId.id,
+        name = name.displayName,
+        photoUrl = photo.uri,
+        email = email.address,
+        settings = settings.toFirebaseSettings())

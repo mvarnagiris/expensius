@@ -27,12 +27,14 @@ class DataModule : ShankModule {
         translatedDefaultTagsSource()
     }
 
-    private fun appUserSource() = registerFactory(AppUserSource::class) { -> AppUserSource { provideFirebaseAppUserService().getAppUser() } }
+    private fun appUserSource() = registerFactory(AppUserSource::class) { ->
+        AppUserSource(
+                { provideFirebaseAppUserService().getAppUser() },
+                { provideFirebaseAppUserService().setAppUser(it) })
+    }
+
     private fun translatedDefaultTagsSource() = registerFactory(TranslatedDefaultTagsSource::class) { -> TranslatedDefaultTagsSource(provideContext()) }
 }
 
 fun provideAppUserSource() = provideGlobalSingleton<AppUserSource>()
 fun provideDefaultTagsSource() = provideNew<TranslatedDefaultTagsSource>()
-
-//fun provideLoginWriterAndStateSource() = provideNew<LoginWriterAndStateSource>()
-//fun provideTagsSource() = provideNew<DataSource<List<Tag>>>() // TODO Provide proper tags source

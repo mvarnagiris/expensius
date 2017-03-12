@@ -12,9 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.firebase
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.model.Currency
 import java.util.*
 
 fun defaultCurrency(): Currency = try {

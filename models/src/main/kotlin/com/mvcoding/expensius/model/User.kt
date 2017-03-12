@@ -31,7 +31,7 @@ interface User {
 data class AppUser(
         override val userId: UserId,
         override val name: Name,
-        override val photo: Image,
+        override val photo: UriImage,
         val email: Email,
         val settings: Settings,
         val authProviders: Set<AuthProvider>) : User, Serializable {

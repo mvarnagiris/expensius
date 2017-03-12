@@ -1,7 +1,6 @@
 package com.mvcoding.expensius.firebase.model
 
 import com.memoizr.assertk.expect
-import com.mvcoding.expensius.firebase.defaultCurrency
 import com.mvcoding.expensius.firebase.extensions.aFirebaseSettings
 import com.mvcoding.expensius.firebase.extensions.withMainCurrency
 import com.mvcoding.expensius.firebase.extensions.withSubscriptionType
@@ -9,6 +8,7 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.NullModels.noSettings
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.defaultCurrency
 import org.junit.Test
 
 class FirebaseSettingsTest {

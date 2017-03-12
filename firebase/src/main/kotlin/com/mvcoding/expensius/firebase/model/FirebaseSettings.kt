@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius.firebase.model
 
-import com.mvcoding.expensius.firebase.defaultCurrency
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 
@@ -28,3 +27,7 @@ data class FirebaseSettings(
             ReportGroup.DAY,
             if (subscriptionType.isNullOrBlank()) FREE else SubscriptionType.valueOf(subscriptionType!!))
 }
+
+internal fun Settings.toFirebaseSettings() = FirebaseSettings(
+        mainCurrency = mainCurrency.code,
+        subscriptionType = subscriptionType.name)
