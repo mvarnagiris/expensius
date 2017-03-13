@@ -2,7 +2,7 @@ package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.aString
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RealtimeData
+import com.mvcoding.expensius.data.RawRealtimeData
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.model.*
 import com.nhaarman.mockito_kotlin.mock
@@ -17,8 +17,8 @@ import rx.observers.TestSubscriber
 
 class TagsSnapshotSourceTest {
 
-    val realtimeDataSubject = PublishSubject<RealtimeData.AllItems<Tag>>()
-    val addedItemsSubject = PublishSubject<RealtimeData.AddedItems<Tag>>()
+    val realtimeDataSubject = PublishSubject<RawRealtimeData.AllItems<Tag>>()
+    val addedItemsSubject = PublishSubject<RawRealtimeData.AddedItems<Tag>>()
 
     val appUser = anAppUser()
     val realtimeList = mock<RealtimeList<Tag>>()
@@ -46,13 +46,13 @@ class TagsSnapshotSourceTest {
         tagsSnapshotSource.data().subscribe(subscriber)
         subscriber.assertNoValues()
 
-        addedItemsSubject.onNext(RealtimeData.AddedItems(listOf(aTag()), aString()))
+        addedItemsSubject.onNext(RawRealtimeData.AddedItems(listOf(aTag()), aString()))
         subscriber.assertNoValues()
 
-        realtimeDataSubject.onNext(RealtimeData.AllItems(tags))
+        realtimeDataSubject.onNext(RawRealtimeData.AllItems(tags))
         subscriber.assertValue(tags)
 
-        addedItemsSubject.onNext(RealtimeData.AddedItems(listOf(aTag()), aString()))
+        addedItemsSubject.onNext(RawRealtimeData.AddedItems(listOf(aTag()), aString()))
         subscriber.assertValue(tags)
 
         verify(realtimeList).close()

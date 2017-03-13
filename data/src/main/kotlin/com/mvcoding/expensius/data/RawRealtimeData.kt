@@ -14,12 +14,12 @@
 
 package com.mvcoding.expensius.data
 
-sealed class RealtimeData<out ITEM> {
+sealed class RawRealtimeData<out ITEM> {
     abstract val items: List<ITEM>
 
-    data class AllItems<out ITEM>(override val items: List<ITEM>) : RealtimeData<ITEM>()
-    data class AddedItems<out ITEM>(override val items: List<ITEM>, val position: Int) : RealtimeData<ITEM>()
-    data class ChangedItems<out ITEM>(override val items: List<ITEM>, val position: Int) : RealtimeData<ITEM>()
-    data class RemovedItems<out ITEM>(override val items: List<ITEM>, val position: Int) : RealtimeData<ITEM>()
-    data class MovedItems<out ITEM>(override val items: List<ITEM>, val fromPosition: Int, val toPosition: Int) : RealtimeData<ITEM>()
+    data class AllItems<out ITEM>(override val items: List<ITEM>) : RawRealtimeData<ITEM>()
+    data class AddedItems<out ITEM>(override val items: List<ITEM>, val previousKey: String?) : RawRealtimeData<ITEM>()
+    data class ChangedItems<out ITEM>(override val items: List<ITEM>) : RawRealtimeData<ITEM>()
+    data class RemovedItems<out ITEM>(override val items: List<ITEM>) : RawRealtimeData<ITEM>()
+    data class MovedItems<out ITEM>(override val items: List<ITEM>, val previousKey: String?) : RawRealtimeData<ITEM>()
 }

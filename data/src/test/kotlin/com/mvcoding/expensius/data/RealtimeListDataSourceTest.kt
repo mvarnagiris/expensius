@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.data.RealtimeData.*
+import com.mvcoding.expensius.data.RawRealtimeData.*
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -36,10 +36,10 @@ class RealtimeListDataSourceTest {
     val realtimeList = mock<RealtimeList<Int>>()
     val itemToKey = mock<(Int) -> String>()
     val realtimeListDataSource = RealtimeListDataSource(realtimeList, itemToKey)
-    val subscriber = TestSubscriber<RealtimeData<Int>>()
-    val otherSubscriber = TestSubscriber<RealtimeData<Int>>()
-    val otherSubscriber2 = TestSubscriber<RealtimeData<Int>>()
-    val otherSubscriber3 = TestSubscriber<RealtimeData<Int>>()
+    val subscriber = TestSubscriber<RawRealtimeData<Int>>()
+    val otherSubscriber = TestSubscriber<RawRealtimeData<Int>>()
+    val otherSubscriber2 = TestSubscriber<RawRealtimeData<Int>>()
+    val otherSubscriber3 = TestSubscriber<RawRealtimeData<Int>>()
 
     @Before
     fun setUp() {

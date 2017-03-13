@@ -15,9 +15,11 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.ItemsView
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.RawRealtimeData
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.RealtimeItemsView
 import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
@@ -29,14 +31,27 @@ import java.lang.Math.min
 
 class TagsPresenter(
         private val modelDisplayType: ModelDisplayType,
-        //        private val tagsService: TagsService,
-//        private val tagsWriteService: TagsWriteService,
+        private val tagsSource: DataSource<RawRealtimeData<Tag>>,
+        private val tagsWriter: DataSource<List<Tag>>,
         private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
         view.showModelDisplayType(modelDisplayType)
+        tagsSource.data()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached {
+                    when (it) {
+                        is RawRealtimeData.AllItems -> view.showItems(it.items)
+                        is RawRealtimeData.AddedItems -> TODO()
+                        is RawRealtimeData.ChangedItems -> TODO()
+                        is RawRealtimeData.RemovedItems -> TODO()
+                        is RawRealtimeData.MovedItems -> TODO()
+                    }
+                }
+
         view.showLoading()
 //        tagsService.items()
 //                .first()
@@ -92,7 +107,7 @@ class TagsPresenter(
 
     data class TagMove(val fromPosition: Int, val toPosition: Int)
 
-    interface View : Presenter.View, ItemsView<Tag>, LoadingView {
+    interface View : Presenter.View, RealtimeItemsView<Tag>, LoadingView {
         fun archivedTagsRequests(): Observable<Unit>
         fun tagMoves(): Observable<TagMove>
         fun tagSelects(): Observable<Tag>

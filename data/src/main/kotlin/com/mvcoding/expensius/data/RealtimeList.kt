@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.data.RealtimeData.*
+import com.mvcoding.expensius.data.RawRealtimeData.*
 import rx.Observable
 import java.io.Closeable
 

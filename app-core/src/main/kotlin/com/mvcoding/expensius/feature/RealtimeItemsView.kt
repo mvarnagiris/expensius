@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature
 
 import com.mvcoding.mvp.Presenter
 
-interface ItemsView<in ITEM> : Presenter.View {
+interface RealtimeItemsView<in ITEM> : Presenter.View {
     fun showItems(items: List<ITEM>)
     fun showAddedItems(position: Int, items: List<ITEM>)
     fun showChangedItems(position: Int, items: List<ITEM>)

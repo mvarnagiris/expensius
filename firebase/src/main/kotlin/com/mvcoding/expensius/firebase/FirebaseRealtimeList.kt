@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.firebase
 
 import com.google.firebase.database.*
-import com.mvcoding.expensius.data.RealtimeData.*
+import com.mvcoding.expensius.data.RawRealtimeData.*
 import com.mvcoding.expensius.data.RealtimeList
 import rx.Observable
 import rx.lang.kotlin.PublishSubject

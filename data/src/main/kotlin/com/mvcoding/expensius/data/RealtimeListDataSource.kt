@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.data.RealtimeData.AllItems
 import rx.Observable
 import rx.Observable.just
 import rx.Subscriber
@@ -41,32 +40,32 @@ class RealtimeListDataSource<ITEM>(
         }
     }.share()
 
-    private fun handleAllItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleAllItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RawRealtimeData<ITEM>>) {
         allItems.doOnNext { items = it.items }.subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleAddedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleAddedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RawRealtimeData<ITEM>>) {
         realtimeList.getAddedItems()
                 .skipUntil(allItems)
                 .doOnNext { items = items.orEmpty().insert(it.items, keyToPosition(it.previousKey) + 1) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleChangedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleChangedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RawRealtimeData<ITEM>>) {
         realtimeList.getChangedItems()
                 .skipUntil(allItems)
                 .doOnNext { items = items.orEmpty().replace(it.items, keyToPosition(itemToKey(it.items.first()))) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleRemovedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleRemovedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RawRealtimeData<ITEM>>) {
         realtimeList.getRemovedItems()
                 .skipUntil(allItems)
                 .doOnNext { items = items.orEmpty().remove(it.items, keyToPosition(itemToKey(it.items.first()))) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleMovedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleMovedItems(allItems: Observable<AllItems<ITEM>>, subscriber: Subscriber<in RawRealtimeData<ITEM>>) {
         realtimeList.getMovedItem()
                 .skipUntil(allItems)
                 .doOnNext { items = items.orEmpty().move(keyToPosition(itemToKey(it.items.first())), keyToPosition(it.previousKey) + 1) }

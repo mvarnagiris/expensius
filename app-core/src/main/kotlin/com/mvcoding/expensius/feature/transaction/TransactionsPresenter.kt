@@ -15,9 +15,9 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.ItemsView
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.RealtimeItemsView
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 import rx.Observable
@@ -64,7 +64,7 @@ class TransactionsPresenter(
         view.transactionSelects().subscribeUntilDetached { view.displayTransactionEdit(it) }
     }
 
-    interface View : Presenter.View, ItemsView<Transaction>, LoadingView {
+    interface View : Presenter.View, RealtimeItemsView<Transaction>, LoadingView {
         fun transactionSelects(): Observable<Transaction>
         fun createTransactionRequests(): Observable<Unit>
         fun archivedTransactionsRequests(): Observable<Unit>

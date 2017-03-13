@@ -30,8 +30,8 @@ import memoizrlabs.com.shankandroid.withThisScope
 class TagsModule : ShankModule {
     override fun registerFactories() {
         createTagsWriter()
-//        quickTagsPresenter()
 //        tagsPresenter()
+//        quickTagsPresenter()
 //        tagPresenter()
     }
 
@@ -39,12 +39,6 @@ class TagsModule : ShankModule {
         CreateTagsWriter(provideAppUserSource()) { userId, createTags -> provideFirebaseTagsService().createTags(userId, createTags) }
     }
 
-//    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
-//        QuickTagsPresenter(provideTagsService(), provideRxSchedulers())
-//    }
-//
-//    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsWriteService()) }
-//
 //    private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
 //        TagsPresenter(
 //                modelDisplayType,
@@ -52,6 +46,12 @@ class TagsModule : ShankModule {
 //                provideTagsWriteService(),
 //                provideRxSchedulers())
 //    }
+
+//    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
+//        QuickTagsPresenter(provideTagsService(), provideRxSchedulers())
+//    }
+//
+//    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsWriteService()) }
 }
 
 fun provideCreateTagsWriter() = provideNew<CreateTagsWriter>()

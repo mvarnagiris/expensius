@@ -1,7 +1,7 @@
 package com.mvcoding.expensius.feature.login
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RealtimeData
+import com.mvcoding.expensius.data.RawRealtimeData
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.data.RealtimeListDataSource
 import com.mvcoding.expensius.model.AppUser
@@ -17,7 +17,7 @@ class TagsSnapshotSource(
             .first()
             .map { createRealtimeList(it.userId) }
             .switchMap { realtimeList -> RealtimeListDataSource(realtimeList) { it.tagId.id }.data().doOnNext { realtimeList.close() } }
-            .ofType(RealtimeData.AllItems::class.java)
+            .ofType(RawRealtimeData.AllItems::class.java)
             .map {
                 @Suppress("UNCHECKED_CAST")
                 it.items as List<Tag>
