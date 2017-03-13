@@ -46,7 +46,7 @@ class AppModule(val context: Context) : ShankModule {
         registerFactory(MoneyFormatter::class.java) { -> MoneyFormatter(provideCurrencyFormatsProvider()) }
     }
 
-    //    private fun filter() = registerFactory(Filter::class) { -> Filter(provideAppUserService(), provideTimestampProvider()) }
+    //        private fun filter() = registerFactory(Filter::class) { -> Filter(provideAppUserService(), provideTimestampProvider()) }
     private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
 
 }

@@ -14,18 +14,22 @@
 
 package com.mvcoding.expensius.feature.overview
 
-import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
 
-class OverviewPresenter(/*private val appUserService: AppUserService,*/ private val filter: Filter) : Presenter<OverviewPresenter.View>() {
+class OverviewPresenter(
+        private val appUserSource: DataSource<AppUser>,
+        private val schedulers: RxSchedulers) : Presenter<OverviewPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        val filters = filter.filterData().map { it.interval }.distinctUntilChanged()
+//        val filters = filter.filterData().map { it.interval }.distinctUntilChanged()
 //        val reportPeriods = appUserService.appUser().map { it.settings.reportPeriod }.distinctUntilChanged()
 //        combineLatest(filters, reportPeriods) { interval, reportPeriod -> interval to reportPeriod }
 //                .subscribeUntilDetached { view.showInterval(it.second, it.first) }
