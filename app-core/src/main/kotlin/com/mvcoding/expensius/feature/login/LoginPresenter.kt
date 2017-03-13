@@ -84,8 +84,9 @@ class LoginPresenter(
     }
 
     private fun stateResolvableFailedLogin(view: View, login: Login, throwable: Throwable): List<Subscription> {
+        waitForLoginSelection()
         return view.showResolvableError(throwable.toError())
-                .subscribeUntilDetached { if (it == POSITIVE && login is GoogleLogin) login(login.googleToken, forceLogin = true) else waitForLoginSelection() }
+                .subscribeUntilDetached { if (it == POSITIVE && login is GoogleLogin) login(login.googleToken, forceLogin = true) }
                 .putInList()
     }
 
@@ -99,8 +100,8 @@ class LoginPresenter(
         val error = throwable.toError()
         if (error.isResolvable() && login != null) failWithResolvableError(login, throwable)
         else {
-            view.showError(error)
             waitForLoginSelection()
+            view.showError(error)
         }
     }
 

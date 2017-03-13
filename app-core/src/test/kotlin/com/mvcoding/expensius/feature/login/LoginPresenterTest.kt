@@ -138,8 +138,8 @@ class LoginPresenterTest {
         loginWithGoogle()
         failGoogleTokenRequest(throwable)
 
-        inOrder.verify(view).showError(throwable.toError())
         inOrder.verify(view).showAllLoginOptions()
+        inOrder.verify(view).showError(throwable.toError())
     }
 
     @Test
@@ -151,8 +151,8 @@ class LoginPresenterTest {
         receiveGoogleToken(googleToken)
         failLogin(throwable)
 
-        inOrder.verify(view).showError(throwable.toError())
         inOrder.verify(view).showAllLoginOptions()
+        inOrder.verify(view).showError(throwable.toError())
     }
 
     @Test
@@ -163,8 +163,8 @@ class LoginPresenterTest {
         skipLogin()
         failLogin(throwable)
 
-        inOrder.verify(view).showError(throwable.toError())
         inOrder.verify(view).showAllLoginOptions()
+        inOrder.verify(view).showError(throwable.toError())
     }
 
     @Test
@@ -193,8 +193,8 @@ class LoginPresenterTest {
         failLogin(throwable)
         resolveError(NEGATIVE)
 
-        inOrder.verify(view).showResolvableError(throwable.toError())
         inOrder.verify(view).showAllLoginOptions()
+        inOrder.verify(view).showResolvableError(throwable.toError())
     }
 
     fun presenter(destination: Destination = APP) = LoginPresenter(destination, loginSource, rxSchedulers())
