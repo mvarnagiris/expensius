@@ -47,10 +47,10 @@ class TagsPresenter(
                 .subscribeUntilDetached {
                     when (it) {
                         is RealtimeData.AllItems -> view.showItems(it.items)
-                        is RealtimeData.AddedItems -> view.showAddedItems(it.position, it.items)
-                        is RealtimeData.ChangedItems -> view.showChangedItems(it.position, it.items)
-                        is RealtimeData.RemovedItems -> view.showRemovedItems(it.position, it.items)
-                        is RealtimeData.MovedItems -> view.showMovedItems(it.fromPosition, it.toPosition, it.items)
+                        is RealtimeData.AddedItems -> view.showAddedItems(it.items, it.position)
+                        is RealtimeData.ChangedItems -> view.showChangedItems(it.items, it.position)
+                        is RealtimeData.RemovedItems -> view.showRemovedItems(it.items, it.position)
+                        is RealtimeData.MovedItems -> view.showMovedItems(it.items, it.fromPosition, it.toPosition)
                     }
                 }
 

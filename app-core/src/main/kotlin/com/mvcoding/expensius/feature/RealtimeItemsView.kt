@@ -18,8 +18,8 @@ import com.mvcoding.mvp.Presenter
 
 interface RealtimeItemsView<in ITEM> : Presenter.View {
     fun showItems(items: List<ITEM>)
-    fun showAddedItems(position: Int, items: List<ITEM>)
-    fun showChangedItems(position: Int, items: List<ITEM>)
-    fun showRemovedItems(position: Int, items: List<ITEM>)
-    fun showMovedItems(fromPosition: Int, toPosition: Int, items: List<ITEM>)
+    fun showAddedItems(items: List<ITEM>, position: Int)
+    fun showChangedItems(items: List<ITEM>, position: Int)
+    fun showRemovedItems(items: List<ITEM>, position: Int)
+    fun showMovedItems(items: List<ITEM>, fromPosition: Int, toPosition: Int)
 }
