@@ -73,7 +73,7 @@ class RealtimeListDataSource<ITEM>(
     private fun handleMovedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getMovedItem()
                 .skipUntil(allItems)
-                .map { RealtimeData.MovedItems(it.items, keyToPosition(itemToKey(it.items.first())), keyToPosition(it.previousKey) + 1) }
+                .map { RealtimeData.MovedItems(it.items, keyToPosition(itemToKey(it.items.first())), max(keyToPosition(it.previousKey), 0)) }
                 .doOnNext { items = items.orEmpty().move(it.fromPosition, it.toPosition) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }

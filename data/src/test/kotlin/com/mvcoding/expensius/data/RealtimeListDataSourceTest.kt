@@ -122,7 +122,7 @@ class RealtimeListDataSourceTest {
 
     @Test
     fun `handles changed items`() {
-        val changedItems = listOf(1, 3)
+        val changedItems = listOf(4, 6)
         realtimeListDataSource.data().subscribe(subscriber)
         receiveCurrentItems(items)
 
@@ -130,7 +130,7 @@ class RealtimeListDataSourceTest {
         realtimeListDataSource.data().subscribe(otherSubscriber)
 
         subscriber.assertValues(RealtimeData.AllItems(items), RealtimeData.ChangedItems(changedItems, 1))
-        otherSubscriber.assertValues(RealtimeData.AllItems(listOf(2, 1, 3)))
+        otherSubscriber.assertValues(RealtimeData.AllItems(listOf(2, 4, 6)))
     }
 
     @Test
