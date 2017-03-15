@@ -21,5 +21,5 @@ interface RealtimeItemsView<in ITEM> : Presenter.View {
     fun showAddedItems(position: Int, items: List<ITEM>)
     fun showChangedItems(position: Int, items: List<ITEM>)
     fun showRemovedItems(position: Int, items: List<ITEM>)
-    fun showMovedItem(fromPosition: Int, toPosition: Int, item: ITEM)
+    fun showMovedItems(fromPosition: Int, toPosition: Int, items: List<ITEM>)
 }

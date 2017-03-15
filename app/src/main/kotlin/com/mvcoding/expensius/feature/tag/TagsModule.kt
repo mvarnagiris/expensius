@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.tag
 import android.app.Activity
 import android.view.View
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
@@ -24,13 +25,15 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideFirebaseTagsService
+import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withActivityScope
 import memoizrlabs.com.shankandroid.withThisScope
 
 class TagsModule : ShankModule {
     override fun registerFactories() {
         createTagsWriter()
-//        tagsPresenter()
+        tagsSource()
+        tagsPresenter()
 //        quickTagsPresenter()
 //        tagPresenter()
     }
@@ -39,13 +42,17 @@ class TagsModule : ShankModule {
         CreateTagsWriter(provideAppUserSource()) { userId, createTags -> provideFirebaseTagsService().createTags(userId, createTags) }
     }
 
-//    private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
-//        TagsPresenter(
-//                modelDisplayType,
-//                if (modelDisplayType == VIEW_ARCHIVED) provideArchivedTagsService() else provideTagsService(),
-//                provideTagsWriteService(),
-//                provideRxSchedulers())
-//    }
+    private fun tagsSource() = registerFactory(TagsSource::class) { ->
+        TagsSource(provideAppUserSource()) { provideFirebaseTagsService().getTags(it) }
+    }
+
+    private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
+        TagsPresenter(
+                modelDisplayType,
+                provideTagsSource(),
+                //                provideTagsWriteService(),
+                provideRxSchedulers())
+    }
 
 //    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
 //        QuickTagsPresenter(provideTagsService(), provideRxSchedulers())
@@ -55,6 +62,7 @@ class TagsModule : ShankModule {
 }
 
 fun provideCreateTagsWriter() = provideNew<CreateTagsWriter>()
+fun provideTagsSource() = provideGlobalSingleton<TagsSource>()
 fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)
 fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()
 fun Activity.provideTagPresenter(tag: Tag): TagPresenter = withThisScope.provideSingletonFor(tag)

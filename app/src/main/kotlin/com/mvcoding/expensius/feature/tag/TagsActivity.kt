@@ -85,7 +85,7 @@ class TagsActivity : BaseActivity(), TagsPresenter.View {
     override fun showAddedItems(position: Int, items: List<Tag>): Unit = adapter.add(position, items)
     override fun showChangedItems(position: Int, items: List<Tag>): Unit = adapter.change(position, items)
     override fun showRemovedItems(position: Int, items: List<Tag>): Unit = adapter.remove(position, items.size)
-    override fun showMovedItem(fromPosition: Int, toPosition: Int, item: Tag): Unit = adapter.move(fromPosition, toPosition)
+    override fun showMovedItems(fromPosition: Int, toPosition: Int, items: List<Tag>): Unit = adapter.move(fromPosition, toPosition)
     override fun showLoading(): Unit = with(progressBar) { visibility = VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = GONE }
     override fun displayArchivedTags(): Unit = TagsActivity.startArchived(this)

@@ -57,7 +57,7 @@ class TransactionsPresenter(
 //        transactionsService.movedItem()
 //                .subscribeOn(schedulers.io)
 //                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
+//                .subscribeUntilDetached { view.showMovedItems(it.fromPosition, it.toPosition, it.item) }
 
         view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
         view.createTransactionRequests().subscribeUntilDetached { view.displayCalculator() }

@@ -77,7 +77,7 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
     override fun showAddedItems(position: Int, items: List<Transaction>): Unit = adapter.add(position, items)
     override fun showChangedItems(position: Int, items: List<Transaction>): Unit = adapter.change(position, items)
     override fun showRemovedItems(position: Int, items: List<Transaction>): Unit = adapter.remove(position, items.size)
-    override fun showMovedItem(fromPosition: Int, toPosition: Int, item: Transaction): Unit = adapter.move(fromPosition, toPosition)
+    override fun showMovedItems(fromPosition: Int, toPosition: Int, items: List<Transaction>): Unit = adapter.move(fromPosition, toPosition)
     override fun showLoading(): Unit = with(progressBar) { visibility = View.VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = View.GONE }
     override fun displayTransactionEdit(transaction: Transaction): Unit = TransactionActivity.start(this, transaction)

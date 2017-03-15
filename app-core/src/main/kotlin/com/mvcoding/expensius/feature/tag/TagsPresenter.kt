@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RawRealtimeData
+import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.RealtimeItemsView
@@ -31,61 +31,28 @@ import java.lang.Math.min
 
 class TagsPresenter(
         private val modelDisplayType: ModelDisplayType,
-        private val tagsSource: DataSource<RawRealtimeData<Tag>>,
-        private val tagsWriter: DataSource<List<Tag>>,
+        private val tagsSource: DataSource<RealtimeData<Tag>>,
+        //        private val tagsWriter: DataSource<List<Tag>>,
         private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
         view.showModelDisplayType(modelDisplayType)
+        view.showLoading()
         tagsSource.data()
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
+                .doOnNext { view.hideLoading() }
                 .subscribeUntilDetached {
                     when (it) {
-                        is RawRealtimeData.AllItems -> view.showItems(it.items)
-                        is RawRealtimeData.AddedItems -> TODO()
-                        is RawRealtimeData.ChangedItems -> TODO()
-                        is RawRealtimeData.RemovedItems -> TODO()
-                        is RawRealtimeData.MovedItems -> TODO()
+                        is RealtimeData.AllItems -> view.showItems(it.items)
+                        is RealtimeData.AddedItems -> view.showAddedItems(it.position, it.items)
+                        is RealtimeData.ChangedItems -> view.showChangedItems(it.position, it.items)
+                        is RealtimeData.RemovedItems -> view.showRemovedItems(it.position, it.items)
+                        is RealtimeData.MovedItems -> view.showMovedItems(it.fromPosition, it.toPosition, it.items)
                     }
                 }
-
-        view.showLoading()
-//        tagsService.items()
-//                .first()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .doOnNext { view.hideLoading() }
-//                .subscribeUntilDetached { view.showItems(it) }
-
-//        tagsService.addedItems()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
-
-//        tagsService.changedItems()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
-
-//        tagsService.removedItems()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
-
-//        tagsService.movedItem()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showMovedItem(it.fromPosition, it.toPosition, it.item) }
-
-//        view.tagMoves()
-//                .subscribeOn(schedulers.main)
-//                .observeOn(schedulers.io)
-//                .withLatestFrom(tagsService.items(), { tagMove, tags -> reorderTags(tagMove, tags) })
-//                .switchMap { tagsWriteService.saveTags(it.toSet()) }
-//                .subscribeUntilDetached { }
 
         merge(view.tagSelects(), view.createTagRequests().map { noTag }).subscribeUntilDetached { view.displayTagEdit(it) }
         view.archivedTagsRequests().subscribeUntilDetached { view.displayArchivedTags() }

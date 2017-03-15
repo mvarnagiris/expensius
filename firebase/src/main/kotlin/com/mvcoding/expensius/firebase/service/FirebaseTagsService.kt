@@ -19,12 +19,14 @@ import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.firebase.FirebaseRealtimeList
 import com.mvcoding.expensius.firebase.model.FirebaseTag
 import com.mvcoding.expensius.model.CreateTag
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
 
 class FirebaseTagsService {
     fun getTags(userId: UserId): RealtimeList<Tag> = FirebaseRealtimeList(userId.tagsReference(), { it.getValue(FirebaseTag::class.java).toTag(NONE) })
+    fun getArchivedTags(userId: UserId): RealtimeList<Tag> = FirebaseRealtimeList(userId.tagsReference(), { it.getValue(FirebaseTag::class.java).toTag(ARCHIVED) })
 
     fun createTags(userId: UserId, createTags: Set<CreateTag>) {
         val tagsReference = userId.tagsReference()
@@ -36,5 +38,6 @@ class FirebaseTagsService {
     }
 
     private fun UserId.tagsReference() = FirebaseDatabase.getInstance().getReference("tags").child(this.id)
+    private fun UserId.archivedTagsReference() = FirebaseDatabase.getInstance().getReference("archivedTags").child(this.id)
     private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
 }
