@@ -74,10 +74,10 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
     override fun archivedTransactionsRequests(): Observable<Unit> = empty()
     override fun createTransactionRequests(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
     override fun showItems(items: List<Transaction>): Unit = adapter.set(items)
-    override fun showAddedItems(position: Int, items: List<Transaction>): Unit = adapter.add(position, items)
-    override fun showChangedItems(position: Int, items: List<Transaction>): Unit = adapter.change(position, items)
-    override fun showRemovedItems(position: Int, items: List<Transaction>): Unit = adapter.remove(position, items.size)
-    override fun showMovedItems(fromPosition: Int, toPosition: Int, items: List<Transaction>): Unit = adapter.move(fromPosition, toPosition)
+    override fun showAddedItems(items: List<Transaction>, position: Int): Unit = adapter.add(position, items)
+    override fun showChangedItems(items: List<Transaction>, position: Int): Unit = adapter.change(position, items)
+    override fun showRemovedItems(items: List<Transaction>, position: Int): Unit = adapter.remove(position, items.size)
+    override fun showMovedItems(items: List<Transaction>, fromPosition: Int, toPosition: Int): Unit = adapter.move(fromPosition, toPosition)
     override fun showLoading(): Unit = with(progressBar) { visibility = View.VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = View.GONE }
     override fun displayTransactionEdit(transaction: Transaction): Unit = TransactionActivity.start(this, transaction)

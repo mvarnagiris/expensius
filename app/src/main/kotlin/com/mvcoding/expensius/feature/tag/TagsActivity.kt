@@ -82,10 +82,10 @@ class TagsActivity : BaseActivity(), TagsPresenter.View {
     override fun createTagRequests(): Observable<Unit> = createTagFloatingActionButton.clicks()
     override fun tagMoves(): Observable<TagMove> = tagMoveSubject.map { TagMove(it.fromPosition, it.toPosition) }
     override fun showItems(items: List<Tag>): Unit = adapter.set(items)
-    override fun showAddedItems(position: Int, items: List<Tag>): Unit = adapter.add(position, items)
-    override fun showChangedItems(position: Int, items: List<Tag>): Unit = adapter.change(position, items)
-    override fun showRemovedItems(position: Int, items: List<Tag>): Unit = adapter.remove(position, items.size)
-    override fun showMovedItems(fromPosition: Int, toPosition: Int, items: List<Tag>): Unit = adapter.move(fromPosition, toPosition)
+    override fun showAddedItems(items: List<Tag>, position: Int): Unit = adapter.add(position, items)
+    override fun showChangedItems(items: List<Tag>, position: Int): Unit = adapter.change(position, items)
+    override fun showRemovedItems(items: List<Tag>, position: Int): Unit = adapter.remove(position, items.size)
+    override fun showMovedItems(items: List<Tag>, fromPosition: Int, toPosition: Int): Unit = adapter.move(fromPosition, toPosition)
     override fun showLoading(): Unit = with(progressBar) { visibility = VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = GONE }
     override fun displayArchivedTags(): Unit = TagsActivity.startArchived(this)
