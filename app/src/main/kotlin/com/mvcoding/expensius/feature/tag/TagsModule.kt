@@ -22,6 +22,7 @@ import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideFirebaseTagsService
@@ -42,16 +43,15 @@ class TagsModule : ShankModule {
         CreateTagsWriter(provideAppUserSource()) { userId, createTags -> provideFirebaseTagsService().createTags(userId, createTags) }
     }
 
-    private fun tagsSource() = registerFactory(TagsSource::class) { ->
-        TagsSource(provideAppUserSource()) { provideFirebaseTagsService().getTags(it) }
+    private fun tagsSource() = registerFactory(TagsSource::class) { modelDisplayType: ModelDisplayType ->
+        TagsSource(provideAppUserSource()) {
+            if (modelDisplayType == VIEW_ARCHIVED) provideFirebaseTagsService().getArchivedTags(it)
+            else provideFirebaseTagsService().getTags(it)
+        }
     }
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
-        TagsPresenter(
-                modelDisplayType,
-                provideTagsSource(),
-                //                provideTagsWriteService(),
-                provideRxSchedulers())
+        TagsPresenter(modelDisplayType, provideTagsSource(modelDisplayType), provideRxSchedulers())
     }
 
 //    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
@@ -62,7 +62,7 @@ class TagsModule : ShankModule {
 }
 
 fun provideCreateTagsWriter() = provideNew<CreateTagsWriter>()
-fun provideTagsSource() = provideGlobalSingleton<TagsSource>()
+fun provideTagsSource(modelDisplayType: ModelDisplayType) = provideGlobalSingleton<TagsSource>(modelDisplayType)
 fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)
 fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()
 fun Activity.provideTagPresenter(tag: Tag): TagPresenter = withThisScope.provideSingletonFor(tag)
