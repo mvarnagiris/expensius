@@ -19,15 +19,15 @@ class QuickTagsPresenterTest {
 //    val selectedTagsUpdatedSubject = BehaviorSubject<Set<Tag>>(setOf())
 //    val defaultTags = listOf(aTag(), aTag())
 //    val defaultSelectableTags = defaultTags.map { SelectableTag(it, false) }.sortedBy { it.tag.order }
-//    val tagsService: TagsService = mock()
+//    val tagsSource: TagsService = mock()
 //    val view: QuickTagsPresenter.View = mock()
-//    val presenter = QuickTagsPresenter(tagsService, rxSchedulers())
+//    val presenter = QuickTagsPresenter(tagsSource, rxSchedulers())
 //
 //    @Before
 //    fun setUp() {
 //        whenever(view.selectableTagToggles()).thenReturn(toggleSelectableTagSubject)
 //        whenever(view.selectedTagsUpdates()).thenReturn(selectedTagsUpdatedSubject)
-//        whenever(tagsService.items()).thenReturn(just(defaultTags))
+//        whenever(tagsSource.items()).thenReturn(just(defaultTags))
 //    }
 //
 //    @Test

@@ -32,7 +32,6 @@ import java.lang.Math.min
 class TagsPresenter(
         private val modelDisplayType: ModelDisplayType,
         private val tagsSource: DataSource<RealtimeData<Tag>>,
-        //        private val tagsWriter: DataSource<List<Tag>>,
         private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
@@ -55,7 +54,7 @@ class TagsPresenter(
                 }
 
         merge(view.tagSelects(), view.createTagRequests().map { noTag }).subscribeUntilDetached { view.displayTagEdit(it) }
-        view.archivedTagsRequests().subscribeUntilDetached { view.displayArchivedTags() }
+//        view.archivedTagsRequests().subscribeUntilDetached { view.displayArchivedTags() }
     }
 
     private fun reorderTags(tagMove: TagMove, tags: List<Tag>): List<Tag> {
