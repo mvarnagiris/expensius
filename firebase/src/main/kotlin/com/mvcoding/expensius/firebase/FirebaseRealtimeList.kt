@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.firebase
 
+import android.util.Log
 import com.google.firebase.database.*
 import com.mvcoding.expensius.data.RawRealtimeData.*
 import com.mvcoding.expensius.data.RealtimeList
@@ -32,7 +33,10 @@ class FirebaseRealtimeList<ITEM>(
 
     private val valueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
-            allItemsSubject.onNext(dataSnapshot.children.map { converter(it) }.let { AllItems(it) })
+            Log.i("ASDASDASD", "FirebaseRealtimeList: AllItems")
+            val items = dataSnapshot.children
+            val convertedItems = items.map { converter(it) }
+            allItemsSubject.onNext(AllItems(convertedItems))
         }
 
         override fun onCancelled(databaseError: DatabaseError) {
@@ -42,19 +46,25 @@ class FirebaseRealtimeList<ITEM>(
 
     private val childEventListener = object : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildKey: String?) {
+            Log.i("ASDASDASD", "FirebaseRealtimeList: ChildAdded")
             addedItemsSubject.onNext(converter(dataSnapshot).let { AddedItems(listOf(it), previousChildKey) })
         }
 
         override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildKey: String?) {
-            changedItemsSubject.onNext(converter(dataSnapshot).let { ChangedItems(listOf(it)) })
+            val convertedItem = converter(dataSnapshot)
+            Log.i("ASDASDASD", "FirebaseRealtimeList: ChildChanged: $convertedItem")
+            changedItemsSubject.onNext(ChangedItems(listOf(convertedItem)))
         }
 
         override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+            Log.i("ASDASDASD", "FirebaseRealtimeList: ChildRemoved")
             removedItemsSubject.onNext(converter(dataSnapshot).let { RemovedItems(listOf(it)) })
         }
 
         override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildKey: String?) {
-            movedItemSubject.onNext(converter(dataSnapshot).let { MovedItems(listOf(it), previousChildKey) })
+            val convertedItem = converter(dataSnapshot)
+            Log.i("ASDASDASD", "FirebaseRealtimeList: ChildMoved: $convertedItem")
+            movedItemSubject.onNext(MovedItems(listOf(convertedItem), previousChildKey))
         }
 
         override fun onCancelled(databaseError: DatabaseError) {

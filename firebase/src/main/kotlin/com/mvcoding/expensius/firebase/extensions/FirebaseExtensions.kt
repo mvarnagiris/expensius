@@ -50,6 +50,6 @@ fun FirebaseAuth.observeSingleCurrentFirebaseUser(scheduler: Scheduler): Observa
     }
 }.observeOn(scheduler)
 
-fun FirebaseUser.getAppUserDatabaseReference() = FirebaseDatabase.getInstance()
+fun FirebaseUser.getAppUserDatabaseReference(): DatabaseReference = FirebaseDatabase.getInstance()
         .getReference("users")
         .child(uid)

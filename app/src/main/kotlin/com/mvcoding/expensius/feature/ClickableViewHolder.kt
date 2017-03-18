@@ -3,8 +3,8 @@ package com.mvcoding.expensius.feature
 import android.view.View
 import rx.subjects.PublishSubject
 
-class ClickableViewHolder<V : View>(view: V, itemPositionSelectedSubject: PublishSubject<Int>) : ViewHolder<V>(view) {
+open class ClickableViewHolder(itemView: View, clickSubject: PublishSubject<Pair<View, Int>>) : ViewHolder(itemView) {
     init {
-        view.setOnClickListener { itemPositionSelectedSubject.onNext(adapterPosition) }
+        itemView.setOnClickListener { clickSubject.onNext(it to adapterPosition) }
     }
 }
