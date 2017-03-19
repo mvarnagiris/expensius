@@ -37,8 +37,6 @@ class TagsPresenter(
         private val tagsWriter: DataWriter<Set<Tag>>,
         private val schedulers: RxSchedulers) : Presenter<TagsPresenter.View>() {
 
-    private var ignoreNextMove: TagMove? = null
-
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
@@ -56,44 +54,40 @@ class TagsPresenter(
                         is RealtimeData.AddedItems -> view.showAddedItems(it.items, it.position)
                         is RealtimeData.ChangedItems -> view.showChangedItems(it.items, it.position)
                         is RealtimeData.RemovedItems -> view.showRemovedItems(it.items, it.position)
-                        is RealtimeData.MovedItems -> /*if (!shouldIgnoreMove(it))*/ view.showMovedItems(it.items, it.fromPosition, it.toPosition)
+                        is RealtimeData.MovedItems -> view.showMovedItems(it.items, it.fromPosition, it.toPosition)
                     }
                 }
 
         merge(view.tagSelects(), view.createTagRequests().map { noTag }).subscribeUntilDetached { view.displayTagEdit(it) }
         view.archivedTagsRequests().subscribeUntilDetached { view.displayArchivedTags() }
         view.tagMoves()
-                .doOnNext { ignoreNextMove = it }
-                .map { reorderTags(it) }
+                .observeOn(schedulers.io)
+                .switchMap { tagMove -> latestTagsSnapshot().map { reorderTags(it, tagMove) } }
                 .filter { it.isNotEmpty() }
                 .subscribeUntilDetached { tagsWriter.write(it.toSet()) }
     }
 
-    private fun reorderTags(tagMove: TagMove): List<Tag> {
+    @Suppress("UNCHECKED_CAST")
+    private fun latestTagsSnapshot() = tagsSource.data().ofType(RealtimeData.AllItems::class.java).map { it.items as List<Tag> }
+
+    private fun reorderTags(tags: List<Tag>, tagMove: TagMove): List<Tag> {
         val fromPosition = tagMove.fromPosition
         val toPosition = tagMove.toPosition
         if (fromPosition == toPosition) return emptyList()
 
         val minPosition = min(fromPosition, toPosition)
         val maxPosition = max(fromPosition, toPosition)
-        return tagMove.currentTags
-                .subList(minPosition, maxPosition + 1)
-                .map {
-                    when (it.order.value) {
-                        fromPosition -> it.copy(order = Order(toPosition))
-                        in minPosition..maxPosition -> it.copy(order = Order(it.order.value + if (fromPosition > toPosition) 1 else -1))
-                        else -> it.copy(order = Order(it.order.value))
+        return tags
+                .mapIndexed { index, tag ->
+                    when (index) {
+                        fromPosition -> tag.copy(order = Order(toPosition))
+                        in minPosition..maxPosition -> tag.copy(order = Order(index + if (fromPosition > toPosition) 1 else -1))
+                        else -> tag.copy(order = Order(index))
                     }
                 }
     }
 
-    private fun shouldIgnoreMove(movedItems: RealtimeData.MovedItems<Tag>): Boolean {
-        val ignoreNextMove = this.ignoreNextMove
-        this.ignoreNextMove = null
-        return ignoreNextMove != null && ignoreNextMove.fromPosition == movedItems.fromPosition && ignoreNextMove.toPosition == movedItems.toPosition
-    }
-
-    data class TagMove(val currentTags: List<Tag>, val fromPosition: Int, val toPosition: Int)
+    data class TagMove(val fromPosition: Int, val toPosition: Int)
 
     interface View : Presenter.View, RealtimeItemsView<Tag>, LoadingView {
         fun archivedTagsRequests(): Observable<Unit>

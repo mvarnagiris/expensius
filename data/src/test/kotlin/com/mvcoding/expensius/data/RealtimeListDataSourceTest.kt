@@ -55,7 +55,7 @@ class RealtimeListDataSourceTest {
         receiveAddedItems(items)
         receiveRemovedItems(items)
         receiveChangedItems(items)
-        receiveMovedItems(items)
+        receiveMovedItems(listOf(items.first()), items.last().toString())
         subscriber.assertNoValues()
 
         receiveCurrentItems(items)
@@ -64,13 +64,13 @@ class RealtimeListDataSourceTest {
         receiveRemovedItems(items)
         receiveAddedItems(items)
         receiveChangedItems(items)
-        receiveMovedItems(items)
+        receiveMovedItems(listOf(items.first()), items.last().toString())
         subscriber.assertValues(
                 RealtimeData.AllItems(items),
                 RealtimeData.RemovedItems(items, 0),
                 RealtimeData.AddedItems(items, 0),
                 RealtimeData.ChangedItems(items, 0),
-                RealtimeData.MovedItems(items, 0, 0))
+                RealtimeData.MovedItems(listOf(items.first()), 0, items.size - 1))
     }
 
     @Test
@@ -170,6 +170,25 @@ class RealtimeListDataSourceTest {
         subscriber.assertValues(RealtimeData.AllItems(items), RealtimeData.MovedItems(listOf(2), 0, 2), RealtimeData.MovedItems(listOf(2), 2, 0))
         otherSubscriber.assertValues(RealtimeData.AllItems(listOf(4, 6, 2)), RealtimeData.MovedItems(listOf(2), 2, 0))
         otherSubscriber2.assertValues(RealtimeData.AllItems(listOf(2, 4, 6)))
+    }
+
+    @Test
+    fun `does not emit moved item when position does not change`() {
+        realtimeListDataSource.data().subscribe(subscriber)
+        receiveCurrentItems(items)
+
+        receiveMovedItems(listOf(2), null)
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        subscriber.assertValues(RealtimeData.AllItems(items))
+        otherSubscriber.assertValues(RealtimeData.AllItems(items))
+    }
+
+    @Test
+    fun `closes underlying realtime list when this data source is closed`() {
+        realtimeListDataSource.close()
+
+        verify(realtimeList).close()
     }
 
     fun receiveCurrentItems(items: List<Int>) = allItemsSubject.onNext(RawRealtimeData.AllItems(items))

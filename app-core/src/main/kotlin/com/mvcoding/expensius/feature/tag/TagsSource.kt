@@ -22,13 +22,29 @@ import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
 import rx.Observable
+import java.util.concurrent.atomic.AtomicReference
 
 class TagsSource(
         private val appUserSource: DataSource<AppUser>,
         private val createRealtimeList: (UserId) -> RealtimeList<Tag>) : DataSource<RealtimeData<Tag>> {
 
+    private val userIdAndRealtimeListDataSource = AtomicReference<Pair<UserId, RealtimeListDataSource<Tag>>?>()
+
     override fun data(): Observable<RealtimeData<Tag>> = appUserSource.data()
-            .first()
-            .map { createRealtimeList(it.userId) }
-            .switchMap { realtimeList -> RealtimeListDataSource(realtimeList) { it.tagId.id }.data() }
+            .map { it.userId }
+            .distinctUntilChanged()
+            .switchMap {
+                val currentUserIdAndRealtimeListDataSource = userIdAndRealtimeListDataSource.get()
+                val currentUserId = currentUserIdAndRealtimeListDataSource?.first
+                val currentRealtimeListDataSource = currentUserIdAndRealtimeListDataSource?.second
+
+                val shouldUseSameRealtimeListDataSource = currentUserId != null && currentRealtimeListDataSource != null && currentUserId == it
+                if (shouldUseSameRealtimeListDataSource) currentRealtimeListDataSource!!.data()
+                else {
+                    currentRealtimeListDataSource?.close()
+                    val realtimeListDataSource = RealtimeListDataSource(createRealtimeList(it)) { it.tagId.id }
+                    userIdAndRealtimeListDataSource.set(Pair(it, realtimeListDataSource))
+                    realtimeListDataSource.data()
+                }
+            }
 }

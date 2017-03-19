@@ -75,7 +75,7 @@ class TagsActivity : BaseActivity(), TagsPresenter.View {
     override fun tagSelects(): Observable<Tag> = adapter.itemPositionClicks().filter { adapter.isTagPosition(it) }.map { adapter.getItem(it) }
     override fun archivedTagsRequests(): Observable<Unit> = adapter.itemPositionClicks().filter { !adapter.isTagPosition(it) }.map { Unit }
     override fun createTagRequests(): Observable<Unit> = createTagFloatingActionButton.clicks()
-    override fun tagMoves(): Observable<TagMove> = tagMoveSubject.map { TagMove(adapter.items, it.fromPosition, it.toPosition) }
+    override fun tagMoves(): Observable<TagMove> = tagMoveSubject.map { TagMove(it.fromPosition, it.toPosition) }
     override fun showItems(items: List<Tag>): Unit = adapter.setItems(items)
     override fun showAddedItems(items: List<Tag>, position: Int): Unit = adapter.addItems(position, items)
     override fun showChangedItems(items: List<Tag>, position: Int): Unit = adapter.changeItems(position, items)

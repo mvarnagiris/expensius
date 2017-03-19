@@ -20,12 +20,13 @@ import rx.Subscriber
 import rx.lang.kotlin.deferredObservable
 import rx.lang.kotlin.filterNotNull
 import rx.lang.kotlin.observable
+import java.io.Closeable
 import java.lang.Math.max
 import java.lang.Math.min
 
 class RealtimeListDataSource<ITEM>(
         private val realtimeList: RealtimeList<ITEM>,
-        private val itemToKey: (ITEM) -> String) : DataSource<RealtimeData<ITEM>> {
+        private val itemToKey: (ITEM) -> String) : DataSource<RealtimeData<ITEM>>, Closeable {
 
     private var items: List<ITEM>? = null
 
@@ -54,10 +55,12 @@ class RealtimeListDataSource<ITEM>(
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
+    // TODO Write test for not emitting values when changed item is not really changed
     private fun handleChangedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getChangedItems()
                 .skipUntil(allItems)
                 .map { RealtimeData.ChangedItems(it.items, keyToPosition(itemToKey(it.items.first()))) }
+                .filter { items!!.subList(it.position, it.position + it.items.size).containsAll(it.items).not() }
                 .doOnNext { items = items.orEmpty().replace(it.items, it.position) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
@@ -73,12 +76,22 @@ class RealtimeListDataSource<ITEM>(
     private fun handleMovedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getMovedItem()
                 .skipUntil(allItems)
-                .map { RealtimeData.MovedItems(it.items, keyToPosition(itemToKey(it.items.first())), max(keyToPosition(it.previousKey), 0)) }
+                .map {
+                    val fromPosition = keyToPosition(itemToKey(it.items.first()))
+                    val previousItemPosition = keyToPosition(it.previousKey)
+                    val toPosition =
+                            if (previousItemPosition < 0) 0
+                            else if (previousItemPosition > fromPosition) previousItemPosition
+                            else previousItemPosition + 1
+                    RealtimeData.MovedItems(it.items, fromPosition, toPosition)
+                }
+                .filter { it.fromPosition != it.toPosition }
                 .doOnNext { items = items.orEmpty().move(it.fromPosition, it.toPosition) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
     override fun data(): Observable<RealtimeData<ITEM>> = observable.mergeWith(currentState())
+    override fun close() = realtimeList.close()
 
     private fun currentState() = just(items).filterNotNull().map { RealtimeData.AllItems(it) }
     private fun keyToPosition(previousKey: String?) = previousKey?.let { key -> items.orEmpty().indexOfFirst { itemToKey(it) == key } } ?: -1
@@ -86,8 +99,12 @@ class RealtimeListDataSource<ITEM>(
     private fun <T> List<T>.insert(items: List<T>, position: Int) = take(position).plus(items).plus(takeLast(size - position))
     private fun <T> List<T>.replace(items: List<T>, position: Int) = take(position).plus(items).plus(takeLast(max(size - position - items.size, 0)))
     private fun <T> List<T>.remove(items: List<T>, position: Int) = take(position).plus(takeLast(max(size - position - items.size, 0)))
-    private fun <T> List<T>.move(fromPosition: Int, toPosition: Int) = take(min(fromPosition, toPosition))
-            .plus(if (toPosition <= fromPosition) listOf(get(fromPosition)) else slice((fromPosition + 1)..toPosition))
-            .plus(if (toPosition <= fromPosition) slice(toPosition..(fromPosition - 1)) else listOf(get(fromPosition)))
+    private fun <T> List<T>.move(fromPosition: Int, toPosition: Int): List<T> {
+        val isMovingUp = toPosition <= fromPosition
+        return take(min(fromPosition, toPosition))
+                .plus(if (isMovingUp) listOf(get(fromPosition)) else slice((fromPosition + 1)..toPosition))
+                .plus(if (isMovingUp) slice(toPosition..(fromPosition - 1)) else listOf(get(fromPosition)))
+                .plus(if (isMovingUp) slice((fromPosition + 1)..(size - 1)) else slice((toPosition + 1)..(size - 1)))
+    }
 
 }

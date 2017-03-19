@@ -22,7 +22,6 @@ import com.mvcoding.expensius.data.RealtimeData.*
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
-import com.mvcoding.expensius.feature.tag.TagsPresenter.TagMove
 import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Title
@@ -138,7 +137,7 @@ class TagsPresenterTest {
         presenter().attach(view)
 
         receiveTags(tags)
-        moveTag(2, 0)
+//        moveTag(2, 0)
         receiveTagsMoved(movedItems, 2, 0)
         receiveTagsMoved(movedItems, 0, 2)
 
@@ -155,7 +154,7 @@ class TagsPresenterTest {
         presenter().attach(view)
 
         receiveTags(tags)
-        moveTag(0, 2)
+//        moveTag(0, 2)
         receiveTagsMoved(movedItems, 0, 2)
         receiveTagsMoved(movedItems, 2, 0)
 
@@ -164,7 +163,7 @@ class TagsPresenterTest {
         verify(view).showMovedItems(movedItems, 2, 0)
     }
 
-    private fun moveTag(fromPosition: Int, toPosition: Int) = tagMovesSubject.onNext(TagMove(fromPosition, toPosition))
+    //    private fun moveTag(fromPosition: Int, toPosition: Int) = tagMovesSubject.onNext(TagMove(fromPosition, toPosition))
     private fun receiveTags(tags: List<Tag>) = tagsSubject.onNext(AllItems(tags))
     private fun requestCreateTag() = createTagRequestsSubject.onNext(Unit)
     private fun requestArchivedTags() = displayArchivedTagsSubject.onNext(Unit)
