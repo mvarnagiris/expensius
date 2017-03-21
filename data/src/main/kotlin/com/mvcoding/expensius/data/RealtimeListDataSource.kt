@@ -55,7 +55,6 @@ class RealtimeListDataSource<ITEM>(
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    // TODO Write test for not emitting values when changed item is not really changed
     private fun handleChangedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getChangedItems()
                 .skipUntil(allItems)

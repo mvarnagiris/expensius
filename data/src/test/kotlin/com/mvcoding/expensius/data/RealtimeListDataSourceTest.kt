@@ -14,9 +14,8 @@
 
 package com.mvcoding.expensius.data
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
+import com.mvcoding.expensius.data.RealtimeData.*
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
 import rx.lang.kotlin.PublishSubject
@@ -63,137 +62,150 @@ class RealtimeListDataSourceTest {
         subscriber.assertNoValues()
 
         receiveCurrentItems(items)
-        subscriber.assertValue(RealtimeData.AllItems(items))
+        subscriber.assertValue(AllItems(items))
 
         receiveAddedItems(otherItems)
         receiveChangedItems(changedItems)
         receiveRemovedItems(otherItems)
         receiveMovedItems(listOf(changedItems.first()), changedItems.last().id.toString())
         subscriber.assertValues(
-                RealtimeData.AllItems(items),
-                RealtimeData.AddedItems(otherItems, 0),
-                RealtimeData.ChangedItems(changedItems, 3),
-                RealtimeData.RemovedItems(otherItems, 0),
-                RealtimeData.MovedItems(listOf(changedItems.first()), 0, changedItems.size - 1))
+                AllItems(items),
+                AddedItems(otherItems, 0),
+                ChangedItems(changedItems, 3),
+                RemovedItems(otherItems, 0),
+                MovedItems(listOf(changedItems.first()), 0, changedItems.size - 1))
     }
 
-//    @Test
-//    fun `only takes first result from current values`() {
-//        realtimeListDataSource.data().subscribe(subscriber)
-//
-//        receiveCurrentItems(items)
-//        receiveCurrentItems(listOf(1, 3))
-//
-//        subscriber.assertValue(RealtimeData.AllItems(items))
-//    }
-//
-//    @Test
-//    fun `does not subscribe to current items more than once`() {
-//        realtimeListDataSource.data().subscribe(subscriber)
-//        realtimeListDataSource.data().subscribe(otherSubscriber)
-//
-//        receiveCurrentItems(items)
-//        realtimeListDataSource.data().subscribe(otherSubscriber2)
-//
-//        subscriber.assertValue(RealtimeData.AllItems(items))
-//        otherSubscriber.assertValue(RealtimeData.AllItems(items))
-//        otherSubscriber2.assertValue(RealtimeData.AllItems(items))
-//        verify(realtimeList, times(1)).getAllItems()
-//    }
-//
-//    @Test
-//    fun `handles added items`() {
-//        val addedItems1 = listOf(Item(1, 1))
-//        val addedItems2 = listOf(Item(3, 3))
-//        val addedItems3 = listOf(Item(5, 5))
-//        realtimeListDataSource.data().subscribe(subscriber)
-//        receiveCurrentItems(items)
-//
-//        receiveAddedItems(addedItems1, null)
-//        realtimeListDataSource.data().subscribe(otherSubscriber)
-//
-//        receiveAddedItems(addedItems2, "2")
-//        realtimeListDataSource.data().subscribe(otherSubscriber2)
-//
-//        receiveAddedItems(addedItems3, "4")
-//        realtimeListDataSource.data().subscribe(otherSubscriber3)
-//
-//        subscriber.assertValues(RealtimeData.AllItems(items), RealtimeData.AddedItems(addedItems1, 0), RealtimeData.AddedItems(addedItems2, 2), RealtimeData.AddedItems(addedItems3, 4))
-//        otherSubscriber.assertValues(RealtimeData.AllItems(listOf(1, 2, 4, 6)), RealtimeData.AddedItems(addedItems2, 2), RealtimeData.AddedItems(addedItems3, 4))
-//        otherSubscriber2.assertValues(RealtimeData.AllItems(listOf(1, 2, 3, 4, 6)), RealtimeData.AddedItems(addedItems3, 4))
-//        otherSubscriber3.assertValues(RealtimeData.AllItems(listOf(1, 2, 3, 4, 5, 6)))
-//    }
-//
-//    @Test
-//    fun `handles changed items`() {
-//        val changedItems = listOf(4, 6)
-//        realtimeListDataSource.data().subscribe(subscriber)
-//        receiveCurrentItems(items)
-//
-//        receiveChangedItems(changedItems)
-//        realtimeListDataSource.data().subscribe(otherSubscriber)
-//
-//        subscriber.assertValues(RealtimeData.AllItems(items), RealtimeData.ChangedItems(changedItems, 1))
-//        otherSubscriber.assertValues(RealtimeData.AllItems(listOf(2, 4, 6)))
-//    }
-//
-//    @Test
-//    fun `handles removed items`() {
-//        val removedItems1 = listOf(4)
-//        val removedItems2 = listOf(6)
-//        val removedItems3 = listOf(2)
-//        realtimeListDataSource.data().subscribe(subscriber)
-//        receiveCurrentItems(items)
-//
-//        receiveRemovedItems(removedItems1)
-//        realtimeListDataSource.data().subscribe(otherSubscriber)
-//
-//        receiveRemovedItems(removedItems2)
-//        realtimeListDataSource.data().subscribe(otherSubscriber2)
-//
-//        receiveRemovedItems(removedItems3)
-//        realtimeListDataSource.data().subscribe(otherSubscriber3)
-//
-//        subscriber.assertValues(RealtimeData.AllItems(items), RealtimeData.RemovedItems(removedItems1, 1), RealtimeData.RemovedItems(removedItems2, 1), RealtimeData.RemovedItems(removedItems3, 0))
-//        otherSubscriber.assertValues(RealtimeData.AllItems(listOf(2, 6)), RealtimeData.RemovedItems(removedItems2, 1), RealtimeData.RemovedItems(removedItems3, 0))
-//        otherSubscriber2.assertValues(RealtimeData.AllItems(listOf(2)), RealtimeData.RemovedItems(removedItems3, 0))
-//        otherSubscriber3.assertValues(RealtimeData.AllItems(listOf()))
-//    }
-//
-//    @Test
-//    fun `handles moved items`() {
-//        realtimeListDataSource.data().subscribe(subscriber)
-//        receiveCurrentItems(items)
-//
-//        receiveMovedItems(listOf(2), "6")
-//        realtimeListDataSource.data().subscribe(otherSubscriber)
-//
-//        receiveMovedItems(listOf(2), null)
-//        realtimeListDataSource.data().subscribe(otherSubscriber2)
-//
-//        subscriber.assertValues(RealtimeData.AllItems(items), RealtimeData.MovedItems(listOf(2), 0, 2), RealtimeData.MovedItems(listOf(2), 2, 0))
-//        otherSubscriber.assertValues(RealtimeData.AllItems(listOf(4, 6, 2)), RealtimeData.MovedItems(listOf(2), 2, 0))
-//        otherSubscriber2.assertValues(RealtimeData.AllItems(listOf(2, 4, 6)))
-//    }
-//
-//    @Test
-//    fun `does not emit moved item when position does not change`() {
-//        realtimeListDataSource.data().subscribe(subscriber)
-//        receiveCurrentItems(items)
-//
-//        receiveMovedItems(listOf(2), null)
-//        realtimeListDataSource.data().subscribe(otherSubscriber)
-//
-//        subscriber.assertValues(RealtimeData.AllItems(items))
-//        otherSubscriber.assertValues(RealtimeData.AllItems(items))
-//    }
-//
-//    @Test
-//    fun `closes underlying realtime list when this data source is closed`() {
-//        realtimeListDataSource.close()
-//
-//        verify(realtimeList).close()
-//    }
+    @Test
+    fun `only takes first result from current values`() {
+        realtimeListDataSource.data().subscribe(subscriber)
+
+        receiveCurrentItems(items)
+        receiveCurrentItems(listOf(item(1), item(3)))
+
+        subscriber.assertValue(AllItems(items))
+    }
+
+    @Test
+    fun `does not subscribe to current items more than once`() {
+        realtimeListDataSource.data().subscribe(subscriber)
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        receiveCurrentItems(items)
+        realtimeListDataSource.data().subscribe(otherSubscriber2)
+
+        subscriber.assertValue(AllItems(items))
+        otherSubscriber.assertValue(AllItems(items))
+        otherSubscriber2.assertValue(AllItems(items))
+        verify(realtimeList, times(1)).getAllItems()
+    }
+
+    @Test
+    fun `handles added items`() {
+        val addedItems1 = listOf(item(1))
+        val addedItems2 = listOf(item(3))
+        val addedItems3 = listOf(item(5))
+        realtimeListDataSource.data().subscribe(subscriber)
+        receiveCurrentItems(items)
+
+        receiveAddedItems(addedItems1, null)
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        receiveAddedItems(addedItems2, "2")
+        realtimeListDataSource.data().subscribe(otherSubscriber2)
+
+        receiveAddedItems(addedItems3, "4")
+        realtimeListDataSource.data().subscribe(otherSubscriber3)
+
+        subscriber.assertValues(AllItems(items), AddedItems(addedItems1, 0), AddedItems(addedItems2, 2), AddedItems(addedItems3, 4))
+        otherSubscriber.assertValues(AllItems(listOf(item(1), item(2), item(4), item(6))), AddedItems(addedItems2, 2), AddedItems(addedItems3, 4))
+        otherSubscriber2.assertValues(AllItems(listOf(item(1), item(2), item(3), item(4), item(6))), AddedItems(addedItems3, 4))
+        otherSubscriber3.assertValues(AllItems(listOf(item(1), item(2), item(3), item(4), item(5), item(6))))
+    }
+
+    @Test
+    fun `handles changed items`() {
+        val changedItems = listOf(item(4).value(0), item(6).value(0))
+        realtimeListDataSource.data().subscribe(subscriber)
+        receiveCurrentItems(items)
+
+        receiveChangedItems(changedItems)
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        subscriber.assertValues(AllItems(items), ChangedItems(changedItems, 1))
+        otherSubscriber.assertValues(AllItems(listOf(item(2), item(4).value(0), item(6).value(0))))
+    }
+
+    @Test
+    fun `does not emit changed items when they are not changed`() {
+        val notChangedItems = listOf(item(4), item(6))
+        realtimeListDataSource.data().subscribe(subscriber)
+        receiveCurrentItems(items)
+
+        receiveChangedItems(notChangedItems)
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        subscriber.assertValues(AllItems(items))
+        otherSubscriber.assertValues(AllItems(items))
+    }
+
+    @Test
+    fun `handles removed items`() {
+        val removedItems1 = listOf(item(4))
+        val removedItems2 = listOf(item(6))
+        val removedItems3 = listOf(item(2))
+        realtimeListDataSource.data().subscribe(subscriber)
+        receiveCurrentItems(items)
+
+        receiveRemovedItems(removedItems1)
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        receiveRemovedItems(removedItems2)
+        realtimeListDataSource.data().subscribe(otherSubscriber2)
+
+        receiveRemovedItems(removedItems3)
+        realtimeListDataSource.data().subscribe(otherSubscriber3)
+
+        subscriber.assertValues(AllItems(items), RemovedItems(removedItems1, 1), RemovedItems(removedItems2, 1), RemovedItems(removedItems3, 0))
+        otherSubscriber.assertValues(AllItems(listOf(item(2), item(6))), RemovedItems(removedItems2, 1), RemovedItems(removedItems3, 0))
+        otherSubscriber2.assertValues(AllItems(listOf(item(2))), RemovedItems(removedItems3, 0))
+        otherSubscriber3.assertValues(AllItems(listOf()))
+    }
+
+    @Test
+    fun `handles moved items`() {
+        realtimeListDataSource.data().subscribe(subscriber)
+        receiveCurrentItems(items)
+
+        receiveMovedItems(listOf(item(2)), "6")
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        receiveMovedItems(listOf(item(2)), null)
+        realtimeListDataSource.data().subscribe(otherSubscriber2)
+
+        subscriber.assertValues(AllItems(items), MovedItems(listOf(item(2)), 0, 2), MovedItems(listOf(item(2)), 2, 0))
+        otherSubscriber.assertValues(AllItems(listOf(item(4), item(6), item(2))), MovedItems(listOf(item(2)), 2, 0))
+        otherSubscriber2.assertValues(AllItems(listOf(item(2), item(4), item(6))))
+    }
+
+    @Test
+    fun `does not emit moved item when position does not change`() {
+        realtimeListDataSource.data().subscribe(subscriber)
+        receiveCurrentItems(items)
+
+        receiveMovedItems(listOf(item(2)), null)
+        realtimeListDataSource.data().subscribe(otherSubscriber)
+
+        subscriber.assertValues(RealtimeData.AllItems(items))
+        otherSubscriber.assertValues(RealtimeData.AllItems(items))
+    }
+
+    @Test
+    fun `closes underlying realtime list when this data source is closed`() {
+        realtimeListDataSource.close()
+
+        verify(realtimeList).close()
+    }
 
     fun receiveCurrentItems(items: List<Item>) = allItemsSubject.onNext(RawRealtimeData.AllItems(items))
     fun receiveAddedItems(items: List<Item>, previousKey: String? = null) = addedItemsSubject.onNext(RawRealtimeData.AddedItems(items, previousKey))
