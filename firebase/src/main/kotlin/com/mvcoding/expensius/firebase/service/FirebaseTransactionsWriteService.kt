@@ -30,8 +30,8 @@ package com.mvcoding.expensius.firebase.service
 //    override fun saveTransactions(updateTransactions: Set<Transaction>): Observable<Unit> = appUserService.appUser()
 //            .first()
 //            .map {
-//                val transactions = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == NONE) it.toMap() else null })
-//                val archivedTransactions = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == ARCHIVED) it.toMap() else null })
+//                val transactions = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == NONE) it.toFirebaseMap() else null })
+//                val archivedTransactions = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == ARCHIVED) it.toFirebaseMap() else null })
 //
 //                val appUserId = it.userId
 //                if (transactions.isNotEmpty()) transactionsDatabaseReference(appUserId).updateChildren(transactions)
@@ -49,7 +49,7 @@ package com.mvcoding.expensius.firebase.service
 //            tags.map { it.tagId.id },
 //            note.text)
 //
-//    private fun Transaction.toMap() = mapOf(
+//    private fun Transaction.toFirebaseMap() = mapOf(
 //            "id" to transactionId.id,
 //            "transactionType" to transactionType.name,
 //            "transactionState" to transactionState.name,

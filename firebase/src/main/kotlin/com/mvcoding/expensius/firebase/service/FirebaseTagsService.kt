@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.firebase.FirebaseRealtimeList
 import com.mvcoding.expensius.firebase.model.FirebaseTag
+import com.mvcoding.expensius.firebase.model.toFirebaseMap
+import com.mvcoding.expensius.firebase.model.toFirebaseTag
 import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
@@ -27,6 +29,10 @@ import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
 
 class FirebaseTagsService {
+
+    private val REF_TAGS = "tags"
+    private val REF_ARCHIVED_TAGS = "archivedTags"
+
     fun getTags(userId: UserId): RealtimeList<Tag> = FirebaseRealtimeList(userId.tagsReference().orderByChild("order"), { it.toTag(NONE) })
     fun getArchivedTags(userId: UserId): RealtimeList<Tag> = FirebaseRealtimeList(userId.archivedTagsReference().orderByChild("order"), { it.toTag(ARCHIVED) })
 
@@ -40,20 +46,14 @@ class FirebaseTagsService {
     }
 
     fun updateTags(userId: UserId, updateTags: Set<Tag>) {
-        val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toMap() else null }).filterValues { it != null }
-        val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toMap() else null }).filterValues { it != null }
+        val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toFirebaseMap() else null }).filterValues { it != null }
+        val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toFirebaseMap() else null }).filterValues { it != null }
 
         if (tagsToUpdate.isNotEmpty()) userId.tagsReference().updateChildren(tagsToUpdate)
         if (archivedTagsToUpdate.isNotEmpty()) userId.archivedTagsReference().updateChildren(archivedTagsToUpdate)
     }
 
-    private fun UserId.tagsReference() = FirebaseDatabase.getInstance().getReference("tags").child(this.id)
-    private fun UserId.archivedTagsReference() = FirebaseDatabase.getInstance().getReference("archivedTags").child(this.id)
-    private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
+    private fun UserId.tagsReference() = FirebaseDatabase.getInstance().getReference(REF_TAGS).child(this.id)
+    private fun UserId.archivedTagsReference() = FirebaseDatabase.getInstance().getReference(REF_ARCHIVED_TAGS).child(this.id)
     private fun DataSnapshot.toTag(modelState: ModelState) = getValue(FirebaseTag::class.java).toTag(modelState)
-    private fun Tag.toMap() = mapOf(
-            "id" to tagId.id,
-            "title" to title.text,
-            "color" to color.rgb,
-            "order" to order.value)
 }

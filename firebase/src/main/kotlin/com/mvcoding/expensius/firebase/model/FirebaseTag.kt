@@ -17,8 +17,7 @@ package com.mvcoding.expensius.firebase.model
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.NullModels.noColor
 import com.mvcoding.expensius.model.NullModels.noOrder
-import com.mvcoding.expensius.model.NullModels.noTagId
-import com.mvcoding.expensius.model.NullModels.noTitle
+import com.mvcoding.expensius.model.NullModels.noTag
 
 data class FirebaseTag(
         val id: String? = null,
@@ -26,11 +25,20 @@ data class FirebaseTag(
         val color: Int? = null,
         val order: Int? = null) {
 
-    // TODO Write tests
-    fun toTag(modelState: ModelState) = Tag(
-            id?.let(::TagId) ?: noTagId,
-            modelState,
-            title?.let(::Title) ?: noTitle,
-            color?.let(::Color) ?: noColor,
-            order?.let(::Order) ?: noOrder)
+    fun toTag(modelState: ModelState): Tag {
+        if (id.isNullOrBlank() || title.isNullOrBlank()) return noTag
+        return Tag(
+                TagId(id!!),
+                modelState,
+                Title(title!!),
+                color?.let(::Color) ?: noColor,
+                order?.let(::Order) ?: noOrder)
+    }
 }
+
+internal fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
+internal fun Tag.toFirebaseMap() = mapOf(
+        "id" to tagId.id,
+        "title" to title.text,
+        "color" to color.rgb,
+        "order" to order.value)

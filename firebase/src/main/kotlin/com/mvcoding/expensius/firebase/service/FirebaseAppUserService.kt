@@ -44,7 +44,7 @@ class FirebaseAppUserService(private val scheduler: Scheduler) {
             .switchMap { if (it == null) just(noAppUser) else fetchAppUser(it) }
             .onErrorReturn { noAppUser }
 
-    fun setAppUser(appUser: AppUser) = FirebaseDatabase.getInstance()
+    fun setAppUser(appUser: AppUser): Task<Void> = FirebaseDatabase.getInstance()
             .getReference("users")
             .child(appUser.userId.id)
             .setValue(appUser.toFirebaseAppUser())

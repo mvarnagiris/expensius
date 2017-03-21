@@ -30,8 +30,8 @@ package com.mvcoding.expensius.firebase.service
 //    override fun saveTags(updateTags: Set<Tag>): Observable<Unit> = appUserService.appUser()
 //            .first()
 //            .map {
-//                val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toMap() else null })
-//                val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toMap() else null })
+//                val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toFirebaseMap() else null })
+//                val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toFirebaseMap() else null })
 //
 //                val appUserId = it.userId
 //                if (tagsToUpdate.isNotEmpty()) tagsDatabaseReference(appUserId).updateChildren(tagsToUpdate)
@@ -39,7 +39,7 @@ package com.mvcoding.expensius.firebase.service
 //            }
 //
 //    private fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
-//    private fun Tag.toMap() = mapOf(
+//    private fun Tag.toFirebaseMap() = mapOf(
 //            "id" to tagId.id,
 //            "title" to title.text,
 //            "color" to color.rgb,
