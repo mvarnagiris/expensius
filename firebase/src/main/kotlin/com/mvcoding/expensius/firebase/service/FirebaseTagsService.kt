@@ -46,8 +46,8 @@ class FirebaseTagsService {
     }
 
     fun updateTags(userId: UserId, updateTags: Set<Tag>) {
-        val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toFirebaseMap() else null }).filterValues { it != null }
-        val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toFirebaseMap() else null }).filterValues { it != null }
+        val tagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == NONE) it.toFirebaseMap() else null })
+        val archivedTagsToUpdate = updateTags.associateBy({ it.tagId.id }, { if (it.modelState == ARCHIVED) it.toFirebaseMap() else null })
 
         if (tagsToUpdate.isNotEmpty()) userId.tagsReference().updateChildren(tagsToUpdate)
         if (archivedTagsToUpdate.isNotEmpty()) userId.archivedTagsReference().updateChildren(archivedTagsToUpdate)
