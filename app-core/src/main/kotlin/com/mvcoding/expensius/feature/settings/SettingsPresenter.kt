@@ -15,8 +15,12 @@
 package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.feature.currency.CurrenciesProvider
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
+import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.SubscriptionType
@@ -24,38 +28,37 @@ import com.mvcoding.mvp.Presenter
 import rx.Observable
 
 class SettingsPresenter(
-        //        private val appUserService: AppUserService,
-//        private val appUserWriteService: AppUserWriteService,
+        private val appUserSource: DataSource<AppUser>,
+        private val appUserWriter: DataWriter<AppUser>,
         private val currenciesProvider: CurrenciesProvider,
         private val schedulers: RxSchedulers) : Presenter<SettingsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-//        appUserService.appUser()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached {
-//                    view.showAppUser(it)
-//                    view.showMainCurrency(it.settings.mainCurrency)
-//                    view.showSubscriptionType(it.settings.subscriptionType)
-//                }
-//
-//        view.loginRequests()
-//                .withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser })
-//                .subscribeUntilDetached { if (it.isAnonymous()) view.displayLogin(RETURN) }
+        appUserSource.data()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached {
+                    view.showAppUser(it)
+                    view.showMainCurrency(it.settings.mainCurrency)
+                    view.showSubscriptionType(it.settings.subscriptionType)
+                }
 
-//        view.mainCurrencyRequests()
-//                .switchMap { currenciesProvider.currencies() }
-//                .switchMap { view.chooseMainCurrency(it) }
-//                .observeOn(schedulers.io)
-//                .withLatestFrom(appUserService.appUser().map { it.settings }, { newCurrency, settings -> settings.copy(mainCurrency = newCurrency) })
-//                .switchMap { appUserWriteService.saveSettings(it) }
-//                .subscribeUntilDetached { }
+        view.loginRequests()
+                .withLatestFrom(appUserSource.data(), { _, appUser -> appUser })
+                .subscribeUntilDetached { if (it.isAnonymous()) view.displayLogin(RETURN) }
 
-//        view.supportDeveloperRequests()
-//                .withLatestFrom(appUserService.appUser(), { unit, appUser -> appUser })
-//                .subscribeUntilDetached { if (it.isNotAnonymous()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER) }
+        view.mainCurrencyRequests()
+                .switchMap { currenciesProvider.currencies() }
+                .switchMap { view.chooseMainCurrency(it) }
+                .observeOn(schedulers.io)
+                .withLatestFrom(appUserSource.data()) { newCurrency, appUser -> appUser.copy(settings = appUser.settings.copy(mainCurrency = newCurrency)) }
+                .subscribeUntilDetached { appUserWriter.write(it) }
+
+        view.supportDeveloperRequests()
+                .withLatestFrom(appUserSource.data(), { _, appUser -> appUser })
+                .subscribeUntilDetached { if (it.isNotAnonymous()) view.displaySupportDeveloper() else view.displayLogin(SUPPORT_DEVELOPER) }
 
         view.aboutRequests().subscribeUntilDetached { view.displayAbout() }
     }

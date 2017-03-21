@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.settings
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
@@ -37,7 +36,6 @@ import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.SubscriptionType
 import kotlinx.android.synthetic.main.activity_settings.*
-import org.chromium.customtabsclient.CustomTabsActivityHelper
 import rx.Observable
 import java.lang.Math.min
 
@@ -87,7 +85,7 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
         val popupWindow = ListPopupWindow(this)
         popupWindow.anchorView = mainCurrencySettingsItemView
         popupWindow.setAdapter(ArrayAdapter<String>(this, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
-        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(currencies[position]); popupWindow.dismiss() }
+        popupWindow.setOnItemClickListener { _, _, position, _ -> it.onNext(currencies[position]); popupWindow.dismiss() }
         popupWindow.setOnDismissListener { it.onCompleted() }
         popupWindow.width = contentView.width - keyline
         popupWindow.height = min(contentView.height - mainCurrencySettingsItemView.bottom - itemHeight - keylineHalf, itemHeight * 7)
@@ -115,17 +113,12 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
     override fun displayLogin(destination: Destination): Unit = LoginActivity.start(this, destination)
 
     override fun displayAbout() {
-        CustomTabsActivityHelper.openCustomTab(
-                this,
-                CustomTabsIntent.Builder()
-                        .setToolbarColor(getColorFromTheme(R.attr.colorPrimary))
-                        .setSecondaryToolbarColor(getColorFromTheme(R.attr.colorAccent))
-                        .setShowTitle(false)
-                        .enableUrlBarHiding()
-                        .build(),
-                Uri.parse("https://github.com/mvarnagiris/expensius/blob/dev/CHANGELOG.md"),
-                { activity, uri -> openUrl(uri) })
+        CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .setToolbarColor(getColorFromTheme(R.attr.colorPrimary))
+                .setSecondaryToolbarColor(getColorFromTheme(R.attr.colorAccent))
+                .enableUrlBarHiding()
+                .build()
+                .launchUrl(this, Uri.parse("https://github.com/mvarnagiris/expensius/blob/dev/CHANGELOG.md"))
     }
-
-    private fun openUrl(uri: Uri): Unit = this.startActivity(Intent(Intent.ACTION_VIEW, uri))
 }

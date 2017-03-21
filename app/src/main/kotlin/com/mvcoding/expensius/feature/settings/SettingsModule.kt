@@ -17,16 +17,20 @@ package com.mvcoding.expensius.feature.settings
 import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
+import com.mvcoding.expensius.provideAppUserSource
+import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
 class SettingsModule : ShankModule {
     override fun registerFactories() {
-//        settingsPresenter()
+        settingsPresenter()
     }
 
-//    private fun settingsPresenter() = registerFactory(SettingsPresenter::class.java) { ->
-//        SettingsPresenter(provideAppUserService(), provideAppUserWriteService(), provideCurrenciesProvider(), provideRxSchedulers())
-//    }
+    private fun settingsPresenter() = registerFactory(SettingsPresenter::class) { ->
+        SettingsPresenter(provideAppUserSource(), provideAppUserSource(), provideCurrenciesProvider(), provideRxSchedulers())
+    }
 }
 
 fun Activity.provideSettingsPresenter() = withThisScope.provideSingletonFor<SettingsPresenter>()

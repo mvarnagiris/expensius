@@ -88,7 +88,6 @@ dependencies {
     compile "com.google.firebase:firebase-crash:$firebase_version"
     compile "com.google.firebase:firebase-messaging:$firebase_version"
     compile 'com.firebaseui:firebase-ui-auth:0.4.2'
-    compile 'me.zhanghai.android.customtabshelper:library:1.0.1'
     compile 'com.github.memoizr:shank:v1.3.1'
     compile 'com.github.memoizr:shank-android:v1.3.6'
     compile "com.jakewharton.rxbinding:rxbinding-kotlin:$rxbinding_version"
