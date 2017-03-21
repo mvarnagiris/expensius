@@ -22,6 +22,7 @@ import com.mvcoding.expensius.data.RealtimeData.*
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import com.mvcoding.expensius.feature.tag.TagsPresenter.TagMove
 import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Title
@@ -31,10 +32,11 @@ import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
+import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class TagsPresenterTest {
-    val tagsSubject = PublishSubject<RealtimeData<Tag>>()
+    val tagsSubject = BehaviorSubject<RealtimeData<Tag>>()
     val tagSelectsSubject = PublishSubject<Tag>()
     val createTagRequestsSubject = PublishSubject<Unit>()
     val displayArchivedTagsSubject = PublishSubject<Unit>()
@@ -137,33 +139,30 @@ class TagsPresenterTest {
         presenter().attach(view)
 
         receiveTags(tags)
-//        moveTag(2, 0)
+        moveTag(2, 0)
         receiveTagsMoved(movedItems, 2, 0)
-        receiveTagsMoved(movedItems, 0, 2)
 
         verify(tagsWriter).write(reorderedTags.toSet())
-        verify(view, never()).showMovedItems(movedItems, 2, 0)
-        verify(view).showMovedItems(movedItems, 0, 2)
+        verify(view).showMovedItems(movedItems, 2, 0)
     }
 
     @Test
     fun `reorders all tags when one tag was moved down`() {
         val tags = listOf(aTag(), aTag(), aTag(), aTag())
         val reorderedTags = listOf(tags[1].withOrder(0), tags[2].withOrder(1), tags[0].withOrder(2), tags[3].withOrder(3))
-        val movedItems = listOf(reorderedTags[2])
         presenter().attach(view)
 
         receiveTags(tags)
-//        moveTag(0, 2)
-        receiveTagsMoved(movedItems, 0, 2)
-        receiveTagsMoved(movedItems, 2, 0)
+        moveTag(0, 2)
+        receiveTagsMoved(listOf(reorderedTags[0]), 1, 0)
+        receiveTagsMoved(listOf(reorderedTags[1]), 2, 1)
 
         verify(tagsWriter).write(reorderedTags.toSet())
-        verify(view, never()).showMovedItems(movedItems, 0, 2)
-        verify(view).showMovedItems(movedItems, 2, 0)
+        verify(view).showMovedItems(listOf(reorderedTags[0]), 1, 0)
+        verify(view).showMovedItems(listOf(reorderedTags[1]), 2, 1)
     }
 
-    //    private fun moveTag(fromPosition: Int, toPosition: Int) = tagMovesSubject.onNext(TagMove(fromPosition, toPosition))
+    private fun moveTag(fromPosition: Int, toPosition: Int) = tagMovesSubject.onNext(TagMove(fromPosition, toPosition))
     private fun receiveTags(tags: List<Tag>) = tagsSubject.onNext(AllItems(tags))
     private fun requestCreateTag() = createTagRequestsSubject.onNext(Unit)
     private fun requestArchivedTags() = displayArchivedTagsSubject.onNext(Unit)
