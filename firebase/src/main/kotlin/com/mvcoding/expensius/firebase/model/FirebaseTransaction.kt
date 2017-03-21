@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,12 @@
 
 package com.mvcoding.expensius.firebase.model
 
+import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.NullModels.noNote
+import com.mvcoding.expensius.model.NullModels.noTimestamp
+import com.mvcoding.expensius.model.NullModels.noTransaction
+import java.math.BigDecimal
+
 data class FirebaseTransaction(
         val id: String? = null,
         val transactionType: String? = null,
@@ -25,14 +31,35 @@ data class FirebaseTransaction(
         val tags: List<String>? = null,
         val note: String? = null) {
 
-//    fun toTransaction(modelState: ModelState, tagsCache: Map<String, Tag>) = Transaction(
-//            id?.let { TransactionId(it) } ?: noTransactionId,
-//            modelState,
-//            transactionType?.let { TransactionType.valueOf(it) } ?: EXPENSE,
-//            transactionState?.let { TransactionState.valueOf(it) } ?: PENDING,
-//            timestamp?.let { Timestamp(it) } ?: noTimestamp,
-//            Money(amount?.let { BigDecimal(it) } ?: BigDecimal.ZERO, currency?.let { Currency(it) } ?: defaultCurrency()),
-//            (tags ?: emptyList()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
-//            note?.let { Note(it) } ?: noNote
-//    )
+    fun toTransaction(modelState: ModelState, tagsCache: Map<String, Tag>): Transaction {
+        if (id.isNullOrBlank()) return noTransaction
+        return Transaction(
+                TransactionId(id!!),
+                modelState,
+                transactionType(),
+                transactionState(),
+                timestamp?.let(::Timestamp) ?: noTimestamp,
+                Money(amount(), currency?.let { if (it.isBlank()) defaultCurrency() else Currency(it) } ?: defaultCurrency()),
+                (tags ?: emptyList()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
+                note?.trim()?.let(::Note) ?: noNote
+        )
+    }
+
+    private fun amount() = try {
+        BigDecimal(amount!!)
+    } catch (e: Exception) {
+        BigDecimal.ZERO
+    }
+
+    private fun transactionType() = try {
+        TransactionType.valueOf(transactionType!!)
+    } catch (e: Exception) {
+        TransactionType.EXPENSE
+    }
+
+    private fun transactionState() = try {
+        TransactionState.valueOf(transactionState!!)
+    } catch (e: Exception) {
+        TransactionState.PENDING
+    }
 }
