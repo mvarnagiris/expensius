@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.tag
 
+import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.feature.color
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
@@ -24,7 +25,11 @@ import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.combineLatest
 
-class TagPresenter(private var tag: Tag/*, private val tagsWriteService: TagsWriteService*/) : Presenter<TagPresenter.View>() {
+class TagPresenter(
+        private var tag: Tag,
+        private val createTagsWriter: DataWriter<Set<CreateTag>>,
+        private val tagsWriter: DataWriter<Set<Tag>>) : Presenter<TagPresenter.View>() {
+
     companion object {
         internal val VERY_HIGH_ORDER = 1000
     }
@@ -35,21 +40,21 @@ class TagPresenter(private var tag: Tag/*, private val tagsWriteService: TagsWri
         view.showArchiveEnabled(tag.isExisting())
         view.showModelState(tag.modelState)
 
-        val titles = view.titleChanges().map { Title(it) }.startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.copy(text = it.text.trim()) }
-        val colors = view.colorChanges().map { Color(it) }.startWith(tagColorOrDefault()).doOnNext { view.showColor(it) }
+        val titles = view.titleChanges().map(::Title).startWith(tag.title).doOnNext { view.showTitle(it) }.map { it.copy(text = it.text.trim()) }
+        val colors = view.colorChanges().map(::Color).startWith(tagColorOrDefault()).doOnNext { view.showColor(it) }
         val order = if (tag.isExisting()) tag.order else Order(VERY_HIGH_ORDER)
 
         val tag = combineLatest(titles, colors, { title, color -> tag.copy(title = title, color = color, order = order) }).doOnNext { tag = it }
 
-//        view.saveRequests()
-//                .withLatestFrom(tag, { unit, tag -> tag })
-//                .filter { validate(it, view) }
-//                .switchMap { if (it.isExisting()) tagsWriteService.saveTags(setOf(it)) else tagsWriteService.createTags(setOf(it.toCreateTag())) }
-//                .subscribeUntilDetached { view.displayResult() }
+        view.saveRequests()
+                .withLatestFrom(tag, { _, tag -> tag })
+                .filter { validate(it, view) }
+                .doOnNext { if (it.isExisting()) tagsWriter.write(setOf(it)) else createTagsWriter.write(setOf(it.toCreateTag())) }
+                .subscribeUntilDetached { view.displayResult() }
 
 //        view.archiveToggles()
 //                .map { tagWithToggledArchiveState() }
-//                .switchMap { tagsWriteService.saveTags(setOf(it)) }
+//                .switchMap { tagsWriter.saveTags(setOf(it)) }
 //                .subscribeUntilDetached { view.displayResult() }
     }
 

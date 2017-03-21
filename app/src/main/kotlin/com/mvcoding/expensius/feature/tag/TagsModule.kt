@@ -38,7 +38,7 @@ class TagsModule : ShankModule {
         tagsWriter()
         tagsPresenter()
 //        quickTagsPresenter()
-//        tagPresenter()
+        tagPresenter()
     }
 
     private fun createTagsWriter() = registerFactory(CreateTagsWriter::class) { ->
@@ -62,11 +62,11 @@ class TagsModule : ShankModule {
         TagsPresenter(modelDisplayType, provideTagsSource(modelDisplayType), provideTagsWriter(), provideRxSchedulers())
     }
 
+    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideCreateTagsWriter(), provideTagsWriter()) }
+
 //    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
 //        QuickTagsPresenter(provideTagsService(), provideRxSchedulers())
 //    }
-//
-//    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsWriteService()) }
 }
 
 fun provideCreateTagsWriter() = provideNew<CreateTagsWriter>()
