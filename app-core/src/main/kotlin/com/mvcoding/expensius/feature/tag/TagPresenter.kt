@@ -52,10 +52,10 @@ class TagPresenter(
                 .doOnNext { if (it.isExisting()) tagsWriter.write(setOf(it)) else createTagsWriter.write(setOf(it.toCreateTag())) }
                 .subscribeUntilDetached { view.displayResult() }
 
-//        view.archiveToggles()
-//                .map { tagWithToggledArchiveState() }
-//                .switchMap { tagsWriter.saveTags(setOf(it)) }
-//                .subscribeUntilDetached { view.displayResult() }
+        view.archiveToggles()
+                .map { tagWithToggledArchiveState() }
+                .doOnNext { tagsWriter.write(setOf(it)) }
+                .subscribeUntilDetached { view.displayResult() }
     }
 
     private fun tagColorOrDefault() = if (tag.color == noColor) Color(color(0x607d8b)) else tag.color
