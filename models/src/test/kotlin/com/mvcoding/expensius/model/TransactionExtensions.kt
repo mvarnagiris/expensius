@@ -14,17 +14,14 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.aLongTimestamp
-import com.mvcoding.expensius.aRandomItem
-import com.mvcoding.expensius.aString
-import com.mvcoding.expensius.aStringId
-import com.mvcoding.expensius.anAmount
+import com.mvcoding.expensius.*
 import java.math.BigDecimal
 
 fun aTransactionId() = TransactionId(aStringId())
 fun aTransactionType() = TransactionType.values().aRandomItem()
 fun aTransactionState() = TransactionState.values().aRandomItem()
 fun aTimestamp() = Timestamp(aLongTimestamp())
+fun anAmount() = BigDecimal(anInt(100))
 fun aMoney() = Money(anAmount(), aCurrency())
 fun aNote() = Note(aString("note"))
 fun aTransaction() = Transaction(

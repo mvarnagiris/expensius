@@ -14,15 +14,21 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 
-class TransactionsOverviewPresenter : Presenter<TransactionsOverviewPresenter.View>() {
+class TransactionsOverviewPresenter(
+        private val transactionsOverviewSource: DataSource<List<Transaction>>,
+        private val schedulers: RxSchedulers) : Presenter<TransactionsOverviewPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
-
-//        transactionsService.items().map { it.take(3) }.subscribeUntilDetached { view.showTransactions(it) }
+        transactionsOverviewSource.data()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showTransactions(it) }
     }
 
     interface View : Presenter.View {
