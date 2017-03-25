@@ -53,6 +53,7 @@ class RealtimeListDataSourceTest {
     @Test
     fun `emits current items first and ignores other events until current items come`() {
         val changedItems = items.map { it.value(0) }
+        val changedItemsAfterMove = changedItems.drop(1).plus(changedItems[0])
         realtimeListDataSource.data().subscribe(subscriber)
 
         receiveAddedItems(otherItems)
@@ -70,10 +71,10 @@ class RealtimeListDataSourceTest {
         receiveMovedItems(listOf(changedItems.first()), changedItems.last().id.toString())
         subscriber.assertValues(
                 AllItems(items),
-                AddedItems(otherItems, 0),
-                ChangedItems(changedItems, 3),
-                RemovedItems(otherItems, 0),
-                MovedItems(listOf(changedItems.first()), 0, changedItems.size - 1))
+                AddedItems(otherItems + items, otherItems, 0),
+                ChangedItems(otherItems + changedItems, changedItems, 3),
+                RemovedItems(changedItems, otherItems, 0),
+                MovedItems(changedItemsAfterMove, listOf(changedItems.first()), 0, changedItems.size - 1))
     }
 
     @Test
@@ -105,6 +106,9 @@ class RealtimeListDataSourceTest {
         val addedItems1 = listOf(item(1))
         val addedItems2 = listOf(item(3))
         val addedItems3 = listOf(item(5))
+        val itemsWithAdded1 = addedItems1 + items
+        val itemsWithAdded2 = itemsWithAdded1.take(2) + addedItems2 + itemsWithAdded1.drop(2)
+        val itemsWithAdded3 = itemsWithAdded2.dropLast(1) + addedItems3 + itemsWithAdded2.takeLast(1)
         realtimeListDataSource.data().subscribe(subscriber)
         receiveCurrentItems(items)
 
@@ -117,9 +121,9 @@ class RealtimeListDataSourceTest {
         receiveAddedItems(addedItems3, "4")
         realtimeListDataSource.data().subscribe(otherSubscriber3)
 
-        subscriber.assertValues(AllItems(items), AddedItems(addedItems1, 0), AddedItems(addedItems2, 2), AddedItems(addedItems3, 4))
-        otherSubscriber.assertValues(AllItems(listOf(item(1), item(2), item(4), item(6))), AddedItems(addedItems2, 2), AddedItems(addedItems3, 4))
-        otherSubscriber2.assertValues(AllItems(listOf(item(1), item(2), item(3), item(4), item(6))), AddedItems(addedItems3, 4))
+        subscriber.assertValues(AllItems(items), AddedItems(itemsWithAdded1, addedItems1, 0), AddedItems(itemsWithAdded2, addedItems2, 2), AddedItems(itemsWithAdded3, addedItems3, 4))
+        otherSubscriber.assertValues(AllItems(listOf(item(1), item(2), item(4), item(6))), AddedItems(itemsWithAdded2, addedItems2, 2), AddedItems(itemsWithAdded3, addedItems3, 4))
+        otherSubscriber2.assertValues(AllItems(listOf(item(1), item(2), item(3), item(4), item(6))), AddedItems(itemsWithAdded3, addedItems3, 4))
         otherSubscriber3.assertValues(AllItems(listOf(item(1), item(2), item(3), item(4), item(5), item(6))))
     }
 
@@ -132,7 +136,7 @@ class RealtimeListDataSourceTest {
         receiveChangedItems(changedItems)
         realtimeListDataSource.data().subscribe(otherSubscriber)
 
-        subscriber.assertValues(AllItems(items), ChangedItems(changedItems, 1))
+        subscriber.assertValues(AllItems(items), ChangedItems(items.take(1) + changedItems, changedItems, 1))
         otherSubscriber.assertValues(AllItems(listOf(item(2), item(4).value(0), item(6).value(0))))
     }
 
@@ -166,9 +170,9 @@ class RealtimeListDataSourceTest {
         receiveRemovedItems(removedItems3)
         realtimeListDataSource.data().subscribe(otherSubscriber3)
 
-        subscriber.assertValues(AllItems(items), RemovedItems(removedItems1, 1), RemovedItems(removedItems2, 1), RemovedItems(removedItems3, 0))
-        otherSubscriber.assertValues(AllItems(listOf(item(2), item(6))), RemovedItems(removedItems2, 1), RemovedItems(removedItems3, 0))
-        otherSubscriber2.assertValues(AllItems(listOf(item(2))), RemovedItems(removedItems3, 0))
+        subscriber.assertValues(AllItems(items), RemovedItems(items.take(1) + items.takeLast(1), removedItems1, 1), RemovedItems(items.take(1), removedItems2, 1), RemovedItems(emptyList(), removedItems3, 0))
+        otherSubscriber.assertValues(AllItems(listOf(item(2), item(6))), RemovedItems(items.take(1), removedItems2, 1), RemovedItems(emptyList(), removedItems3, 0))
+        otherSubscriber2.assertValues(AllItems(listOf(item(2))), RemovedItems(emptyList(), removedItems3, 0))
         otherSubscriber3.assertValues(AllItems(listOf()))
     }
 
@@ -183,8 +187,8 @@ class RealtimeListDataSourceTest {
         receiveMovedItems(listOf(item(2)), null)
         realtimeListDataSource.data().subscribe(otherSubscriber2)
 
-        subscriber.assertValues(AllItems(items), MovedItems(listOf(item(2)), 0, 2), MovedItems(listOf(item(2)), 2, 0))
-        otherSubscriber.assertValues(AllItems(listOf(item(4), item(6), item(2))), MovedItems(listOf(item(2)), 2, 0))
+        subscriber.assertValues(AllItems(items), MovedItems(items.drop(1) + items[0], listOf(item(2)), 0, 2), MovedItems(items, listOf(item(2)), 2, 0))
+        otherSubscriber.assertValues(AllItems(listOf(item(4), item(6), item(2))), MovedItems(items, listOf(item(2)), 2, 0))
         otherSubscriber2.assertValues(AllItems(listOf(item(2), item(4), item(6))))
     }
 

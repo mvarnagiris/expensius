@@ -15,26 +15,36 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RawRealtimeData
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.data.RealtimeListDataSource
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.UserId
 import rx.Observable
+import java.util.concurrent.atomic.AtomicReference
 
 class TransactionsOverviewSource(
         private val appUserSource: DataSource<AppUser>,
         private val createRealtimeList: (UserId) -> RealtimeList<Transaction>) : DataSource<List<Transaction>> {
 
+    private val userIdAndRealtimeListDataSource = AtomicReference<Pair<UserId, RealtimeListDataSource<Transaction>>?>()
+
     override fun data(): Observable<List<Transaction>> = appUserSource.data()
-            .first()
-            .map { createRealtimeList(it.userId) }
-            .switchMap { realtimeList -> RealtimeListDataSource(realtimeList) { it.transactionId.id }.data().doOnNext { realtimeList.close() } }
-            .ofType(RawRealtimeData.AllItems::class.java)
-            .map {
-                @Suppress("UNCHECKED_CAST")
-                it.items as List<Transaction>
+            .map { it.userId }
+            .distinctUntilChanged()
+            .switchMap {
+                val currentUserIdAndRealtimeListDataSource = userIdAndRealtimeListDataSource.get()
+                val currentUserId = currentUserIdAndRealtimeListDataSource?.first
+                val currentRealtimeListDataSource = currentUserIdAndRealtimeListDataSource?.second
+
+                val shouldUseSameRealtimeListDataSource = currentUserId != null && currentRealtimeListDataSource != null && currentUserId == it
+                if (shouldUseSameRealtimeListDataSource) currentRealtimeListDataSource!!.data()
+                else {
+                    currentRealtimeListDataSource?.close()
+                    val realtimeListDataSource = RealtimeListDataSource(createRealtimeList(it)) { it.transactionId.id }
+                    userIdAndRealtimeListDataSource.set(Pair(it, realtimeListDataSource))
+                    realtimeListDataSource.data()
+                }
             }
-            .first()
+            .map { emptyList<Transaction>() }
 }

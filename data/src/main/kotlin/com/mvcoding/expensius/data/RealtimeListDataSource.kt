@@ -28,7 +28,7 @@ class RealtimeListDataSource<ITEM>(
         private val realtimeList: RealtimeList<ITEM>,
         private val itemToKey: (ITEM) -> String) : DataSource<RealtimeData<ITEM>>, Closeable {
 
-    private var items: List<ITEM>? = null
+    private var allItems: List<ITEM>? = null
 
     private val observable = deferredObservable {
         observable<RealtimeData<ITEM>> { subscriber ->
@@ -43,38 +43,53 @@ class RealtimeListDataSource<ITEM>(
 
     private fun handleAllItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         allItems.map { RealtimeData.AllItems(it.items) }
-                .doOnNext { items = it.items }
+                .doOnNext { this.allItems = it.allItems }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleAddedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleAddedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getAddedItems()
-                .skipUntil(allItems)
-                .map { RealtimeData.AddedItems(it.items, keyToPosition(it.previousKey) + 1) }
-                .doOnNext { items = items.orEmpty().insert(it.items, it.position) }
+                .skipUntil(allItemsObservable)
+                .map {
+                    val position = keyToPosition(it.previousKey) + 1
+                    val newAllItems = allItems.orEmpty().insert(it.items, position)
+                    allItems = newAllItems
+                    RealtimeData.AddedItems(newAllItems, it.items, position)
+                }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleChangedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleChangedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getChangedItems()
-                .skipUntil(allItems)
-                .map { RealtimeData.ChangedItems(it.items, keyToPosition(itemToKey(it.items.first()))) }
-                .filter { items!!.subList(it.position, it.position + it.items.size).containsAll(it.items).not() }
-                .doOnNext { items = items.orEmpty().replace(it.items, it.position) }
+                .skipUntil(allItemsObservable)
+                .map {
+                    val position = keyToPosition(itemToKey(it.items.first()))
+                    val itemsHaveChanged = allItems!!.subList(position, position + it.items.size).containsAll(it.items).not()
+                    if (itemsHaveChanged) {
+                        val newAllItems = allItems.orEmpty().replace(it.items, position)
+                        allItems = newAllItems
+                        RealtimeData.ChangedItems(newAllItems, it.items, position)
+                    } else null
+                }
+                .filterNotNull()
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleRemovedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleRemovedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getRemovedItems()
-                .skipUntil(allItems)
-                .map { RealtimeData.RemovedItems(it.items, keyToPosition(itemToKey(it.items.first()))) }
-                .doOnNext { items = items.orEmpty().remove(it.items, it.position) }
+                .skipUntil(allItemsObservable)
+                .map {
+                    val position = keyToPosition(itemToKey(it.items.first()))
+                    val newAllItems = allItems.orEmpty().remove(it.items, position)
+                    allItems = newAllItems
+                    RealtimeData.RemovedItems(newAllItems, it.items, position)
+                }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleMovedItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleMovedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
         realtimeList.getMovedItem()
-                .skipUntil(allItems)
+                .skipUntil(allItemsObservable)
                 .map {
                     val fromPosition = keyToPosition(itemToKey(it.items.first()))
                     val previousItemPosition = keyToPosition(it.previousKey)
@@ -82,18 +97,19 @@ class RealtimeListDataSource<ITEM>(
                             if (previousItemPosition < 0) 0
                             else if (previousItemPosition > fromPosition) previousItemPosition
                             else previousItemPosition + 1
-                    RealtimeData.MovedItems(it.items, fromPosition, toPosition)
+                    val newAllItems = allItems.orEmpty().move(fromPosition, toPosition)
+                    allItems = newAllItems
+                    RealtimeData.MovedItems(newAllItems, it.items, fromPosition, toPosition)
                 }
                 .filter { it.fromPosition != it.toPosition }
-                .doOnNext { items = items.orEmpty().move(it.fromPosition, it.toPosition) }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
     override fun data(): Observable<RealtimeData<ITEM>> = observable.mergeWith(currentState())
     override fun close() = realtimeList.close()
 
-    private fun currentState() = just(items).filterNotNull().map { RealtimeData.AllItems(it) }
-    private fun keyToPosition(previousKey: String?) = previousKey?.let { key -> items.orEmpty().indexOfFirst { itemToKey(it) == key } } ?: -1
+    private fun currentState() = just(allItems).filterNotNull().map { RealtimeData.AllItems(it) }
+    private fun keyToPosition(previousKey: String?) = previousKey?.let { key -> allItems.orEmpty().indexOfFirst { itemToKey(it) == key } } ?: -1
 
     private fun <T> List<T>.insert(items: List<T>, position: Int) = take(position).plus(items).plus(takeLast(size - position))
     private fun <T> List<T>.replace(items: List<T>, position: Int) = take(position).plus(items).plus(takeLast(max(size - position - items.size, 0)))

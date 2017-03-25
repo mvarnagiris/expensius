@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,10 +166,10 @@ class TagsPresenterTest {
     private fun receiveTags(tags: List<Tag>) = tagsSubject.onNext(AllItems(tags))
     private fun requestCreateTag() = createTagRequestsSubject.onNext(Unit)
     private fun requestArchivedTags() = displayArchivedTagsSubject.onNext(Unit)
-    private fun receiveTagsAdded(tags: List<Tag>, position: Int) = tagsSubject.onNext(AddedItems(tags, position))
-    private fun receiveTagsChanged(tags: List<Tag>, position: Int) = tagsSubject.onNext(ChangedItems(tags, position))
-    private fun receiveTagsRemoved(tags: List<Tag>, position: Int) = tagsSubject.onNext(RemovedItems(tags, position))
-    private fun receiveTagsMoved(tags: List<Tag>, fromPosition: Int, toPosition: Int) = tagsSubject.onNext(MovedItems(tags, fromPosition, toPosition))
+    private fun receiveTagsAdded(tags: List<Tag>, position: Int) = tagsSubject.onNext(AddedItems(tags, tags, position))
+    private fun receiveTagsChanged(tags: List<Tag>, position: Int) = tagsSubject.onNext(ChangedItems(tags, tags, position))
+    private fun receiveTagsRemoved(tags: List<Tag>, position: Int) = tagsSubject.onNext(RemovedItems(tags, tags, position))
+    private fun receiveTagsMoved(tags: List<Tag>, fromPosition: Int, toPosition: Int) = tagsSubject.onNext(MovedItems(tags, tags, fromPosition, toPosition))
     private fun selectTag(tagToSelect: Tag) = tagSelectsSubject.onNext(tagToSelect)
     private fun presenter(modelViewType: ModelDisplayType = VIEW_NOT_ARCHIVED) = TagsPresenter(modelViewType, tagsSource, tagsWriter, rxSchedulers())
 }

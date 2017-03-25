@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,11 +50,11 @@ class TagsPresenter(
                 .doOnNext { view.hideLoading() }
                 .subscribeUntilDetached {
                     when (it) {
-                        is RealtimeData.AllItems -> view.showItems(it.items)
-                        is RealtimeData.AddedItems -> view.showAddedItems(it.items, it.position)
-                        is RealtimeData.ChangedItems -> view.showChangedItems(it.items, it.position)
-                        is RealtimeData.RemovedItems -> view.showRemovedItems(it.items, it.position)
-                        is RealtimeData.MovedItems -> view.showMovedItems(it.items, it.fromPosition, it.toPosition)
+                        is RealtimeData.AllItems -> view.showItems(it.allItems)
+                        is RealtimeData.AddedItems -> view.showAddedItems(it.addedItems, it.position)
+                        is RealtimeData.ChangedItems -> view.showChangedItems(it.changedItems, it.position)
+                        is RealtimeData.RemovedItems -> view.showRemovedItems(it.removedItems, it.position)
+                        is RealtimeData.MovedItems -> view.showMovedItems(it.movedItems, it.fromPosition, it.toPosition)
                     }
                 }
 
@@ -68,7 +68,7 @@ class TagsPresenter(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun latestTagsSnapshot() = tagsSource.data().ofType(RealtimeData.AllItems::class.java).map { it.items as List<Tag> }
+    private fun latestTagsSnapshot() = tagsSource.data().ofType(RealtimeData.AllItems::class.java).map { it.allItems as List<Tag> }
 
     private fun reorderTags(tags: List<Tag>, tagMove: TagMove): List<Tag> {
         val fromPosition = tagMove.fromPosition
