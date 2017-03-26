@@ -12,25 +12,21 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.BusinessConstants
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RealtimeList
-import com.mvcoding.expensius.data.RealtimeListDataSource
 import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.UserId
 import rx.Observable
 import java.util.concurrent.atomic.AtomicReference
 
-class TransactionsOverviewSource(
+class UserIdRealtimeDataSource<ITEM>(
         private val appUserSource: DataSource<AppUser>,
-        private val createRealtimeList: (UserId) -> RealtimeList<Transaction>) : DataSource<List<Transaction>> {
+        private val createRealtimeList: (UserId) -> RealtimeList<ITEM>,
+        private val getItemId: (ITEM) -> String) : DataSource<RealtimeData<ITEM>> {
 
-    private val userIdAndRealtimeListDataSource = AtomicReference<Pair<UserId, RealtimeListDataSource<Transaction>>?>()
+    private val userIdAndRealtimeListDataSource = AtomicReference<Pair<UserId, RealtimeListDataSource<ITEM>>?>()
 
-    override fun data(): Observable<List<Transaction>> = appUserSource.data()
+    override fun data(): Observable<RealtimeData<ITEM>> = appUserSource.data()
             .map { it.userId }
             .distinctUntilChanged()
             .switchMap {
@@ -42,10 +38,9 @@ class TransactionsOverviewSource(
                 if (shouldUseSameRealtimeListDataSource) currentRealtimeListDataSource!!.data()
                 else {
                     currentRealtimeListDataSource?.close()
-                    val realtimeListDataSource = RealtimeListDataSource(createRealtimeList(it)) { it.transactionId.id }
+                    val realtimeListDataSource = RealtimeListDataSource(createRealtimeList(it)) { getItemId(it) }
                     userIdAndRealtimeListDataSource.set(Pair(it, realtimeListDataSource))
                     realtimeListDataSource.data()
                 }
             }
-            .map { it.allItems.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW) }
 }

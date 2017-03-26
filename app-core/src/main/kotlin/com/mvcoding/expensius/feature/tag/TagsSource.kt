@@ -17,34 +17,17 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.data.RealtimeList
-import com.mvcoding.expensius.data.RealtimeListDataSource
+import com.mvcoding.expensius.data.UserIdRealtimeDataSource
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
 import rx.Observable
-import java.util.concurrent.atomic.AtomicReference
 
 class TagsSource(
-        private val appUserSource: DataSource<AppUser>,
-        private val createRealtimeList: (UserId) -> RealtimeList<Tag>) : DataSource<RealtimeData<Tag>> {
+        appUserSource: DataSource<AppUser>,
+        createRealtimeList: (UserId) -> RealtimeList<Tag>) : DataSource<RealtimeData<Tag>> {
 
-    private val userIdAndRealtimeListDataSource = AtomicReference<Pair<UserId, RealtimeListDataSource<Tag>>?>()
+    private val dataSource = UserIdRealtimeDataSource(appUserSource, createRealtimeList) { it.tagId.id }
 
-    override fun data(): Observable<RealtimeData<Tag>> = appUserSource.data()
-            .map { it.userId }
-            .distinctUntilChanged()
-            .switchMap {
-                val currentUserIdAndRealtimeListDataSource = userIdAndRealtimeListDataSource.get()
-                val currentUserId = currentUserIdAndRealtimeListDataSource?.first
-                val currentRealtimeListDataSource = currentUserIdAndRealtimeListDataSource?.second
-
-                val shouldUseSameRealtimeListDataSource = currentUserId != null && currentRealtimeListDataSource != null && currentUserId == it
-                if (shouldUseSameRealtimeListDataSource) currentRealtimeListDataSource!!.data()
-                else {
-                    currentRealtimeListDataSource?.close()
-                    val realtimeListDataSource = RealtimeListDataSource(createRealtimeList(it)) { it.tagId.id }
-                    userIdAndRealtimeListDataSource.set(Pair(it, realtimeListDataSource))
-                    realtimeListDataSource.data()
-                }
-            }
+    override fun data(): Observable<RealtimeData<Tag>> = dataSource.data()
 }
