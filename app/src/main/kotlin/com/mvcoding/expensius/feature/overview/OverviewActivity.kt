@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import com.jakewharton.rxbinding.support.v7.widget.itemClicks
+import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -29,6 +30,7 @@ import com.mvcoding.expensius.feature.tag.TagsActivity
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.provideDateFormatter
+import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.joda.time.Interval
 import rx.Observable
@@ -61,7 +63,7 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
         return true
     }
 
-    override fun createTransactionSelects(): Observable<Unit> = Observable.never()//createTransactionFloatingActionButton.clicks()
+    override fun createTransactionSelects(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
     override fun transactionsSelects(): Observable<Unit> = Observable.never()//transactionsOverviewView.clicks()
     override fun tagsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
     override fun tagsReportSelects(): Observable<Unit> = Observable.never()//tagsTotalsReportView.clicks()

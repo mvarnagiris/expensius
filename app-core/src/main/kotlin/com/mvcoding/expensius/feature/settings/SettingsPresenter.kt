@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.settings
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.DataWriter
-import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.feature.currency.CurrenciesSource
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
@@ -30,7 +30,7 @@ import rx.Observable
 class SettingsPresenter(
         private val appUserSource: DataSource<AppUser>,
         private val appUserWriter: DataWriter<AppUser>,
-        private val currenciesProvider: CurrenciesProvider,
+        private val currenciesSource: CurrenciesSource,
         private val schedulers: RxSchedulers) : Presenter<SettingsPresenter.View>() {
 
     override fun onViewAttached(view: View) {
@@ -50,7 +50,7 @@ class SettingsPresenter(
                 .subscribeUntilDetached { if (it.isAnonymous()) view.displayLogin(RETURN) }
 
         view.mainCurrencyRequests()
-                .switchMap { currenciesProvider.currencies() }
+                .switchMap { currenciesSource.data() }
                 .switchMap { view.chooseMainCurrency(it) }
                 .observeOn(schedulers.io)
                 .withLatestFrom(appUserSource.data()) { newCurrency, appUser -> appUser.copy(settings = appUser.settings.copy(mainCurrency = newCurrency)) }

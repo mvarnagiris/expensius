@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ class TransactionPresenterTest {
 //    val transaction = aTransaction()
 //    val transactionsWriteService: TransactionsWriteService = mock()
 //    val appUserService: AppUserService = mock()
-//    val currenciesProvider = CurrenciesProvider()
+//    val currenciesProvider = CurrenciesSource()
 //
 //    val view: TransactionPresenter.View = mock()
 //    val presenter = presenter(transaction)
@@ -180,6 +180,6 @@ class TransactionPresenterTest {
 //    private fun saveTags(tags: Set<Tag>) = tagsSubject.onNext(tags)
 //    private fun updateNote(note: String) = noteSubject.onNext(note)
 //    private fun save() = saveSubject.onNext(Unit)
-//    private fun allCurrencies() = TestSubscriber.create<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
+//    private fun allCurrencies() = TestSubscriber.create<List<Currency>>().apply { currenciesProvider.data().subscribe(this) }.onNextEvents.first()
 //    private fun presenter(transaction: Transaction = aTransaction()) = TransactionPresenter(transaction, transactionsWriteService, currenciesProvider)
 }

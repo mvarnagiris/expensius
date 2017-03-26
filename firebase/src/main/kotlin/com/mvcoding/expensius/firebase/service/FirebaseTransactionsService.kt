@@ -19,7 +19,11 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.data.RealtimeListDataSource
-import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.firebase.model.toFirebaseMap
+import com.mvcoding.expensius.firebase.model.toFirebaseTransaction
+import com.mvcoding.expensius.model.CreateTransaction
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
+import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.UserId
@@ -35,7 +39,7 @@ class FirebaseTransactionsService {
             archivedTagsRealtimeListDataSource: DataSource<RealtimeData<Tag>>): RealtimeList<Transaction> =
             TransactionsRealtimeList(
                     userId.transactionsReference().orderByChild("timestampInverse"),
-                    ModelState.NONE,
+                    NONE,
                     tagsRealtimeListDataSource,
                     archivedTagsRealtimeListDataSource)
 
@@ -45,9 +49,26 @@ class FirebaseTransactionsService {
             archivedTagsRealtimeListDataSource: RealtimeListDataSource<Tag>): RealtimeList<Transaction> =
             TransactionsRealtimeList(
                     userId.archivedTransactionsReference().orderByChild("timestampInverse"),
-                    ModelState.ARCHIVED,
+                    ARCHIVED,
                     tagsRealtimeListDataSource,
                     archivedTagsRealtimeListDataSource)
+
+    fun createTransactions(userId: UserId, createTransactions: Set<CreateTransaction>) {
+        val transactionsReference = userId.transactionsReference()
+        createTransactions.forEach {
+            val newTransactionReference = transactionsReference.push()
+            val firebaseTransaction = it.toFirebaseTransaction(newTransactionReference.key)
+            newTransactionReference.setValue(firebaseTransaction)
+        }
+    }
+
+    fun updateTransactions(userId: UserId, updateTransactions: Set<Transaction>) {
+        val transactionsToUpdate = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == NONE) it.toFirebaseMap() else null })
+        val archivedTransactionsToUpdate = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == ARCHIVED) it.toFirebaseMap() else null })
+
+        if (transactionsToUpdate.isNotEmpty()) userId.transactionsReference().updateChildren(transactionsToUpdate)
+        if (archivedTransactionsToUpdate.isNotEmpty()) userId.archivedTransactionsReference().updateChildren(archivedTransactionsToUpdate)
+    }
 
     private fun UserId.transactionsReference() = FirebaseDatabase.getInstance().getReference(REF_TRANSACTIONS).child(this.id)
     private fun UserId.archivedTransactionsReference() = FirebaseDatabase.getInstance().getReference(REF_ARCHIVED_TRANSACTIONS).child(this.id)

@@ -34,6 +34,8 @@ fun aTransaction() = Transaction(
         someTags(),
         aNote())
 
+fun aCreateTransaction() = CreateTransaction(aTransactionType(), aTransactionState(), aTimestamp(), aMoney(), someTags(), aNote())
+
 fun Transaction.withAmount(amount: Int) = withAmount(amount.toDouble())
 fun Transaction.withAmount(amount: Double) = copy(money = money.copy(amount = BigDecimal.valueOf(amount)))
 fun Transaction.withTimestamp(millis: Long) = copy(timestamp = Timestamp(millis))

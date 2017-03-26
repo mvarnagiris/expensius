@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.calculator
 
+import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.ResultDestination.TRANSACTION
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.CALCULATE
 import com.mvcoding.expensius.feature.calculator.CalculatorPresenter.State.SAVE
@@ -31,7 +32,7 @@ import java.math.BigDecimal
 class CalculatorPresenter(
         private val calculator: Calculator,
         private val resultDestination: ResultDestination,
-        //        private val appUserService: AppUserService,
+        private val appUserSource: DataSource<AppUser>,
         private val timestampProvider: TimestampProvider,
         initialNumber: BigDecimal? = null) : Presenter<CalculatorPresenter.View>() {
 
@@ -78,7 +79,7 @@ class CalculatorPresenter(
 
         saves.filter { val result = canSave; canSave = true; result }
                 .withLatestFrom(alteredExpressions, { _, number -> number })
-//                .withLatestFrom(appUserService.appUser(), { number, appUser -> displayResult(view, appUser, number) })
+                .withLatestFrom(appUserSource.data(), { number, appUser -> displayResult(view, appUser, number) })
                 .subscribeUntilDetached()
     }
 

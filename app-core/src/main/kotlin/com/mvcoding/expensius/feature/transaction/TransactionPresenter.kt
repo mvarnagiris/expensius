@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,9 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.data.DataWriter
+import com.mvcoding.expensius.feature.currency.CurrenciesSource
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
@@ -26,8 +28,10 @@ import java.math.BigDecimal
 
 class TransactionPresenter(
         private var transaction: Transaction,
-        //        private val transactionsWriteService: TransactionsWriteService,
-        private val currenciesProvider: CurrenciesProvider) : Presenter<TransactionPresenter.View>() {
+        private val transactionsWriter: DataWriter<Set<Transaction>>,
+        private val createTransactionsWriter: DataWriter<Set<CreateTransaction>>,
+        private val currenciesSource: CurrenciesSource,
+        private val schedulers: RxSchedulers) : Presenter<TransactionPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -37,15 +41,15 @@ class TransactionPresenter(
 
         val transactionStates = view.transactionStateChanges().startWith(transaction.transactionState).doOnNext { view.showTransactionState(it) }
         val transactionTypes = view.transactionTypeChanges().startWith(transaction.transactionType).doOnNext { view.showTransactionType(it) }
-        val timestamps = view.timestampChanges().map { Timestamp(it) }.startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
+        val timestamps = view.timestampChanges().map(::Timestamp).startWith(transaction.timestamp).doOnNext { view.showTimestamp(it) }
         val amounts = view.amountChanges().startWith(transaction.money.amount)
         val currencies = view.currencyChangeRequests()
-                .flatMap { currenciesProvider.currencies() }
+                .flatMap { currenciesSource.data() }
                 .flatMap { view.currencyChanges(it) }
                 .startWith(transaction.money.currency)
-        val money = combineLatest(amounts, currencies) { amount, currency -> Money(amount, currency) }.doOnNext { view.showMoney(it) }
+        val money = combineLatest(amounts, currencies, ::Money).doOnNext { view.showMoney(it) }
         val tags = view.tagsChanges().startWith(transaction.tags).doOnNext { view.showTags(it) }
-        val notes = view.noteChanges().map { Note(it) }.startWith(transaction.note).doOnNext { view.showNote(it) }
+        val notes = view.noteChanges().map(::Note).startWith(transaction.note).doOnNext { view.showNote(it) }
 
         val transaction = combineLatest(transactionStates, transactionTypes, timestamps, money, tags, notes, {
             transactionState, transactionType, timestamp, money, tags, note ->
@@ -58,20 +62,24 @@ class TransactionPresenter(
                     note = note)
         }).doOnNext { transaction = it }
 
-//        view.saveRequests()
-//                .withLatestFrom(transaction, { unit, transaction -> transaction })
-//                .switchMap { saveTransaction(it) }
-//                .subscribeUntilDetached { view.displayResult() }
+        view.saveRequests()
+                .withLatestFrom(transaction, { _, transaction -> transaction })
+                .observeOn(schedulers.io)
+                .doOnNext { saveTransaction(it) }
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.displayResult() }
 
         view.archiveToggles()
                 .map { transactionWithToggledArchiveState() }
-//                .switchMap { transactionsWriteService.saveTransactions(setOf(it)) }
+                .observeOn(schedulers.io)
+                .doOnNext { saveTransaction(it) }
+                .observeOn(schedulers.main)
                 .subscribeUntilDetached { view.displayResult() }
     }
 
-//    private fun saveTransaction(transaction: Transaction) =
-//            if (transaction.isExisting()) transactionsWriteService.saveTransactions(setOf(transaction))
-//            else transactionsWriteService.createTransactions(setOf(transaction.toCreateTransaction()))
+    private fun saveTransaction(transaction: Transaction) =
+            if (transaction.isExisting()) transactionsWriter.write(setOf(transaction))
+            else createTransactionsWriter.write(setOf(transaction.toCreateTransaction()))
 
     private fun Transaction.isExisting() = this.transactionId != noTransactionId
     private fun Transaction.toCreateTransaction() = CreateTransaction(transactionType, transactionState, timestamp, money, tags, note)

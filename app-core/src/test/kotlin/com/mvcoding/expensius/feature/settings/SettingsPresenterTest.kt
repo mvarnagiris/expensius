@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.DataWriter
-import com.mvcoding.expensius.feature.currency.CurrenciesProvider
+import com.mvcoding.expensius.feature.currency.CurrenciesSource
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
 import com.mvcoding.expensius.model.*
@@ -44,7 +44,7 @@ class SettingsPresenterTest {
 
     val appUserSource = mock<DataSource<AppUser>>()
     val appUserWriter = mock<DataWriter<AppUser>>()
-    val currenciesProvider = CurrenciesProvider()
+    val currenciesProvider = CurrenciesSource()
     val view = mock<SettingsPresenter.View>()
     val presenter = SettingsPresenter(appUserSource, appUserWriter, currenciesProvider, rxSchedulers())
 
@@ -96,7 +96,7 @@ class SettingsPresenterTest {
 
     @Test
     fun `can select new main currency`() {
-        val allCurrencies = TestSubscriber<List<Currency>>().apply { currenciesProvider.currencies().subscribe(this) }.onNextEvents.first()
+        val allCurrencies = TestSubscriber<List<Currency>>().apply { currenciesProvider.data().subscribe(this) }.onNextEvents.first()
         val newCurrency = Currency("NEW")
         val updatedAppUser = appUser.copy(settings = appUser.settings.copy(mainCurrency = newCurrency))
         presenter.attach(view)

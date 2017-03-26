@@ -63,3 +63,25 @@ data class FirebaseTransaction(
         TransactionState.PENDING
     }
 }
+
+internal fun CreateTransaction.toFirebaseTransaction(id: String) = FirebaseTransaction(
+        id,
+        transactionType.name,
+        transactionState.name,
+        timestamp.millis,
+        -timestamp.millis,
+        money.amount.toPlainString(),
+        money.currency.code,
+        tags.map { it.tagId.id },
+        note.text)
+
+internal fun Transaction.toFirebaseMap() = mapOf(
+        "id" to transactionId.id,
+        "transactionType" to transactionType.name,
+        "transactionState" to transactionState.name,
+        "timestamp" to timestamp.millis,
+        "timestampInverse" to -timestamp.millis,
+        "amount" to money.amount.toPlainString(),
+        "currency" to money.currency.code,
+        "tags" to tags.map { it.tagId.id },
+        "note" to note.text)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,15 @@
 
 package com.mvcoding.expensius.feature.currency
 
+import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Currency
 import rx.Observable
 import rx.Observable.just
 import java.util.*
 
-class CurrenciesProvider {
-    fun currencies(): Observable<List<Currency>> = Locale.getAvailableLocales()
+class CurrenciesSource : DataSource<List<Currency>> {
+
+    override fun data(): Observable<List<Currency>> = Locale.getAvailableLocales()
             .map { it.toCurrency() }
             .toSet()
             .map { Currency(it.currencyCode) }

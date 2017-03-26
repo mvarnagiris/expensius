@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.checkedChanges
 import com.jakewharton.rxbinding.widget.textChanges
-import com.mvcoding.expensius.R
+import com.mvcoding.expensius.*
 import com.mvcoding.expensius.extension.displayName
 import com.mvcoding.expensius.extension.getDimensionFromTheme
 import com.mvcoding.expensius.extension.setTextIfChanged
@@ -32,23 +32,11 @@ import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.DateDialogFragment
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
-import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ModelState
-import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.Note
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.TransactionState
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionState.PENDING
-import com.mvcoding.expensius.model.TransactionType
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.TransactionType.INCOME
-import com.mvcoding.expensius.observe
-import com.mvcoding.expensius.provideDateFormatter
-import com.mvcoding.expensius.provideMoneyFormatter
-import com.mvcoding.expensius.provideRxBus
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.joda.time.DateTime
@@ -146,7 +134,7 @@ class TransactionActivity : BaseActivity(), TransactionPresenter.View {
         val popupWindow = ListPopupWindow(this)
         popupWindow.anchorView = currencyButton
         popupWindow.setAdapter(ArrayAdapter<String>(this, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
-        popupWindow.setOnItemClickListener { adapterView, view, position, id -> it.onNext(currencies[position]); popupWindow.dismiss() }
+        popupWindow.setOnItemClickListener { _, _, position, _ -> it.onNext(currencies[position]); popupWindow.dismiss() }
         popupWindow.setOnDismissListener { it.onCompleted() }
         popupWindow.width = contentView.width - keyline
         popupWindow.height = Math.min(contentView.height - buttonBarView.height - currencyButton.height - keylineHalf, itemHeight * 7)

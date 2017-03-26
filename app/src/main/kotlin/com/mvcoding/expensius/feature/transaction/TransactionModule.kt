@@ -18,11 +18,13 @@ import android.app.Activity
 import android.view.View
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
 import com.mvcoding.expensius.feature.tag.provideTagsSource
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provideAppUserSource
@@ -33,10 +35,24 @@ import memoizrlabs.com.shankandroid.withThisScope
 
 class TransactionModule : ShankModule {
     override fun registerFactories() {
+        createTransactionsWriter()
+        transactionsWriter()
         transactionsOverviewSource()
 //        transactionsPresenter()
-//        transactionPresenter()
+        transactionPresenter()
         transactionsOverviewPresenter()
+    }
+
+    private fun createTransactionsWriter() = registerFactory(CreateTransactionsWriter::class) { ->
+        CreateTransactionsWriter(provideAppUserSource()) { userId, createTransactions ->
+            provideFirebaseTransactionsService().createTransactions(userId, createTransactions)
+        }
+    }
+
+    private fun transactionsWriter() = registerFactory(TransactionsWriter::class) { ->
+        TransactionsWriter(provideAppUserSource()) { userId, transactions ->
+            provideFirebaseTransactionsService().updateTransactions(userId, transactions)
+        }
     }
 
     private fun transactionsOverviewSource() = registerFactory(TransactionsOverviewSource::class) { ->
@@ -54,17 +70,19 @@ class TransactionModule : ShankModule {
 //                if (modelDisplayType == ModelDisplayType.VIEW_ARCHIVED) provideArchivedTransactionsService() else provideTransactionsService(),
 //                provideRxSchedulers())
 //    }
-//
-//    private fun transactionPresenter() = registerFactory(TransactionPresenter::class) {
-//        transaction: Transaction ->
-//        TransactionPresenter(transaction, provideTransactionsWriteService(), provideCurrenciesProvider())
-//    }
-//
+
+    private fun transactionPresenter() = registerFactory(TransactionPresenter::class) {
+        transaction: Transaction ->
+        TransactionPresenter(transaction, provideTransactionsWriter(), provideCreateTransactionsWriter(), provideCurrenciesSource(), provideRxSchedulers())
+    }
+
     private fun transactionsOverviewPresenter() = registerFactory(TransactionsOverviewPresenter::class) { ->
         TransactionsOverviewPresenter(provideTransactionsOverviewSource(), provideRxSchedulers())
     }
 }
 
+fun provideCreateTransactionsWriter() = provideNew<CreateTransactionsWriter>()
+fun provideTransactionsWriter() = provideNew<TransactionsWriter>()
 fun provideTransactionsOverviewSource() = provideGlobalSingleton<TransactionsOverviewSource>()
 fun Activity.provideTransactionsPresenter(modelDisplayType: ModelDisplayType): TransactionsPresenter = withThisScope.provideSingletonFor(modelDisplayType)
 fun Activity.provideTransactionPresenter(transaction: Transaction): TransactionPresenter = withThisScope.provideSingletonFor(transaction)
