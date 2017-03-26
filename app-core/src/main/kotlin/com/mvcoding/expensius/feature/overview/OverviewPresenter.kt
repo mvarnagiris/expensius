@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,17 +14,12 @@
 
 package com.mvcoding.expensius.feature.overview
 
-import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
 
-class OverviewPresenter(
-        private val appUserSource: DataSource<AppUser>,
-        private val schedulers: RxSchedulers) : Presenter<OverviewPresenter.View>() {
+class OverviewPresenter : Presenter<OverviewPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -36,7 +31,7 @@ class OverviewPresenter(
         view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
-        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
+//        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
         view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
     }
 
