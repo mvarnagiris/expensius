@@ -33,7 +33,7 @@ class LoginSource(
     override fun data(parameter: Login): Observable<Unit> = login(parameter)
             .switchMap { loggedInUserDetails -> getAppUser().map { it.withLoggedInUserDetails(loggedInUserDetails) } }
             .doOnNext { appUserWriter.write(it) }
-            .switchMap { tagsSource.data() }
+            .switchMap { tagsSource.data().first() }
             .switchMap { if (it.isEmpty()) defaultTagsSource.data() else just(emptyList()) }
             .doOnNext { if (it.isNotEmpty()) createTagsWriter.write(it.toSet()) }
             .doOnError { logout() }

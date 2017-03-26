@@ -17,35 +17,18 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.BusinessConstants
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeList
-import com.mvcoding.expensius.data.RealtimeListDataSource
+import com.mvcoding.expensius.data.UserIdRealtimeDataSource
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.UserId
 import rx.Observable
-import java.util.concurrent.atomic.AtomicReference
 
 class TransactionsOverviewSource(
-        private val appUserSource: DataSource<AppUser>,
-        private val createRealtimeList: (UserId) -> RealtimeList<Transaction>) : DataSource<List<Transaction>> {
+        appUserSource: DataSource<AppUser>,
+        createRealtimeList: (UserId) -> RealtimeList<Transaction>) : DataSource<List<Transaction>> {
 
-    private val userIdAndRealtimeListDataSource = AtomicReference<Pair<UserId, RealtimeListDataSource<Transaction>>?>()
+    private val dataSource = UserIdRealtimeDataSource(appUserSource, createRealtimeList) { it.transactionId.id }
 
-    override fun data(): Observable<List<Transaction>> = appUserSource.data()
-            .map { it.userId }
-            .distinctUntilChanged()
-            .switchMap {
-                val currentUserIdAndRealtimeListDataSource = userIdAndRealtimeListDataSource.get()
-                val currentUserId = currentUserIdAndRealtimeListDataSource?.first
-                val currentRealtimeListDataSource = currentUserIdAndRealtimeListDataSource?.second
-
-                val shouldUseSameRealtimeListDataSource = currentUserId != null && currentRealtimeListDataSource != null && currentUserId == it
-                if (shouldUseSameRealtimeListDataSource) currentRealtimeListDataSource!!.data()
-                else {
-                    currentRealtimeListDataSource?.close()
-                    val realtimeListDataSource = RealtimeListDataSource(createRealtimeList(it)) { it.transactionId.id }
-                    userIdAndRealtimeListDataSource.set(Pair(it, realtimeListDataSource))
-                    realtimeListDataSource.data()
-                }
-            }
+    override fun data(): Observable<List<Transaction>> = dataSource.data()
             .map { it.allItems.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW) }
 }

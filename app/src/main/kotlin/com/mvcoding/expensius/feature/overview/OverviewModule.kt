@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@ import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.provideAppUserSource
-import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
 class OverviewModule : ShankModule {
@@ -28,7 +26,7 @@ class OverviewModule : ShankModule {
     }
 
     private fun overviewPresenter() = registerFactory(OverviewPresenter::class) { ->
-        OverviewPresenter(provideAppUserSource(), provideRxSchedulers())
+        OverviewPresenter(/*provideAppUserSource(), provideRxSchedulers()*/)
     }
 }
 

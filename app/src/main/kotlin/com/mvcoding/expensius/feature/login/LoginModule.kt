@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,20 +19,19 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.*
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
+import com.mvcoding.expensius.feature.tag.provideAllTagsSource
 import com.mvcoding.expensius.feature.tag.provideCreateTagsWriter
+import com.mvcoding.expensius.provideAppUserSource
+import com.mvcoding.expensius.provideDefaultTagsSource
+import com.mvcoding.expensius.provideFirebaseAppUserService
+import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
 class LoginModule : ShankModule {
     override fun registerFactories() {
-        tagsSnapshotSource()
         loginSource()
         loginPresenter()
-    }
-
-    private fun tagsSnapshotSource() = registerFactory(TagsSnapshotSource::class) { ->
-        TagsSnapshotSource(provideAppUserSource()) { provideFirebaseTagsService().getTags(it) }
     }
 
     private fun loginSource() = registerFactory(LoginSource::class) { ->
@@ -42,7 +41,7 @@ class LoginModule : ShankModule {
                 { firebaseAppUserService.logout() },
                 { firebaseAppUserService.getAppUser() },
                 provideAppUserSource(),
-                provideTagsSnapshotSource(),
+                provideAllTagsSource(),
                 provideDefaultTagsSource(),
                 provideCreateTagsWriter())
     }
@@ -52,6 +51,5 @@ class LoginModule : ShankModule {
     }
 }
 
-fun provideTagsSnapshotSource() = provideNew<TagsSnapshotSource>()
 fun provideLoginSource() = provideNew<LoginSource>()
 fun Activity.provideLoginPresenter(destination: Destination) = withThisScope.provideSingletonFor<LoginPresenter>(destination)

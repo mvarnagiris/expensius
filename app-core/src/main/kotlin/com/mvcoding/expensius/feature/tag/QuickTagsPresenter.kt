@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,12 +15,14 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.mvp.Presenter
 import rx.Observable
+import rx.Observable.combineLatest
 
 class QuickTagsPresenter(
-        //        private val tagsService: TagsService,
+        private val tagsSource: DataSource<List<Tag>>,
         private val schedulers: RxSchedulers) : Presenter<QuickTagsPresenter.View>() {
 
     private val toggledTags = hashMapOf<Tag, Boolean>()
@@ -29,15 +31,15 @@ class QuickTagsPresenter(
         super.onViewAttached(view)
 
         val selectedTags = view.selectedTagsUpdates().doOnNext { it.forEach { toggledTags.put(it, true) } }
-//        val allTags = combineLatest(tagsService.items(), selectedTags, {
-//            serviceTags, selectedTags ->
-//            serviceTags.plus(selectedTags.filterNot { serviceTags.contains(it) }).sortedBy { it.order }
-//        })
-//
-//        allTags.subscribeOn(schedulers.io)
-//                .map { toSelectableTags(it) }
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showSelectableTags(it) }
+        val allTags = combineLatest(tagsSource.data(), selectedTags, {
+            tags, selectedTags ->
+            tags.plus(selectedTags.filterNot { tags.contains(it) }).sortedBy(Tag::order)
+        })
+
+        allTags.subscribeOn(schedulers.io)
+                .map { toSelectableTags(it) }
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showSelectableTags(it) }
 
         view.selectableTagToggles()
                 .doOnNext { toggledTags.put(it.tag, it.isSelected.not()) }
