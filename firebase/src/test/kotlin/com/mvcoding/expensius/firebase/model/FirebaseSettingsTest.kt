@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2017 Mantas Varnagiris.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.mvcoding.expensius.firebase.model
 
 import com.memoizr.assertk.expect
@@ -8,6 +22,7 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.NullModels.noSettings
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
+import com.mvcoding.expensius.model.aSettings
 import com.mvcoding.expensius.model.defaultCurrency
 import org.junit.Test
 
@@ -38,5 +53,15 @@ class FirebaseSettingsTest {
 
         expect that settings.mainCurrency isEqualTo Currency(firebaseSettings.mainCurrency!!)
         expect that settings.subscriptionType isEqualTo SubscriptionType.valueOf(firebaseSettings.subscriptionType!!)
+    }
+
+    @Test
+    fun `converts Settings to FirebaseSettings`() {
+        val settings = aSettings()
+
+        val firebaseSettings = settings.toFirebaseSettings()
+
+        expect that firebaseSettings.mainCurrency isEqualTo settings.mainCurrency.code
+        expect that firebaseSettings.subscriptionType isEqualTo settings.subscriptionType.name
     }
 }

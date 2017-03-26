@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ data class CreateTransaction(
         val transactionState: TransactionState,
         val timestamp: Timestamp,
         val money: Money,
-        val tags: Set<Tag>,
+        val tagIds: Set<TagId>,
         val note: Note) : Serializable
 
 data class Transaction(
@@ -40,7 +40,7 @@ data class Transaction(
         val transactionState: TransactionState,
         val timestamp: Timestamp,
         val money: Money,
-        val tags: Set<Tag>,
+        val tagIds: Set<TagId>,
         val note: Note) : Serializable
 
 interface TimestampProvider {

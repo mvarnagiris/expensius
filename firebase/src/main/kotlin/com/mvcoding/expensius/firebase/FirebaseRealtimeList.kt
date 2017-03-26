@@ -18,13 +18,14 @@ import com.google.firebase.database.*
 import com.mvcoding.expensius.data.RawRealtimeData.*
 import com.mvcoding.expensius.data.RealtimeList
 import rx.Observable
+import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
 
 class FirebaseRealtimeList<ITEM>(
         private val query: Query,
         private val converter: (DataSnapshot) -> ITEM) : RealtimeList<ITEM> {
 
-    private val allItemsSubject = PublishSubject<AllItems<ITEM>>()
+    private val allItemsSubject = BehaviorSubject<AllItems<ITEM>>()
     private val addedItemsSubject = PublishSubject<AddedItems<ITEM>>()
     private val changedItemsSubject = PublishSubject<ChangedItems<ITEM>>()
     private val removedItemsSubject = PublishSubject<RemovedItems<ITEM>>()

@@ -64,13 +64,13 @@ class TransactionPresenterTest {
 //        verify(view).showTransactionType(transaction.transactionType)
 //        verify(view).showTimestamp(transaction.timestamp)
 //        verify(view).showMoney(transaction.money)
-//        verify(view).showTags(transaction.tags)
+//        verify(view).showTags(transaction.tagIds)
 //        verify(view).showNote(transaction.note)
 //    }
 //
 //    @Test
 //    fun showsUpdatedValues() {
-//        val tags = setOf(aTag(), aTag())
+//        val tagIds = setOf(aTag(), aTag())
 //        val currency = Currency("EUR")
 //        val money = Money(TEN, currency)
 //        presenter.attach(view)
@@ -82,7 +82,7 @@ class TransactionPresenterTest {
 //        updateCurrency(currency)
 //        updateExchangeRate(TEN)
 //        updateAmount(TEN)
-//        saveTags(tags)
+//        saveTags(tagIds)
 //        updateNote("Updated note")
 //
 //        presenter.detach(view)
@@ -93,7 +93,7 @@ class TransactionPresenterTest {
 //        verify(view, atLeast(2)).showTimestamp(Timestamp(1))
 //        verify(view).currencyChanges(allCurrencies())
 //        verify(view, atLeast(2)).showMoney(money)
-//        verify(view, atLeast(2)).showTags(tags)
+//        verify(view, atLeast(2)).showTags(tagIds)
 //        verify(view, atLeast(2)).showNote(Note("Updated note"))
 //    }
 //
@@ -109,7 +109,7 @@ class TransactionPresenterTest {
 //
 //    @Test
 //    fun createsNewTransactionAndDisplaysResult() {
-//        val tags = setOf(aTag(), aTag())
+//        val tagIds = setOf(aTag(), aTag())
 //        val currency = Currency("EUR")
 //        val note = Note("note")
 //        presenter(noTransaction).attach(view)
@@ -121,12 +121,12 @@ class TransactionPresenterTest {
 //        updateCurrency(currency)
 //        updateExchangeRate(TEN)
 //        updateAmount(TEN)
-//        saveTags(tags)
+//        saveTags(tagIds)
 //        updateNote(note.text)
 //        save()
 //
 //        verify(transactionsWriteService).createTransactions(argThat {
-//            first() == CreateTransaction(INCOME, PENDING, Timestamp(1), Money(TEN, currency), tags, note)
+//            first() == CreateTransaction(INCOME, PENDING, Timestamp(1), Money(TEN, currency), tagIds, note)
 //        })
 //        verify(view).displayResult()
 //    }
@@ -177,7 +177,7 @@ class TransactionPresenterTest {
 //    private fun updateCurrency(currency: Currency) = currencySubject.onNext(currency)
 //    private fun updateExchangeRate(exchangeRate: BigDecimal) = exchangeRateSubject.onNext(exchangeRate)
 //    private fun updateAmount(amount: BigDecimal) = amountSubject.onNext(amount)
-//    private fun saveTags(tags: Set<Tag>) = tagsSubject.onNext(tags)
+//    private fun saveTags(tagIds: Set<Tag>) = tagsSubject.onNext(tagIds)
 //    private fun updateNote(note: String) = noteSubject.onNext(note)
 //    private fun save() = saveSubject.onNext(Unit)
 //    private fun allCurrencies() = TestSubscriber.create<List<Currency>>().apply { currenciesProvider.data().subscribe(this) }.onNextEvents.first()

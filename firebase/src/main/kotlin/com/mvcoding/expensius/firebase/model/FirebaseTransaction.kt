@@ -31,7 +31,7 @@ data class FirebaseTransaction(
         val tags: List<String>? = null,
         val note: String? = null) {
 
-    fun toTransaction(modelState: ModelState, tagsCache: Map<String, Tag>): Transaction {
+    fun toTransaction(modelState: ModelState): Transaction {
         if (id.isNullOrBlank()) return noTransaction
         return Transaction(
                 TransactionId(id!!),
@@ -40,7 +40,7 @@ data class FirebaseTransaction(
                 transactionState(),
                 timestamp?.let(::Timestamp) ?: noTimestamp,
                 Money(amount(), currency?.let { if (it.isBlank()) defaultCurrency() else Currency(it) } ?: defaultCurrency()),
-                (tags ?: emptyList()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
+                tags.orEmpty().map(::TagId).toSet(),
                 note?.trim()?.let(::Note) ?: noNote
         )
     }
@@ -72,7 +72,7 @@ internal fun CreateTransaction.toFirebaseTransaction(id: String) = FirebaseTrans
         -timestamp.millis,
         money.amount.toPlainString(),
         money.currency.code,
-        tags.map { it.tagId.id },
+        tagIds.map { it.id },
         note.text)
 
 internal fun Transaction.toFirebaseMap() = mapOf(
@@ -83,5 +83,5 @@ internal fun Transaction.toFirebaseMap() = mapOf(
         "timestampInverse" to -timestamp.millis,
         "amount" to money.amount.toPlainString(),
         "currency" to money.currency.code,
-        "tags" to tags.map { it.tagId.id },
+        "tags" to tagIds.map { it.id },
         "note" to note.text)

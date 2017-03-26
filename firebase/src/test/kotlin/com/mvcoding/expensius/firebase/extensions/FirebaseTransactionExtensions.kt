@@ -29,7 +29,7 @@ fun aFirebaseTransaction() = FirebaseTransaction(
         timestampInverse = -aLongTimestamp(),
         amount = anAmount().toPlainString(),
         currency = aStringCurrencyCode(),
-        tags = listOf(aTag(), aTag(), aTag()).map { it.tagId.id },
+        tags = listOf(aTagId(), aTagId(), aTagId()).map { it.id },
         note = aString("note"))
 
 fun FirebaseTransaction.withId(id: String?) = copy(id = id)
@@ -41,5 +41,5 @@ fun FirebaseTransaction.withTimestamp(timestamp: Long?) = copy(timestamp = times
 fun FirebaseTransaction.withTimestampInverse(timestampInverse: Long?) = copy(timestampInverse = timestampInverse)
 fun FirebaseTransaction.withAmount(amount: String?) = copy(amount = amount)
 fun FirebaseTransaction.withCurrency(currency: String?) = copy(currency = currency)
-fun FirebaseTransaction.withTags(tags: Collection<Tag>?) = copy(tags = tags?.map { it.tagId.id })
+fun FirebaseTransaction.withTagIds(tagIds: Collection<TagId>?) = copy(tags = tagIds?.map { it.id })
 fun FirebaseTransaction.withNote(note: String?) = copy(note = note)

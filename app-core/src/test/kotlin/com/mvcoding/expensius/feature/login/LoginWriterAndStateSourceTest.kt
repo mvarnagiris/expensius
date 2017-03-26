@@ -46,7 +46,7 @@ package com.mvcoding.expensius.feature.login
 //    }
 //
 //    @Test
-//    fun `can login anonymously and writes default tags`() {
+//    fun `can login anonymously and writes default tagIds`() {
 //        loginWriterAndStateSource.write(AnonymousLogin)
 //        loginWriterAndStateSource.data().subscribe(anotherSubscriber)
 //
@@ -73,7 +73,7 @@ package com.mvcoding.expensius.feature.login
 //    }
 //
 //    @Test
-//    fun `can login with google and writes default tags`() {
+//    fun `can login with google and writes default tagIds`() {
 //        val googleToken = aGoogleToken()
 //        loginWriterAndStateSource.write(GetGoogleToken)
 //        loginWriterAndStateSource.data().subscribe(anotherSubscriber)
@@ -122,7 +122,7 @@ package com.mvcoding.expensius.feature.login
 //    }
 //
 //    @Test
-//    fun `does not write default tags when tags already exist`() {
+//    fun `does not write default tagIds when tagIds already exist`() {
 //        whenever(tagsSource.data()).thenReturn(just(listOf(aTag(), aTag(), aTag())))
 //
 //        loginWriterAndStateSource.write(AnonymousLogin)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,12 @@ import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
 import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.feature.FilterData
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.NullModels.noTag
-import com.mvcoding.expensius.model.ReportGroup
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Transaction
 import org.joda.time.Interval
 import java.math.BigDecimal.ZERO
 import java.util.*
-import kotlin.comparisons.compareBy
 
 class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
 
@@ -45,8 +41,8 @@ class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
             .map { GroupedMoney(it.key, it.value) }
             .sortedWith(compareBy({ -it.money.amount }, { it.group.order }))
 
-    private fun Transaction.appendMoneyToTags(map: HashMap<Tag, ArrayList<Money>>) = tagsOrNoTag().forEach { map.appendAmountToTag(it, money) }.let { map }
-    private fun Transaction.tagsOrNoTag() = tags.let { if (it.isEmpty()) setOf(noTag) else it }
+    private fun Transaction.appendMoneyToTags(map: HashMap<Tag, ArrayList<Money>>) = tagsOrNoTag()/*.forEach { map.appendAmountToTag(it, money) }*/.let { map }
+    private fun Transaction.tagsOrNoTag() = tagIds.let { if (it.isEmpty()) setOf(noTag) else it }
     private fun HashMap<Tag, ArrayList<Money>>.appendAmountToTag(tag: Tag, money: Money) = getOrPut(tag, { arrayListOf() }).add(money)
     private fun <KEY> Map<KEY, List<Money>>.sumMoney(currency: Currency) = mapValues { it.value.sumMoney(currency, exchangeRatesProvider) }
 }

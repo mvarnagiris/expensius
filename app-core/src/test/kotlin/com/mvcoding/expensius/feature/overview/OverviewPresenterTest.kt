@@ -79,7 +79,7 @@ val view = mock<OverviewPresenter.View>()
     }
 
 //    @Test
-//    fun `displays tags report`() {
+//    fun `displays tagIds report`() {
 //        presenter.attach(view)
 //
 //        selectTagsReport()

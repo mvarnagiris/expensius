@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +18,13 @@ import com.mvcoding.expensius.anAlwaysOneExchangeRateProvider
 import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.extensions.toPeriod
 import com.mvcoding.expensius.feature.FilterData
-import com.mvcoding.expensius.model.Money
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.ReportGroup.DAY
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.TransactionType.INCOME
-import com.mvcoding.expensius.model.aCurrency
-import com.mvcoding.expensius.model.aTag
-import com.mvcoding.expensius.model.aTransaction
-import com.mvcoding.expensius.model.withAmount
-import com.mvcoding.expensius.model.withOrder
-import com.mvcoding.expensius.model.withTags
-import com.mvcoding.expensius.model.withTimestamp
-import com.mvcoding.expensius.model.withTransactionState
-import com.mvcoding.expensius.model.withTransactionType
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.Interval
 import org.junit.Assert.assertThat
@@ -95,11 +86,11 @@ class MoneyGroupingTest {
         val tooEarly = aTransaction().withAmount(10).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp - 1)
         val notExpense = aTransaction().withAmount(11).withTransactionType(INCOME).withTransactionState(CONFIRMED).withTimestamp(timestamp)
         val notConfirmed = aTransaction().withAmount(12).withTransactionType(EXPENSE).withTransactionState(PENDING).withTimestamp(timestamp)
-        val withNoTag = aTransaction().withAmount(13).withTags(emptySet()).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-        val withTagA = aTransaction().withAmount(14).withTags(setOf(tagA)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-        val withTagB1 = aTransaction().withAmount(15).withTags(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-        val withTagB2 = aTransaction().withAmount(16).withTags(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-        val withTagCD = aTransaction().withAmount(17).withTags(setOf(tagC, tagD)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED)
+        val withNoTag = aTransaction().withAmount(13).withTagIds(emptySet()).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagA = aTransaction().withAmount(14).withTagIds(setOf(tagA)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagB1 = aTransaction().withAmount(15).withTagIds(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagB2 = aTransaction().withAmount(16).withTagIds(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagCD = aTransaction().withAmount(17).withTagIds(setOf(tagC, tagD)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED)
                 .withTimestamp(timestamp)
 
         val transactions = listOf(tooEarly, notExpense, notConfirmed, withNoTag, withTagA, withTagB1, withTagB2, withTagCD)

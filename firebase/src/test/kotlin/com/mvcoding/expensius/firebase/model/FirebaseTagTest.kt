@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.firebase.model
 
 import com.memoizr.assertk.expect
+import com.mvcoding.expensius.aStringId
 import com.mvcoding.expensius.firebase.extensions.*
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.NullModels.noColor
@@ -60,7 +61,20 @@ class FirebaseTagTest {
     }
 
     @Test
-    fun `puts all required values from tag to map`() {
+    fun `converts CreateTag to FirebaseTag`() {
+        val id = aStringId()
+        val createTag = aCreateTag()
+
+        val firebaseTag = createTag.toFirebaseTag(id)
+
+        expect that firebaseTag.id isEqualTo id
+        expect that firebaseTag.color isEqualTo createTag.color.rgb
+        expect that firebaseTag.title isEqualTo createTag.title.text
+        expect that firebaseTag.order isEqualTo createTag.order.value
+    }
+
+    @Test
+    fun `converts Tag to firebase map`() {
         val tag = aTag()
 
         val firebaseMap = tag.toFirebaseMap()

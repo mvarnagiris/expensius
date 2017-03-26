@@ -14,17 +14,17 @@
 
 package com.mvcoding.expensius.firebase.service
 
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.data.RealtimeList
-import com.mvcoding.expensius.data.RealtimeListDataSource
+import com.mvcoding.expensius.firebase.FirebaseRealtimeList
+import com.mvcoding.expensius.firebase.model.FirebaseTransaction
 import com.mvcoding.expensius.firebase.model.toFirebaseMap
 import com.mvcoding.expensius.firebase.model.toFirebaseTransaction
 import com.mvcoding.expensius.model.CreateTransaction
+import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.UserId
 
@@ -33,25 +33,8 @@ class FirebaseTransactionsService {
     private val REF_TRANSACTIONS = "transactions"
     private val REF_ARCHIVED_TRANSACTIONS = "archivedTransactions"
 
-    fun getTransactions(
-            userId: UserId,
-            tagsRealtimeListDataSource: DataSource<RealtimeData<Tag>>,
-            archivedTagsRealtimeListDataSource: DataSource<RealtimeData<Tag>>): RealtimeList<Transaction> =
-            TransactionsRealtimeList(
-                    userId.transactionsReference().orderByChild("timestampInverse"),
-                    NONE,
-                    tagsRealtimeListDataSource,
-                    archivedTagsRealtimeListDataSource)
-
-    fun getArchivedTransactions(
-            userId: UserId,
-            tagsRealtimeListDataSource: RealtimeListDataSource<Tag>,
-            archivedTagsRealtimeListDataSource: RealtimeListDataSource<Tag>): RealtimeList<Transaction> =
-            TransactionsRealtimeList(
-                    userId.archivedTransactionsReference().orderByChild("timestampInverse"),
-                    ARCHIVED,
-                    tagsRealtimeListDataSource,
-                    archivedTagsRealtimeListDataSource)
+    fun getTransactions(userId: UserId): RealtimeList<Transaction> = FirebaseRealtimeList(userId.transactionsReference().orderByChild("timestampInverse"), { it.toTransaction(NONE) })
+    fun getArchivedTransactions(userId: UserId): RealtimeList<Transaction> = FirebaseRealtimeList(userId.archivedTransactionsReference().orderByChild("timestampInverse"), { it.toTransaction(ARCHIVED) })
 
     fun createTransactions(userId: UserId, createTransactions: Set<CreateTransaction>) {
         val transactionsReference = userId.transactionsReference()
@@ -72,4 +55,5 @@ class FirebaseTransactionsService {
 
     private fun UserId.transactionsReference() = FirebaseDatabase.getInstance().getReference(REF_TRANSACTIONS).child(this.id)
     private fun UserId.archivedTransactionsReference() = FirebaseDatabase.getInstance().getReference(REF_ARCHIVED_TRANSACTIONS).child(this.id)
+    private fun DataSnapshot.toTransaction(modelState: ModelState) = getValue(FirebaseTransaction::class.java).toTransaction(modelState)
 }
