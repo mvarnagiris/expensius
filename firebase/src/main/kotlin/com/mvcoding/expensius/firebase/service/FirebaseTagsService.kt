@@ -30,7 +30,7 @@ import com.mvcoding.expensius.model.UserId
 
 class FirebaseTagsService {
 
-    private val REF_TAGS = "tagIds"
+    private val REF_TAGS = "tags"
     private val REF_ARCHIVED_TAGS = "archivedTags"
 
     fun getTags(userId: UserId): RealtimeList<Tag> = FirebaseRealtimeList(userId.tagsReference().orderByChild("order"), { it.toTag(NONE) })

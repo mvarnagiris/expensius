@@ -22,10 +22,8 @@ import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
-import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
-import com.mvcoding.expensius.feature.tag.provideTagsSource
+import com.mvcoding.expensius.feature.tag.provideAllTagsSource
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideFirebaseTransactionsService
@@ -56,12 +54,7 @@ class TransactionModule : ShankModule {
     }
 
     private fun transactionsOverviewSource() = registerFactory(TransactionsOverviewSource::class) { ->
-        TransactionsOverviewSource(provideAppUserSource()) {
-            provideFirebaseTransactionsService().getTransactions(
-                    it,
-                    provideTagsSource(VIEW_NOT_ARCHIVED),
-                    provideTagsSource(VIEW_ARCHIVED))
-        }
+        TransactionsOverviewSource(provideAllTagsSource(), provideAppUserSource()) { provideFirebaseTransactionsService().getTransactions(it) }
     }
 
     //    private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class) { modelDisplayType: ModelDisplayType ->

@@ -177,7 +177,7 @@ class TransactionPresenterTest {
 //    private fun updateCurrency(currency: Currency) = currencySubject.onNext(currency)
 //    private fun updateExchangeRate(exchangeRate: BigDecimal) = exchangeRateSubject.onNext(exchangeRate)
 //    private fun updateAmount(amount: BigDecimal) = amountSubject.onNext(amount)
-//    private fun saveTags(tagIds: Set<Tag>) = tagsSubject.onNext(tagIds)
+//    private fun saveTags(tags: Set<Tag>) = tagsSubject.onNext(tags)
 //    private fun updateNote(note: String) = noteSubject.onNext(note)
 //    private fun save() = saveSubject.onNext(Unit)
 //    private fun allCurrencies() = TestSubscriber.create<List<Currency>>().apply { currenciesProvider.data().subscribe(this) }.onNextEvents.first()

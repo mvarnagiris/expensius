@@ -32,25 +32,29 @@ class TransactionsOverviewSourceTest {
 
     @Test
     fun `behaves like user id realtime list data source`() {
-        testUserIdRealtimeDataSource(::TransactionsOverviewSource)
+        val allTagsSource = mock<DataSource<List<Tag>>>()
+        whenever(allTagsSource.data()).thenReturn(just(emptyList()))
+        testUserIdRealtimeDataSource<BasicTransaction> { appUserSource, createRealtimeList -> TransactionsOverviewSource(allTagsSource, appUserSource, createRealtimeList) }
     }
 
     @Test
     fun `limits returned transactions count`() {
+        val allTagsSource = mock<DataSource<List<Tag>>>()
         val appUserSource = mock<DataSource<AppUser>>()
-        val createRealtimeList = mock<(UserId) -> RealtimeList<Transaction>>()
-        val realtimeList = mock<RealtimeList<Transaction>>()
+        val createRealtimeList = mock<(UserId) -> RealtimeList<BasicTransaction>>()
+        val realtimeList = mock<RealtimeList<BasicTransaction>>()
         val subscriber = TestSubscriber<List<Transaction>>()
-        val transactions = (0..BusinessConstants.TRANSACTIONS_IN_OVERVIEW).map { aTransaction() }
-        val expectedTransactions = transactions.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW)
+        val basicTransactions = (0..BusinessConstants.TRANSACTIONS_IN_OVERVIEW).map { aBasicTransaction() }
+        val expectedTransactions = basicTransactions.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW).map { it.toTransaction(emptyList()) }
+        whenever(allTagsSource.data()).thenReturn(just(emptyList()))
         whenever(appUserSource.data()).thenReturn(just(anAppUser()))
         whenever(createRealtimeList(any())).thenReturn(realtimeList)
-        whenever(realtimeList.getAllItems()).thenReturn(just(RawRealtimeData.AllItems(transactions)))
+        whenever(realtimeList.getAllItems()).thenReturn(just(RawRealtimeData.AllItems(basicTransactions)))
         whenever(realtimeList.getAddedItems()).thenReturn(never())
         whenever(realtimeList.getChangedItems()).thenReturn(never())
         whenever(realtimeList.getRemovedItems()).thenReturn(never())
         whenever(realtimeList.getMovedItem()).thenReturn(never())
-        val transactionsOverviewSource = TransactionsOverviewSource(appUserSource, createRealtimeList)
+        val transactionsOverviewSource = TransactionsOverviewSource(allTagsSource, appUserSource, createRealtimeList)
 
         transactionsOverviewSource.data().subscribe(subscriber)
 

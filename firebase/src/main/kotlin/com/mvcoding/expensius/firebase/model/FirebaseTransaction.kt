@@ -15,9 +15,9 @@
 package com.mvcoding.expensius.firebase.model
 
 import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.NullModels.noBasicTransaction
 import com.mvcoding.expensius.model.NullModels.noNote
 import com.mvcoding.expensius.model.NullModels.noTimestamp
-import com.mvcoding.expensius.model.NullModels.noTransaction
 import java.math.BigDecimal
 
 data class FirebaseTransaction(
@@ -31,9 +31,9 @@ data class FirebaseTransaction(
         val tags: List<String>? = null,
         val note: String? = null) {
 
-    fun toTransaction(modelState: ModelState): Transaction {
-        if (id.isNullOrBlank()) return noTransaction
-        return Transaction(
+    fun toBasicTransaction(modelState: ModelState): BasicTransaction {
+        if (id.isNullOrBlank()) return noBasicTransaction
+        return BasicTransaction(
                 TransactionId(id!!),
                 modelState,
                 transactionType(),
@@ -72,7 +72,7 @@ internal fun CreateTransaction.toFirebaseTransaction(id: String) = FirebaseTrans
         -timestamp.millis,
         money.amount.toPlainString(),
         money.currency.code,
-        tagIds.map { it.id },
+        tags.map { it.tagId.id },
         note.text)
 
 internal fun Transaction.toFirebaseMap() = mapOf(
@@ -83,5 +83,5 @@ internal fun Transaction.toFirebaseMap() = mapOf(
         "timestampInverse" to -timestamp.millis,
         "amount" to money.amount.toPlainString(),
         "currency" to money.currency.code,
-        "tags" to tagIds.map { it.id },
+        "tags" to tags.map { it.tagId.id },
         "note" to note.text)

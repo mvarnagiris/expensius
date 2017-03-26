@@ -18,17 +18,20 @@ import com.mvcoding.expensius.BusinessConstants
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.data.UserIdRealtimeDataSource
-import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.UserId
+import com.mvcoding.expensius.model.*
 import rx.Observable
+import rx.Observable.combineLatest
 
 class TransactionsOverviewSource(
+        private val allTagsSource: DataSource<List<Tag>>,
         appUserSource: DataSource<AppUser>,
-        createRealtimeList: (UserId) -> RealtimeList<Transaction>) : DataSource<List<Transaction>> {
+        createRealtimeList: (UserId) -> RealtimeList<BasicTransaction>) : DataSource<List<Transaction>> {
 
     private val dataSource = UserIdRealtimeDataSource(appUserSource, createRealtimeList) { it.transactionId.id }
 
-    override fun data(): Observable<List<Transaction>> = dataSource.data()
-            .map { it.allItems.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW) }
+    override fun data(): Observable<List<Transaction>> = combineLatest(limitedBasicTransactions(), allTagsSource.data()) { basicTransactions, tags ->
+        basicTransactions.map { it.toTransaction(tags) }
+    }
+
+    private fun limitedBasicTransactions() = dataSource.data().map { it.allItems.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW) }
 }

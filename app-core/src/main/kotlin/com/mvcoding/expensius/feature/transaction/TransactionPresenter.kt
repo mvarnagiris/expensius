@@ -48,7 +48,7 @@ class TransactionPresenter(
                 .flatMap { view.currencyChanges(it) }
                 .startWith(transaction.money.currency)
         val money = combineLatest(amounts, currencies, ::Money).doOnNext { view.showMoney(it) }
-        val tags = view.tagsChanges().startWith(transaction.tagIds).doOnNext { view.showTags(it) }
+        val tags = view.tagsChanges().startWith(transaction.tags).doOnNext { view.showTags(it) }
         val notes = view.noteChanges().map(::Note).startWith(transaction.note).doOnNext { view.showNote(it) }
 
         val transaction = combineLatest(transactionStates, transactionTypes, timestamps, money, tags, notes, {
@@ -58,7 +58,7 @@ class TransactionPresenter(
                     transactionType = transactionType,
                     timestamp = timestamp,
                     money = money,
-                    tagIds = tags,
+                    tags = tags,
                     note = note)
         }).doOnNext { transaction = it }
 
@@ -82,7 +82,7 @@ class TransactionPresenter(
             else createTransactionsWriter.write(setOf(transaction.toCreateTransaction()))
 
     private fun Transaction.isExisting() = this.transactionId != noTransactionId
-    private fun Transaction.toCreateTransaction() = CreateTransaction(transactionType, transactionState, timestamp, money, tagIds, note)
+    private fun Transaction.toCreateTransaction() = CreateTransaction(transactionType, transactionState, timestamp, money, tags, note)
     private fun transactionWithToggledArchiveState() = transaction.copy(modelState = if (transaction.modelState == NONE) ARCHIVED else NONE)
 
     interface View : Presenter.View {

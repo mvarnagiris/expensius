@@ -31,14 +31,24 @@ fun aTransaction() = Transaction(
         aTransactionState(),
         aTimestamp(),
         aMoney(),
+        someTags(),
+        aNote())
+
+fun aBasicTransaction() = BasicTransaction(
+        aTransactionId(),
+        aModelState(),
+        aTransactionType(),
+        aTransactionState(),
+        aTimestamp(),
+        aMoney(),
         someTagsIds(),
         aNote())
 
-fun aCreateTransaction() = CreateTransaction(aTransactionType(), aTransactionState(), aTimestamp(), aMoney(), someTagsIds(), aNote())
+fun aCreateTransaction() = CreateTransaction(aTransactionType(), aTransactionState(), aTimestamp(), aMoney(), someTags(), aNote())
 
 fun Transaction.withAmount(amount: Int) = withAmount(amount.toDouble())
 fun Transaction.withAmount(amount: Double) = copy(money = money.copy(amount = BigDecimal.valueOf(amount)))
 fun Transaction.withTimestamp(millis: Long) = copy(timestamp = Timestamp(millis))
 fun Transaction.withTransactionType(transactionType: TransactionType) = copy(transactionType = transactionType)
 fun Transaction.withTransactionState(transactionState: TransactionState) = copy(transactionState = transactionState)
-fun Transaction.withTagIds(tagIds: Set<TagId>) = copy(tagIds = tagIds)
+fun Transaction.withTags(tags: Set<Tag>) = copy(tags = tags)

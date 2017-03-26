@@ -52,7 +52,7 @@ class TransactionItemView @JvmOverloads constructor(context: Context, attrs: Att
 
     fun setTransaction(transaction: Transaction) {
         noteTextView.text = transactionOrDefaultNote(transaction)
-        tagsTextView.text = formatTags(transaction.tagIds)
+        tagsTextView.text = formatTags(transaction.tags)
         tagsTextView.visibility = if (tagsTextView.text.isBlank()) GONE else VISIBLE
         amountTextView.text = moneyFormatter.format(transaction.money)
         amountTextView.setTextColor(amountTextColor(transaction))
@@ -66,7 +66,7 @@ class TransactionItemView @JvmOverloads constructor(context: Context, attrs: Att
     private fun formatTags(tags: Set<Tag>): CharSequence {
         val ssb = SpannableStringBuilder()
         tags.sortedBy { it.order.value }.forEach {
-            if (ssb.length > 0) ssb.append("  ")
+            if (ssb.isNotEmpty()) ssb.append("  ")
 
             ssb.append("$NON_BREAKABLE_SPACE$NON_BREAKABLE_SPACE")
             ssb.append(it.title.text.replace(" ", NON_BREAKABLE_SPACE))

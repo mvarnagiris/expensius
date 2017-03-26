@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ object NullModels {
     val noMoney = Money(ZERO, noCurrency)
     val noNote = Note("")
     val noTransaction = Transaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
+    val noBasicTransaction = BasicTransaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
 
     fun newTransaction(timestamp: Timestamp, money: Money) = Transaction(
             noTransactionId,

@@ -36,6 +36,7 @@ class TagsModule : ShankModule {
         createTagsWriter()
         tagsSource()
         allTagsSource()
+        notArchivedTagsSource()
         tagsWriter()
         tagsPresenter()
         tagPresenter()
@@ -53,7 +54,8 @@ class TagsModule : ShankModule {
         }
     }
 
-    private fun allTagsSource() = registerFactory(AllTagsSource::class) { -> AllTagsSource(provideTagsSource(VIEW_NOT_ARCHIVED)) }
+    private fun allTagsSource() = registerFactory(AllTagsSource::class) { -> AllTagsSource(provideTagsSource(VIEW_NOT_ARCHIVED), provideTagsSource(VIEW_ARCHIVED)) }
+    private fun notArchivedTagsSource() = registerFactory(NotArchivedTagsSource::class) { -> NotArchivedTagsSource(provideAllTagsSource()) }
 
     private fun tagsWriter() = registerFactory(TagsWriter::class) { ->
         TagsWriter(provideAppUserSource()) { userId, tags ->
@@ -66,13 +68,14 @@ class TagsModule : ShankModule {
     }
 
     private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideCreateTagsWriter(), provideTagsWriter()) }
-    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { -> QuickTagsPresenter(provideAllTagsSource(), provideRxSchedulers()) }
+    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { -> QuickTagsPresenter(provideNotArchivedTagsSource(), provideRxSchedulers()) }
 }
 
 fun provideCreateTagsWriter() = provideNew<CreateTagsWriter>()
 fun provideTagsWriter() = provideNew<TagsWriter>()
 fun provideTagsSource(modelDisplayType: ModelDisplayType) = provideGlobalSingleton<TagsSource>(modelDisplayType)
 fun provideAllTagsSource() = provideNew<AllTagsSource>()
+fun provideNotArchivedTagsSource() = provideNew<NotArchivedTagsSource>()
 
 fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)
 fun View.provideQuickTagsPresenter() = withActivityScope.provideSingletonFor<QuickTagsPresenter>()

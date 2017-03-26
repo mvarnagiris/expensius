@@ -30,8 +30,30 @@ data class CreateTransaction(
         val transactionState: TransactionState,
         val timestamp: Timestamp,
         val money: Money,
-        val tagIds: Set<TagId>,
+        val tags: Set<Tag>,
         val note: Note) : Serializable
+
+data class BasicTransaction(
+        val transactionId: TransactionId,
+        val modelState: ModelState,
+        val transactionType: TransactionType,
+        val transactionState: TransactionState,
+        val timestamp: Timestamp,
+        val money: Money,
+        val tagIds: Set<TagId>,
+        val note: Note) : Serializable {
+
+    fun toTransaction(allTags: Collection<Tag>) = Transaction(
+            transactionId,
+            modelState,
+            transactionType,
+            transactionState,
+            timestamp,
+            money,
+            tagIds.map { tagId -> allTags.firstOrNull { it.tagId == tagId } }.filterNotNull().toSet(),
+            note
+    )
+}
 
 data class Transaction(
         val transactionId: TransactionId,
@@ -40,7 +62,7 @@ data class Transaction(
         val transactionState: TransactionState,
         val timestamp: Timestamp,
         val money: Money,
-        val tagIds: Set<TagId>,
+        val tags: Set<Tag>,
         val note: Note) : Serializable
 
 interface TimestampProvider {

@@ -21,20 +21,17 @@ import com.mvcoding.expensius.firebase.FirebaseRealtimeList
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
 import com.mvcoding.expensius.firebase.model.toFirebaseMap
 import com.mvcoding.expensius.firebase.model.toFirebaseTransaction
-import com.mvcoding.expensius.model.CreateTransaction
-import com.mvcoding.expensius.model.ModelState
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.UserId
 
 class FirebaseTransactionsService {
 
     private val REF_TRANSACTIONS = "transactions"
     private val REF_ARCHIVED_TRANSACTIONS = "archivedTransactions"
 
-    fun getTransactions(userId: UserId): RealtimeList<Transaction> = FirebaseRealtimeList(userId.transactionsReference().orderByChild("timestampInverse"), { it.toTransaction(NONE) })
-    fun getArchivedTransactions(userId: UserId): RealtimeList<Transaction> = FirebaseRealtimeList(userId.archivedTransactionsReference().orderByChild("timestampInverse"), { it.toTransaction(ARCHIVED) })
+    fun getTransactions(userId: UserId): RealtimeList<BasicTransaction> = FirebaseRealtimeList(userId.transactionsReference().orderByChild("timestampInverse"), { it.toTransaction(NONE) })
+    fun getArchivedTransactions(userId: UserId): RealtimeList<BasicTransaction> = FirebaseRealtimeList(userId.archivedTransactionsReference().orderByChild("timestampInverse"), { it.toTransaction(ARCHIVED) })
 
     fun createTransactions(userId: UserId, createTransactions: Set<CreateTransaction>) {
         val transactionsReference = userId.transactionsReference()
@@ -55,5 +52,5 @@ class FirebaseTransactionsService {
 
     private fun UserId.transactionsReference() = FirebaseDatabase.getInstance().getReference(REF_TRANSACTIONS).child(this.id)
     private fun UserId.archivedTransactionsReference() = FirebaseDatabase.getInstance().getReference(REF_ARCHIVED_TRANSACTIONS).child(this.id)
-    private fun DataSnapshot.toTransaction(modelState: ModelState) = getValue(FirebaseTransaction::class.java).toTransaction(modelState)
+    private fun DataSnapshot.toTransaction(modelState: ModelState) = getValue(FirebaseTransaction::class.java).toBasicTransaction(modelState)
 }

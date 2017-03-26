@@ -122,7 +122,7 @@ package com.mvcoding.expensius.feature.login
 //    }
 //
 //    @Test
-//    fun `does not write default tagIds when tagIds already exist`() {
+//    fun `does not write default tags when tags already exist`() {
 //        whenever(tagsSource.data()).thenReturn(just(listOf(aTag(), aTag(), aTag())))
 //
 //        loginWriterAndStateSource.write(AnonymousLogin)

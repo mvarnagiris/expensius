@@ -15,18 +15,10 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RealtimeData
+import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.Tag
 import rx.Observable
-import rx.Observable.combineLatest
 
-class AllTagsSource(
-        private val tagsSource: DataSource<RealtimeData<Tag>>,
-        private val archivedTagsSource: DataSource<RealtimeData<Tag>>) : DataSource<List<Tag>> {
-
-    override fun data(): Observable<List<Tag>> = combineLatest(tagsSource.data().map { it.allItems }, archivedTagsSource.data().map { it.allItems }) {
-        tags, archivedTags ->
-        tags + archivedTags
-    }
-
+class NotArchivedTagsSource(private val allTagsSource: DataSource<List<Tag>>) : DataSource<List<Tag>> {
+    override fun data(): Observable<List<Tag>> = allTagsSource.data().map { it.filter { it.modelState == ModelState.NONE } }
 }
