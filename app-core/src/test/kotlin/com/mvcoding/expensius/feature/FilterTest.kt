@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,12 @@ package com.mvcoding.expensius.feature
 //import com.mvcoding.expensius.service.AppUserService
 
 class FilterTest {
-//    val subscriber: TestSubscriber<FilterData> = TestSubscriber.create<FilterData>()
+//    val subscriber: TestSubscriber<FilterDataOld> = TestSubscriber.create<FilterDataOld>()
 //    val appUser = anAppUser()
 //    val appUserService: AppUserService = mock<AppUserService>().apply { whenever(this.appUser()).thenReturn(just(appUser)) }
 //    val timestampProvider = aFixedTimestampProvider()
-//    val defaultFilterData = FilterData(anAppUser().settings.reportPeriod.interval(timestampProvider.currentTimestamp()))
-//    val filter = Filter(appUserService, timestampProvider)
+//    val defaultFilterData = FilterDataOld(anAppUser().settings.reportPeriod.interval(timestampProvider.currentTimestamp()))
+//    val filter = FilterOld(appUserService, timestampProvider)
 //
 //    @Test
 //    fun initiallyGivesEmptyFilterData() {
@@ -57,8 +57,8 @@ class FilterTest {
 //        filter.clearTransactionState()
 //
 //        subscriber.assertValues(
-//                FilterData(Interval(0, 1), EXPENSE, PENDING),
-//                FilterData(Interval(0, 1), transactionState = PENDING),
-//                FilterData(Interval(0, 1)))
+//                FilterDataOld(Interval(0, 1), EXPENSE, PENDING),
+//                FilterDataOld(Interval(0, 1), transactionState = PENDING),
+//                FilterDataOld(Interval(0, 1)))
 //    }
 }

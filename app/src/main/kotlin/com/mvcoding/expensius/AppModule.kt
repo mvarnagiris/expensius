@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.DateFormatter
-import com.mvcoding.expensius.feature.Filter
+import com.mvcoding.expensius.feature.FilterOld
 import com.mvcoding.expensius.feature.MoneyFormatter
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 import rx.android.schedulers.AndroidSchedulers.mainThread
@@ -46,7 +46,7 @@ class AppModule(val context: Context) : ShankModule {
         registerFactory(MoneyFormatter::class.java) { -> MoneyFormatter(provideCurrencyFormatsProvider()) }
     }
 
-    //        private fun filter() = registerFactory(Filter::class) { -> Filter(provideAppUserService(), provideTimestampProvider()) }
+    //        private fun filter() = registerFactory(FilterOld::class) { -> FilterOld(provideAppUserService(), provideTimestampProvider()) }
     private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
 
 }
@@ -55,6 +55,6 @@ fun provideContext() = provideGlobalSingleton<Context>()
 fun provideRxSchedulers() = provideGlobalSingleton<RxSchedulers>()
 fun provideDateFormatter() = provideGlobalSingleton<DateFormatter>()
 fun provideMoneyFormatter() = provideGlobalSingleton<MoneyFormatter>()
-fun provideFilter() = provideNew<Filter>()
+fun provideFilter() = provideNew<FilterOld>()
 fun provideRxBus() = provideGlobalSingleton<RxBus>()
 fun provideTimestampProvider() = SystemTimestampProvider()

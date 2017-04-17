@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.report
 import com.mvcoding.expensius.anAlwaysOneExchangeRateProvider
 import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.extensions.toPeriod
-import com.mvcoding.expensius.feature.FilterData
+import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ReportGroup.DAY
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
@@ -41,7 +41,7 @@ class MoneyGroupingTest {
         val reportGroup = DAY
         val period = reportGroup.toPeriod()
         val interval = reportGroup.toInterval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
-        val filterData = FilterData(interval, EXPENSE, CONFIRMED)
+        val filterData = FilterDataOld(interval, EXPENSE, CONFIRMED)
         val currency = aCurrency()
 
         val tooEarly = aTransaction().withAmount(10).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.startMillis - 1)
@@ -74,7 +74,7 @@ class MoneyGroupingTest {
 //        val period = reportGroup.toPeriod()
 //        val interval = reportGroup.toInterval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
 //        val timestamp = interval.startMillis
-//        val filterData = FilterData(interval, EXPENSE, CONFIRMED)
+//        val filterData = FilterDataOld(interval, EXPENSE, CONFIRMED)
 //        val currency = aCurrency()
 //        val tagA = aTag()
 //        val tagB = aTag()

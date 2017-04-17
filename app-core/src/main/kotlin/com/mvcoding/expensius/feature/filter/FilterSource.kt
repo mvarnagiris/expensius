@@ -12,26 +12,18 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: "kotlin"
+package com.mvcoding.expensius.feature.filter
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'joda-time:joda-time:2.9.2'
+import com.mvcoding.expensius.data.Cache
+import com.mvcoding.expensius.data.FunctionDataSource
+import com.mvcoding.expensius.data.MemoryCache
+import com.mvcoding.expensius.model.Filter
+import rx.Observable
 
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "junit:junit:$junit_version"
-    testCompile "com.github.memoizr:assertk-core:$assertk_version"
-}
+class FilterSource(getFilter: () -> Observable<Filter>) : Cache<Filter> {
 
-task jarTest(type: Jar) {
-    from sourceSets.test.output
-    classifier = 'test'
-}
+    private val memoryCache = MemoryCache(FunctionDataSource(getFilter))
 
-configurations {
-    testOutput
-}
-
-artifacts {
-    testOutput jarTest
+    override fun data(): Observable<Filter> = memoryCache.data()
+    override fun write(data: Filter) = memoryCache.write(data)
 }

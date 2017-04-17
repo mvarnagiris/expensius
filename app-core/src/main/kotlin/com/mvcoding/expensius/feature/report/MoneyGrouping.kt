@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
 import com.mvcoding.expensius.extensions.toInterval
-import com.mvcoding.expensius.feature.FilterData
+import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.Currency
@@ -27,7 +27,7 @@ import java.util.*
 
 class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
 
-    fun groupToIntervals(transactions: List<Transaction>, currency: Currency, filterData: FilterData, reportGroup: ReportGroup): List<GroupedMoney<Interval>> {
+    fun groupToIntervals(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld, reportGroup: ReportGroup): List<GroupedMoney<Interval>> {
         val defaultValue = { Money(ZERO, currency) }
         val groupedMoney = filterData.filter(transactions).groupBy({ reportGroup.toInterval(it.timestamp) }, { it.money }).sumMoney(currency)
         return reportGroup.splitIntoGroupIntervals(filterData.interval)
@@ -35,7 +35,7 @@ class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
                 .map { GroupedMoney(it.key, it.value) }
     }
 
-    fun groupToTags(transactions: List<Transaction>, currency: Currency, filterData: FilterData): List<GroupedMoney<Tag>> = filterData.filter(transactions)
+    fun groupToTags(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld): List<GroupedMoney<Tag>> = filterData.filter(transactions)
             .fold(hashMapOf<Tag, ArrayList<Money>>()) { map, transaction -> transaction.appendMoneyToTags(map) }
             .sumMoney(currency)
             .map { GroupedMoney(it.key, it.value) }

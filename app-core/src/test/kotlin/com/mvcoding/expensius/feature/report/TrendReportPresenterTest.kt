@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.report
 class TrendReportPresenterTest {
 //    val appUserService: AppUserService = mock<AppUserService>().apply { whenever(appUser()).thenReturn(just(anAppUser())) }
 //    val transactionsService: TransactionsService = mock()
-//    val filter: Filter = Filter(appUserService, aFixedTimestampProvider())
+//    val filter: FilterOld = FilterOld(appUserService, aFixedTimestampProvider())
 //    val view: TrendReportPresenter.View = mock()
 //    val presenter = TrendReportPresenter(appUserService, transactionsService, anAlwaysOneExchangeRateProvider(), filter, rxSchedulers())
 //

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@ package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.extensions.previousInterval
-import com.mvcoding.expensius.feature.Filter
-import com.mvcoding.expensius.feature.FilterData
+import com.mvcoding.expensius.feature.FilterDataOld
+import com.mvcoding.expensius.feature.FilterOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.*
 import com.mvcoding.mvp.Presenter
@@ -27,7 +27,7 @@ class TrendReportPresenter(
         //        private val appUserService: AppUserService,
 //        private val transactionsService: TransactionsService,
         private val exchangeRatesProvider: ExchangeRatesProvider,
-        private val filter: Filter,
+        private val filter: FilterOld,
         private val schedulers: RxSchedulers) : Presenter<TrendReportPresenter.View>() {
 
     private val moneyGrouping = MoneyGrouping(exchangeRatesProvider)
@@ -43,7 +43,7 @@ class TrendReportPresenter(
 //                .subscribeUntilDetached { view.showTrends(it.totalMoney, it.currentMoney, it.previousMoney) }
     }
 
-    private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterData ->
+    private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterDataOld ->
         MoneyGroupingData(appUser, transactions, filterData)
     }
 
@@ -67,7 +67,7 @@ class TrendReportPresenter(
                 normalizedPreviousIntervalGroupedMoney)
     }
 
-    private fun groupMoney(transactions: List<Transaction>, currency: Currency, filterData: FilterData, reportGroup: ReportGroup) =
+    private fun groupMoney(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld, reportGroup: ReportGroup) =
             moneyGrouping.groupToIntervals(transactions, currency, filterData, reportGroup).map { it.money }
 
     private fun normalize(list: List<Money>, otherList: List<Money>, currency: Currency) =
@@ -79,6 +79,6 @@ class TrendReportPresenter(
         fun showTrends(totalMoney: Money, currentMoney: List<Money>, previousMoney: List<Money>)
     }
 
-    private data class MoneyGroupingData(val appUser: AppUser, val transactions: List<Transaction>, val filterData: FilterData)
+    private data class MoneyGroupingData(val appUser: AppUser, val transactions: List<Transaction>, val filterData: FilterDataOld)
     private data class Trends(val totalMoney: Money, val currentMoney: List<Money>, val previousMoney: List<Money>)
 }

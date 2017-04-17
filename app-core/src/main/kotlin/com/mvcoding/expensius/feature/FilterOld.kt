@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ import rx.lang.kotlin.BehaviorSubject
 import kotlin.Long.Companion.MAX_VALUE
 import kotlin.Long.Companion.MIN_VALUE
 
-class Filter(/*appUserService: AppUserService,*/ timestampProvider: TimestampProvider) {
-    private var filterData: FilterData = FilterData(Interval(MIN_VALUE, MAX_VALUE))
+class FilterOld(/*appUserService: AppUserService,*/ timestampProvider: TimestampProvider) {
+    private var filterData: FilterDataOld = FilterDataOld(Interval(MIN_VALUE, MAX_VALUE))
     private val filterDataSubject = BehaviorSubject(filterData)
 
     init {
@@ -35,26 +35,26 @@ class Filter(/*appUserService: AppUserService,*/ timestampProvider: TimestampPro
 //                .subscribe { setInterval(it) }
     }
 
-    fun filterData(): Observable<FilterData> = filterDataSubject
+    fun filterData(): Observable<FilterDataOld> = filterDataSubject
 
-    fun setInterval(interval: Interval): Filter {
+    fun setInterval(interval: Interval): FilterOld {
         filterData = filterData.withInterval(interval)
         filterDataSubject.onNext(filterData)
         return this
     }
 
-    fun setTransactionType(transactionType: TransactionType?): Filter {
+    fun setTransactionType(transactionType: TransactionType?): FilterOld {
         filterData = filterData.withTransactionType(transactionType)
         filterDataSubject.onNext(filterData)
         return this
     }
 
-    fun setTransactionState(transactionState: TransactionState?): Filter {
+    fun setTransactionState(transactionState: TransactionState?): FilterOld {
         filterData = filterData.withTransactionState(transactionState)
         filterDataSubject.onNext(filterData)
         return this
     }
 
-    fun clearTransactionType(): Filter = setTransactionType(null)
-    fun clearTransactionState(): Filter = setTransactionState(null)
+    fun clearTransactionType(): FilterOld = setTransactionType(null)
+    fun clearTransactionState(): FilterOld = setTransactionState(null)
 }

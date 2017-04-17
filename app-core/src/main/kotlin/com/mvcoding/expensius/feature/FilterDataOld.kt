@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionType
 import org.joda.time.Interval
 
-data class FilterData(
+data class FilterDataOld(
         val interval: Interval,
         val transactionType: TransactionType? = null,
         val transactionState: TransactionState? = null) {

@@ -12,26 +12,15 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: "kotlin"
+package com.mvcoding.expensius.feature.filter
 
-dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'joda-time:joda-time:2.9.2'
+import com.mvcoding.expensius.data.testMemoryCache
+import com.mvcoding.expensius.model.aFilter
+import org.junit.Test
 
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "junit:junit:$junit_version"
-    testCompile "com.github.memoizr:assertk-core:$assertk_version"
-}
-
-task jarTest(type: Jar) {
-    from sourceSets.test.output
-    classifier = 'test'
-}
-
-configurations {
-    testOutput
-}
-
-artifacts {
-    testOutput jarTest
+class FilterSourceTest {
+    @Test
+    fun `behaves like memory cache`() {
+        testMemoryCache(aFilter(), aFilter()) { FilterSource { it.data() } }
+    }
 }

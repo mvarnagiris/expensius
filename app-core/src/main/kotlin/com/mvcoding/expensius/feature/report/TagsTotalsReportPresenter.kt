@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,8 +15,8 @@
 package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.Filter
-import com.mvcoding.expensius.feature.FilterData
+import com.mvcoding.expensius.feature.FilterDataOld
+import com.mvcoding.expensius.feature.FilterOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Tag
@@ -27,7 +27,7 @@ class TagsTotalsReportPresenter(
         //        private val appUserService: AppUserService,
 //        private val transactionsService: TransactionsService,
         exchangeRatesProvider: ExchangeRatesProvider,
-        private val filter: Filter,
+        private val filter: FilterOld,
         private val schedulers: RxSchedulers) : Presenter<TagsTotalsReportPresenter.View>() {
 
     private val moneyGrouping = MoneyGrouping(exchangeRatesProvider)
@@ -43,7 +43,7 @@ class TagsTotalsReportPresenter(
 //                .subscribeUntilDetached { view.showTagsTotals(it) }
     }
 
-    private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterData ->
+    private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterDataOld ->
         MoneyGroupingData(appUser, transactions, filterData)
     }
 
@@ -51,5 +51,5 @@ class TagsTotalsReportPresenter(
         fun showTagsTotals(tagAmounts: List<GroupedMoney<Tag>>)
     }
 
-    private data class MoneyGroupingData(val appUser: AppUser, val transactions: List<Transaction>, val filterData: FilterData)
+    private data class MoneyGroupingData(val appUser: AppUser, val transactions: List<Transaction>, val filterData: FilterDataOld)
 }

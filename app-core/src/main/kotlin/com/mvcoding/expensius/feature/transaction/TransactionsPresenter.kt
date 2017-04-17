@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.RealtimeItemsView
@@ -24,7 +26,7 @@ import rx.Observable
 
 class TransactionsPresenter(
         private val modelDisplayType: ModelDisplayType,
-        //        private val transactionsService: TransactionsService,
+        private val transactionsSource: DataSource<RealtimeData<Transaction>>,
         private val schedulers: RxSchedulers) : Presenter<TransactionsPresenter.View>() {
 
     override fun onViewAttached(view: View) {

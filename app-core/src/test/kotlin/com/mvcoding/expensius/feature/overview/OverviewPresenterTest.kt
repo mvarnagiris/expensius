@@ -31,7 +31,7 @@ val settingsSelectedSubject = PublishSubject<Unit>()
 //    val interval = Interval(DateTime.now().minusDays(1), DateTime.now())
 //    val appUser = anAppUser()
 //    val appUserService: AppUserService = mock<AppUserService>().apply { whenever(appUser()).thenReturn(just(appUser)) }
-//    val filter = Filter(appUserService, aFixedTimestampProvider()).setInterval(interval)
+//    val filter = FilterOld(appUserService, aFixedTimestampProvider()).setInterval(interval)
 val view = mock<OverviewPresenter.View>()
     val presenter = OverviewPresenter()
 
