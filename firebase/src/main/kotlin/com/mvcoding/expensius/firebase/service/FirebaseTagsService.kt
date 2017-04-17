@@ -15,9 +15,9 @@
 package com.mvcoding.expensius.firebase.service
 
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.FirebaseDatabase
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.firebase.FirebaseRealtimeList
+import com.mvcoding.expensius.firebase.extensions.getFirebaseDatabase
 import com.mvcoding.expensius.firebase.model.FirebaseTag
 import com.mvcoding.expensius.firebase.model.toFirebaseMap
 import com.mvcoding.expensius.firebase.model.toFirebaseTag
@@ -53,7 +53,7 @@ class FirebaseTagsService {
         if (archivedTagsToUpdate.isNotEmpty()) userId.archivedTagsReference().updateChildren(archivedTagsToUpdate)
     }
 
-    private fun UserId.tagsReference() = FirebaseDatabase.getInstance().getReference(REF_TAGS).child(this.id)
-    private fun UserId.archivedTagsReference() = FirebaseDatabase.getInstance().getReference(REF_ARCHIVED_TAGS).child(this.id)
+    private fun UserId.tagsReference() = getFirebaseDatabase().getReference(REF_TAGS).child(this.id)
+    private fun UserId.archivedTagsReference() = getFirebaseDatabase().getReference(REF_ARCHIVED_TAGS).child(this.id)
     private fun DataSnapshot.toTag(modelState: ModelState) = getValue(FirebaseTag::class.java).toTag(modelState)
 }

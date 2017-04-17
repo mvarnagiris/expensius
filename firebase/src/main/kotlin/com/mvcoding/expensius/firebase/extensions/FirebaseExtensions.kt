@@ -1,3 +1,17 @@
+/*
+ * Copyright (C) 2017 Mantas Varnagiris.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.mvcoding.expensius.firebase.extensions
 
 import com.google.android.gms.tasks.Task
@@ -8,6 +22,9 @@ import rx.Observable
 import rx.Scheduler
 import rx.lang.kotlin.deferredObservable
 import rx.lang.kotlin.observable
+
+private val firebaseDatabaseInstance by lazy { FirebaseDatabase.getInstance().apply { setPersistenceEnabled(true) } }
+fun getFirebaseDatabase(): FirebaseDatabase = firebaseDatabaseInstance
 
 fun Query.observeSingleValue(scheduler: Scheduler): Observable<DataSnapshot> = deferredObservable {
     observable<DataSnapshot> { subscriber ->
@@ -50,6 +67,6 @@ fun FirebaseAuth.observeSingleCurrentFirebaseUser(scheduler: Scheduler): Observa
     }
 }.observeOn(scheduler)
 
-fun FirebaseUser.getAppUserDatabaseReference(): DatabaseReference = FirebaseDatabase.getInstance()
+fun FirebaseUser.getAppUserDatabaseReference(): DatabaseReference = getFirebaseDatabase()
         .getReference("users")
         .child(uid)

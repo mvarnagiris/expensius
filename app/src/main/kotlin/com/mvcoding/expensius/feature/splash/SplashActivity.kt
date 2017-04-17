@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,6 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import android.os.Bundle
-import com.mvcoding.expensius.extension.app
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
@@ -24,11 +22,6 @@ import com.mvcoding.expensius.feature.overview.OverviewActivity
 class SplashActivity : BaseActivity(), SplashPresenter.View {
 
     private val presenter by lazy { provideSplashPresenter() }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        app().setupFirebase()
-    }
 
     override fun onStart() {
         super.onStart()

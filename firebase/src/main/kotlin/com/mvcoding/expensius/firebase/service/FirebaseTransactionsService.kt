@@ -15,9 +15,9 @@
 package com.mvcoding.expensius.firebase.service
 
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.FirebaseDatabase
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.firebase.FirebaseRealtimeList
+import com.mvcoding.expensius.firebase.extensions.getFirebaseDatabase
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
 import com.mvcoding.expensius.firebase.model.toFirebaseMap
 import com.mvcoding.expensius.firebase.model.toFirebaseTransaction
@@ -50,7 +50,7 @@ class FirebaseTransactionsService {
         if (archivedTransactionsToUpdate.isNotEmpty()) userId.archivedTransactionsReference().updateChildren(archivedTransactionsToUpdate)
     }
 
-    private fun UserId.transactionsReference() = FirebaseDatabase.getInstance().getReference(REF_TRANSACTIONS).child(this.id)
-    private fun UserId.archivedTransactionsReference() = FirebaseDatabase.getInstance().getReference(REF_ARCHIVED_TRANSACTIONS).child(this.id)
+    private fun UserId.transactionsReference() = getFirebaseDatabase().getReference(REF_TRANSACTIONS).child(this.id)
+    private fun UserId.archivedTransactionsReference() = getFirebaseDatabase().getReference(REF_ARCHIVED_TRANSACTIONS).child(this.id)
     private fun DataSnapshot.toTransaction(modelState: ModelState) = getValue(FirebaseTransaction::class.java).toBasicTransaction(modelState)
 }

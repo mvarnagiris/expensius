@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,7 @@ package com.mvcoding.expensius.firebase.service
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
-import com.google.firebase.database.FirebaseDatabase
-import com.mvcoding.expensius.firebase.extensions.getAppUserDatabaseReference
-import com.mvcoding.expensius.firebase.extensions.observeSingleCurrentFirebaseUser
-import com.mvcoding.expensius.firebase.extensions.observeSingleValue
-import com.mvcoding.expensius.firebase.extensions.observeSuccessfulComplete
+import com.mvcoding.expensius.firebase.extensions.*
 import com.mvcoding.expensius.firebase.model.FirebaseAppUser
 import com.mvcoding.expensius.firebase.model.toFirebaseAppUser
 import com.mvcoding.expensius.model.*
@@ -44,7 +40,7 @@ class FirebaseAppUserService(private val scheduler: Scheduler) {
             .switchMap { if (it == null) just(noAppUser) else fetchAppUser(it) }
             .onErrorReturn { noAppUser }
 
-    fun setAppUser(appUser: AppUser): Task<Void> = FirebaseDatabase.getInstance()
+    fun setAppUser(appUser: AppUser): Task<Void> = getFirebaseDatabase()
             .getReference("users")
             .child(appUser.userId.id)
             .setValue(appUser.toFirebaseAppUser())
