@@ -34,6 +34,8 @@ fun aTransaction() = Transaction(
         someTags(),
         aNote())
 
+fun someTransactions() = listOf(aTransaction(), aTransaction(), aTransaction())
+
 fun aBasicTransaction() = BasicTransaction(
         aTransactionId(),
         aModelState(),

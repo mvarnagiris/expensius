@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,134 +14,125 @@
 
 package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.aString
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.RealtimeData
+import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
+import com.mvcoding.expensius.model.Note
+import com.mvcoding.expensius.model.NullModels.noTransaction
+import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.aTransaction
+import com.mvcoding.expensius.model.someTransactions
+import com.mvcoding.expensius.rxSchedulers
+import com.nhaarman.mockito_kotlin.*
+import org.junit.Before
+import org.junit.Test
+import rx.lang.kotlin.BehaviorSubject
+import rx.lang.kotlin.PublishSubject
+
 class TransactionsPresenterTest {
-//    val someTransactions = listOf(aTransaction(), aTransaction(), aTransaction())
-//    val someOtherTransactions = listOf(aTransaction(), aTransaction())
-//
-//    val createTransactionRequestsSubject = PublishSubject<Unit>()
-//    val transactionSelectsSubject = PublishSubject<Transaction>()
-//    val archivedTransactionsRequestsSubject = PublishSubject<Unit>()
-//    val transactionsSubject = BehaviorSubject(someTransactions)
-//
-//    val transactionsService: TransactionsService = mock()
-//    val view: TransactionsPresenter.View = mock()
-//    val inOrder: InOrder = inOrder(view)
-//
-//    @Before
-//    fun setUp() {
-//        whenever(transactionsService.items()).thenReturn(transactionsSubject)
-//        whenever(transactionsService.addedItems()).thenReturn(empty())
-//        whenever(transactionsService.changedItems()).thenReturn(empty())
-//        whenever(transactionsService.removedItems()).thenReturn(empty())
-//        whenever(transactionsService.movedItem()).thenReturn(empty())
-//
-//        whenever(view.transactionSelects()).thenReturn(transactionSelectsSubject)
-//        whenever(view.createTransactionRequests()).thenReturn(createTransactionRequestsSubject)
-//        whenever(view.archivedTransactionsRequests()).thenReturn(archivedTransactionsRequestsSubject)
-//    }
-//
-//    @Test
-//    fun showsModelDisplayType() {
-//        presenter(VIEW_ARCHIVED).attach(view)
-//
-//        verify(view).showModelDisplayType(VIEW_ARCHIVED)
-//    }
-//
-//    @Test
-//    fun showsInitialTransactionsOnlyOnce() {
-//        presenter().attach(view)
-//        transactions(someOtherTransactions)
-//
-//        inOrder.verify(view).showLoading()
-//        inOrder.verify(view).hideLoading()
-//        inOrder.verify(view).showItems(someTransactions)
-//        verify(view, times(1)).showItems(any())
-//    }
-//
-//    @Test
-//    fun showsAddedTransactions() {
-//        val someItemsAdded = AddedItems(0, someTransactions)
-//        val someOtherItemsAdded = AddedItems(someTransactions.size, someOtherTransactions)
-//        whenever(transactionsService.addedItems()).thenReturn(from(listOf(someItemsAdded, someOtherItemsAdded)))
-//
-//        presenter().attach(view)
-//
-//        inOrder.verify(view).showAddedItems(someItemsAdded.position, someItemsAdded.items)
-//        inOrder.verify(view).showAddedItems(someOtherItemsAdded.position, someOtherItemsAdded.items)
-//    }
-//
-//    @Test
-//    fun showsChangedTransactions() {
-//        val someItemsChanged = ChangedItems(0, someTransactions)
-//        val someOtherItemsChanged = ChangedItems(someTransactions.size, someOtherTransactions)
-//        whenever(transactionsService.changedItems()).thenReturn(from(listOf(someItemsChanged, someOtherItemsChanged)))
-//
-//        presenter().attach(view)
-//
-//        inOrder.verify(view).showChangedItems(someItemsChanged.position, someItemsChanged.items)
-//        inOrder.verify(view).showChangedItems(someOtherItemsChanged.position, someOtherItemsChanged.items)
-//    }
-//
-//    @Test
-//    fun showsRemovedTransactions() {
-//        val someItemsRemoved = RemovedItems(0, someTransactions)
-//        val someOtherItemsRemoved = RemovedItems(someTransactions.size, someOtherTransactions)
-//        whenever(transactionsService.removedItems()).thenReturn(from(listOf(someItemsRemoved, someOtherItemsRemoved)))
-//
-//        presenter().attach(view)
-//
-//        inOrder.verify(view).showRemovedItems(someItemsRemoved.position, someItemsRemoved.items)
-//        inOrder.verify(view).showRemovedItems(someOtherItemsRemoved.position, someOtherItemsRemoved.items)
-//    }
-//
-//    @Test
-//    fun showsMovedTransactions() {
-//        val inOrder = inOrder(view)
-//        val someTransaction = aTransaction()
-//        val someOtherTransaction = aTransaction()
-//        val movedTransactions = listOf(MovedItem(0, 1, someTransaction), MovedItem(1, 2, someOtherTransaction))
-//        whenever(transactionsService.movedItem()).thenReturn(from(movedTransactions))
-//
-//        presenter().attach(view)
-//
-//        inOrder.verify(view).showMovedItem(0, 1, someTransaction)
-//        inOrder.verify(view).showMovedItem(1, 2, someOtherTransaction)
-//    }
-//
-//    @Test
-//    fun displaysTransactionEditWhenSelectingTransaction() {
-//        val transaction = aTransaction()
-//        presenter().attach(view)
-//
-//        selectTransaction(transaction)
-//
-//        verify(view).displayTransactionEdit(transaction)
-//    }
-//
-//    @Test
-//    fun displaysCalculatorOnCreateTransaction() {
-//        presenter().attach(view)
-//
-//        createTransaction()
-//
-//        verify(view).displayCalculator()
-//    }
-//
-//    @Test
-//    fun displaysArchivedTransactions() {
-//        presenter().attach(view)
-//
-//        requestArchivedTransactions()
-//
-//        verify(view).displayArchivedTransactions()
-//    }
-//
-//    private fun selectTransaction(transaction: Transaction) = transactionSelectsSubject.onNext(transaction)
-//    private fun createTransaction() = createTransactionRequestsSubject.onNext(Unit)
-//    private fun requestArchivedTransactions() = archivedTransactionsRequestsSubject.onNext(Unit)
-//    private fun transactions(transactions: List<Transaction>) = transactionsSubject.onNext(transactions)
-//    private fun presenter(modelDisplayType: ModelDisplayType = VIEW_NOT_ARCHIVED) = TransactionsPresenter(
-//            modelDisplayType,
-//            transactionsService,
-//            rxSchedulers())
+
+    val transactionsSubject = BehaviorSubject<RealtimeData<Transaction>>()
+    val transactionSelectsSubject = PublishSubject<Transaction>()
+    val createTransactionRequestsSubject = PublishSubject<Unit>()
+    val displayArchivedTransactionsSubject = PublishSubject<Unit>()
+
+    val transactionsSource = mock<DataSource<RealtimeData<Transaction>>>()
+    val view: TransactionsPresenter.View = mock()
+    val inOrder = inOrder(view)
+
+    @Before
+    fun setUp() {
+        whenever(view.transactionSelects()).thenReturn(transactionSelectsSubject)
+        whenever(view.createTransactionRequests()).thenReturn(createTransactionRequestsSubject)
+        whenever(view.archivedTransactionsRequests()).thenReturn(displayArchivedTransactionsSubject)
+        whenever(transactionsSource.data()).thenReturn(transactionsSubject)
+    }
+
+    @Test
+    fun `shows model display type not archived and show archived transactions request`() {
+        presenter(VIEW_NOT_ARCHIVED).attach(view)
+
+        verify(view).showModelDisplayType(VIEW_NOT_ARCHIVED)
+        verify(view).showArchivedTransactionsRequest()
+    }
+
+    @Test
+    fun `shows model display type archived and does not show archived transactions request`() {
+        presenter(VIEW_ARCHIVED).attach(view)
+
+        verify(view).showModelDisplayType(VIEW_ARCHIVED)
+        verify(view, never()).showArchivedTransactionsRequest()
+    }
+
+    @Test
+    fun `shows loading until first data comes and then displays all types of realtime data as it comes`() {
+        val transactions = someTransactions()
+        val addedTransactions = someTransactions()
+        val changedTransactions = listOf(addedTransactions.first().copy(note = Note(aString())))
+        val removedTransactions = listOf(addedTransactions.last())
+        val movedTransactions = listOf(transactions.first())
+
+        presenter().attach(view)
+        inOrder.verify(view).showLoading()
+
+        receiveTransactions(transactions)
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).showItems(transactions)
+
+        receiveTransactionsAdded(addedTransactions, 3)
+        inOrder.verify(view).showAddedItems(addedTransactions, 3)
+
+        receiveTransactionsChanged(changedTransactions, 3)
+        inOrder.verify(view).showChangedItems(changedTransactions, 3)
+
+        receiveTransactionsChanged(changedTransactions, 3)
+        inOrder.verify(view).showChangedItems(changedTransactions, 3)
+
+        receiveTransactionsRemoved(removedTransactions, 5)
+        inOrder.verify(view).showRemovedItems(removedTransactions, 5)
+
+        receiveTransactionsMoved(movedTransactions, 0, 5)
+        inOrder.verify(view).showMovedItems(movedTransactions, 0, 5)
+    }
+
+    @Test
+    fun `displays transaction edit when selecting a transaction and display type is view`() {
+        val transaction = aTransaction()
+        presenter().attach(view)
+
+        selectTransaction(transaction)
+
+        verify(view).displayTransactionEdit(transaction)
+    }
+
+    @Test
+    fun `displays transaction edit when create transaction is requested`() {
+        presenter().attach(view)
+
+        requestCreateTransaction()
+
+        verify(view).displayTransactionEdit(noTransaction)
+    }
+
+    @Test
+    fun `displays archived transactions`() {
+        presenter().attach(view)
+
+        requestArchivedTransactions()
+
+        verify(view).displayArchivedTransactions()
+    }
+
+    private fun receiveTransactions(tags: List<Transaction>) = transactionsSubject.onNext(RealtimeData.AllItems(tags))
+    private fun requestCreateTransaction() = createTransactionRequestsSubject.onNext(Unit)
+    private fun requestArchivedTransactions() = displayArchivedTransactionsSubject.onNext(Unit)
+    private fun receiveTransactionsAdded(tags: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.AddedItems(tags, tags, position))
+    private fun receiveTransactionsChanged(tags: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.ChangedItems(tags, tags, position))
+    private fun receiveTransactionsRemoved(tags: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.RemovedItems(tags, tags, position))
+    private fun receiveTransactionsMoved(tags: List<Transaction>, fromPosition: Int, toPosition: Int) = transactionsSubject.onNext(RealtimeData.MovedItems(tags, tags, fromPosition, toPosition))
+    private fun selectTransaction(transaction: Transaction) = transactionSelectsSubject.onNext(transaction)
+    private fun presenter(modelViewType: ModelDisplayType = VIEW_NOT_ARCHIVED) = TransactionsPresenter(modelViewType, transactionsSource, rxSchedulers())
 }

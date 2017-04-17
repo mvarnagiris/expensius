@@ -20,9 +20,11 @@ import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.RealtimeItemsView
+import com.mvcoding.expensius.model.NullModels.noTransaction
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 import rx.Observable
+import rx.Observable.merge
 
 class TransactionsPresenter(
         private val modelDisplayType: ModelDisplayType,
@@ -34,36 +36,25 @@ class TransactionsPresenter(
 
         view.showModelDisplayType(modelDisplayType)
         view.showLoading()
-//        transactionsService.items()
-//                .first()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .doOnNext { view.hideLoading() }
-//                .subscribeUntilDetached { view.showItems(it) }
-//
-//        transactionsService.addedItems()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showAddedItems(it.position, it.items) }
-//
-//        transactionsService.changedItems()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showChangedItems(it.position, it.items) }
-//
-//        transactionsService.removedItems()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showRemovedItems(it.position, it.items) }
-//
-//        transactionsService.movedItem()
-//                .subscribeOn(schedulers.io)
-//                .observeOn(schedulers.main)
-//                .subscribeUntilDetached { view.showMovedItems(it.fromPosition, it.toPosition, it.item) }
+        if (modelDisplayType == ModelDisplayType.VIEW_NOT_ARCHIVED) view.showArchivedTransactionsRequest()
 
+        transactionsSource.data()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .doOnNext { view.hideLoading() }
+                .subscribeUntilDetached {
+                    when (it) {
+                        is RealtimeData.AllItems -> view.showItems(it.allItems)
+                        is RealtimeData.AddedItems -> view.showAddedItems(it.addedItems, it.position)
+                        is RealtimeData.ChangedItems -> view.showChangedItems(it.changedItems, it.position)
+                        is RealtimeData.RemovedItems -> view.showRemovedItems(it.removedItems, it.position)
+                        is RealtimeData.MovedItems -> view.showMovedItems(it.movedItems, it.fromPosition, it.toPosition)
+                    }
+                }
+
+        merge(view.transactionSelects(), view.createTransactionRequests().map { noTransaction }).subscribeUntilDetached { view.displayTransactionEdit(it) }
         view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
-        view.createTransactionRequests().subscribeUntilDetached { view.displayCalculator() }
-        view.transactionSelects().subscribeUntilDetached { view.displayTransactionEdit(it) }
+
     }
 
     interface View : Presenter.View, RealtimeItemsView<Transaction>, LoadingView {
@@ -72,6 +63,7 @@ class TransactionsPresenter(
         fun archivedTransactionsRequests(): Observable<Unit>
 
         fun showModelDisplayType(modelDisplayType: ModelDisplayType)
+        fun showArchivedTransactionsRequest()
 
         fun displayTransactionEdit(transaction: Transaction)
         fun displayCalculator()
