@@ -15,9 +15,29 @@
 package com.mvcoding.expensius.data
 
 import rx.Observable
+import java.util.concurrent.atomic.AtomicReference
 
-class ParameterRealtimeDataSource<in PARAMETER, ITEM> : DataSource<RealtimeData<ITEM>> {
-    override fun data(): Observable<RealtimeData<ITEM>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class ParameterRealtimeDataSource<in PARAMETER, ITEM>(
+        private val parameterSource: DataSource<PARAMETER>,
+        private val createRealtimeList: (PARAMETER) -> RealtimeList<ITEM>,
+        private val getItemId: (ITEM) -> String) : DataSource<RealtimeData<ITEM>> {
+
+    private val userIdAndRealtimeListDataSource = AtomicReference<Pair<PARAMETER, RealtimeListDataSource<ITEM>>?>()
+
+    override fun data(): Observable<RealtimeData<ITEM>> = parameterSource.data()
+            .distinctUntilChanged()
+            .switchMap {
+                val currentUserIdAndRealtimeListDataSource = userIdAndRealtimeListDataSource.get()
+                val currentUserId = currentUserIdAndRealtimeListDataSource?.first
+                val currentRealtimeListDataSource = currentUserIdAndRealtimeListDataSource?.second
+
+                val shouldUseSameRealtimeListDataSource = currentUserId != null && currentRealtimeListDataSource != null && currentUserId == it
+                if (shouldUseSameRealtimeListDataSource) currentRealtimeListDataSource!!.data()
+                else {
+                    currentRealtimeListDataSource?.close()
+                    val realtimeListDataSource = RealtimeListDataSource(createRealtimeList(it)) { getItemId(it) }
+                    userIdAndRealtimeListDataSource.set(Pair(it, realtimeListDataSource))
+                    realtimeListDataSource.data()
+                }
+            }
 }
