@@ -25,6 +25,7 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
 import com.mvcoding.expensius.feature.tag.provideAllTagsSource
 import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.provideAppUserIdSource
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideFirebaseTransactionsService
 import com.mvcoding.expensius.provideRxSchedulers
@@ -54,7 +55,7 @@ class TransactionModule : ShankModule {
     }
 
     private fun transactionsOverviewSource() = registerFactory(TransactionsOverviewSource::class) { ->
-        TransactionsOverviewSource(provideAllTagsSource(), provideAppUserSource()) { provideFirebaseTransactionsService().getTransactions(it) }
+        TransactionsOverviewSource(provideAllTagsSource(), provideAppUserIdSource()) { provideFirebaseTransactionsService().getTransactions(it) }
     }
 
     //    private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class) { modelDisplayType: ModelDisplayType ->

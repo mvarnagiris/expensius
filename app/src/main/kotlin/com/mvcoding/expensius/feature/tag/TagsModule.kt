@@ -25,6 +25,7 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.provideAppUserIdSource
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideFirebaseTagsService
 import com.mvcoding.expensius.provideRxSchedulers
@@ -48,7 +49,7 @@ class TagsModule : ShankModule {
     }
 
     private fun tagsSource() = registerFactory(TagsSource::class) { modelDisplayType: ModelDisplayType ->
-        TagsSource(provideAppUserSource()) {
+        TagsSource(provideAppUserIdSource()) {
             if (modelDisplayType == VIEW_ARCHIVED) provideFirebaseTagsService().getArchivedTags(it)
             else provideFirebaseTagsService().getTags(it)
         }

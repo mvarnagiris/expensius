@@ -12,19 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.tag
+package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.data.testParameterRealtimeDataSource
-import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.UserId
-import com.mvcoding.expensius.model.aUserId
-import org.junit.Test
+import rx.Observable
 
-class TagsSourceTest {
-
-    @Test
-    fun `behaves like user id realtime data source`() {
-        testParameterRealtimeDataSource<UserId, Tag>(aUserId(), aUserId()) { parameterDataSource, createRealtimeList -> TagsSource(parameterDataSource, createRealtimeList) }
-    }
+class AppUserIdSource(private val appUserSource: DataSource<AppUser>) : DataSource<UserId> {
+    override fun data(): Observable<UserId> = appUserSource.data().map { it.userId }.distinctUntilChanged()
 }
-

@@ -15,19 +15,18 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.ParameterRealtimeDataSource
 import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.data.RealtimeList
-import com.mvcoding.expensius.data.UserIdRealtimeDataSource
-import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
 import rx.Observable
 
 class TagsSource(
-        appUserSource: DataSource<AppUser>,
+        appUserIdSource: DataSource<UserId>,
         createRealtimeList: (UserId) -> RealtimeList<Tag>) : DataSource<RealtimeData<Tag>> {
 
-    private val dataSource = UserIdRealtimeDataSource(appUserSource, createRealtimeList) { it.tagId.id }
+    private val dataSource = ParameterRealtimeDataSource(appUserIdSource, createRealtimeList) { it.tagId.id }
 
     override fun data(): Observable<RealtimeData<Tag>> = dataSource.data()
 }
