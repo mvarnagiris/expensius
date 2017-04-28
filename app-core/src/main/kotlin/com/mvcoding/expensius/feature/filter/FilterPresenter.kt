@@ -17,6 +17,7 @@ package com.mvcoding.expensius.feature.filter
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
@@ -31,7 +32,7 @@ class FilterPresenter(
         filterCache.data()
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showInterval(it.interval) }
+                .subscribeUntilDetached { view.showInterval(it.interval, it.reportPeriod) }
 
         view.previousIntervalRequests()
                 .observeOn(schedulers.io)
@@ -47,6 +48,6 @@ class FilterPresenter(
     interface View : Presenter.View {
         fun previousIntervalRequests(): Observable<Unit>
         fun nextIntervalRequests(): Observable<Unit>
-        fun showInterval(interval: Interval)
+        fun showInterval(interval: Interval, reportPeriod: ReportPeriod)
     }
 }

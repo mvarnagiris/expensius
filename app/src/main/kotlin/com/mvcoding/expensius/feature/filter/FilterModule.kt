@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.filter
 
+import android.view.View
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
@@ -22,18 +23,26 @@ import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.provideAppUserSource
+import com.mvcoding.expensius.provideRxSchedulers
+import memoizrlabs.com.shankandroid.activityScope
+import memoizrlabs.com.shankandroid.withActivityScope
 
 class FilterModule : ShankModule {
     override fun registerFactories() {
         filterSource()
+        filterPresenter()
     }
 
     private fun filterSource() = registerFactory(FilterSource::class) { ->
         val appUserSource = provideAppUserSource()
         FilterSource { appUserSource.data().map { Filter(it.userId, it.settings.reportPeriod, it.settings.reportPeriod.interval(System.currentTimeMillis())) } }
     }
+
+    private fun filterPresenter() = registerFactory(FilterPresenter::class) { scope: Scope -> FilterPresenter(provideFilterSource(scope), provideRxSchedulers()) }
 }
 
 fun provideFilterSource(scope: Scope? = null) =
         if (scope == null) provideGlobalSingleton<FilterSource>()
         else Shank.with(scope).provideSingletonFor<FilterSource>()
+
+fun View.provideFilterPresenter() = withActivityScope.provideSingletonFor<FilterPresenter>(activityScope)

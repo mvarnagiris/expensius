@@ -48,7 +48,7 @@ class FilterPresenterTest {
     fun `shows interval`() {
         presenter.attach(view)
 
-        verify(view).showInterval(filter.interval)
+        verify(view).showInterval(filter.interval, filter.reportPeriod)
     }
 
     @Test
@@ -58,8 +58,8 @@ class FilterPresenterTest {
 
         presenter.attach(view)
 
-        verify(view).showInterval(filter.interval)
-        verify(view).showInterval(changedFilter.interval)
+        verify(view).showInterval(filter.interval, filter.reportPeriod)
+        verify(view).showInterval(changedFilter.interval, filter.reportPeriod)
     }
 
     @Test

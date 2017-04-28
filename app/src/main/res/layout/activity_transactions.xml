@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -18,6 +18,17 @@
     android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary"
+        android:elevation="@dimen/elevation_appbar"
+        android:theme="?themeInverse">
+
+        <include layout="@layout/view_filter" />
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

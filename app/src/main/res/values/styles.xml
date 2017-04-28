@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -118,12 +118,14 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">@style/Text.Button</item>
+        <item name="android:tint">?colorActionIcon</item>
     </style>
 
     <style name="Button.Flat" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">@style/Text.Button</item>
+        <item name="android:tint">?colorActionIcon</item>
     </style>
 
     <style name="Button.Flat.Borderless">
@@ -133,6 +135,7 @@
     <style name="Button.Flat.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:tint">?colorActionIcon</item>
     </style>
 
     <style name="Button.Flat.Borderless.Calc">
