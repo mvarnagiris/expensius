@@ -54,7 +54,6 @@ class TransactionsPresenter(
 
         merge(view.transactionSelects(), view.createTransactionRequests().map { noTransaction }).subscribeUntilDetached { view.displayTransactionEdit(it) }
         view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
-
     }
 
     interface View : Presenter.View, RealtimeItemsView<Transaction>, LoadingView {

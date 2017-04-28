@@ -15,12 +15,13 @@
 package com.mvcoding.expensius.data
 
 import rx.Observable
+import java.io.Closeable
 import java.util.concurrent.atomic.AtomicReference
 
 class ParameterRealtimeDataSource<in PARAMETER, ITEM>(
         private val parameterSource: DataSource<PARAMETER>,
         private val createRealtimeList: (PARAMETER) -> RealtimeList<ITEM>,
-        private val getItemId: (ITEM) -> String) : DataSource<RealtimeData<ITEM>> {
+        private val getItemId: (ITEM) -> String) : DataSource<RealtimeData<ITEM>>, Closeable {
 
     private val userIdAndRealtimeListDataSource = AtomicReference<Pair<PARAMETER, RealtimeListDataSource<ITEM>>?>()
 
@@ -40,4 +41,8 @@ class ParameterRealtimeDataSource<in PARAMETER, ITEM>(
                     realtimeListDataSource.data()
                 }
             }
+
+    override fun close() {
+        userIdAndRealtimeListDataSource.get()?.second?.close()
+    }
 }

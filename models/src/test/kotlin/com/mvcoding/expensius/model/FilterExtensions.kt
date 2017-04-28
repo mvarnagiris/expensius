@@ -17,4 +17,4 @@ package com.mvcoding.expensius.model
 import com.mvcoding.expensius.aLong
 import org.joda.time.Interval
 
-fun aFilter() = Filter(aLong(10000).let { Interval(it, it + 1 + aLong(10000)) })
+fun aFilter() = Filter(aUserId(), aLong(10000).let { Interval(it, it + 1 + aLong(10000)) })

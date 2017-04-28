@@ -15,49 +15,32 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.BusinessConstants
+import com.mvcoding.expensius.anInt
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RawRealtimeData
-import com.mvcoding.expensius.data.RealtimeList
-import com.mvcoding.expensius.data.testParameterRealtimeDataSource
-import com.mvcoding.expensius.model.*
-import com.nhaarman.mockito_kotlin.any
+import com.mvcoding.expensius.data.RealtimeData
+import com.mvcoding.expensius.data.RealtimeData.AddedItems
+import com.mvcoding.expensius.data.RealtimeData.AllItems
+import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.someTransactions
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
-import rx.Observable.just
-import rx.Observable.never
+import rx.Observable.from
 import rx.observers.TestSubscriber
 
 class TransactionsOverviewSourceTest {
 
     @Test
-    fun `behaves like user id realtime list data source`() {
-        val allTagsSource = mock<DataSource<List<Tag>>>()
-        whenever(allTagsSource.data()).thenReturn(just(emptyList()))
-        testParameterRealtimeDataSource<UserId, BasicTransaction>(aUserId(), aUserId()) { parameterSource, createRealtimeList -> TransactionsOverviewSource(allTagsSource, parameterSource, createRealtimeList) }
-    }
-
-    @Test
     fun `limits returned transactions count`() {
-        val allTagsSource = mock<DataSource<List<Tag>>>()
-        val appUserIdSource = mock<DataSource<UserId>>()
-        val createRealtimeList = mock<(UserId) -> RealtimeList<BasicTransaction>>()
-        val realtimeList = mock<RealtimeList<BasicTransaction>>()
+        val transactionsSource = mock<DataSource<RealtimeData<Transaction>>>()
+        val transactions1 = someTransactions()
+        val transactions2 = someTransactions()
+        whenever(transactionsSource.data()).thenReturn(from(listOf(AllItems(transactions1), AddedItems(transactions2, someTransactions(), anInt()))))
         val subscriber = TestSubscriber<List<Transaction>>()
-        val basicTransactions = (0..BusinessConstants.TRANSACTIONS_IN_OVERVIEW).map { aBasicTransaction() }
-        val expectedTransactions = basicTransactions.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW).map { it.toTransaction(emptyList()) }
-        whenever(allTagsSource.data()).thenReturn(just(emptyList()))
-        whenever(appUserIdSource.data()).thenReturn(just(aUserId()))
-        whenever(createRealtimeList(any())).thenReturn(realtimeList)
-        whenever(realtimeList.getAllItems()).thenReturn(just(RawRealtimeData.AllItems(basicTransactions)))
-        whenever(realtimeList.getAddedItems()).thenReturn(never())
-        whenever(realtimeList.getChangedItems()).thenReturn(never())
-        whenever(realtimeList.getRemovedItems()).thenReturn(never())
-        whenever(realtimeList.getMovedItem()).thenReturn(never())
-        val transactionsOverviewSource = TransactionsOverviewSource(allTagsSource, appUserIdSource, createRealtimeList)
+        val transactionsOverviewSource = TransactionsOverviewSource(transactionsSource)
 
         transactionsOverviewSource.data().subscribe(subscriber)
 
-        subscriber.assertValue(expectedTransactions)
+        subscriber.assertValues(transactions1.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW), transactions2.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW))
     }
 }

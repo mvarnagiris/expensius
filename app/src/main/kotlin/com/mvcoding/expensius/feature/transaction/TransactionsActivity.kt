@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import rx.Observable
 import rx.Observable.empty
 
 class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
+
     companion object {
         private const val EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE"
 
@@ -70,6 +71,9 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
         supportActionBar?.title = if (modelDisplayType == VIEW_ARCHIVED) getString(R.string.archived_transactions) else getString(R.string.transactions)
     }
 
+    override fun showArchivedTransactionsRequest() {
+
+    }
     override fun transactionSelects(): Observable<Transaction> = adapter.itemPositionClicks().map { adapter.getItem(it) }
     override fun archivedTransactionsRequests(): Observable<Unit> = empty()
     override fun createTransactionRequests(): Observable<Unit> = createTransactionFloatingActionButton.clicks()

@@ -21,12 +21,15 @@ import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
 import rx.Observable
+import java.io.Closeable
 
 class TagsSource(
         appUserIdSource: DataSource<UserId>,
-        createRealtimeList: (UserId) -> RealtimeList<Tag>) : DataSource<RealtimeData<Tag>> {
+        createRealtimeList: (UserId) -> RealtimeList<Tag>) : DataSource<RealtimeData<Tag>>, Closeable {
 
     private val dataSource = ParameterRealtimeDataSource(appUserIdSource, createRealtimeList) { it.tagId.id }
 
     override fun data(): Observable<RealtimeData<Tag>> = dataSource.data()
+
+    override fun close(): Unit = dataSource.close()
 }

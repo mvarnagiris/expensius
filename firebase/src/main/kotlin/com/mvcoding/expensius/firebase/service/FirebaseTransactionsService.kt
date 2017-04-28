@@ -30,8 +30,11 @@ class FirebaseTransactionsService {
     private val REF_TRANSACTIONS = "transactions"
     private val REF_ARCHIVED_TRANSACTIONS = "archivedTransactions"
 
-    fun getTransactions(userId: UserId): RealtimeList<BasicTransaction> = FirebaseRealtimeList(userId.transactionsReference().orderByChild("timestampInverse"), { it.toTransaction(NONE) })
-    fun getArchivedTransactions(userId: UserId): RealtimeList<BasicTransaction> = FirebaseRealtimeList(userId.archivedTransactionsReference().orderByChild("timestampInverse"), { it.toTransaction(ARCHIVED) })
+    fun getTransactions(filter: Filter): RealtimeList<BasicTransaction> =
+            FirebaseRealtimeList(filter.userId.transactionsReference().orderByChild("timestampInverse"), { it.toTransaction(NONE) })
+
+    fun getArchivedTransactions(filter: Filter): RealtimeList<BasicTransaction> =
+            FirebaseRealtimeList(filter.userId.archivedTransactionsReference().orderByChild("timestampInverse"), { it.toTransaction(ARCHIVED) })
 
     fun createTransactions(userId: UserId, createTransactions: Set<CreateTransaction>) {
         val transactionsReference = userId.transactionsReference()

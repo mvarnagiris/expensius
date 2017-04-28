@@ -14,18 +14,21 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import android.app.Activity
 import android.view.View
+import com.memoizrlabs.Scope
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.ModelDisplayType
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
+import com.mvcoding.expensius.feature.filter.provideFilterSource
 import com.mvcoding.expensius.feature.tag.provideAllTagsSource
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.provideAppUserIdSource
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideFirebaseTransactionsService
 import com.mvcoding.expensius.provideRxSchedulers
@@ -34,12 +37,20 @@ import memoizrlabs.com.shankandroid.withThisScope
 
 class TransactionModule : ShankModule {
     override fun registerFactories() {
+        transactionsSource()
         createTransactionsWriter()
         transactionsWriter()
         transactionsOverviewSource()
-//        transactionsPresenter()
+        transactionsPresenter()
         transactionPresenter()
         transactionsOverviewPresenter()
+    }
+
+    private fun transactionsSource() = registerFactory(TransactionsSource::class) { modelDisplayType: ModelDisplayType, scope: Scope? ->
+        TransactionsSource(provideAllTagsSource(), provideFilterSource(scope)) {
+            if (modelDisplayType == VIEW_ARCHIVED) provideFirebaseTransactionsService().getArchivedTransactions(it)
+            else provideFirebaseTransactionsService().getTransactions(it)
+        }
     }
 
     private fun createTransactionsWriter() = registerFactory(CreateTransactionsWriter::class) { ->
@@ -55,15 +66,15 @@ class TransactionModule : ShankModule {
     }
 
     private fun transactionsOverviewSource() = registerFactory(TransactionsOverviewSource::class) { ->
-        TransactionsOverviewSource(provideAllTagsSource(), provideAppUserIdSource()) { provideFirebaseTransactionsService().getTransactions(it) }
+        TransactionsOverviewSource(provideTransactionsSource(VIEW_NOT_ARCHIVED, null))
     }
 
-    //    private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class) { modelDisplayType: ModelDisplayType ->
-//        TransactionsPresenter(
-//                modelDisplayType,
-//                if (modelDisplayType == ModelDisplayType.VIEW_ARCHIVED) provideArchivedTransactionsService() else provideTransactionsService(),
-//                provideRxSchedulers())
-//    }
+    private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class) { modelDisplayType: ModelDisplayType, scope: Scope ->
+        TransactionsPresenter(
+                modelDisplayType,
+                provideTransactionsSource(modelDisplayType, scope),
+                provideRxSchedulers())
+    }
 
     private fun transactionPresenter() = registerFactory(TransactionPresenter::class) {
         transaction: Transaction ->
@@ -75,9 +86,10 @@ class TransactionModule : ShankModule {
     }
 }
 
+fun provideTransactionsSource(modelDisplayType: ModelDisplayType, scope: Scope?) = provideNew<TransactionsSource>(modelDisplayType, scope)
 fun provideCreateTransactionsWriter() = provideNew<CreateTransactionsWriter>()
 fun provideTransactionsWriter() = provideNew<TransactionsWriter>()
 fun provideTransactionsOverviewSource() = provideGlobalSingleton<TransactionsOverviewSource>()
-fun Activity.provideTransactionsPresenter(modelDisplayType: ModelDisplayType): TransactionsPresenter = withThisScope.provideSingletonFor(modelDisplayType)
-fun Activity.provideTransactionPresenter(transaction: Transaction): TransactionPresenter = withThisScope.provideSingletonFor(transaction)
+fun BaseActivity.provideTransactionsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TransactionsPresenter>(modelDisplayType, scope)
+fun BaseActivity.provideTransactionPresenter(transaction: Transaction): TransactionPresenter = withThisScope.provideSingletonFor(transaction)
 fun View.provideTransactionsOverviewPresenter() = withActivityScope.provideSingletonFor<TransactionsOverviewPresenter>()

@@ -23,6 +23,7 @@ import rx.Observable
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 import rx.observers.TestSubscriber
+import java.io.Closeable
 
 class ParameterRealtimeDataSourceTest {
     @Test
@@ -31,7 +32,7 @@ class ParameterRealtimeDataSourceTest {
     }
 
     @Test
-    fun `does not create new realtime list when app user changes but user id remains the same`() {
+    fun `does not create new realtime list when same parameter is emitted`() {
         doesNotCreateNewRealtimeListWhenSameParameterIsEmitted(1, createDataSource())
     }
 
@@ -45,17 +46,24 @@ class ParameterRealtimeDataSourceTest {
         doesNotCreateNewRealtimeListForAnotherSubscriber(1, createDataSource())
     }
 
+    @Test
+    fun `closes current realtime list when close is requested`() {
+        closesCurrentRealtimeListWhenCloseIsRequested(1, createDataSource())
+    }
+
     private fun createDataSource() = { parameterSource: DataSource<Int>, createRealtimeList: (Int) -> RealtimeList<Int> -> ParameterRealtimeDataSource(parameterSource, createRealtimeList, Int::toString) }
 }
 
-fun <PARAMETER, ITEM> testParameterRealtimeDataSource(
+fun <PARAMETER, ITEM, DATASOURCE> testParameterRealtimeDataSource(
         parameter1: PARAMETER,
         parameter2: PARAMETER,
-        createDataSource: (DataSource<PARAMETER>, (PARAMETER) -> RealtimeList<ITEM>) -> DataSource<*>) {
+        createDataSource: (DataSource<PARAMETER>, (PARAMETER) -> RealtimeList<ITEM>) -> DATASOURCE)
+        where DATASOURCE : DataSource<*>, DATASOURCE : Closeable {
     createsNewRealtimeListWhenParameterChanges(parameter1, parameter2, createDataSource)
     doesNotCreateNewRealtimeListWhenSameParameterIsEmitted(parameter1, createDataSource)
     closesPreviouslyCreatedRealtimeListWhenNewOneIsCreated(parameter1, parameter2, createDataSource)
     doesNotCreateNewRealtimeListForAnotherSubscriber(parameter1, createDataSource)
+    closesCurrentRealtimeListWhenCloseIsRequested(parameter1, createDataSource)
 }
 
 private fun <PARAMETER, ITEM> createsNewRealtimeListWhenParameterChanges(
@@ -141,6 +149,29 @@ private fun <PARAMETER, ITEM> doesNotCreateNewRealtimeListForAnotherSubscriber(
     dataSource.data().subscribe(anotherSubscriber)
 
     verify(createRealtimeList, times(1)).invoke(parameter1)
+}
+
+private fun <PARAMETER, ITEM, DATASOURCE> closesCurrentRealtimeListWhenCloseIsRequested(
+        parameter1: PARAMETER,
+        createDataSource: (DataSource<PARAMETER>, (PARAMETER) -> RealtimeList<ITEM>) -> DATASOURCE)
+        where DATASOURCE : DataSource<*>, DATASOURCE : Closeable {
+
+    val parameterSubject = PublishSubject<PARAMETER>()
+    val appUserSource = mock<DataSource<PARAMETER>>()
+    val createRealtimeList = mock<(PARAMETER) -> RealtimeList<ITEM>>()
+    val subscriber = TestSubscriber<Any>()
+    val realtimeList = mock<RealtimeList<ITEM>>()
+    whenever(appUserSource.data()).thenReturn(parameterSubject)
+    setupRealtimeLists(parameter1, null, createRealtimeList, realtimeList)
+
+    val dataSource = createDataSource(appUserSource, createRealtimeList)
+
+    dataSource.data().subscribe(subscriber)
+    parameterSubject.onNext(parameter1)
+    dataSource.close()
+
+    subscriber.assertNoErrors()
+    verify(realtimeList).close()
 }
 
 private fun <PARAMETER, ITEM> setupRealtimeLists(

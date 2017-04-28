@@ -12,21 +12,27 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.tag
+package com.mvcoding.expensius.feature.transaction
 
+import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.testParameterRealtimeDataSource
+import com.mvcoding.expensius.model.BasicTransaction
+import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.UserId
-import com.mvcoding.expensius.model.aUserId
+import com.mvcoding.expensius.model.aFilter
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
+import rx.Observable
 
-class TagsSourceTest {
+class TransactionsSourceTest {
 
     @Test
     fun `behaves like parameter realtime data source`() {
-        testParameterRealtimeDataSource<UserId, Tag, TagsSource>(aUserId(), aUserId()) { parameterDataSource, createRealtimeList ->
-            TagsSource(parameterDataSource, createRealtimeList)
+        val allTagsSource = mock<DataSource<List<Tag>>>()
+        whenever(allTagsSource.data()).thenReturn(Observable.just(emptyList()))
+        testParameterRealtimeDataSource<Filter, BasicTransaction, TransactionsSource>(aFilter(), aFilter()) { parameterDataSource, createRealtimeList ->
+            TransactionsSource(allTagsSource, parameterDataSource, createRealtimeList)
         }
     }
 }
-

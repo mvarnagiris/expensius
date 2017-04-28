@@ -15,5 +15,6 @@
 package com.mvcoding.expensius.model
 
 import org.joda.time.Interval
+import java.io.Serializable
 
-data class Filter(val interval: Interval)
+data class Filter(val userId: UserId, val interval: Interval) : Serializable

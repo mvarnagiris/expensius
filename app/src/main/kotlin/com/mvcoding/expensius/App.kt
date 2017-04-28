@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.currency.CurrenciesModule
+import com.mvcoding.expensius.feature.filter.FilterModule
 import com.mvcoding.expensius.feature.login.LoginModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.premium.PremiumModule
@@ -49,6 +50,7 @@ class App : MultiDexApplication() {
                 ReportsModule(),
                 CurrenciesModule(),
                 SettingsModule(),
-                PremiumModule())
+                PremiumModule(),
+                FilterModule())
     }
 }
