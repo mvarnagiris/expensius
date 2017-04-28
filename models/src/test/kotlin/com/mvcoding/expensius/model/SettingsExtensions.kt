@@ -14,4 +14,6 @@
 
 package com.mvcoding.expensius.model
 
-fun aFilter() = aReportPeriod().let { Filter(aUserId(), it, it.interval(System.currentTimeMillis())) }
+import com.mvcoding.expensius.aRandomItem
+
+fun aReportPeriod() = ReportPeriod.values().aRandomItem()

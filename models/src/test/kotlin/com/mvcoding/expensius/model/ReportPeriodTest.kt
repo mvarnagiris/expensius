@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,34 +12,30 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.extensions.interval
-import com.mvcoding.expensius.extensions.nextInterval
-import com.mvcoding.expensius.extensions.previousInterval
-import com.mvcoding.expensius.model.ReportPeriod.MONTH
-import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers
 import org.joda.time.DateTime
-import org.junit.Assert.assertThat
+import org.junit.Assert
 import org.junit.Test
 
 class ReportPeriodTest {
     @Test
-    fun convertsTimestampToInterval() {
-        val reportPeriod = MONTH
+    fun `converts timestamp to interval`() {
+        val reportPeriod = ReportPeriod.MONTH
         val expectedIntervalStart = DateTime(2016, 2, 1, 0, 0, 0, 0)
         val expectedIntervalEnd = DateTime(2016, 3, 1, 0, 0, 0, 0)
         val february = DateTime(2016, 2, 3, 1, 1)
 
         val interval = reportPeriod.interval(february.millis)
 
-        assertThat(interval.start, equalTo(expectedIntervalStart))
-        assertThat(interval.end, equalTo(expectedIntervalEnd))
+        Assert.assertThat(interval.start, CoreMatchers.equalTo(expectedIntervalStart))
+        Assert.assertThat(interval.end, CoreMatchers.equalTo(expectedIntervalEnd))
     }
 
     @Test
-    fun calculatesNextInterval() {
-        val reportPeriod = MONTH
+    fun `calculates next interval`() {
+        val reportPeriod = ReportPeriod.MONTH
         val february = DateTime(2016, 2, 3, 1, 1)
         val februaryInterval = reportPeriod.interval(february.millis)
         val expectedIntervalStart = DateTime(2016, 3, 1, 0, 0, 0, 0)
@@ -47,13 +43,13 @@ class ReportPeriodTest {
 
         val marchInterval = reportPeriod.nextInterval(februaryInterval)
 
-        assertThat(marchInterval.start, equalTo(expectedIntervalStart))
-        assertThat(marchInterval.end, equalTo(expectedIntervalEnd))
+        Assert.assertThat(marchInterval.start, CoreMatchers.equalTo(expectedIntervalStart))
+        Assert.assertThat(marchInterval.end, CoreMatchers.equalTo(expectedIntervalEnd))
     }
 
     @Test
-    fun calculatesPreviousInterval() {
-        val reportPeriod = MONTH
+    fun `calculates previous interval`() {
+        val reportPeriod = ReportPeriod.MONTH
         val february = DateTime(2016, 2, 3, 1, 1)
         val februaryInterval = reportPeriod.interval(february.millis)
         val expectedIntervalStart = DateTime(2016, 1, 1, 0, 0, 0, 0)
@@ -61,7 +57,7 @@ class ReportPeriodTest {
 
         val januaryInterval = reportPeriod.previousInterval(februaryInterval)
 
-        assertThat(januaryInterval.start, equalTo(expectedIntervalStart))
-        assertThat(januaryInterval.end, equalTo(expectedIntervalEnd))
+        Assert.assertThat(januaryInterval.start, CoreMatchers.equalTo(expectedIntervalStart))
+        Assert.assertThat(januaryInterval.end, CoreMatchers.equalTo(expectedIntervalEnd))
     }
 }

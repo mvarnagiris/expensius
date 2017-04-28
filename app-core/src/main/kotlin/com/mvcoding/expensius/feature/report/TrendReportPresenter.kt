@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.extensions.previousInterval
 import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.feature.FilterOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
