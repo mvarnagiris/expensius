@@ -14,25 +14,27 @@
 
 package com.mvcoding.expensius.feature.overview
 
+import com.mvcoding.expensius.RxSchedulers
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
 
-class OverviewPresenter : Presenter<OverviewPresenter.View>() {
+class OverviewPresenter(
+        private val filterSource: DataSource<Filter>,
+        private val schedulers: RxSchedulers) : Presenter<OverviewPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-//        val filters = filter.filterData().map { it.interval }.distinctUntilChanged()
-//        val reportPeriods = appUserService.appUser().map { it.settings.reportPeriod }.distinctUntilChanged()
-//        combineLatest(filters, reportPeriods) { interval, reportPeriod -> interval to reportPeriod }
-//                .subscribeUntilDetached { view.showInterval(it.second, it.first) }
         view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
 //        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
         view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
+        filterSource.data().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached { view.showInterval(it.reportPeriod, it.interval) }
     }
 
     interface View : Presenter.View {

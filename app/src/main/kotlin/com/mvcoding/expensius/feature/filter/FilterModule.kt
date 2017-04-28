@@ -20,7 +20,6 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.extensions.interval
 import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.provideAppUserSource
 
@@ -31,10 +30,10 @@ class FilterModule : ShankModule {
 
     private fun filterSource() = registerFactory(FilterSource::class) { ->
         val appUserSource = provideAppUserSource()
-        FilterSource { appUserSource.data().map { Filter(it.userId, it.settings.reportPeriod.interval(System.currentTimeMillis())) } }
+        FilterSource { appUserSource.data().map { Filter(it.userId, it.settings.reportPeriod, it.settings.reportPeriod.interval(System.currentTimeMillis())) } }
     }
 }
 
-fun provideFilterSource(scope: Scope?) =
+fun provideFilterSource(scope: Scope? = null) =
         if (scope == null) provideGlobalSingleton<FilterSource>()
         else Shank.with(scope).provideSingletonFor<FilterSource>()

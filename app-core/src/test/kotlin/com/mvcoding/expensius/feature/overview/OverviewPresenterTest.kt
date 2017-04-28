@@ -14,26 +14,29 @@
 
 package com.mvcoding.expensius.feature.overview
 
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.aFilter
+import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
 import org.junit.Test
+import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
 class OverviewPresenterTest {
     val newTransactionSelectedSubject = PublishSubject<Unit>()
     val transactionsSelectedSubject = PublishSubject<Unit>()
     val tagsSelectedSubject = PublishSubject<Unit>()
-//    val tagsReportSelectedSubject = PublishSubject<Unit>()
-val settingsSelectedSubject = PublishSubject<Unit>()
+    //    val tagsReportSelectedSubject = PublishSubject<Unit>()
+    val settingsSelectedSubject = PublishSubject<Unit>()
+    val filter = aFilter()
 
-//    val interval = Interval(DateTime.now().minusDays(1), DateTime.now())
-//    val appUser = anAppUser()
-//    val appUserService: AppUserService = mock<AppUserService>().apply { whenever(appUser()).thenReturn(just(appUser)) }
-//    val filter = FilterOld(appUserService, aFixedTimestampProvider()).setInterval(interval)
-val view = mock<OverviewPresenter.View>()
-    val presenter = OverviewPresenter()
+    val filterSource = mock<DataSource<Filter>>()
+    val view = mock<OverviewPresenter.View>()
+    val presenter = OverviewPresenter(filterSource, rxSchedulers())
 
     @Before
     fun setUp() {
@@ -42,14 +45,15 @@ val view = mock<OverviewPresenter.View>()
         whenever(view.tagsSelects()).thenReturn(tagsSelectedSubject)
 //        whenever(view.tagsReportSelects()).thenReturn(tagsReportSelectedSubject)
         whenever(view.settingsSelects()).thenReturn(settingsSelectedSubject)
+        whenever(filterSource.data()).thenReturn(just(filter))
     }
 
-//    @Test
-//    fun `shows interval`() {
-//        presenter.attach(view)
-//
-//        verify(view).showInterval(appUser.settings.reportPeriod, interval)
-//    }
+    @Test
+    fun `shows interval`() {
+        presenter.attach(view)
+
+        verify(view).showInterval(filter.reportPeriod, filter.interval)
+    }
 
     @Test
     fun `shows create transaction`() {
@@ -99,6 +103,6 @@ val view = mock<OverviewPresenter.View>()
     private fun selectNewTransaction() = newTransactionSelectedSubject.onNext(Unit)
     private fun selectTransactions() = transactionsSelectedSubject.onNext(Unit)
     private fun selectTags() = tagsSelectedSubject.onNext(Unit)
-//    private fun selectTagsReport() = tagsReportSelectedSubject.onNext(Unit)
-private fun selectSettings() = settingsSelectedSubject.onNext(Unit)
+    //    private fun selectTagsReport() = tagsReportSelectedSubject.onNext(Unit)
+    private fun selectSettings() = settingsSelectedSubject.onNext(Unit)
 }

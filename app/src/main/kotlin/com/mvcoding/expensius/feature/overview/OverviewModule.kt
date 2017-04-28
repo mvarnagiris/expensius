@@ -18,6 +18,8 @@ import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.filter.provideFilterSource
+import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
 class OverviewModule : ShankModule {
@@ -26,7 +28,7 @@ class OverviewModule : ShankModule {
     }
 
     private fun overviewPresenter() = registerFactory(OverviewPresenter::class) { ->
-        OverviewPresenter(/*provideAppUserSource(), provideRxSchedulers()*/)
+        OverviewPresenter(provideFilterSource(), provideRxSchedulers())
     }
 }
 
