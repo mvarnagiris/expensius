@@ -13,7 +13,7 @@
   -->
 
 <resources>
-    <color name="backgroundWindow">#F3F3F3</color>
+    <color name="backgroundWindow">#F7F7F7</color>
     <color name="backgroundWindowInverse">#333333</color>
 
     <color name="red_50">#FFEBEE</color>

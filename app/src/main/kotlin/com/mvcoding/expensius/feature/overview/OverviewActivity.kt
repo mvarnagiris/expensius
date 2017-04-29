@@ -32,6 +32,7 @@ import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.provideDateFormatter
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.view_transactions_overview.*
 import org.joda.time.Interval
 import rx.Observable
 
@@ -68,15 +69,12 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
     override fun tagsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
     override fun tagsReportSelects(): Observable<Unit> = Observable.never()//tagsTotalsReportView.clicks()
     override fun settingsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_settings }.map { Unit }
+    override fun showInterval(reportPeriod: ReportPeriod, interval: Interval) = with(supportActionBar) { title = dateFormatter.formatInterval(reportPeriod, interval) }
     override fun displayCreateTransaction(): Unit = CalculatorActivity.start(this)
     override fun displayTransactions(): Unit = TransactionsActivity.start(this)
     override fun displayTags(): Unit = TagsActivity.startView(this)
     override fun displayTagsReport(): Unit = TagTotalsReportActivity.start(this)
     override fun displaySettings(): Unit = SettingsActivity.start(this)
-
-    override fun showInterval(reportPeriod: ReportPeriod, interval: Interval) {
-        supportActionBar?.title = dateFormatter.formatInterval(reportPeriod, interval)
-    }
 
     private fun removeUpArrowFromToolbar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
