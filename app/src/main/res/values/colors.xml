@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
   -->
 
 <resources>
-    <color name="backgroundWindow">#EEEEEE</color>
+    <color name="backgroundWindow">#F3F3F3</color>
     <color name="backgroundWindowInverse">#333333</color>
 
     <color name="red_50">#FFEBEE</color>
