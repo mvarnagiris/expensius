@@ -20,11 +20,9 @@ import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.feature.LoadingView
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.RealtimeItemsView
-import com.mvcoding.expensius.model.NullModels.noTransaction
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 import rx.Observable
-import rx.Observable.merge
 
 class TransactionsPresenter(
         private val modelDisplayType: ModelDisplayType,
@@ -52,7 +50,8 @@ class TransactionsPresenter(
                     }
                 }
 
-        merge(view.transactionSelects(), view.createTransactionRequests().map { noTransaction }).subscribeUntilDetached { view.displayTransactionEdit(it) }
+        view.createTransactionRequests().subscribeUntilDetached { view.displayCalculator() }
+        view.transactionSelects().subscribeUntilDetached { view.displayTransactionEdit(it) }
         view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
     }
 

@@ -21,7 +21,6 @@ import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.Note
-import com.mvcoding.expensius.model.NullModels.noTransaction
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.aTransaction
 import com.mvcoding.expensius.model.someTransactions
@@ -109,12 +108,12 @@ class TransactionsPresenterTest {
     }
 
     @Test
-    fun `displays transaction edit when create transaction is requested`() {
+    fun `displays calculator when create transaction is requested`() {
         presenter().attach(view)
 
         requestCreateTransaction()
 
-        verify(view).displayTransactionEdit(noTransaction)
+        verify(view).displayCalculator()
     }
 
     @Test
