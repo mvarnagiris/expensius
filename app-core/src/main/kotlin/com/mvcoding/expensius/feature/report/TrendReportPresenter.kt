@@ -15,12 +15,10 @@
 package com.mvcoding.expensius.feature.report
 
 import com.mvcoding.expensius.RxSchedulers
-import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.feature.FilterOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.mvp.Presenter
-import java.math.BigDecimal.ZERO
 
 class TrendReportPresenter(
         //        private val appUserService: AppUserService,
@@ -42,42 +40,42 @@ class TrendReportPresenter(
 //                .subscribeUntilDetached { view.showTrends(it.totalMoney, it.currentMoney, it.previousMoney) }
     }
 
-    private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterDataOld ->
-        MoneyGroupingData(appUser, transactions, filterData)
-    }
+//    private fun moneyGroupingData() = { appUser: AppUser, transactions: List<Transaction>, filterData: FilterDataOld ->
+//        MoneyGroupingData(appUser, transactions, filterData)
+//    }
 
-    private fun calculateTrends(moneyGroupingData: MoneyGroupingData): Trends {
-        val reportPeriod = moneyGroupingData.appUser.settings.reportPeriod
-        val reportGroup = moneyGroupingData.appUser.settings.reportGroup
-        val currentIntervalFilterData = moneyGroupingData.filterData
-        val previousIntervalFilterData = currentIntervalFilterData.withInterval(reportPeriod.previousInterval(currentIntervalFilterData.interval))
-        val currency = moneyGroupingData.appUser.settings.mainCurrency
-        val transactions = moneyGroupingData.transactions
+//    private fun calculateTrends(moneyGroupingData: MoneyGroupingData): Trends {
+//        val reportPeriod = moneyGroupingData.appUser.settings.reportPeriod
+//        val reportGroup = moneyGroupingData.appUser.settings.reportGroup
+//        val currentIntervalFilterData = moneyGroupingData.filterData
+//        val previousIntervalFilterData = currentIntervalFilterData.withInterval(reportPeriod.previousInterval(currentIntervalFilterData.interval))
+//        val currency = moneyGroupingData.appUser.settings.mainCurrency
+//        val transactions = moneyGroupingData.transactions
+//
+//        val currentIntervalGroupedMoney = groupMoney(transactions, currency, currentIntervalFilterData, reportGroup)
+//        val previousIntervalGroupedMoney = groupMoney(transactions, currency, previousIntervalFilterData, reportGroup)
+//
+//        val normalizedCurrentIntervalGroupedMoney = normalize(currentIntervalGroupedMoney, previousIntervalGroupedMoney, currency)
+//        val normalizedPreviousIntervalGroupedMoney = normalize(previousIntervalGroupedMoney, currentIntervalGroupedMoney, currency)
+//
+//        return Trends(
+//                normalizedCurrentIntervalGroupedMoney.sumMoney(currency, exchangeRatesProvider),
+//                normalizedCurrentIntervalGroupedMoney,
+//                normalizedPreviousIntervalGroupedMoney)
+//    }
 
-        val currentIntervalGroupedMoney = groupMoney(transactions, currency, currentIntervalFilterData, reportGroup)
-        val previousIntervalGroupedMoney = groupMoney(transactions, currency, previousIntervalFilterData, reportGroup)
-
-        val normalizedCurrentIntervalGroupedMoney = normalize(currentIntervalGroupedMoney, previousIntervalGroupedMoney, currency)
-        val normalizedPreviousIntervalGroupedMoney = normalize(previousIntervalGroupedMoney, currentIntervalGroupedMoney, currency)
-
-        return Trends(
-                normalizedCurrentIntervalGroupedMoney.sumMoney(currency, exchangeRatesProvider),
-                normalizedCurrentIntervalGroupedMoney,
-                normalizedPreviousIntervalGroupedMoney)
-    }
-
-    private fun groupMoney(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld, reportGroup: ReportGroup) =
-            moneyGrouping.groupToIntervals(transactions, currency, filterData, reportGroup).map { it.money }
-
-    private fun normalize(list: List<Money>, otherList: List<Money>, currency: Currency) =
-            if (list.size < otherList.size) list.plus(addRange(list, otherList).map { list.lastOrNull() ?: Money(ZERO, currency) }) else list
-
-    private fun addRange(list: List<Money>, otherList: List<Money>) = (0..(otherList.size - list.size - 1))
+//    private fun groupMoney(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld, reportGroup: ReportGroup) =
+//            moneyGrouping.groupToIntervals(transactions, currency, filterData, reportGroup).map { it.money }
+//
+//    private fun normalize(list: List<Money>, otherList: List<Money>, currency: Currency) =
+//            if (list.size < otherList.size) list.plus(addRange(list, otherList).map { list.lastOrNull() ?: Money(ZERO, currency) }) else list
+//
+//    private fun addRange(list: List<Money>, otherList: List<Money>) = (0..(otherList.size - list.size - 1))
 
     interface View : Presenter.View {
         fun showTrends(totalMoney: Money, currentMoney: List<Money>, previousMoney: List<Money>)
     }
 
-    private data class MoneyGroupingData(val appUser: AppUser, val transactions: List<Transaction>, val filterData: FilterDataOld)
-    private data class Trends(val totalMoney: Money, val currentMoney: List<Money>, val previousMoney: List<Money>)
+//    private data class MoneyGroupingData(val appUser: AppUser, val transactions: List<Transaction>, val filterData: FilterDataOld)
+//    private data class Trends(val totalMoney: Money, val currentMoney: List<Money>, val previousMoney: List<Money>)
 }

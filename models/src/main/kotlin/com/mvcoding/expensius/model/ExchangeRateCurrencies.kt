@@ -14,8 +14,6 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.aRandomItem
+import java.io.Serializable
 
-fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
-fun aCurrency() = Currency(aStringCurrencyCode())
-fun anExchangeRateCurrencies() = ExchangeRateCurrencies(aCurrency(), aCurrency())
+data class ExchangeRateCurrencies(val fromCurrency: Currency, val toCurrency: Currency) : Serializable

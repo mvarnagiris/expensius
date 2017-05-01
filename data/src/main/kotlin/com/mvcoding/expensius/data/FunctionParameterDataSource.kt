@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.aRandomItem
+import rx.Observable
 
-fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
-fun aCurrency() = Currency(aStringCurrencyCode())
-fun anExchangeRateCurrencies() = ExchangeRateCurrencies(aCurrency(), aCurrency())
+class FunctionParameterDataSource<in PARAMETER, DATA>(private val getData: (PARAMETER) -> Observable<DATA>) : ParameterDataSource<PARAMETER, DATA> {
+    override fun data(parameter: PARAMETER): Observable<DATA> = getData(parameter)
+}

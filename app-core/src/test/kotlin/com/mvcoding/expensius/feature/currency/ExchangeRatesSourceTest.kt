@@ -12,10 +12,17 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.feature.currency
 
-import com.mvcoding.expensius.aRandomItem
+import com.mvcoding.expensius.data.testMemoryParameterDataSource
+import com.mvcoding.expensius.model.anAmount
+import com.mvcoding.expensius.model.anExchangeRateCurrencies
+import org.junit.Test
 
-fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
-fun aCurrency() = Currency(aStringCurrencyCode())
-fun anExchangeRateCurrencies() = ExchangeRateCurrencies(aCurrency(), aCurrency())
+class ExchangeRatesSourceTest {
+
+    @Test
+    fun `behaves like memory parameter data source`() {
+        testMemoryParameterDataSource(anExchangeRateCurrencies(), anExchangeRateCurrencies(), anAmount(), anAmount()) { dataSource -> ExchangeRatesSource { dataSource.data(it) } }
+    }
+}
