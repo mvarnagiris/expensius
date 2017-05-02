@@ -20,6 +20,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.extension.setGone
+import com.mvcoding.expensius.extension.setVisible
 import com.mvcoding.expensius.model.Transaction
 import kotlinx.android.synthetic.main.view_transactions_overview.view.*
 
@@ -48,4 +50,6 @@ class TransactionsOverviewView @JvmOverloads constructor(context: Context, attrs
     }
 
     override fun showTransactions(transactions: List<Transaction>): Unit = adapter.setItems(transactions)
+    override fun showEmptyView(): Unit = emptyTextView.setVisible()
+    override fun hideEmptyView(): Unit = emptyTextView.setGone()
 }

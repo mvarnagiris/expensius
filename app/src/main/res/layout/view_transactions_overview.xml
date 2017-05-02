@@ -40,6 +40,20 @@
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_view_transaction" />
 
+        <TextView
+            android:id="@+id/emptyTextView"
+            style="@style/TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/grid_2x"
+            android:paddingLeft="@dimen/keyline"
+            android:paddingRight="@dimen/keyline"
+            android:paddingTop="@dimen/grid_2x"
+            android:text="@string/empty_transactions"
+            android:textAppearance="@style/Text.Title.Empty"
+            android:visibility="gone" />
+
     </android.support.v7.widget.CardView>
 
 </com.mvcoding.expensius.feature.transaction.TransactionsOverviewView>

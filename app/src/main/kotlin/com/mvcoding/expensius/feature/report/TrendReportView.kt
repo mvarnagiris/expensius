@@ -14,23 +14,23 @@
 
 package com.mvcoding.expensius.feature.report
 
-import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.model.Money
+import com.mvcoding.expensius.model.Trends
 import com.mvcoding.expensius.provideMoneyFormatter
 import kotlinx.android.synthetic.main.view_trend_report.view.*
 
 class TrendReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr), TrendsPresenter.View {
+    override fun showTrends(trends: Trends) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private val presenter by lazy { provideExpenseTrendReportPresenter() }
     private val moneyFormatter by lazy { provideMoneyFormatter() }
@@ -74,7 +74,7 @@ class TrendReportView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     private val ANIMATION_DURATION_MILLIS = 500
 
-    override fun showTrends(totalMoney: Money, currentMoney: List<Money>, previousMoney: List<Money>) {
+    /*override fun showTrends(totalMoney: Money, currentMoney: List<Money>, previousMoney: List<Money>) {
         val lineDataSet = lineDataSet(currentMoney)
 
         lineDataSet.setDrawFilled(false)
@@ -94,7 +94,7 @@ class TrendReportView @JvmOverloads constructor(context: Context, attrs: Attribu
         val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(ANIMATION_DURATION_MILLIS.toLong())
         animator.addUpdateListener { thisPeriodAmountTextView.text = moneyFormatter.format(totalMoney.multiply(it.animatedFraction)) }
         animator.start()
-    }
+    }*/
 
     private fun lineDataSet(moneys: List<Money>): LineDataSet {
         val lineDataSet = LineDataSet(moneys.mapIndexed { index, money -> Entry(money.amount.toFloat(), index) }, "")

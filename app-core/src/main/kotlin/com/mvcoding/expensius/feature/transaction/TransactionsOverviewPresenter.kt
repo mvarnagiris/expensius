@@ -16,6 +16,8 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.feature.EmptyView
+import com.mvcoding.expensius.feature.updateEmptyView
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 
@@ -28,10 +30,13 @@ class TransactionsOverviewPresenter(
         transactionsOverviewSource.data()
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showTransactions(it) }
+                .subscribeUntilDetached {
+                    view.showTransactions(it)
+                    view.updateEmptyView(it)
+                }
     }
 
-    interface View : Presenter.View {
+    interface View : Presenter.View, EmptyView {
         fun showTransactions(transactions: List<Transaction>)
     }
 }

@@ -39,5 +39,16 @@ class TransactionsOverviewPresenterTest {
         presenter.attach(view)
 
         verify(view).showTransactions(transactions)
+        verify(view).hideEmptyView()
+    }
+
+    @Test
+    fun `shows empty view when transactions are empty`() {
+        whenever(transactionsOverviewSource.data()).thenReturn(just(emptyList()))
+
+        presenter.attach(view)
+
+        verify(view).showTransactions(emptyList())
+        verify(view).showEmptyView()
     }
 }

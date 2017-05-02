@@ -59,6 +59,8 @@
     <string name="no_tags">No tags</string>
     <string name="tags_report">Tags report</string>
 
+    <string name="empty_transactions">There are no transactions</string>
+
     <string name="long_user_is_using_free_version">You are using free version</string>
     <string name="long_user_is_using_premium_version">Thank you for using premium version</string>
     <string name="long_no_purchases_available">At the moment there is nothing you can buy. Check back later.</string>
