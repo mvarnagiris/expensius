@@ -19,6 +19,7 @@ import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.extensions.toPeriod
 import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.ReportGroup.DAY
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionState.PENDING
@@ -37,7 +38,7 @@ class MoneyGroupingTest {
     val moneyGrouping = MoneyGrouping(exchangeRateProvider)
 
     @Test
-    fun groupsAmountsIntoIntervalsThatFitWithinFilterData() {
+    fun `groups amounts into intervals that fit within filter data`() {
         val reportGroup = DAY
         val period = reportGroup.toPeriod()
         val interval = reportGroup.toInterval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
@@ -68,42 +69,42 @@ class MoneyGroupingTest {
         assertThat(groupedMoney, equalTo(expectedGroupedAmounts))
     }
 
-//    @Test
-//    fun groupsAmountsIntoTagsThatFitWithinFilterData() {
-//        val reportGroup = DAY
-//        val period = reportGroup.toPeriod()
-//        val interval = reportGroup.toInterval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
-//        val timestamp = interval.startMillis
-//        val filterData = FilterDataOld(interval, EXPENSE, CONFIRMED)
-//        val currency = aCurrency()
-//        val tagA = aTag()
-//        val tagB = aTag()
-//        val tagC = aTag().withOrder(1)
-//        val tagD = aTag().withOrder(2)
-//        val noTag = noTag
-//
-//        val tooEarly = aTransaction().withAmount(10).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp - 1)
-//        val notExpense = aTransaction().withAmount(11).withTransactionType(INCOME).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-//        val notConfirmed = aTransaction().withAmount(12).withTransactionType(EXPENSE).withTransactionState(PENDING).withTimestamp(timestamp)
-//        val withNoTag = aTransaction().withAmount(13).withTags(emptySet()).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-//        val withTagA = aTransaction().withAmount(14).withTags(setOf(tagA)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-//        val withTagB1 = aTransaction().withAmount(15).withTags(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-//        val withTagB2 = aTransaction().withAmount(16).withTags(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
-//        val withTagCD = aTransaction().withAmount(17).withTags(setOf(tagC, tagD)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED)
-//                .withTimestamp(timestamp)
-//
-//        val transactions = listOf(tooEarly, notExpense, notConfirmed, withNoTag, withTagA, withTagB1, withTagB2, withTagCD)
-//
-//        val expectedGroupedAmounts = listOf(
-//                GroupedMoney(tagB, Money(BigDecimal.valueOf(31.toDouble()), currency)),
-//                GroupedMoney(tagC, Money(BigDecimal.valueOf(17.toDouble()), currency)),
-//                GroupedMoney(tagD, Money(BigDecimal.valueOf(17.toDouble()), currency)),
-//                GroupedMoney(tagA, Money(BigDecimal.valueOf(14.toDouble()), currency)),
-//                GroupedMoney(noTag, Money(BigDecimal.valueOf(13.toDouble()), currency))
-//        )
-//
-//        val groupedMoney = moneyGrouping.groupToTags(transactions, currency, filterData)
-//
-//        assertThat(groupedMoney, equalTo(expectedGroupedAmounts))
-//    }
+    @Test
+    fun `groups amounts into tags that fit within filter data`() {
+        val reportGroup = DAY
+        val period = reportGroup.toPeriod()
+        val interval = reportGroup.toInterval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
+        val timestamp = interval.startMillis
+        val filterData = FilterDataOld(interval, EXPENSE, CONFIRMED)
+        val currency = aCurrency()
+        val tagA = aTag()
+        val tagB = aTag()
+        val tagC = aTag().withOrder(1)
+        val tagD = aTag().withOrder(2)
+        val noTag = noTag
+
+        val tooEarly = aTransaction().withAmount(10).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp - 1)
+        val notExpense = aTransaction().withAmount(11).withTransactionType(INCOME).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val notConfirmed = aTransaction().withAmount(12).withTransactionType(EXPENSE).withTransactionState(PENDING).withTimestamp(timestamp)
+        val withNoTag = aTransaction().withAmount(13).withTags(emptySet()).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagA = aTransaction().withAmount(14).withTags(setOf(tagA)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagB1 = aTransaction().withAmount(15).withTags(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagB2 = aTransaction().withAmount(16).withTags(setOf(tagB)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(timestamp)
+        val withTagCD = aTransaction().withAmount(17).withTags(setOf(tagC, tagD)).withTransactionType(EXPENSE).withTransactionState(CONFIRMED)
+                .withTimestamp(timestamp)
+
+        val transactions = listOf(tooEarly, notExpense, notConfirmed, withNoTag, withTagA, withTagB1, withTagB2, withTagCD)
+
+        val expectedGroupedAmounts = listOf(
+                GroupedMoney(tagB, Money(BigDecimal.valueOf(31.toDouble()), currency)),
+                GroupedMoney(tagC, Money(BigDecimal.valueOf(17.toDouble()), currency)),
+                GroupedMoney(tagD, Money(BigDecimal.valueOf(17.toDouble()), currency)),
+                GroupedMoney(tagA, Money(BigDecimal.valueOf(14.toDouble()), currency)),
+                GroupedMoney(noTag, Money(BigDecimal.valueOf(13.toDouble()), currency))
+        )
+
+        val groupedMoney = moneyGrouping.groupToTags(transactions, currency, filterData)
+
+        assertThat(groupedMoney, equalTo(expectedGroupedAmounts))
+    }
 }

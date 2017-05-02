@@ -22,12 +22,18 @@ import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.NullModels.noTag
 import org.joda.time.Interval
+import java.io.Serializable
 import java.math.BigDecimal.ZERO
 import java.util.*
 
 class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
 
-    fun groupToIntervals(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld, reportGroup: ReportGroup): List<GroupedMoney<Interval>> {
+    fun groupToIntervals(
+            transactions: List<Transaction>,
+            currency: Currency,
+            filterData: FilterDataOld,
+            reportGroup: ReportGroup): List<GroupedMoney<Interval>> {
+
         val defaultValue = { Money(ZERO, currency) }
         val groupedMoney = filterData.filter(transactions).groupBy({ reportGroup.toInterval(it.timestamp) }, { it.money }).sumMoney(currency)
         return reportGroup.splitIntoGroupIntervals(filterData.interval)
@@ -47,4 +53,4 @@ class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
     private fun <KEY> Map<KEY, List<Money>>.sumMoney(currency: Currency) = mapValues { it.value.sumMoney(currency, exchangeRatesProvider) }
 }
 
-data class GroupedMoney<out GROUP>(val group: GROUP, val money: Money)
+data class GroupedMoney<out GROUP>(val group: GROUP, val money: Money) : Serializable
