@@ -24,7 +24,7 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
-import com.mvcoding.expensius.feature.report.TagTotalsReportActivity
+import com.mvcoding.expensius.feature.reports.TagTotalsReportActivity
 import com.mvcoding.expensius.feature.settings.SettingsActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity

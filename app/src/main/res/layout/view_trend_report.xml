@@ -12,7 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.report.TrendReportView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.expensius.feature.reports.trends.TrendsReportView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -33,4 +33,4 @@
         android:paddingRight="@dimen/keyline"
         android:textAppearance="@style/Text.Display1" />
 
-</com.mvcoding.expensius.feature.report.TrendReportView>
+</com.mvcoding.expensius.feature.reports.trends.TrendsReportView>

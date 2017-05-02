@@ -23,7 +23,7 @@ import com.mvcoding.expensius.feature.filter.FilterModule
 import com.mvcoding.expensius.feature.login.LoginModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.premium.PremiumModule
-import com.mvcoding.expensius.feature.report.ReportsModule
+import com.mvcoding.expensius.feature.reports.ReportsModule
 import com.mvcoding.expensius.feature.settings.SettingsModule
 import com.mvcoding.expensius.feature.splash.SplashModule
 import com.mvcoding.expensius.feature.tag.TagsModule

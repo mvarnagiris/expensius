@@ -56,7 +56,7 @@
             android:name=".feature.settings.SettingsActivity"
             android:label="@string/settings" />
         <activity
-            android:name=".feature.report.TagTotalsReportActivity"
+            android:name=".feature.reports.TagTotalsReportActivity"
             android:label="@string/tags_report" />
 
         <meta-data

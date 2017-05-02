@@ -12,11 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.report
+package com.mvcoding.expensius.feature.reports
 
 import android.view.View
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.mvcoding.expensius.feature.reports.trends.TrendsPresenter
 import memoizrlabs.com.shankandroid.withActivityScope
 
 class ReportsModule : ShankModule {

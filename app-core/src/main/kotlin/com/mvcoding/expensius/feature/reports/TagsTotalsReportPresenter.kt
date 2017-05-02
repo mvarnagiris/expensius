@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.report
+package com.mvcoding.expensius.feature.reports
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.FilterDataOld

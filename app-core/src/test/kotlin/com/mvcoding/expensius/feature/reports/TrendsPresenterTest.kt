@@ -12,9 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.report
+package com.mvcoding.expensius.feature.reports
 
 import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.feature.reports.trends.TrendsPresenter
 import com.mvcoding.expensius.model.Trends
 import com.mvcoding.expensius.model.aTrends
 import com.mvcoding.expensius.rxSchedulers

@@ -23,7 +23,7 @@
 
         <include layout="@layout/toolbar" />
 
-        <com.mvcoding.expensius.feature.report.TagsTotalsReportView
+        <com.mvcoding.expensius.feature.reports.TagsTotalsReportView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
