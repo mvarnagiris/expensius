@@ -30,7 +30,7 @@ import com.mvcoding.expensius.provideMoneyFormatter
 import kotlinx.android.synthetic.main.view_trend_report.view.*
 
 class TrendReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        LinearLayout(context, attrs, defStyleAttr), TrendReportPresenter.View {
+        LinearLayout(context, attrs, defStyleAttr), TrendsPresenter.View {
 
     private val presenter by lazy { provideExpenseTrendReportPresenter() }
     private val moneyFormatter by lazy { provideMoneyFormatter() }

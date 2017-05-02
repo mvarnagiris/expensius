@@ -35,6 +35,7 @@ fun aTransaction() = Transaction(
         aNote())
 
 fun someTransactions() = listOf(aTransaction(), aTransaction(), aTransaction())
+fun someMoneys() = aRange().map { aMoney() }
 
 fun aBasicTransaction() = BasicTransaction(
         aTransactionId(),

@@ -25,8 +25,8 @@ class ReportsModule : ShankModule {
 //        tagTotalsReportPresenter()
     }
 
-//    private fun trendsPresenter() = registerFactory(TrendReportPresenter::class) { ->
-//        TrendReportPresenter(
+//    private fun trendsPresenter() = registerFactory(TrendsPresenter::class) { ->
+//        TrendsPresenter(
 //                provideAppUserService(),
 //                provideTransactionsService(),
 //                provideExchangeRatesProvider(),
@@ -44,5 +44,5 @@ class ReportsModule : ShankModule {
 //    }
 }
 
-fun View.provideExpenseTrendReportPresenter() = withActivityScope.provideSingletonFor<TrendReportPresenter>()
+fun View.provideExpenseTrendReportPresenter() = withActivityScope.provideSingletonFor<TrendsPresenter>()
 fun View.provideTagTotalsReportPresenter() = withActivityScope.provideSingletonFor<TagsTotalsReportPresenter>()
