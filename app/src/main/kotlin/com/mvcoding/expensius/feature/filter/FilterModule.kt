@@ -21,6 +21,7 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
 import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideRxSchedulers
@@ -35,19 +36,12 @@ class FilterModule : ShankModule {
 
     private fun filterSource() = registerFactory(FilterSource::class) { ->
         val appUserSource = provideAppUserSource()
-        FilterSource {
-            appUserSource.data().map {
-                Filter(
-                        it.userId,
-                        it.settings.mainCurrency,
-                        it.settings.reportPeriod,
-                        it.settings.reportGroup,
-                        it.settings.reportPeriod.interval(System.currentTimeMillis()))
-            }
-        }
+        FilterSource { appUserSource.data().map { Filter(it.userId, it.settings.reportPeriod.interval(System.currentTimeMillis())) } }
     }
 
-    private fun filterPresenter() = registerFactory(FilterPresenter::class) { scope: Scope -> FilterPresenter(provideFilterSource(scope), provideRxSchedulers()) }
+    private fun filterPresenter() = registerFactory(FilterPresenter::class) { scope: Scope ->
+        FilterPresenter(provideFilterSource(scope), provideReportSettingsSource(scope), provideRxSchedulers())
+    }
 }
 
 fun provideFilterSource(scope: Scope? = null) =

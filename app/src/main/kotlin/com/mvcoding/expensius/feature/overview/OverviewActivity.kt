@@ -69,7 +69,7 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
     override fun tagsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
     override fun tagsReportSelects(): Observable<Unit> = Observable.never()//tagsTotalsReportView.clicks()
     override fun settingsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_settings }.map { Unit }
-    override fun showInterval(reportPeriod: ReportPeriod, interval: Interval) = with(supportActionBar) { title = dateFormatter.formatInterval(reportPeriod, interval) }
+    override fun showInterval(interval: Interval, reportPeriod: ReportPeriod) = with(supportActionBar) { title = dateFormatter.formatInterval(reportPeriod, interval) }
     override fun displayCreateTransaction(): Unit = CalculatorActivity.start(this)
     override fun displayTransactions(): Unit = TransactionsActivity.start(this)
     override fun displayTags(): Unit = TagsActivity.startView(this)

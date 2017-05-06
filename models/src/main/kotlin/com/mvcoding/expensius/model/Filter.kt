@@ -14,17 +14,13 @@
 
 package com.mvcoding.expensius.model
 
+import org.joda.time.Interval
 import java.io.Serializable
 
 data class Filter(
         val userId: UserId,
-        val reportPeriod: ReportPeriod,
-        val reportGroup: ReportGroup,
-        internal val intervalBaseTimestamp: Timestamp,
-        internal val intervalPosition: Int = 0) : Serializable {
+        val interval: Interval) : Serializable {
 
-    val interval = reportPeriod.interval(reportPeriod.interval(intervalBaseTimestamp), intervalPosition)
-
-    fun withNextInterval() = copy(intervalPosition = intervalPosition + 1)
-    fun withPreviousInterval() = copy(intervalPosition = intervalPosition - 1)
+    fun withNextInterval(reportPeriod: ReportPeriod) = copy(interval = reportPeriod.nextInterval(interval))
+    fun withPreviousInterval(reportPeriod: ReportPeriod) = copy(interval = reportPeriod.previousInterval(interval))
 }

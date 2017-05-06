@@ -26,23 +26,13 @@ enum class ReportPeriod { MONTH;
         MONTH -> DateTime(millis).let { Interval(it.withDayOfMonth(1).withTimeAtStartOfDay(), Period.months(1)) }
     }
 
-    fun interval(interval: Interval, numberOfIntervalsToAdd: Int): Interval = interval.let {
-        when {
-            numberOfIntervalsToAdd > 1 -> interval(nextInterval(interval), numberOfIntervalsToAdd - 1)
-            numberOfIntervalsToAdd < -1 -> interval(previousInterval(interval), numberOfIntervalsToAdd + 1)
-            numberOfIntervalsToAdd == 1 -> nextInterval(interval)
-            numberOfIntervalsToAdd == -1 -> previousInterval(interval)
-            else -> interval
-        }
-    }
-
-    private fun nextInterval(interval: Interval): Interval = interval.let {
+    fun nextInterval(interval: Interval): Interval = interval.let {
         when (this) {
             MONTH -> Interval(it.end, Period.months(1))
         }
     }
 
-    private fun previousInterval(interval: Interval): Interval = interval.let {
+    fun previousInterval(interval: Interval): Interval = interval.let {
         when (this) {
             MONTH -> Interval(interval.start.minusMonths(1), Period.months(1))
         }

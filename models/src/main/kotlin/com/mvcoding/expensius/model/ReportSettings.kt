@@ -14,10 +14,8 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.anInt
-import org.joda.time.DateTimeConstants
-import org.joda.time.Interval
+import java.io.Serializable
 
-fun anInterval(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = reportPeriod.interval(System.currentTimeMillis() - DateTimeConstants.MILLIS_PER_DAY.toLong() * 30 * anInt(1000))
-fun aFilter(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = Filter(aUserId(), anInterval(reportPeriod))
-fun Filter.withInterval(interval: Interval) = copy(interval = interval)
+data class ReportSettings(
+        val reportPeriod: ReportPeriod,
+        val reportGroup: ReportGroup) : Serializable

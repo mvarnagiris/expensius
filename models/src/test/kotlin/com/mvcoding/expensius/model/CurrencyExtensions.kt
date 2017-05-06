@@ -16,9 +16,9 @@ package com.mvcoding.expensius.model
 
 import com.mvcoding.expensius.aRandomItem
 
-fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
-fun aCurrency() = Currency(aStringCurrencyCode())
+fun aStringCurrencyCode(excludeCode: String = "") = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").filter { it != excludeCode }.aRandomItem()
+fun aCurrency(excludeCode: String = "") = Currency(aStringCurrencyCode(excludeCode))
 fun Currency.withCode(code: String) = copy(code = code)
-fun anExchangeRateCurrencies() = ExchangeRateCurrencies(aCurrency(), aCurrency())
+fun anExchangeRateCurrencies() = aCurrency().let { ExchangeRateCurrencies(it, aCurrency(it.code)) }
 fun ExchangeRateCurrencies.withFromCurrency(fromCurrency: Currency) = copy(fromCurrency = fromCurrency)
 fun ExchangeRateCurrencies.withToCurrency(toCurrency: Currency) = copy(toCurrency = toCurrency)

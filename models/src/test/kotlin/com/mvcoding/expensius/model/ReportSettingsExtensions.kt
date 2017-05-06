@@ -14,10 +14,4 @@
 
 package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.anInt
-import org.joda.time.DateTimeConstants
-import org.joda.time.Interval
-
-fun anInterval(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = reportPeriod.interval(System.currentTimeMillis() - DateTimeConstants.MILLIS_PER_DAY.toLong() * 30 * anInt(1000))
-fun aFilter(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = Filter(aUserId(), anInterval(reportPeriod))
-fun Filter.withInterval(interval: Interval) = copy(interval = interval)
+fun aReportSettings() = ReportSettings(aReportPeriod(), aReportGroup())

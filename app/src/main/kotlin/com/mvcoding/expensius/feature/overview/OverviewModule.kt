@@ -19,6 +19,7 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.filter.provideFilterSource
+import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
 import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
@@ -28,7 +29,7 @@ class OverviewModule : ShankModule {
     }
 
     private fun overviewPresenter() = registerFactory(OverviewPresenter::class) { ->
-        OverviewPresenter(provideFilterSource(), provideRxSchedulers())
+        OverviewPresenter(provideFilterSource(), provideReportSettingsSource(), provideRxSchedulers())
     }
 }
 

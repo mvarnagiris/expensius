@@ -27,4 +27,5 @@ fun aLongTimestamp() = System.currentTimeMillis() - anInt(1000 * 60 * 60 * 24)
 fun anAmount() = BigDecimal(anInt(100))
 fun aBoolean() = Math.random() >= 0.5
 fun <T> Array<T>.aRandomItem() = get(anInt(size))
+fun <T> List<T>.aRandomItem() = get(anInt(size))
 fun aRange(): IntRange = 0..anInt(10)

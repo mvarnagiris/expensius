@@ -15,10 +15,14 @@
 package com.mvcoding.expensius.feature.settings
 
 import android.app.Activity
+import com.memoizrlabs.Scope
+import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
+import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
@@ -26,11 +30,20 @@ import memoizrlabs.com.shankandroid.withThisScope
 class SettingsModule : ShankModule {
     override fun registerFactories() {
         settingsPresenter()
+        reportSettingsSource()
     }
 
     private fun settingsPresenter() = registerFactory(SettingsPresenter::class) { ->
         SettingsPresenter(provideAppUserSource(), provideAppUserSource(), provideCurrenciesSource(), provideRxSchedulers())
     }
+
+    private fun reportSettingsSource() = registerFactory(ReportSettingsSource::class) { ->
+        val appUserSource = provideAppUserSource()
+        ReportSettingsSource { appUserSource.data().map { ReportSettings(it.settings.reportPeriod, it.settings.reportGroup) } }
+    }
 }
 
 fun Activity.provideSettingsPresenter() = withThisScope.provideSingletonFor<SettingsPresenter>()
+fun provideReportSettingsSource(scope: Scope? = null) =
+        if (scope == null) provideGlobalSingleton<ReportSettingsSource>()
+        else Shank.with(scope).provideSingletonFor<ReportSettingsSource>()

@@ -18,12 +18,15 @@ import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.model.ReportPeriod
+import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.mvp.Presenter
 import org.joda.time.Interval
 import rx.Observable
+import rx.Observable.combineLatest
 
 class OverviewPresenter(
         private val filterSource: DataSource<Filter>,
+        private val reportSettingsSource: DataSource<ReportSettings>,
         private val schedulers: RxSchedulers) : Presenter<OverviewPresenter.View>() {
 
     override fun onViewAttached(view: View) {
@@ -34,7 +37,13 @@ class OverviewPresenter(
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
 //        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
         view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
-        filterSource.data().subscribeOn(schedulers.io).observeOn(schedulers.main).subscribeUntilDetached { view.showInterval(it.reportPeriod, it.interval) }
+        combineLatest(
+                filterSource.data(),
+                reportSettingsSource.data(),
+                { filter, reportSettings -> FilterReportSettings(filter, reportSettings) })
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribeUntilDetached { view.showInterval(it.filter.interval, it.reportSettings.reportPeriod) }
     }
 
     interface View : Presenter.View {
@@ -44,7 +53,7 @@ class OverviewPresenter(
         fun tagsReportSelects(): Observable<Unit>
         fun settingsSelects(): Observable<Unit>
 
-        fun showInterval(reportPeriod: ReportPeriod, interval: Interval)
+        fun showInterval(interval: Interval, reportPeriod: ReportPeriod)
 
         fun displayCreateTransaction()
         fun displayTransactions()
@@ -52,4 +61,6 @@ class OverviewPresenter(
         fun displayTagsReport()
         fun displaySettings()
     }
+
+    private data class FilterReportSettings(val filter: Filter, val reportSettings: ReportSettings)
 }

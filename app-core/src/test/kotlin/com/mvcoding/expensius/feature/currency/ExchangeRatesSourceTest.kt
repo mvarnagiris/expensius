@@ -14,6 +14,7 @@
 
 package com.mvcoding.expensius.feature.currency
 
+import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.data.testMemoryParameterDataSource
 import com.mvcoding.expensius.model.ExchangeRateCurrencies
 import com.mvcoding.expensius.model.aCurrency
@@ -32,7 +33,11 @@ class ExchangeRatesSourceTest {
 
     @Test
     fun `behaves like memory parameter data source`() {
-        testMemoryParameterDataSource(anExchangeRateCurrencies(), anExchangeRateCurrencies(), anAmount(), anAmount()) { dataSource -> ExchangeRatesSource { dataSource.data(it) } }
+        testMemoryParameterDataSource(
+                anExchangeRateCurrencies(),
+                anExchangeRateCurrencies(),
+                anAmount(),
+                anAmount()) { dataSource: ParameterDataSource<ExchangeRateCurrencies, BigDecimal> -> ExchangeRatesSource { dataSource.data(it) } }
     }
 
     @Test

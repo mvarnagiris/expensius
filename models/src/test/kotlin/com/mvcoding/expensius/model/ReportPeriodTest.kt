@@ -42,8 +42,8 @@ class ReportPeriodTest {
         val aprilIntervalStart = DateTime(2016, 4, 1, 0, 0, 0, 0)
         val aprilIntervalEnd = DateTime(2016, 5, 1, 0, 0, 0, 0)
 
-        val marchInterval = reportPeriod.interval(februaryInterval, 1)
-        val aprilInterval = reportPeriod.interval(februaryInterval, 2)
+        val marchInterval = reportPeriod.nextInterval(februaryInterval)
+        val aprilInterval = reportPeriod.nextInterval(marchInterval)
 
         expect that marchInterval.start isEqualTo marchIntervalStart
         expect that marchInterval.end isEqualTo marchIntervalEnd
@@ -61,8 +61,8 @@ class ReportPeriodTest {
         val december2015IntervalStart = DateTime(2015, 12, 1, 0, 0, 0, 0)
         val december2015IntervalEnd = DateTime(2016, 1, 1, 0, 0, 0, 0)
 
-        val januaryInterval = reportPeriod.interval(februaryInterval, -1)
-        val december2015Interval = reportPeriod.interval(februaryInterval, -2)
+        val januaryInterval = reportPeriod.previousInterval(februaryInterval)
+        val december2015Interval = reportPeriod.previousInterval(januaryInterval)
 
         expect that januaryInterval.start isEqualTo januaryIntervalStart
         expect that januaryInterval.end isEqualTo januaryIntervalEnd

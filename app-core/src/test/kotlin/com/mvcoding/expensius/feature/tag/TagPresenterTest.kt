@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,7 +155,7 @@ class TagPresenterTest {
     @Test
     fun `archives tag and displays result`() {
         val archivedTag = tag.copy(modelState = ARCHIVED)
-        presenter.attach(view)
+        TagPresenter(tag.copy(modelState = NONE), createTagsWriter, tagsWriter).attach(view)
 
         toggleArchive()
 

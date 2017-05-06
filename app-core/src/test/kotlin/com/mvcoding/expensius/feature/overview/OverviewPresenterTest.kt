@@ -16,7 +16,9 @@ package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.expensius.model.aFilter
+import com.mvcoding.expensius.model.aReportSettings
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -33,10 +35,12 @@ class OverviewPresenterTest {
     //    val tagsReportSelectedSubject = PublishSubject<Unit>()
     val settingsSelectedSubject = PublishSubject<Unit>()
     val filter = aFilter()
+    val reportSettings = aReportSettings()
 
     val filterSource = mock<DataSource<Filter>>()
+    val reportSettingsSource = mock<DataSource<ReportSettings>>()
     val view = mock<OverviewPresenter.View>()
-    val presenter = OverviewPresenter(filterSource, rxSchedulers())
+    val presenter = OverviewPresenter(filterSource, reportSettingsSource, rxSchedulers())
 
     @Before
     fun setUp() {
@@ -46,13 +50,14 @@ class OverviewPresenterTest {
 //        whenever(view.tagsReportSelects()).thenReturn(tagsReportSelectedSubject)
         whenever(view.settingsSelects()).thenReturn(settingsSelectedSubject)
         whenever(filterSource.data()).thenReturn(just(filter))
+        whenever(reportSettingsSource.data()).thenReturn(just(reportSettings))
     }
 
     @Test
     fun `shows interval`() {
         presenter.attach(view)
 
-        verify(view).showInterval(filter.reportPeriod, filter.interval)
+        verify(view).showInterval(filter.interval, reportSettings.reportPeriod)
     }
 
     @Test

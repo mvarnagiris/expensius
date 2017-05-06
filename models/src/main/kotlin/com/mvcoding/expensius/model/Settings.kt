@@ -18,8 +18,6 @@ import java.io.Serializable
 
 enum class SubscriptionType { FREE, PREMIUM_PAID }
 
-enum class ReportGroup { DAY }
-
 data class Settings(
         val mainCurrency: Currency,
         val reportPeriod: ReportPeriod,

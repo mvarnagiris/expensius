@@ -17,7 +17,6 @@ package com.mvcoding.expensius.feature.reports.trends
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.extension.doNotInEditMode
@@ -38,28 +37,28 @@ class TrendsReportView @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setViewPortOffsets(0f, 0f, 0f, 0f)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setPinchZoom(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setNoDataTextDescription("")
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setDescription("")
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isDoubleTapToZoomEnabled = false
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isDragEnabled = false
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isScaleXEnabled = false
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isScaleYEnabled = false
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.legend.isEnabled = false
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawLabels(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawGridLines(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawAxisLine(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawZeroLine(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawZeroLine(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawAxisLine(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawGridLines(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawLabels(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawGridLines(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawAxisLine(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawLabels(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawLimitLinesBehindData(false)
-        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.animateY(700, Easing.EasingOption.EaseOutCubic)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setViewPortOffsets(0f, 0f, 0f, 0f)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setPinchZoom(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setNoDataTextDescription("")
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.setDescription("")
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isDoubleTapToZoomEnabled = false
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isDragEnabled = false
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isScaleXEnabled = false
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.isScaleYEnabled = false
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.legend.isEnabled = false
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawLabels(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawGridLines(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawAxisLine(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisLeft.setDrawZeroLine(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawZeroLine(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawAxisLine(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawGridLines(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.axisRight.setDrawLabels(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawGridLines(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawAxisLine(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawLabels(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.xAxis.setDrawLimitLinesBehindData(false)
+//        kotlinx.android.synthetic.main.view_trend_report.view.lineChart.animateY(700, Easing.EasingOption.EaseOutCubic)
     }
 
     override fun onAttachedToWindow() {
