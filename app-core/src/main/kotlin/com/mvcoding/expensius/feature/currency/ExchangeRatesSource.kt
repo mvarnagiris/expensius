@@ -19,11 +19,14 @@ import com.mvcoding.expensius.data.MemoryParameterDataSource
 import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.model.ExchangeRateCurrencies
 import rx.Observable
+import rx.Observable.just
 import java.math.BigDecimal
 
 class ExchangeRatesSource(getExchangeRate: (ExchangeRateCurrencies) -> Observable<BigDecimal>) : ParameterDataSource<ExchangeRateCurrencies, BigDecimal> {
 
     private val dataSource = MemoryParameterDataSource(FunctionParameterDataSource(getExchangeRate))
 
-    override fun data(parameter: ExchangeRateCurrencies): Observable<BigDecimal> = dataSource.data(parameter)
+    override fun data(parameter: ExchangeRateCurrencies): Observable<BigDecimal> =
+            if (parameter.hasSameCurrencies()) just(BigDecimal.ONE)
+            else dataSource.data(parameter)
 }

@@ -14,4 +14,7 @@
 
 package com.mvcoding.expensius.model
 
-fun aFilter() = aReportPeriod().let { Filter(aUserId(), it, it.interval(System.currentTimeMillis())) }
+fun aFilter() = Filter(aUserId(), aReportPeriod(), aReportGroup(), aTimestamp())
+fun Filter.withReportPeriod(reportPeriod: ReportPeriod) = copy(reportPeriod = reportPeriod)
+fun Filter.withIntervalBaseTimestamp(timestamp: Timestamp) = copy(intervalBaseTimestamp = timestamp)
+fun Filter.withIntervalBaseTimestamp(timestamp: Long) = withIntervalBaseTimestamp(Timestamp(timestamp))

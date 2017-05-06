@@ -18,4 +18,7 @@ import com.mvcoding.expensius.aRandomItem
 
 fun aStringCurrencyCode() = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").aRandomItem()
 fun aCurrency() = Currency(aStringCurrencyCode())
+fun Currency.withCode(code: String) = copy(code = code)
 fun anExchangeRateCurrencies() = ExchangeRateCurrencies(aCurrency(), aCurrency())
+fun ExchangeRateCurrencies.withFromCurrency(fromCurrency: Currency) = copy(fromCurrency = fromCurrency)
+fun ExchangeRateCurrencies.withToCurrency(toCurrency: Currency) = copy(toCurrency = toCurrency)

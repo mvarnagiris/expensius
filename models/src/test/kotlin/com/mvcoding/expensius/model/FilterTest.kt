@@ -19,31 +19,46 @@ import org.joda.time.DateTime
 import org.junit.Test
 
 class FilterTest {
+
+    @Test
+    fun `filter is created with correct interval`() {
+        val reportPeriod = ReportPeriod.MONTH
+        val february = DateTime(2016, 2, 3, 1, 1)
+        val expectedInterval = reportPeriod.interval(february.millis)
+
+        val filter = aFilter().withReportPeriod(reportPeriod).withIntervalBaseTimestamp(february.millis)
+        val currentInterval = filter.interval
+
+        expect that currentInterval isEqualTo expectedInterval
+    }
+
     @Test
     fun `creates a copy of filter with next period`() {
         val reportPeriod = ReportPeriod.MONTH
         val february = DateTime(2016, 2, 3, 1, 1)
-        val februaryInterval = reportPeriod.interval(february.millis)
-        val expectedIntervalStart = DateTime(2016, 3, 1, 0, 0, 0, 0)
-        val expectedIntervalEnd = DateTime(2016, 4, 1, 0, 0, 0, 0)
+        val expectedNextInterval = reportPeriod.interval(reportPeriod.interval(february.millis), 1)
+        val expectedNextNextInterval = reportPeriod.interval(reportPeriod.interval(february.millis), 2)
 
-        val marchInterval = Filter(aUserId(), reportPeriod, februaryInterval).withNextInterval().interval
+        val filter = aFilter().withReportPeriod(reportPeriod).withIntervalBaseTimestamp(february.millis)
+        val nextInterval = filter.withNextInterval().interval
+        val nextNextInterval = filter.withNextInterval().withNextInterval().interval
 
-        expect that marchInterval.start isEqualTo expectedIntervalStart
-        expect that marchInterval.end isEqualTo expectedIntervalEnd
+        expect that nextInterval isEqualTo expectedNextInterval
+        expect that nextNextInterval isEqualTo expectedNextNextInterval
     }
 
     @Test
     fun `creates a copy of filter with previous period`() {
         val reportPeriod = ReportPeriod.MONTH
         val february = DateTime(2016, 2, 3, 1, 1)
-        val februaryInterval = reportPeriod.interval(february.millis)
-        val expectedIntervalStart = DateTime(2016, 1, 1, 0, 0, 0, 0)
-        val expectedIntervalEnd = DateTime(2016, 2, 1, 0, 0, 0, 0)
+        val expectedPreviousInterval = reportPeriod.interval(reportPeriod.interval(february.millis), -1)
+        val expectedPreviousPreviousInterval = reportPeriod.interval(reportPeriod.interval(february.millis), -2)
 
-        val januaryInterval = Filter(aUserId(), reportPeriod, februaryInterval).withPreviousInterval().interval
+        val filter = aFilter().withReportPeriod(reportPeriod).withIntervalBaseTimestamp(february.millis)
+        val previousInterval = filter.withPreviousInterval().interval
+        val previousNextInterval = filter.withPreviousInterval().withPreviousInterval().interval
 
-        expect that januaryInterval.start isEqualTo expectedIntervalStart
-        expect that januaryInterval.end isEqualTo expectedIntervalEnd
+        expect that previousInterval isEqualTo expectedPreviousInterval
+        expect that previousNextInterval isEqualTo expectedPreviousPreviousInterval
     }
 }

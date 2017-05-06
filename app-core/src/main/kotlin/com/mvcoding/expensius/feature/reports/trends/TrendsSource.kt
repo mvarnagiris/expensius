@@ -16,14 +16,15 @@ package com.mvcoding.expensius.feature.reports.trends
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
+import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.Trends
 import rx.Observable
 
-class TrendsSource(private val transactionsSource: DataSource<RealtimeData<Transaction>>) : DataSource<Trends> {
+class TrendsSource(
+        private val filterSource: DataSource<Filter>,
+        private val transactionsSource: DataSource<RealtimeData<Transaction>>) : DataSource<Trends> {
 
-    override fun data(): Observable<Trends> {
-
-    }
+    override fun data(): Observable<Trends> = Observable.never()//transactionsSource.data().map { it.allItems }
 
 }

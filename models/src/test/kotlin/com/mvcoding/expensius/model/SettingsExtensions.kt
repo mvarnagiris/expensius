@@ -17,3 +17,4 @@ package com.mvcoding.expensius.model
 import com.mvcoding.expensius.aRandomItem
 
 fun aReportPeriod() = ReportPeriod.values().aRandomItem()
+fun aReportGroup() = ReportGroup.values().aRandomItem()

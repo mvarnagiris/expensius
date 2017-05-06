@@ -16,4 +16,6 @@ package com.mvcoding.expensius.model
 
 import java.io.Serializable
 
-data class ExchangeRateCurrencies(val fromCurrency: Currency, val toCurrency: Currency) : Serializable
+data class ExchangeRateCurrencies(val fromCurrency: Currency, val toCurrency: Currency) : Serializable {
+    fun hasSameCurrencies(): Boolean = fromCurrency == toCurrency
+}

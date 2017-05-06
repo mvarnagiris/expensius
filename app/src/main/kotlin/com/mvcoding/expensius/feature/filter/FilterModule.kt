@@ -35,7 +35,16 @@ class FilterModule : ShankModule {
 
     private fun filterSource() = registerFactory(FilterSource::class) { ->
         val appUserSource = provideAppUserSource()
-        FilterSource { appUserSource.data().map { Filter(it.userId, it.settings.reportPeriod, it.settings.reportPeriod.interval(System.currentTimeMillis())) } }
+        FilterSource {
+            appUserSource.data().map {
+                Filter(
+                        it.userId,
+                        it.settings.mainCurrency,
+                        it.settings.reportPeriod,
+                        it.settings.reportGroup,
+                        it.settings.reportPeriod.interval(System.currentTimeMillis()))
+            }
+        }
     }
 
     private fun filterPresenter() = registerFactory(FilterPresenter::class) { scope: Scope -> FilterPresenter(provideFilterSource(scope), provideRxSchedulers()) }

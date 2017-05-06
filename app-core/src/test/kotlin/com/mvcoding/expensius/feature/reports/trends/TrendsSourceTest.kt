@@ -12,16 +12,6 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.feature.reports.trends
 
-import java.io.Serializable
-
-enum class SubscriptionType { FREE, PREMIUM_PAID }
-
-enum class ReportGroup { DAY }
-
-data class Settings(
-        val mainCurrency: Currency,
-        val reportPeriod: ReportPeriod,
-        val reportGroup: ReportGroup,
-        val subscriptionType: SubscriptionType) : Serializable
+class TrendsSourceTest
