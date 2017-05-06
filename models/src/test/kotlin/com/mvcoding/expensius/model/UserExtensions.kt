@@ -27,3 +27,4 @@ fun anAppUser() = AppUser(aUserId(), aName(), anImage(), anEmail(), aSettings(),
 fun AppUser.withNoAuthProviders() = copy(authProviders = emptySet())
 fun AppUser.withAuthProvider(authProvider: AuthProvider) = copy(authProviders = setOf(authProvider))
 fun AppUser.withId(id: String) = copy(userId = UserId(id))
+fun AppUser.withReportPeriod(reportPeriod: ReportPeriod) = copy(settings = settings.copy(reportPeriod = reportPeriod))

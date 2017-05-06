@@ -14,16 +14,17 @@
 
 package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.data.Cache
-import com.mvcoding.expensius.data.FunctionDataSource
-import com.mvcoding.expensius.data.MemoryCache
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.RemoteFilter
+import com.mvcoding.expensius.model.TimestampProvider
 import rx.Observable
 
-class FilterSource(getFilter: () -> Observable<Filter>) : Cache<Filter> {
+class RemoteFilterSource(
+        private val appUserSource: DataSource<AppUser>,
+        private val timestampProvider: TimestampProvider) : DataSource<RemoteFilter> {
 
-    private val memoryCache = MemoryCache(FunctionDataSource(getFilter))
-
-    override fun data(): Observable<Filter> = memoryCache.data()
-    override fun write(data: Filter) = memoryCache.write(data)
+    override fun data(): Observable<RemoteFilter> = appUserSource.data()
+            .map { RemoteFilter(it.userId, it.settings.reportPeriod.interval(timestampProvider.currentTimestamp())) }
+            .distinctUntilChanged()
 }

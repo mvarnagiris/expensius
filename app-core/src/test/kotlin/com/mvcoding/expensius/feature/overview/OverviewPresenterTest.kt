@@ -15,9 +15,9 @@
 package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
-import com.mvcoding.expensius.model.aFilter
+import com.mvcoding.expensius.model.aRemoteFilter
 import com.mvcoding.expensius.model.aReportSettings
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
@@ -34,10 +34,10 @@ class OverviewPresenterTest {
     val tagsSelectedSubject = PublishSubject<Unit>()
     //    val tagsReportSelectedSubject = PublishSubject<Unit>()
     val settingsSelectedSubject = PublishSubject<Unit>()
-    val filter = aFilter()
+    val filter = aRemoteFilter()
     val reportSettings = aReportSettings()
 
-    val filterSource = mock<DataSource<Filter>>()
+    val filterSource = mock<DataSource<RemoteFilter>>()
     val reportSettingsSource = mock<DataSource<ReportSettings>>()
     val view = mock<OverviewPresenter.View>()
     val presenter = OverviewPresenter(filterSource, reportSettingsSource, rxSchedulers())

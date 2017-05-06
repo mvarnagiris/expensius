@@ -17,9 +17,9 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.testParameterRealtimeDataSource
 import com.mvcoding.expensius.model.BasicTransaction
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.aFilter
+import com.mvcoding.expensius.model.aRemoteFilter
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
@@ -31,7 +31,7 @@ class TransactionsSourceTest {
     fun `behaves like parameter realtime data source`() {
         val allTagsSource = mock<DataSource<List<Tag>>>()
         whenever(allTagsSource.data()).thenReturn(Observable.just(emptyList()))
-        testParameterRealtimeDataSource<Filter, BasicTransaction, TransactionsSource>(aFilter(), aFilter()) { parameterDataSource, createRealtimeList ->
+        testParameterRealtimeDataSource<RemoteFilter, BasicTransaction, TransactionsSource>(aRemoteFilter(), aRemoteFilter()) { parameterDataSource, createRealtimeList ->
             TransactionsSource(allTagsSource, parameterDataSource, createRealtimeList)
         }
     }

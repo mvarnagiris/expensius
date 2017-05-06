@@ -19,33 +19,35 @@ import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
-import com.mvcoding.expensius.model.Filter
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideTimestampProvider
 import memoizrlabs.com.shankandroid.activityScope
 import memoizrlabs.com.shankandroid.withActivityScope
 
 class FilterModule : ShankModule {
     override fun registerFactories() {
-        filterSource()
+        remoteFilterSource()
+        memoryRemoteFilterCache()
         filterPresenter()
     }
 
-    private fun filterSource() = registerFactory(FilterSource::class) { ->
-        val appUserSource = provideAppUserSource()
-        FilterSource { appUserSource.data().map { Filter(it.userId, it.settings.reportPeriod.interval(System.currentTimeMillis())) } }
-    }
+    private fun remoteFilterSource() = registerFactory(RemoteFilterSource::class) { -> RemoteFilterSource(provideAppUserSource(), provideTimestampProvider()) }
+    private fun memoryRemoteFilterCache() = registerFactory(MemoryRemoteFilterCache::class) { -> MemoryRemoteFilterCache(provideRemoteFilterSource()) }
 
     private fun filterPresenter() = registerFactory(FilterPresenter::class) { scope: Scope ->
         FilterPresenter(provideFilterSource(scope), provideReportSettingsSource(scope), provideRxSchedulers())
     }
 }
 
+fun provideRemoteFilterSource() = provideNew<RemoteFilterSource>()
+
 fun provideFilterSource(scope: Scope? = null) =
-        if (scope == null) provideGlobalSingleton<FilterSource>()
-        else Shank.with(scope).provideSingletonFor<FilterSource>()
+        if (scope == null) provideGlobalSingleton<MemoryRemoteFilterCache>()
+        else Shank.with(scope).provideSingletonFor<MemoryRemoteFilterCache>()
 
 fun View.provideFilterPresenter() = withActivityScope.provideSingletonFor<FilterPresenter>(activityScope)

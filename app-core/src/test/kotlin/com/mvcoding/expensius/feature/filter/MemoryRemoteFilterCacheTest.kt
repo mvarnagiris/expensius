@@ -12,16 +12,15 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.data
+package com.mvcoding.expensius.feature.filter
 
-import rx.Observable
-import rx.lang.kotlin.BehaviorSubject
+import com.mvcoding.expensius.data.testMemoryCache
+import com.mvcoding.expensius.model.aRemoteFilter
+import org.junit.Test
 
-class MemoryCache<DATA>(dataSource: DataSource<DATA>) : Cache<DATA> {
-
-    private val subject = BehaviorSubject<DATA>()
-    private val dataSource = MemoryDataSource(FunctionDataSource { dataSource.data().mergeWith(subject) })
-
-    override fun write(data: DATA): Unit = subject.onNext(data)
-    override fun data(): Observable<DATA> = dataSource.data()
+class MemoryRemoteFilterCacheTest {
+    @Test
+    fun `behaves like memory cache`() {
+        testMemoryCache(aRemoteFilter(), aRemoteFilter()) { MemoryRemoteFilterCache(it) }
+    }
 }

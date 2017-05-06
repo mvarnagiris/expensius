@@ -20,7 +20,7 @@ import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.data.RealtimeData.*
 import com.mvcoding.expensius.data.RealtimeList
 import com.mvcoding.expensius.model.BasicTransaction
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import rx.Observable
@@ -29,10 +29,10 @@ import java.io.Closeable
 
 class TransactionsSource(
         private val allTagsSource: DataSource<List<Tag>>,
-        filterSource: DataSource<Filter>,
-        createRealtimeList: (Filter) -> RealtimeList<BasicTransaction>) : DataSource<RealtimeData<Transaction>>, Closeable {
+        remoteFilterSource: DataSource<RemoteFilter>,
+        createRealtimeList: (RemoteFilter) -> RealtimeList<BasicTransaction>) : DataSource<RealtimeData<Transaction>>, Closeable {
 
-    private val dataSource = ParameterRealtimeDataSource(filterSource, createRealtimeList) { it.transactionId.id }
+    private val dataSource = ParameterRealtimeDataSource(remoteFilterSource, createRealtimeList) { it.transactionId.id }
 
     override fun data(): Observable<RealtimeData<Transaction>> = combineLatest(dataSource.data(), allTagsSource.data()) { basicTransactions, tags ->
         when (basicTransactions) {

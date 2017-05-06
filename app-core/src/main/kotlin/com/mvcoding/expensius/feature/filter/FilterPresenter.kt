@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.filter
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.mvp.Presenter
@@ -26,7 +26,7 @@ import rx.Observable
 import rx.Observable.combineLatest
 
 class FilterPresenter(
-        private val filterCache: Cache<Filter>,
+        private val remoteFilterCache: Cache<RemoteFilter>,
         private val reportSettingsSource: DataSource<ReportSettings>,
         private val schedulers: RxSchedulers) : Presenter<FilterPresenter.View>() {
 
@@ -35,7 +35,7 @@ class FilterPresenter(
 
 
         val filterReportSettings = combineLatest(
-                filterCache.data(),
+                remoteFilterCache.data(),
                 reportSettingsSource.data(),
                 { filter, reportSettings -> FilterReportSettings(filter, reportSettings) })
                 .share()
@@ -43,17 +43,17 @@ class FilterPresenter(
         filterReportSettings
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showInterval(it.filter.interval, it.reportSettings.reportPeriod) }
+                .subscribeUntilDetached { view.showInterval(it.remoteFilter.interval, it.reportSettings.reportPeriod) }
 
         view.previousIntervalRequests()
                 .observeOn(schedulers.io)
                 .withLatestFrom(filterReportSettings) { _, filterReportSettings -> filterReportSettings }
-                .subscribeUntilDetached { filterCache.write(it.filter.withPreviousInterval(it.reportSettings.reportPeriod)) }
+                .subscribeUntilDetached { remoteFilterCache.write(it.remoteFilter.withPreviousInterval(it.reportSettings.reportPeriod)) }
 
         view.nextIntervalRequests()
                 .observeOn(schedulers.io)
                 .withLatestFrom(filterReportSettings) { _, filterReportSettings -> filterReportSettings }
-                .subscribeUntilDetached { filterCache.write(it.filter.withNextInterval(it.reportSettings.reportPeriod)) }
+                .subscribeUntilDetached { remoteFilterCache.write(it.remoteFilter.withNextInterval(it.reportSettings.reportPeriod)) }
     }
 
     interface View : Presenter.View {
@@ -62,5 +62,5 @@ class FilterPresenter(
         fun showInterval(interval: Interval, reportPeriod: ReportPeriod)
     }
 
-    private data class FilterReportSettings(val filter: Filter, val reportSettings: ReportSettings)
+    private data class FilterReportSettings(val remoteFilter: RemoteFilter, val reportSettings: ReportSettings)
 }

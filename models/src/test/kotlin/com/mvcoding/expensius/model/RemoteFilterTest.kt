@@ -18,7 +18,7 @@ import com.memoizr.assertk.expect
 import org.joda.time.DateTime
 import org.junit.Test
 
-class FilterTest {
+class RemoteFilterTest {
 
     @Test
     fun `creates a copy of filter with next period`() {
@@ -28,7 +28,7 @@ class FilterTest {
         val marchInterval = reportPeriod.nextInterval(februaryInterval)
         val aprilInterval = reportPeriod.nextInterval(marchInterval)
 
-        val filter = aFilter().withInterval(februaryInterval)
+        val filter = aRemoteFilter().withInterval(februaryInterval)
         val nextInterval = filter.withNextInterval(reportPeriod).interval
         val nextNextInterval = filter.withNextInterval(reportPeriod).withNextInterval(reportPeriod).interval
 
@@ -44,7 +44,7 @@ class FilterTest {
         val januaryInterval = reportPeriod.previousInterval(februaryInterval)
         val december2015Interval = reportPeriod.previousInterval(januaryInterval)
 
-        val filter = aFilter().withInterval(februaryInterval)
+        val filter = aRemoteFilter().withInterval(februaryInterval)
         val previousInterval = filter.withPreviousInterval(reportPeriod).interval
         val previousNextInterval = filter.withPreviousInterval(reportPeriod).withPreviousInterval(reportPeriod).interval
 

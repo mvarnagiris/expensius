@@ -12,15 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.filter
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.data.testMemoryCache
-import com.mvcoding.expensius.model.aFilter
-import org.junit.Test
+import com.mvcoding.expensius.anInt
+import org.joda.time.DateTimeConstants
+import org.joda.time.Interval
 
-class FilterSourceTest {
-    @Test
-    fun `behaves like memory cache`() {
-        testMemoryCache(aFilter(), aFilter()) { FilterSource { it.data() } }
-    }
-}
+fun anInterval(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = reportPeriod.interval(System.currentTimeMillis() - DateTimeConstants.MILLIS_PER_DAY.toLong() * 30 * anInt(1000))
+fun aRemoteFilter(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = RemoteFilter(aUserId(), anInterval(reportPeriod))
+fun RemoteFilter.withInterval(interval: Interval) = copy(interval = interval)

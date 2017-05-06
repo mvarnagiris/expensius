@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.overview
 
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.mvp.Presenter
@@ -25,7 +25,7 @@ import rx.Observable
 import rx.Observable.combineLatest
 
 class OverviewPresenter(
-        private val filterSource: DataSource<Filter>,
+        private val remoteFilterSource: DataSource<RemoteFilter>,
         private val reportSettingsSource: DataSource<ReportSettings>,
         private val schedulers: RxSchedulers) : Presenter<OverviewPresenter.View>() {
 
@@ -38,12 +38,12 @@ class OverviewPresenter(
 //        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
         view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
         combineLatest(
-                filterSource.data(),
+                remoteFilterSource.data(),
                 reportSettingsSource.data(),
                 { filter, reportSettings -> FilterReportSettings(filter, reportSettings) })
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-                .subscribeUntilDetached { view.showInterval(it.filter.interval, it.reportSettings.reportPeriod) }
+                .subscribeUntilDetached { view.showInterval(it.remoteFilter.interval, it.reportSettings.reportPeriod) }
     }
 
     interface View : Presenter.View {
@@ -62,5 +62,5 @@ class OverviewPresenter(
         fun displaySettings()
     }
 
-    private data class FilterReportSettings(val filter: Filter, val reportSettings: ReportSettings)
+    private data class FilterReportSettings(val remoteFilter: RemoteFilter, val reportSettings: ReportSettings)
 }

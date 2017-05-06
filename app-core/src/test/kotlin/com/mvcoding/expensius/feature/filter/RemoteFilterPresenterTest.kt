@@ -16,9 +16,9 @@ package com.mvcoding.expensius.feature.filter
 
 import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
-import com.mvcoding.expensius.model.aFilter
+import com.mvcoding.expensius.model.aRemoteFilter
 import com.mvcoding.expensius.model.aReportSettings
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
@@ -29,14 +29,14 @@ import org.junit.Test
 import rx.Observable.just
 import rx.lang.kotlin.PublishSubject
 
-class FilterPresenterTest {
+class RemoteFilterPresenterTest {
 
     val nextIntervalRequestsSubject = PublishSubject<Unit>()
     val previousIntervalRequestsSubject = PublishSubject<Unit>()
-    val filter = aFilter()
+    val filter = aRemoteFilter()
     val reportSettings = aReportSettings()
 
-    val filterCache = mock<Cache<Filter>>()
+    val filterCache = mock<Cache<RemoteFilter>>()
     val reportSettingsSource = mock<DataSource<ReportSettings>>()
     val view = mock<FilterPresenter.View>()
     val presenter = FilterPresenter(filterCache, reportSettingsSource, rxSchedulers())
@@ -59,7 +59,7 @@ class FilterPresenterTest {
     @Test
     fun `shows updated interval when filter changes`() {
         val changedFilter = filter.withNextInterval(reportSettings.reportPeriod)
-        val filterSubject = PublishSubject<Filter>()
+        val filterSubject = PublishSubject<RemoteFilter>()
         whenever(filterCache.data()).thenReturn(filterSubject)
 
         presenter.attach(view)

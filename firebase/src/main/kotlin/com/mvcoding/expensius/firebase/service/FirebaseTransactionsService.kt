@@ -30,19 +30,19 @@ class FirebaseTransactionsService {
     private val REF_TRANSACTIONS = "transactions"
     private val REF_ARCHIVED_TRANSACTIONS = "archivedTransactions"
 
-    fun getTransactions(filter: Filter): RealtimeList<BasicTransaction> =
-            FirebaseRealtimeList(filter.userId
+    fun getTransactions(remoteFilter: RemoteFilter): RealtimeList<BasicTransaction> =
+            FirebaseRealtimeList(remoteFilter.userId
                     .transactionsReference()
                     .orderByChild("timestampInverse")
-                    .startAt(-filter.interval.endMillis.toDouble())
-                    .endAt(-filter.interval.startMillis.toDouble()), { it.toTransaction(NONE) })
+                    .startAt(-remoteFilter.interval.endMillis.toDouble())
+                    .endAt(-remoteFilter.interval.startMillis.toDouble()), { it.toTransaction(NONE) })
 
-    fun getArchivedTransactions(filter: Filter): RealtimeList<BasicTransaction> =
-            FirebaseRealtimeList(filter.userId
+    fun getArchivedTransactions(remoteFilter: RemoteFilter): RealtimeList<BasicTransaction> =
+            FirebaseRealtimeList(remoteFilter.userId
                     .archivedTransactionsReference()
                     .orderByChild("timestampInverse")
-                    .startAt(-filter.interval.endMillis.toDouble())
-                    .endAt(-filter.interval.startMillis.toDouble()), { it.toTransaction(ARCHIVED) })
+                    .startAt(-remoteFilter.interval.endMillis.toDouble())
+                    .endAt(-remoteFilter.interval.startMillis.toDouble()), { it.toTransaction(ARCHIVED) })
 
     fun createTransactions(userId: UserId, createTransactions: Set<CreateTransaction>) {
         val transactionsReference = userId.transactionsReference()

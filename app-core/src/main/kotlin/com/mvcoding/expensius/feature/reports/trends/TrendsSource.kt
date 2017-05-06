@@ -15,16 +15,18 @@
 package com.mvcoding.expensius.feature.reports.trends
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RealtimeData
-import com.mvcoding.expensius.model.Filter
+import com.mvcoding.expensius.data.ParameterDataSource
+import com.mvcoding.expensius.model.ExchangeRateCurrencies
+import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.model.Trends
 import rx.Observable
+import java.math.BigDecimal
 
 class TrendsSource(
-        private val filterSource: DataSource<Filter>,
-        private val transactionsSource: DataSource<RealtimeData<Transaction>>) : DataSource<Trends> {
+        private val transactionsSource: DataSource<List<Transaction>>,
+        private val reportSettingsSource: DataSource<ReportSettings>,
+        private val exchangeRatesSource: ParameterDataSource<ExchangeRateCurrencies, BigDecimal>) : DataSource<Trends> {
 
     override fun data(): Observable<Trends> = Observable.never()//transactionsSource.data().map { it.allItems }
-
 }

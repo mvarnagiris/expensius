@@ -12,15 +12,18 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.feature.filter
 
-import org.joda.time.Interval
-import java.io.Serializable
+import com.mvcoding.expensius.data.Cache
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.MemoryCache
+import com.mvcoding.expensius.model.RemoteFilter
+import rx.Observable
 
-data class Filter(
-        val userId: UserId,
-        val interval: Interval) : Serializable {
+class MemoryRemoteFilterCache(remoteFilterSource: DataSource<RemoteFilter>) : Cache<RemoteFilter> {
 
-    fun withNextInterval(reportPeriod: ReportPeriod) = copy(interval = reportPeriod.nextInterval(interval))
-    fun withPreviousInterval(reportPeriod: ReportPeriod) = copy(interval = reportPeriod.previousInterval(interval))
+    private val memoryCache = MemoryCache(remoteFilterSource)
+
+    override fun data(): Observable<RemoteFilter> = memoryCache.data()
+    override fun write(data: RemoteFilter) = memoryCache.write(data)
 }
