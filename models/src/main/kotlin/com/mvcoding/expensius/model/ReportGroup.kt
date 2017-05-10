@@ -15,9 +15,9 @@
 package com.mvcoding.expensius.model
 
 import org.joda.time.DateTime
-import org.joda.time.Days
 import org.joda.time.Interval
 import org.joda.time.Period
+import java.math.BigDecimal
 
 enum class ReportGroup { DAY;
 
@@ -25,32 +25,20 @@ enum class ReportGroup { DAY;
         DAY -> Period.days(1)
     }
 
-    fun toNumberOfGroups(interval: Interval) = when (this) {
-        DAY -> Days.daysIn(interval).days
-    }
-
-    fun splitIntoGroupIntervals(interval: Interval): List<Interval> {
-        val period = toPeriod()
-        if (interval.endMillis < Interval(interval.start, period).endMillis) return emptyList()
-
-        val startInterval = toInterval(interval.startMillis)
-        val normalizedInterval =
-                if (interval.startMillis != startInterval.startMillis)
-                    when (this) {
-                        DAY -> interval.withStart(interval.start.plusDays(1).withTimeAtStartOfDay())
-                    }
-                else interval
-
-        val numberOfSteps = toNumberOfGroups(normalizedInterval)
-        return (0..numberOfSteps - 1).map {
-            toInterval(normalizedInterval.start.plus(period.multipliedBy(it)).millis)
-        }
-    }
-
     fun toInterval(timestamp: Timestamp) = toInterval(timestamp.millis)
+
     fun toInterval(millis: Long) = DateTime(millis).let {
         when (this) {
             DAY -> it.withTimeAtStartOfDay()
         }
     }.let { Interval(it, toPeriod()) }
+
+    fun group(transactions: List<Transaction>): Map<Interval, Money> {
+        fun List<Transaction>.currencyOrNull() = firstOrNull()?.money?.currency
+        fun List<Transaction>.groupByInterval() = groupBy { toInterval(it.timestamp) }
+        fun Map<Interval, List<Transaction>>.sumAmounts() = mapValues { it.value.fold(BigDecimal.ZERO) { sum, transaction -> sum + transaction.money.amount } }
+        fun Map<Interval, BigDecimal>.convertAmountsToMoney(currency: Currency) = mapValues { Money(it.value, currency) }
+
+        return transactions.currencyOrNull()?.let { currency -> transactions.groupByInterval().sumAmounts().convertAmountsToMoney(currency) } ?: emptyMap()
+    }
 }

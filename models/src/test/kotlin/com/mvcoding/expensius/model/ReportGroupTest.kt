@@ -15,102 +15,60 @@
 package com.mvcoding.expensius.model
 
 import com.memoizr.assertk.expect
-import com.mvcoding.expensius.model.ReportGroup.DAY
+import com.mvcoding.expensius.model.extensions.aTransaction
+import com.mvcoding.expensius.model.extensions.withTimestamp
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.Period
 import org.junit.Test
 
 class ReportGroupTest {
-    @Test
-    fun `number of steps is 0 when interval is empty or does not fill the period`() {
-        val anyDate = DateTime()
-        val emptyInterval = Interval(0, 0)
-
-        ReportGroup.values().forEach {
-            expect that it.toNumberOfGroups(emptyInterval) isEqualTo 0
-            expect that it.toNumberOfGroups(Interval(anyDate, it.toPeriod().minusMinutes(1))) isEqualTo 0
-        }
-    }
 
     @Test
-    fun `number of steps is 1 when interval is same as step`() {
-        val anyDate = DateTime()
-
+    fun `can convert to Period`() {
         ReportGroup.values().forEach {
-            expect that it.toNumberOfGroups(Interval(anyDate, it.toPeriod())) isEqualTo 1
-        }
-    }
-
-    @Test
-    fun `number of steps is 1 when interval does not fill the second period`() {
-        val anyDate = DateTime()
-
-        ReportGroup.values().forEach {
-            expect that it.toNumberOfGroups(Interval(anyDate, it.toPeriod().plusMinutes(1))) isEqualTo 1
-        }
-    }
-
-    @Test
-    fun `interval wraps given timestamp`() {
-        val now = DateTime.now()
-        val timestamp = now.millis
-
-        ReportGroup.values().forEach {
-            val interval = it.toInterval(timestamp)
-            val expectedInterval = when (it) {
-                DAY -> Interval(now.withTimeAtStartOfDay(), Period.days(1))
+            val period = it.toPeriod()
+            val expectedPeriod = when (it) {
+                ReportGroup.DAY -> Period.days(1)
             }
-            expect that interval isEqualTo expectedInterval
+            expect that period isEqualTo expectedPeriod
         }
     }
 
     @Test
-    fun `splits into intervals that fully cover given interval when it can be divided in equal periods`() {
-        val timestamp = DateTime.now().millis
+    fun `can convert to Interval that wraps timestamp`() {
+        val now = DateTime.now()
+        val timestampMillis = now.millis
+        val timestamp = Timestamp(timestampMillis)
 
         ReportGroup.values().forEach {
-            val firstInterval = it.toInterval(timestamp)
-            val secondInterval = firstInterval
-                    .withStart(firstInterval.end)
-                    .withPeriodAfterStart(it.toPeriod())
-            val totalInterval = Interval(firstInterval.start, secondInterval.end)
-            val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
-
-            expect that splitIntervals isEqualTo listOf(firstInterval, secondInterval)
+            val intervalFromMillis = it.toInterval(timestampMillis)
+            val intervalFromTimestamp = it.toInterval(timestamp)
+            val expectedInterval = when (it) {
+                ReportGroup.DAY -> Interval(now.withTimeAtStartOfDay(), Period.days(1))
+            }
+            expect that intervalFromMillis isEqualTo expectedInterval
+            expect that intervalFromTimestamp isEqualTo expectedInterval
         }
     }
 
     @Test
-    fun `returns empty list when interval is smaller than period`() {
-        val timestamp = DateTime.now().millis
+    fun `groups moneys into intervals`() {
+        ReportGroup.values().forEach { reportGroup ->
+            val period = reportGroup.toPeriod()
+            val timestamp = DateTime().withTimeAtStartOfDay().millis
+            val groupA1 = aTransaction().withTimestamp(timestamp)
+            val groupA2 = aTransaction().withTimestamp(timestamp + 1)
+            val groupB1 = aTransaction().withTimestamp(DateTime(timestamp).plus(period).millis)
+            val transactions = listOf(groupA1, groupA2, groupB1)
+            val expectedCurrency = groupA1.money.currency
+            val expectedGroupedMoneys = mapOf(
+                    reportGroup.toInterval(groupA1.timestamp) to Money(groupA1.money.amount + groupA2.money.amount, expectedCurrency),
+                    reportGroup.toInterval(groupB1.timestamp) to Money(groupB1.money.amount, expectedCurrency))
 
-        ReportGroup.values().forEach {
-            val interval = it.toInterval(timestamp)
-            val totalInterval = Interval(
-                    interval.start.plusMinutes(1),
-                    interval.end.minusMinutes(1))
-            val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
+            val groupedMoneys = reportGroup.group(transactions)
 
-            expect that splitIntervals isEqualTo emptyList()
-        }
-    }
-
-    @Test
-    fun `splits into intervals by cutting out edges when cannot be divided in equal periods`() {
-        val timestamp = DateTime.now().millis
-
-        ReportGroup.values().forEach {
-            val firstInterval = it.toInterval(timestamp)
-            val secondInterval = firstInterval
-                    .withStart(firstInterval.end)
-                    .withPeriodAfterStart(it.toPeriod())
-            val totalInterval = Interval(
-                    firstInterval.start.minusMinutes(1),
-                    secondInterval.end.plusMinutes(1))
-            val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
-
-            expect that splitIntervals isEqualTo listOf(firstInterval, secondInterval)
+            expect that groupedMoneys isEqualTo expectedGroupedMoneys
         }
     }
 }

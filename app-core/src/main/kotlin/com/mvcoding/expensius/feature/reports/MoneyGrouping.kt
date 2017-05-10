@@ -14,36 +14,34 @@
 
 package com.mvcoding.expensius.feature.reports
 
-import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
-import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.NullModels.noTag
-import org.joda.time.Interval
-import java.io.Serializable
-import java.math.BigDecimal.ZERO
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.Transaction
 import java.util.*
 
 class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
 
-    fun groupToIntervals(
-            transactions: List<Transaction>,
-            currency: Currency,
-            filterData: FilterDataOld,
-            reportGroup: ReportGroup): List<GroupedMoney<Interval>> {
+//    fun groupToIntervals(
+//            transactions: List<Transaction>,
+//            currency: Currency,
+//            filterData: FilterDataOld,
+//            reportGroup: ReportGroup): List<GroupedMoney<Interval>> {
+//
+//        val defaultValue = { Money(ZERO, currency) }
+//        val groupedMoney = filterData.filter(transactions).groupBy({ reportGroup.toInterval(it.timestamp) }, { it.money }).sumMoney(currency)
+//        return reportGroup.splitIntoGroupIntervals(filterData.interval)
+//                .associateBy({ it }, { groupedMoney.getOrElse(it, defaultValue) })
+//                .map { GroupedMoney(it.key, it.value) }
+//    }
 
-        val defaultValue = { Money(ZERO, currency) }
-        val groupedMoney = filterData.filter(transactions).groupBy({ reportGroup.toInterval(it.timestamp) }, { it.money }).sumMoney(currency)
-        return reportGroup.splitIntoGroupIntervals(filterData.interval)
-                .associateBy({ it }, { groupedMoney.getOrElse(it, defaultValue) })
-                .map { GroupedMoney(it.key, it.value) }
-    }
-
-    fun groupToTags(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld): List<GroupedMoney<Tag>> = filterData.filter(transactions)
-            .fold(hashMapOf<Tag, ArrayList<Money>>()) { map, transaction -> transaction.appendMoneyToTags(map) }
-            .sumMoney(currency)
-            .map { GroupedMoney(it.key, it.value) }
-            .sortedWith(compareBy({ -it.money.amount }, { it.group.order }))
+//    fun groupToTags(transactions: List<Transaction>, currency: Currency, filterData: FilterDataOld): List<GroupedMoney<Tag>> = filterData.filter(transactions)
+//            .fold(hashMapOf<Tag, ArrayList<Money>>()) { map, transaction -> transaction.appendMoneyToTags(map) }
+//            .sumMoney(currency)
+//            .map { GroupedMoney(it.key, it.value) }
+//            .sortedWith(compareBy({ -it.money.amount }, { it.group.order }))
 
     private fun Transaction.appendMoneyToTags(map: HashMap<Tag, ArrayList<Money>>) = tagsOrNoTag()/*.forEach { map.appendAmountToTag(it, money) }*/.let { map }
     private fun Transaction.tagsOrNoTag() = tags.let { if (it.isEmpty()) setOf(noTag) else it }
@@ -51,4 +49,3 @@ class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
     private fun <KEY> Map<KEY, List<Money>>.sumMoney(currency: Currency) = mapValues { it.value.sumMoney(currency, exchangeRatesProvider) }
 }
 
-data class GroupedMoney<out GROUP>(val group: GROUP, val money: Money) : Serializable

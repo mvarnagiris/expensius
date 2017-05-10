@@ -18,6 +18,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.mvcoding.expensius.extension.doNotInEditMode
+import com.mvcoding.expensius.model.GroupedMoney
 import com.mvcoding.expensius.model.NullModels.noMoney
 import com.mvcoding.expensius.model.Tag
 

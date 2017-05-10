@@ -19,6 +19,7 @@ import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.feature.FilterOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.GroupedMoney
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
