@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,56 +12,47 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.model
 
-import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
-import com.mvcoding.expensius.extensions.toInterval
-import com.mvcoding.expensius.extensions.toNumberOfGroups
-import com.mvcoding.expensius.extensions.toPeriod
-import com.mvcoding.expensius.model.ReportGroup
+import com.memoizr.assertk.expect
 import com.mvcoding.expensius.model.ReportGroup.DAY
-import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.Period
-import org.junit.Assert.assertThat
 import org.junit.Test
 
 class ReportGroupTest {
     @Test
-    fun numberOfStepsIs0WhenIntervalIsEmptyOrDoesNotFillThePeriod() {
+    fun `number of steps is 0 when interval is empty or does not fill the period`() {
         val anyDate = DateTime()
         val emptyInterval = Interval(0, 0)
 
         ReportGroup.values().forEach {
-            assertThat(it.toNumberOfGroups(emptyInterval), equalTo(0))
-            assertThat(
-                    "$it",
-                    it.toNumberOfGroups(Interval(anyDate, it.toPeriod().minusMinutes(1))),
-                    equalTo(0))
+            expect that it.toNumberOfGroups(emptyInterval) isEqualTo 0
+            expect that it.toNumberOfGroups(Interval(anyDate, it.toPeriod().minusMinutes(1))) isEqualTo 0
         }
     }
 
     @Test
-    fun numberOfStepsIs1WhenIntervalIsSameAsStep() {
+    fun `number of steps is 1 when interval is same as step`() {
         val anyDate = DateTime()
 
         ReportGroup.values().forEach {
-            assertThat("$it", it.toNumberOfGroups(Interval(anyDate, it.toPeriod())), equalTo(1))
+            expect that it.toNumberOfGroups(Interval(anyDate, it.toPeriod())) isEqualTo 1
         }
     }
 
     @Test
-    fun numberOfStepsIs1WhenIntervalDoesNotFillTheSecondPeriod() {
+    fun `number of steps is 1 when interval does not fill the second period`() {
         val anyDate = DateTime()
 
         ReportGroup.values().forEach {
-            assertThat("$it", it.toNumberOfGroups(Interval(anyDate, it.toPeriod().plusMinutes(1))), equalTo(1))
+            expect that it.toNumberOfGroups(Interval(anyDate, it.toPeriod().plusMinutes(1))) isEqualTo 1
         }
     }
 
     @Test
-    fun intervalWrapsGivenTimestamp() {
+    fun `interval wraps given timestamp`() {
         val now = DateTime.now()
         val timestamp = now.millis
 
@@ -70,12 +61,12 @@ class ReportGroupTest {
             val expectedInterval = when (it) {
                 DAY -> Interval(now.withTimeAtStartOfDay(), Period.days(1))
             }
-            assertThat("$it", interval, equalTo(expectedInterval))
+            expect that interval isEqualTo expectedInterval
         }
     }
 
     @Test
-    fun splitsIntoIntervalsThatFullyCoverGivenIntervalWhenItCanBeDividedInEqualPeriods() {
+    fun `splits into intervals that fully cover given interval when it can be divided in equal periods`() {
         val timestamp = DateTime.now().millis
 
         ReportGroup.values().forEach {
@@ -86,12 +77,12 @@ class ReportGroupTest {
             val totalInterval = Interval(firstInterval.start, secondInterval.end)
             val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
 
-            assertThat("$it", splitIntervals, equalTo(listOf(firstInterval, secondInterval)))
+            expect that splitIntervals isEqualTo listOf(firstInterval, secondInterval)
         }
     }
 
     @Test
-    fun returnsEmptyListWhenIntervalIsSmallerThanPeriod() {
+    fun `returns empty list when interval is smaller than period`() {
         val timestamp = DateTime.now().millis
 
         ReportGroup.values().forEach {
@@ -101,12 +92,12 @@ class ReportGroupTest {
                     interval.end.minusMinutes(1))
             val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
 
-            assertThat("$it", splitIntervals, equalTo(emptyList()))
+            expect that splitIntervals isEqualTo emptyList()
         }
     }
 
     @Test
-    fun splitsIntoIntervalsByCuttingOutEdgesWhenCannotBeDividedInEqualPeriods() {
+    fun `splits into intervals by cutting out edges when cannot be divided in equal periods`() {
         val timestamp = DateTime.now().millis
 
         ReportGroup.values().forEach {
@@ -119,7 +110,7 @@ class ReportGroupTest {
                     secondInterval.end.plusMinutes(1))
             val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
 
-            assertThat("$it", splitIntervals, equalTo(listOf(firstInterval, secondInterval)))
+            expect that splitIntervals isEqualTo listOf(firstInterval, secondInterval)
         }
     }
 }
