@@ -19,7 +19,7 @@ import com.mvcoding.expensius.data.testParameterRealtimeDataSource
 import com.mvcoding.expensius.model.BasicTransaction
 import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.aRemoteFilter
+import com.mvcoding.expensius.model.extensions.aRemoteFilter
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test

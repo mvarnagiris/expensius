@@ -11,10 +11,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-package com.mvcoding.expensius
+package com.mvcoding.expensius.model.extensions
 
-import java.math.BigDecimal
 import java.util.*
+
 
 fun aString() = UUID.randomUUID().toString()
 fun aString(string: String) = "$string${anInt(1000)}"
@@ -24,7 +24,6 @@ fun aLong(limit: Int) = anInt(limit).toLong()
 fun anInt() = Random().nextInt()
 fun anInt(limit: Int) = Random().nextInt(limit)
 fun aLongTimestamp() = System.currentTimeMillis() - anInt(1000 * 60 * 60 * 24)
-fun anAmount() = BigDecimal(anInt(100))
 fun aBoolean() = Math.random() >= 0.5
 fun <T> Array<T>.aRandomItem() = get(anInt(size))
 fun <T> List<T>.aRandomItem() = get(anInt(size))

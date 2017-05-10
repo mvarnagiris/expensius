@@ -14,8 +14,6 @@
 
 package com.mvcoding.expensius.feature.reports
 
-import com.mvcoding.expensius.extensions.splitIntoGroupIntervals
-import com.mvcoding.expensius.extensions.toInterval
 import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.*

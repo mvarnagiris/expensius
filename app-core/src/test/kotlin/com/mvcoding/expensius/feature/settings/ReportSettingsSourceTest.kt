@@ -15,7 +15,7 @@
 package com.mvcoding.expensius.feature.settings
 
 import com.mvcoding.expensius.data.testMemoryCache
-import com.mvcoding.expensius.model.aReportSettings
+import com.mvcoding.expensius.model.extensions.aReportSettings
 import org.junit.Test
 
 class ReportSettingsSourceTest {

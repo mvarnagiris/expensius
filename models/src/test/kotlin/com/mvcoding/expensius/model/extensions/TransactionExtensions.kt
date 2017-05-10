@@ -12,9 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-import com.mvcoding.expensius.*
+import com.mvcoding.expensius.model.*
 import java.math.BigDecimal
 
 fun aTransactionId() = TransactionId(aStringId())

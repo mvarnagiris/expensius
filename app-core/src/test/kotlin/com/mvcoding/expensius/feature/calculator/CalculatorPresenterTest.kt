@@ -23,7 +23,7 @@ import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Money
 import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.aFixedTimestampProvider
-import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.model.extensions.anAppUser
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test

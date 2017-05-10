@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.data.testParameterRealtimeDataSource
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.UserId
-import com.mvcoding.expensius.model.aUserId
+import com.mvcoding.expensius.model.extensions.aUserId
 import org.junit.Test
 
 class TagsSourceTest {

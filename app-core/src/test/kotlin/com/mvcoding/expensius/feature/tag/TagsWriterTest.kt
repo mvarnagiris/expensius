@@ -15,7 +15,11 @@
 package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.UserId
+import com.mvcoding.expensius.model.extensions.aTag
+import com.mvcoding.expensius.model.extensions.anAppUser
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever

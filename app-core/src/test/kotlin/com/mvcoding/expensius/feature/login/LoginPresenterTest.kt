@@ -28,7 +28,7 @@ import com.mvcoding.expensius.model.AuthProvider.GOOGLE
 import com.mvcoding.expensius.model.GoogleToken
 import com.mvcoding.expensius.model.Login
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
-import com.mvcoding.expensius.model.aGoogleToken
+import com.mvcoding.expensius.model.extensions.aGoogleToken
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before

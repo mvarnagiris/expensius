@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.model
 
 import com.memoizr.assertk.expect
+import com.mvcoding.expensius.model.extensions.*
 import org.junit.Test
 
 class LocalFilterTest {

@@ -12,8 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-import com.mvcoding.expensius.aRandomItem
+import com.mvcoding.expensius.model.UriImage
 
-fun aModelState() = ModelState.values().aRandomItem()
+fun anImage() = UriImage(aString("uri"))

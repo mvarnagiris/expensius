@@ -12,9 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-import com.mvcoding.expensius.aRandomItem
+import com.mvcoding.expensius.model.Currency
+import com.mvcoding.expensius.model.ExchangeRateCurrencies
 
 fun aStringCurrencyCode(excludeCode: String = "") = arrayOf("GBP", "EUR", "USD", "CAD", "CHF", "RUB").filter { it != excludeCode }.aRandomItem()
 fun aCurrency(excludeCode: String = "") = Currency(aStringCurrencyCode(excludeCode))

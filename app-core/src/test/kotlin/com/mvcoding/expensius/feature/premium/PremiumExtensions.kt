@@ -14,12 +14,12 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import com.mvcoding.expensius.aBoolean
-import com.mvcoding.expensius.aRandomItem
-import com.mvcoding.expensius.aString
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.model.extensions.aBoolean
+import com.mvcoding.expensius.model.extensions.aRandomItem
+import com.mvcoding.expensius.model.extensions.aString
 
 fun aBillingProduct() = BillingProduct(aString(), aSubscriptionType(), aString(), aString(), aString(), aBoolean())
 fun BillingProduct.withSubscriptionType(subscriptionType: SubscriptionType) = copy(subscriptionType = subscriptionType)

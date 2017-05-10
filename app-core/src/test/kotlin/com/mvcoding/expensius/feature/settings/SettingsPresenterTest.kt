@@ -19,11 +19,15 @@ import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.feature.currency.CurrenciesSource
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.RETURN
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.SUPPORT_DEVELOPER
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
+import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
+import com.mvcoding.expensius.model.extensions.anAppUser
+import com.mvcoding.expensius.model.extensions.withAuthProvider
+import com.mvcoding.expensius.model.extensions.withNoAuthProviders
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before

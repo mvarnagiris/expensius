@@ -15,13 +15,13 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.BusinessConstants
-import com.mvcoding.expensius.anInt
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.data.RealtimeData.AddedItems
 import com.mvcoding.expensius.data.RealtimeData.AllItems
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.someTransactions
+import com.mvcoding.expensius.model.extensions.anInt
+import com.mvcoding.expensius.model.extensions.someTransactions
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test

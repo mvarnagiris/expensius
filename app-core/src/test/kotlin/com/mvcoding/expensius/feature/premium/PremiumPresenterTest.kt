@@ -20,7 +20,7 @@ import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
-import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.model.extensions.anAppUser
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before

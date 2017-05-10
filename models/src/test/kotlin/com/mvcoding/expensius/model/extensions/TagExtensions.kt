@@ -12,11 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-import com.mvcoding.expensius.aString
-import com.mvcoding.expensius.aStringId
-import com.mvcoding.expensius.anInt
+import com.mvcoding.expensius.model.*
 
 fun aTagId() = TagId(aStringId())
 fun aTitle() = Title(aString("title"))

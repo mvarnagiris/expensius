@@ -22,6 +22,7 @@ import com.mvcoding.expensius.model.NullModels.noEmail
 import com.mvcoding.expensius.model.NullModels.noImage
 import com.mvcoding.expensius.model.NullModels.noName
 import com.mvcoding.expensius.model.NullModels.noSettings
+import com.mvcoding.expensius.model.extensions.anAppUser
 import org.junit.Test
 
 class FirebaseAppUserTest {

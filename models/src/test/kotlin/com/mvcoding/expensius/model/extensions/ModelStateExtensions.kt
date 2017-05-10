@@ -12,11 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-fun aLocalFilter() = LocalFilter(aTransactionType(), aTransactionState(), someTags(), aNote())
-fun LocalFilter.withNoFilters() = copy(null, null, emptySet(), null)
-fun LocalFilter.withTransactionType(transactionType: TransactionType?) = copy(transactionType = transactionType)
-fun LocalFilter.withTransactionState(transactionState: TransactionState?) = copy(transactionState = transactionState)
-fun LocalFilter.withTags(tags: Set<Tag>) = copy(tags = tags)
-fun LocalFilter.withNote(note: Note) = copy(note = note)
+import com.mvcoding.expensius.model.ModelState
+
+fun aModelState() = ModelState.values().aRandomItem()

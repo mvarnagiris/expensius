@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.aTransaction
+import com.mvcoding.expensius.model.extensions.aTransaction
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify

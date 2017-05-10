@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.aString
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.data.RealtimeData
@@ -26,8 +25,9 @@ import com.mvcoding.expensius.feature.tag.TagsPresenter.TagMove
 import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Title
-import com.mvcoding.expensius.model.aTag
-import com.mvcoding.expensius.model.withOrder
+import com.mvcoding.expensius.model.extensions.aString
+import com.mvcoding.expensius.model.extensions.aTag
+import com.mvcoding.expensius.model.extensions.withOrder
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before

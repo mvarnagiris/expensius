@@ -4,6 +4,7 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.NullModels.noAppUser
+import com.mvcoding.expensius.model.extensions.*
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test

@@ -12,12 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-import com.mvcoding.expensius.anInt
-import org.joda.time.DateTimeConstants
-import org.joda.time.Interval
+import com.mvcoding.expensius.model.ReportGroup
+import com.mvcoding.expensius.model.ReportPeriod
 
-fun anInterval(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = reportPeriod.interval(System.currentTimeMillis() - DateTimeConstants.MILLIS_PER_DAY.toLong() * 30 * anInt(1000))
-fun aRemoteFilter(reportPeriod: ReportPeriod = ReportPeriod.MONTH) = RemoteFilter(aUserId(), anInterval(reportPeriod))
-fun RemoteFilter.withInterval(interval: Interval) = copy(interval = interval)
+fun aReportPeriod() = ReportPeriod.values().aRandomItem()
+fun aReportGroup() = ReportGroup.values().aRandomItem()

@@ -12,9 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-import com.mvcoding.expensius.aRandomItem
+import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.LoggedInUserDetails
+import com.mvcoding.expensius.model.Login
 
-fun aReportPeriod() = ReportPeriod.values().aRandomItem()
-fun aReportGroup() = ReportGroup.values().aRandomItem()
+fun aGoogleToken() = GoogleToken(aString("token"))
+fun anAnonymousLogin() = Login.AnonymousLogin
+fun aGoogleLogin() = Login.GoogleLogin(aGoogleToken(), aBoolean())
+fun aLoggedInUserDetails() = LoggedInUserDetails(aUserId(), aName(), anEmail(), anImage())

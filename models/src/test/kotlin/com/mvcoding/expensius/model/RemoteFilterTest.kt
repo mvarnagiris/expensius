@@ -15,6 +15,8 @@
 package com.mvcoding.expensius.model
 
 import com.memoizr.assertk.expect
+import com.mvcoding.expensius.model.extensions.aRemoteFilter
+import com.mvcoding.expensius.model.extensions.withInterval
 import org.joda.time.DateTime
 import org.junit.Test
 

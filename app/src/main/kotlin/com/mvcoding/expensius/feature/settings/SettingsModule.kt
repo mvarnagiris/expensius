@@ -39,7 +39,7 @@ class SettingsModule : ShankModule {
 
     private fun reportSettingsSource() = registerFactory(ReportSettingsSource::class) { ->
         val appUserSource = provideAppUserSource()
-        ReportSettingsSource { appUserSource.data().map { ReportSettings(it.settings.reportPeriod, it.settings.reportGroup) } }
+        ReportSettingsSource { appUserSource.data().map { ReportSettings(it.settings.reportPeriod, it.settings.reportGroup, it.settings.mainCurrency) } }
     }
 }
 

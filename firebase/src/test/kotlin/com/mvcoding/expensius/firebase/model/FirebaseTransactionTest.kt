@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.firebase.model
 
 import com.memoizr.assertk.expect
-import com.mvcoding.expensius.aStringId
 import com.mvcoding.expensius.firebase.extensions.*
 import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.NullModels.noBasicTransaction
@@ -23,6 +22,10 @@ import com.mvcoding.expensius.model.NullModels.noNote
 import com.mvcoding.expensius.model.NullModels.noTimestamp
 import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.extensions.aCreateTransaction
+import com.mvcoding.expensius.model.extensions.aModelState
+import com.mvcoding.expensius.model.extensions.aStringId
+import com.mvcoding.expensius.model.extensions.aTransaction
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO

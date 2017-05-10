@@ -18,8 +18,8 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.aTag
-import com.mvcoding.expensius.model.withModelState
+import com.mvcoding.expensius.model.extensions.aTag
+import com.mvcoding.expensius.model.extensions.withModelState
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test

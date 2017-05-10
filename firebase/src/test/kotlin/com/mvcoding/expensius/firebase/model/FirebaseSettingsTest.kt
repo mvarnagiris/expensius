@@ -22,8 +22,8 @@ import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.NullModels.noSettings
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
-import com.mvcoding.expensius.model.aSettings
 import com.mvcoding.expensius.model.defaultCurrency
+import com.mvcoding.expensius.model.extensions.aSettings
 import org.junit.Test
 
 class FirebaseSettingsTest {

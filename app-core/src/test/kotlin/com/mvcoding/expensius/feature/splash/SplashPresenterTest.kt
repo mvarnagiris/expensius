@@ -18,7 +18,7 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.NullModels.noAppUser
-import com.mvcoding.expensius.model.anAppUser
+import com.mvcoding.expensius.model.extensions.anAppUser
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify

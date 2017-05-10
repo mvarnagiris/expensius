@@ -1,9 +1,9 @@
 package com.mvcoding.expensius.firebase.extensions
 
-import com.mvcoding.expensius.aString
-import com.mvcoding.expensius.aStringId
 import com.mvcoding.expensius.firebase.model.FirebaseAppUser
 import com.mvcoding.expensius.firebase.model.FirebaseSettings
+import com.mvcoding.expensius.model.extensions.aString
+import com.mvcoding.expensius.model.extensions.aStringId
 
 fun aFirebaseAppUser() = FirebaseAppUser(
         id = aStringId(),

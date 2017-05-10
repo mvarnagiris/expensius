@@ -18,7 +18,7 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.data.RealtimeData.*
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.aTag
+import com.mvcoding.expensius.model.extensions.aTag
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test

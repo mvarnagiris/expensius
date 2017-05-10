@@ -14,12 +14,11 @@
 
 package com.mvcoding.expensius.firebase.extensions
 
-import com.mvcoding.expensius.aLongTimestamp
-import com.mvcoding.expensius.aString
-import com.mvcoding.expensius.aStringId
-import com.mvcoding.expensius.anAmount
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.TagId
+import com.mvcoding.expensius.model.TransactionState
+import com.mvcoding.expensius.model.TransactionType
+import com.mvcoding.expensius.model.extensions.*
 
 fun aFirebaseTransaction() = FirebaseTransaction(
         id = aStringId(),

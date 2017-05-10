@@ -15,12 +15,18 @@
 package com.mvcoding.expensius.firebase.model
 
 import com.memoizr.assertk.expect
-import com.mvcoding.expensius.aStringId
 import com.mvcoding.expensius.firebase.extensions.*
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.Color
 import com.mvcoding.expensius.model.NullModels.noColor
 import com.mvcoding.expensius.model.NullModels.noOrder
 import com.mvcoding.expensius.model.NullModels.noTag
+import com.mvcoding.expensius.model.Order
+import com.mvcoding.expensius.model.TagId
+import com.mvcoding.expensius.model.Title
+import com.mvcoding.expensius.model.extensions.aCreateTag
+import com.mvcoding.expensius.model.extensions.aModelState
+import com.mvcoding.expensius.model.extensions.aStringId
+import com.mvcoding.expensius.model.extensions.aTag
 import org.junit.Test
 
 class FirebaseTagTest {

@@ -15,7 +15,13 @@
 package com.mvcoding.expensius.feature.filter
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.RemoteFilter
+import com.mvcoding.expensius.model.TimestampProvider
+import com.mvcoding.expensius.model.extensions.aTimestamp
+import com.mvcoding.expensius.model.extensions.anAppUser
+import com.mvcoding.expensius.model.extensions.withId
+import com.mvcoding.expensius.model.extensions.withReportPeriod
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before

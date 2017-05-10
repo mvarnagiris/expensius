@@ -12,6 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
+
+import com.mvcoding.expensius.model.ReportSettings
 
 fun aReportSettings() = ReportSettings(aReportPeriod(), aReportGroup(), aCurrency())

@@ -18,8 +18,8 @@ import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
-import com.mvcoding.expensius.model.aRemoteFilter
-import com.mvcoding.expensius.model.aReportSettings
+import com.mvcoding.expensius.model.extensions.aRemoteFilter
+import com.mvcoding.expensius.model.extensions.aReportSettings
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify

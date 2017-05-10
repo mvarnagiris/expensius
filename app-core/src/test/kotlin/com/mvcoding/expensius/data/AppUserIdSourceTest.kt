@@ -14,7 +14,11 @@
 
 package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.AppUser
+import com.mvcoding.expensius.model.Name
+import com.mvcoding.expensius.model.UserId
+import com.mvcoding.expensius.model.extensions.anAppUser
+import com.mvcoding.expensius.model.extensions.withId
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test

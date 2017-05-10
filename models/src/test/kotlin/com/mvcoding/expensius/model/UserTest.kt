@@ -17,6 +17,10 @@ package com.mvcoding.expensius.model
 import com.memoizr.assertk.expect
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
+import com.mvcoding.expensius.model.extensions.anAppUser
+import com.mvcoding.expensius.model.extensions.anAuthProvider
+import com.mvcoding.expensius.model.extensions.withAuthProvider
+import com.mvcoding.expensius.model.extensions.withNoAuthProviders
 import org.junit.Test
 
 class UserTest {

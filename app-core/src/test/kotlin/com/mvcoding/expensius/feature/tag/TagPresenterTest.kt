@@ -21,6 +21,7 @@ import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.NullModels.noTag
+import com.mvcoding.expensius.model.extensions.aTag
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test

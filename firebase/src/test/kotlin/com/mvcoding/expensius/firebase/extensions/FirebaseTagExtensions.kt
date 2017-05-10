@@ -14,10 +14,10 @@
 
 package com.mvcoding.expensius.firebase.extensions
 
-import com.mvcoding.expensius.aString
-import com.mvcoding.expensius.aStringId
-import com.mvcoding.expensius.anInt
 import com.mvcoding.expensius.firebase.model.FirebaseTag
+import com.mvcoding.expensius.model.extensions.aString
+import com.mvcoding.expensius.model.extensions.aStringId
+import com.mvcoding.expensius.model.extensions.anInt
 
 fun aFirebaseTag() = FirebaseTag(
         id = aStringId(),

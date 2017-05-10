@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature.tag
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.aTag
+import com.mvcoding.expensius.model.extensions.aTag
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify

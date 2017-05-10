@@ -14,7 +14,6 @@
 
 package com.mvcoding.expensius.feature.transaction
 
-import com.mvcoding.expensius.aString
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.feature.ModelDisplayType
@@ -22,8 +21,9 @@ import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.Note
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.aTransaction
-import com.mvcoding.expensius.model.someTransactions
+import com.mvcoding.expensius.model.extensions.aString
+import com.mvcoding.expensius.model.extensions.aTransaction
+import com.mvcoding.expensius.model.extensions.someTransactions
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before

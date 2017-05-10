@@ -3,8 +3,8 @@ package com.mvcoding.expensius.data
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.NullModels.noAppUser
 import com.mvcoding.expensius.model.NullModels.noSettings
-import com.mvcoding.expensius.model.anAppUser
 import com.mvcoding.expensius.model.defaultCurrency
+import com.mvcoding.expensius.model.extensions.anAppUser
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever

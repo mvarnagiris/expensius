@@ -17,9 +17,9 @@ package com.mvcoding.expensius.feature.currency
 import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.data.testMemoryParameterDataSource
 import com.mvcoding.expensius.model.ExchangeRateCurrencies
-import com.mvcoding.expensius.model.aCurrency
-import com.mvcoding.expensius.model.anAmount
-import com.mvcoding.expensius.model.anExchangeRateCurrencies
+import com.mvcoding.expensius.model.extensions.aCurrency
+import com.mvcoding.expensius.model.extensions.anAmount
+import com.mvcoding.expensius.model.extensions.anExchangeRateCurrencies
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
