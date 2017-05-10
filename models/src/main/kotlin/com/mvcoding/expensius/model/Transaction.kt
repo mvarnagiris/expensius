@@ -63,7 +63,10 @@ data class Transaction(
         val timestamp: Timestamp,
         val money: Money,
         val tags: Set<Tag>,
-        val note: Note) : Serializable
+        val note: Note) : Serializable {
+
+    fun withMoney(money: Money) = copy(money = money)
+}
 
 interface TimestampProvider {
     fun currentTimestamp(): Timestamp

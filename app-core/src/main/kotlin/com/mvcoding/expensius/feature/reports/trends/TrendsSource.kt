@@ -16,17 +16,29 @@ package com.mvcoding.expensius.feature.reports.trends
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.ParameterDataSource
-import com.mvcoding.expensius.model.ExchangeRateCurrencies
-import com.mvcoding.expensius.model.ReportSettings
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.Trends
+import com.mvcoding.expensius.model.*
 import rx.Observable
-import java.math.BigDecimal
+import rx.Observable.*
 
 class TrendsSource(
         private val transactionsSource: DataSource<List<Transaction>>,
+        private val otherTransactionsSource: DataSource<List<Transaction>>,
         private val reportSettingsSource: DataSource<ReportSettings>,
-        private val exchangeRatesSource: ParameterDataSource<ExchangeRateCurrencies, BigDecimal>) : DataSource<Trends> {
+        private val moneyConversionSource: ParameterDataSource<MoneyConversion, Money>) : DataSource<Trends> {
 
-    override fun data(): Observable<Trends> = Observable.never()//transactionsSource.data().map { it.allItems }
+    override fun data(): Observable<Trends> = never()//transactionsSource.data().map { it.allItems }
+
+    private fun transactionsAndReportSettings(transactionsSource: DataSource<List<Transaction>>) = combineLatest(
+            transactionsSource.data(),
+            reportSettingsSource.data(),
+            ::TransactionsAndReportSettings)
+
+    private fun Observable<TransactionsAndReportSettings>.switchMapToListOfMoneyForGivenCurrency() = switchMap {
+        it.transactions.withMoneyForGivenCurrency(it.reportSettings.currency)
+    }
+
+    private fun List<Transaction>.withMoneyForGivenCurrency(currency: Currency) = from(this).flatMap { it.withMoneyForGivenCurrency(currency) }.toList()
+    private fun Transaction.withMoneyForGivenCurrency(currency: Currency) = moneyConversionSource.data(MoneyConversion(money, currency)).map { withMoney(it) }
+
+    private data class TransactionsAndReportSettings(val transactions: List<Transaction>, val reportSettings: ReportSettings)
 }
