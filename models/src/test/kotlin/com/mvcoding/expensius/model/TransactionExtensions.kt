@@ -55,3 +55,6 @@ fun Transaction.withTimestamp(millis: Long) = copy(timestamp = Timestamp(millis)
 fun Transaction.withTransactionType(transactionType: TransactionType) = copy(transactionType = transactionType)
 fun Transaction.withTransactionState(transactionState: TransactionState) = copy(transactionState = transactionState)
 fun Transaction.withTags(tags: Set<Tag>) = copy(tags = tags)
+fun Transaction.withNote(note: String) = copy(note = Note(note))
+
+fun Note.withText(text: String) = copy(text = text)

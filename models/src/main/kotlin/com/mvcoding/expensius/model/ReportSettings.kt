@@ -18,4 +18,5 @@ import java.io.Serializable
 
 data class ReportSettings(
         val reportPeriod: ReportPeriod,
-        val reportGroup: ReportGroup) : Serializable
+        val reportGroup: ReportGroup,
+        val currency: Currency) : Serializable
