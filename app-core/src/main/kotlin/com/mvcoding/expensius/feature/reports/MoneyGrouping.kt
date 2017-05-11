@@ -15,12 +15,6 @@
 package com.mvcoding.expensius.feature.reports
 
 import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
-import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.NullModels.noTag
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Transaction
-import java.util.*
 
 class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
 
@@ -43,9 +37,9 @@ class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
 //            .map { GroupedMoney(it.key, it.value) }
 //            .sortedWith(compareBy({ -it.money.amount }, { it.group.order }))
 
-    private fun Transaction.appendMoneyToTags(map: HashMap<Tag, ArrayList<Money>>) = tagsOrNoTag()/*.forEach { map.appendAmountToTag(it, money) }*/.let { map }
-    private fun Transaction.tagsOrNoTag() = tags.let { if (it.isEmpty()) setOf(noTag) else it }
-    private fun HashMap<Tag, ArrayList<Money>>.appendAmountToTag(tag: Tag, money: Money) = getOrPut(tag, { arrayListOf() }).add(money)
-    private fun <KEY> Map<KEY, List<Money>>.sumMoney(currency: Currency) = mapValues { it.value.sumMoney(currency, exchangeRatesProvider) }
+//    private fun Transaction.appendMoneyToTags(map: HashMap<Tag, ArrayList<Money>>) = tagsOrNoTag()/*.forEach { map.appendAmountToTag(it, money) }*/.let { map }
+//    private fun Transaction.tagsOrNoTag() = tags.let { if (it.isEmpty()) setOf(noTag) else it }
+//    private fun HashMap<Tag, ArrayList<Money>>.appendAmountToTag(tag: Tag, money: Money) = getOrPut(tag, { arrayListOf() }).add(money)
+//    private fun <KEY> Map<KEY, List<Money>>.sumMoney(currency: Currency) = mapValues { it.value.sumMoney(currency, exchangeRatesProvider) }
 }
 

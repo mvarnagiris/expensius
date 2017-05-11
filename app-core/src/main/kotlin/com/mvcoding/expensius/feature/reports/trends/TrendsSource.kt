@@ -19,7 +19,9 @@ import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.model.*
 import org.joda.time.Interval
 import rx.Observable
-import rx.Observable.*
+import rx.Observable.combineLatest
+import rx.Observable.from
+import java.math.BigDecimal
 
 class TrendsSource(
         private val transactionsSource: DataSource<List<Transaction>>,
@@ -28,9 +30,12 @@ class TrendsSource(
         private val reportSettingsSource: DataSource<ReportSettings>,
         private val moneyConversionSource: ParameterDataSource<MoneyConversion, Money>) : DataSource<Trends> {
 
-    override fun data(): Observable<Trends> = never()//transactionsSource.data().map { it.allItems }
+    override fun data(): Observable<Trends> = combineLatest(
+            dataForTotalMoneyWithGroupedMoneys(transactionsSource),
+            dataForTotalMoneyWithGroupedMoneys(otherTransactionsSource),
+            { (totalMoney, groupedMoney), (otherTotalMoney, otherGroupedMoney) -> Trends(groupedMoney, totalMoney, otherGroupedMoney, otherTotalMoney) })
 
-    private fun asd(transactionsSource: DataSource<List<Transaction>>): Observable<Pair<Money, List<GroupedMoney<Interval>>>> {
+    private fun dataForTotalMoneyWithGroupedMoneys(transactionsSource: DataSource<List<Transaction>>): Observable<Pair<Money, List<GroupedMoney<Interval>>>> {
         return combineLatest(
                 transactionsSource.data(),
                 localFilterSource.data(),
@@ -45,35 +50,23 @@ class TrendsSource(
                             .flatMap { transaction -> moneyConversionSource.data(MoneyConversion(transaction.money, currency)).map { transaction.withMoney(it) } }
                             .toList()
                             .map {
-                                if (it.isEmpty()) NullModels.noTrends
+                                if (it.isEmpty()) NullModels.noMoney to emptyList<GroupedMoney<Interval>>()
                                 else {
+                                    val groupedMoneys = reportSettings.reportGroup.group(it)
+                                    val totalMoney = groupedMoneys.values
+                                            .map { it.amount }
+                                            .fold(BigDecimal.ZERO) { sum, amount -> sum + amount }
+                                            .let { Money(it, currency) }
 
-//                                    reportSettings.reportPeriod.interval(it.fir)
-//                                    reportSettings.reportGroup.group(it)
-
-                                    NullModels.noTrends
+                                    val firstTransaction = it.first()
+                                    val totalInterval = reportSettings.reportPeriod.interval(firstTransaction.timestamp)
+                                    val splitIntervals = reportSettings.reportGroup.splitIntoGroupIntervals(totalInterval)
+                                    val defaultMoney = Money(BigDecimal.ZERO, currency)
+                                    totalMoney to splitIntervals.map { GroupedMoney(it, groupedMoneys.getOrDefault(it, defaultMoney)) }
                                 }
                             }
-
-                    never<Pair<Money, List<GroupedMoney<Interval>>>>()
                 }
     }
-
-
-//    private fun DataSource<List<Transaction>>.dataForGroupedMoneys() = transactionsAndReportSettings(this)
-//            .switchMapToListOfTransactionsWithMoneyForGivenCurrency()
-//
-//    private fun transactionsAndReportSettings(transactionsSource: DataSource<List<Transaction>>) = combineLatest(
-//            transactionsSource.data(),
-//            reportSettingsSource.data(),
-//            ::TrendsData)
-//
-//    private fun Observable<TrendsData>.switchMapToListOfTransactionsWithMoneyForGivenCurrency() = switchMap {
-//        it.transactions.withMoneyForGivenCurrency(it.reportSettings.currency)
-//    }
-//
-//    private fun List<Transaction>.withMoneyForGivenCurrency(currency: Currency) = from(this).flatMap { it.withMoneyForGivenCurrency(currency) }.toList()
-//    private fun Transaction.withMoneyForGivenCurrency(currency: Currency) = moneyConversionSource.data(MoneyConversion(money, currency)).map { withMoney(it) }
 
     private data class TrendsData(
             val transactions: List<Transaction>,
