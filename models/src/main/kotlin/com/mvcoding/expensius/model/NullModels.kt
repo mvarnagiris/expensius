@@ -44,6 +44,8 @@ object NullModels {
     val noTransaction = Transaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
     val noBasicTransaction = BasicTransaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
 
+    val noTrends = Trends(emptyList(), noMoney, emptyList(), noMoney)
+
     fun newTransaction(timestamp: Timestamp, money: Money) = Transaction(
             noTransactionId,
             NONE,

@@ -12,13 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model
+package com.mvcoding.expensius.model.extensions
 
-import org.joda.time.Interval
-import java.io.Serializable
+import com.mvcoding.expensius.model.GroupedMoney
 
-data class Trends(
-        val currentMoneys: List<GroupedMoney<Interval>>,
-        val currentTotal: Money,
-        val otherMoneys: List<GroupedMoney<Interval>>,
-        val otherTotal: Money) : Serializable
+fun anIntervalGroupedMoney() = GroupedMoney(anInterval(), aMoney())
+fun someIntervalGroupedMoneys() = aRange().map { anIntervalGroupedMoney() }

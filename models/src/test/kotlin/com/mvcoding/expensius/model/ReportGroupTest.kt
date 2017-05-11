@@ -71,4 +71,57 @@ class ReportGroupTest {
             expect that groupedMoneys isEqualTo expectedGroupedMoneys
         }
     }
+
+    @Test
+    fun `splits into intervals that fully cover given interval when it can be divided in equal periods`() {
+        val timestamp = DateTime.now().millis
+
+        ReportGroup.values().forEach {
+            val firstInterval = it.toInterval(timestamp)
+            val secondInterval = firstInterval
+                    .withStart(firstInterval.end)
+                    .withPeriodAfterStart(it.toPeriod())
+            val totalInterval = Interval(firstInterval.start, secondInterval.end)
+            val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
+
+            expect that splitIntervals isEqualTo listOf(firstInterval, secondInterval)
+        }
+    }
+
+    @Test
+    fun `returns group single interval when given interval is smaller than period`() {
+        val timestamp = DateTime.now().millis
+
+        ReportGroup.values().forEach {
+            val interval = it.toInterval(timestamp)
+            val totalInterval = Interval(
+                    interval.start.plusMinutes(1),
+                    interval.end.minusMinutes(1))
+            val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
+
+            expect that splitIntervals isEqualTo listOf(interval)
+        }
+    }
+
+    @Test
+    fun `returns extra interval when edge of given interval sticks out`() {
+        val timestamp = DateTime.now().millis
+
+        ReportGroup.values().forEach {
+            val firstInterval = it.toInterval(timestamp)
+            val secondInterval = firstInterval
+                    .withStart(firstInterval.end)
+                    .withPeriodAfterStart(it.toPeriod())
+            val totalInterval = Interval(
+                    firstInterval.start.minusMinutes(1),
+                    secondInterval.end.plusMinutes(1))
+            val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
+
+            expect that splitIntervals isEqualTo listOf(
+                    it.toInterval(firstInterval.startMillis - 1),
+                    firstInterval,
+                    secondInterval,
+                    it.toInterval(secondInterval.endMillis + 1))
+        }
+    }
 }

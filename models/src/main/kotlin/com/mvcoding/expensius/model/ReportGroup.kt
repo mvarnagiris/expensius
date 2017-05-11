@@ -41,4 +41,16 @@ enum class ReportGroup { DAY;
 
         return transactions.currencyOrNull()?.let { currency -> transactions.groupByInterval().sumAmounts().convertAmountsToMoney(currency) } ?: emptyMap()
     }
+
+    fun splitIntoGroupIntervals(interval: Interval): List<Interval> {
+        val startInterval = toInterval(interval.startMillis)
+        val groupIntervals = arrayListOf(startInterval)
+
+        val period = toPeriod()
+        while (groupIntervals.last().endMillis < interval.endMillis) {
+            groupIntervals.add(Interval(groupIntervals.last().end, period))
+        }
+
+        return groupIntervals
+    }
 }
