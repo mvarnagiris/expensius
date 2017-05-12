@@ -50,20 +50,13 @@ class TrendsSource(
                             .flatMap { transaction -> moneyConversionSource.data(MoneyConversion(transaction.money, currency)).map { transaction.withMoney(it) } }
                             .toList()
                             .map {
-                                if (it.isEmpty()) NullModels.noMoney to emptyList<GroupedMoney<Interval>>()
-                                else {
-                                    val groupedMoneys = reportSettings.reportGroup.group(it)
-                                    val totalMoney = groupedMoneys.values
-                                            .map { it.amount }
-                                            .fold(BigDecimal.ZERO) { sum, amount -> sum + amount }
-                                            .let { Money(it, currency) }
-
-                                    val firstTransaction = it.first()
-                                    val totalInterval = reportSettings.reportPeriod.interval(firstTransaction.timestamp)
-                                    val splitIntervals = reportSettings.reportGroup.splitIntoGroupIntervals(totalInterval)
-                                    val defaultMoney = Money(BigDecimal.ZERO, currency)
-                                    totalMoney to splitIntervals.map { GroupedMoney(it, groupedMoneys.getOrDefault(it, defaultMoney)) }
-                                }
+                                val groupedMoneys = reportSettings.reportPeriod.groupToFillWholePeriod(it, reportSettings.reportGroup, currency)
+                                val totalMoney = groupedMoneys
+                                        .map { it.money.amount }
+                                        .filter { it != BigDecimal.ZERO }
+                                        .fold(BigDecimal.ZERO) { sum, amount -> sum + amount }
+                                        .let { Money(it, currency) }
+                                totalMoney to groupedMoneys
                             }
                 }
     }

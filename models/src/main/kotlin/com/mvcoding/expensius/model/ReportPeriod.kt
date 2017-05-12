@@ -17,6 +17,7 @@ package com.mvcoding.expensius.model
 import org.joda.time.DateTime
 import org.joda.time.Interval
 import org.joda.time.Period
+import java.math.BigDecimal
 
 enum class ReportPeriod { MONTH;
 
@@ -36,5 +37,18 @@ enum class ReportPeriod { MONTH;
         when (this) {
             MONTH -> Interval(interval.start.minusMonths(1), Period.months(1))
         }
+    }
+
+    fun groupToFillWholePeriod(
+            transactions: List<Transaction>,
+            reportGroup: ReportGroup,
+            currencyForZeroValues: Currency): List<GroupedMoney<Interval>> {
+
+        if (transactions.isEmpty()) return emptyList()
+        val groupedMoneys = reportGroup.group(transactions)
+        val totalInterval = interval(groupedMoneys.keys.first().startMillis)
+        val splitIntervals = reportGroup.splitIntoGroupIntervals(totalInterval)
+        val defaultMoney = Money(BigDecimal.ZERO, currencyForZeroValues)
+        return splitIntervals.map { GroupedMoney(it, groupedMoneys.getOrDefault(it, defaultMoney)) }
     }
 }

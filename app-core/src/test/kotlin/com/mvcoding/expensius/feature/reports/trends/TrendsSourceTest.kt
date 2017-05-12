@@ -14,37 +14,92 @@
 
 package com.mvcoding.expensius.feature.reports.trends
 
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.data.ParameterDataSource
+import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.TransactionType.EXPENSE
+import com.mvcoding.expensius.model.TransactionType.INCOME
+import com.mvcoding.expensius.model.extensions.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
+import org.junit.Before
+import org.junit.Test
+import rx.Observable.just
+import rx.observers.TestSubscriber
+
 class TrendsSourceTest {
 
-//    @Test
-//    fun `groups amounts into report group intervals`() {
-//        val reportGroup = ReportGroup.DAY
-//        val period = reportGroup.toPeriod()
-//        val interval = reportGroup.toInterval(System.currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
-//        val filterData = FilterDataOld(interval, EXPENSE, CONFIRMED)
-//        val currency = aCurrency()
-//
-//        val tooEarly = aTransaction().withAmount(10).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.startMillis - 1)
-//        val notExpense = aTransaction().withAmount(11).withTransactionType(INCOME).withTransactionState(CONFIRMED).withTimestamp(interval.startMillis)
-//        val notConfirmed = aTransaction().withAmount(12).withTransactionType(EXPENSE).withTransactionState(PENDING).withTimestamp(interval.startMillis)
-//        val groupA1 = aTransaction().withAmount(13).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.startMillis)
-//        val groupA2 = aTransaction().withAmount(14).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.startMillis + 1)
-//        val groupB1 = aTransaction().withAmount(15).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.start.plus(period).millis)
-//        val groupC1 = aTransaction().withAmount(16).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.endMillis - 1)
-//        val groupC2 = aTransaction().withAmount(17).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.endMillis - 2)
-//        val groupC3 = aTransaction().withAmount(18).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.endMillis - 3)
-//        val tooLate = aTransaction().withAmount(19).withTransactionType(EXPENSE).withTransactionState(CONFIRMED).withTimestamp(interval.endMillis)
-//        val transactions = listOf(tooEarly, notExpense, notConfirmed, groupA1, groupA2, groupB1, groupC1, groupC2, groupC3, tooLate)
-//
-//        val expectedGroupedAmounts = listOf(
-//                GroupedMoney(Interval(interval.start, period), Money(BigDecimal.valueOf(27.toDouble()), currency)),
-//                GroupedMoney(Interval(interval.start.plus(period), period), Money(BigDecimal.valueOf(15.toDouble()), currency)),
-//                GroupedMoney(Interval(interval.start.plus(period.multipliedBy(2)), period), Money(ZERO, currency)),
-//                GroupedMoney(Interval(interval.start.plus(period.multipliedBy(3)), period), Money(BigDecimal.valueOf(51.toDouble()), currency))
-//        )
-//
-//        val groupedMoney = moneyGrouping.groupToIntervals(transactions, currency, filterData, reportGroup)
-//
-//        assertThat(groupedMoney, equalTo(expectedGroupedAmounts))
-//    }
+    val transactionsSource = mock<DataSource<List<Transaction>>>()
+    val otherTransactionsSource = mock<DataSource<List<Transaction>>>()
+    val localFilterSource = mock<DataSource<LocalFilter>>()
+    val reportSettingsSource = mock<DataSource<ReportSettings>>()
+    val moneyConversionSource = mock<ParameterDataSource<MoneyConversion, Money>>()
+    val trendsSource = TrendsSource(transactionsSource, otherTransactionsSource, localFilterSource, reportSettingsSource, moneyConversionSource)
+    val subscriber = TestSubscriber<Trends>()
+
+    @Before
+    fun setUp() {
+        whenever(transactionsSource.data()).thenReturn(just(someTransactions()))
+        whenever(otherTransactionsSource.data()).thenReturn(just(someTransactions()))
+        whenever(localFilterSource.data()).thenReturn(just(aLocalFilter()))
+        whenever(reportSettingsSource.data()).thenReturn(just(aReportSettings()))
+        whenever(moneyConversionSource.data(any())).thenAnswer { it.getArgument<MoneyConversion>(0).let { just(it.money) } }
+    }
+
+    @Test
+    fun `creates Trends from two transactions sources filtering them and then grouping and converting money to required currency`() {
+        val reportSettings = aReportSettings()
+        val reportPeriod = reportSettings.reportPeriod
+        val reportGroup = reportSettings.reportGroup
+        val currency = reportSettings.currency
+        val otherCurrency = aCurrency(excludeCode = currency.code)
+        val exchangeRate = anAmount()
+        val localFilter = aLocalFilter().withNoFilters().withTransactionType(EXPENSE)
+
+        val transactionFilteredOut = aTransaction().withTransactionType(INCOME)
+        val transactionWithRequiredCurrency = aTransaction().withTransactionType(EXPENSE).withMoney(aMoney().withCurrency(currency))
+        val transactionWithOtherCurrency = aTransaction()
+                .withTransactionType(EXPENSE)
+                .withMoney(aMoney().withCurrency(otherCurrency))
+                .withTimestamp(transactionWithRequiredCurrency.timestamp)
+        val totalAmount = transactionWithRequiredCurrency.money.amount + (transactionWithOtherCurrency.money.amount * exchangeRate)
+        val allTransactions = listOf(transactionFilteredOut, transactionWithRequiredCurrency, transactionWithOtherCurrency)
+        val filteredTransactionsWithCorrectCurrency = listOf(
+                transactionWithRequiredCurrency,
+                transactionWithOtherCurrency.withAmount(transactionWithOtherCurrency.money.amount * exchangeRate))
+
+        val otherTransactionFilteredOut = aTransaction().withTransactionType(INCOME)
+        val otherTransactionWithRequiredCurrency = aTransaction().withTransactionType(EXPENSE).withMoney(aMoney().withCurrency(currency))
+        val otherTransactionWithOtherCurrency = aTransaction()
+                .withTransactionType(EXPENSE)
+                .withMoney(aMoney().withCurrency(otherCurrency))
+                .withTimestamp(otherTransactionWithRequiredCurrency.timestamp)
+        val otherTotalAmount = otherTransactionWithRequiredCurrency.money.amount + (otherTransactionWithOtherCurrency.money.amount * exchangeRate)
+        val otherAllTransactions = listOf(otherTransactionFilteredOut, otherTransactionWithRequiredCurrency, otherTransactionWithOtherCurrency)
+        val otherFilteredTransactionsWithCorrectCurrency = listOf(
+                otherTransactionWithRequiredCurrency,
+                otherTransactionWithOtherCurrency.withAmount(otherTransactionWithOtherCurrency.money.amount * exchangeRate))
+
+        val expectedTrends = Trends(
+                reportPeriod.groupToFillWholePeriod(filteredTransactionsWithCorrectCurrency, reportGroup, currency),
+                Money(totalAmount, currency),
+                reportPeriod.groupToFillWholePeriod(otherFilteredTransactionsWithCorrectCurrency, reportGroup, currency),
+                Money(otherTotalAmount, currency))
+
+        whenever(transactionsSource.data()).thenReturn(just(allTransactions))
+        whenever(otherTransactionsSource.data()).thenReturn(just(otherAllTransactions))
+        whenever(localFilterSource.data()).thenReturn(just(localFilter))
+        whenever(reportSettingsSource.data()).thenReturn(just(reportSettings))
+        whenever(moneyConversionSource.data(any()))
+                .thenAnswer {
+                    it.getArgument<MoneyConversion>(0).let {
+                        just(if (it.money.currency == it.toCurrency) it.money else Money(it.money.amount * exchangeRate, it.toCurrency))
+                    }
+                }
+
+        trendsSource.data().subscribe(subscriber)
+
+        subscriber.assertValues(expectedTrends)
+    }
 }

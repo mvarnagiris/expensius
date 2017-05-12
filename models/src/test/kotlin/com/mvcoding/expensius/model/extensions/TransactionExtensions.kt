@@ -36,6 +36,7 @@ fun aTransaction() = Transaction(
 
 fun someTransactions() = listOf(aTransaction(), aTransaction(), aTransaction())
 fun someMoneys() = aRange().map { aMoney() }
+fun Money.withCurrency(currency: Currency) = copy(currency = currency)
 
 fun aBasicTransaction() = BasicTransaction(
         aTransactionId(),
@@ -51,7 +52,9 @@ fun aCreateTransaction() = CreateTransaction(aTransactionType(), aTransactionSta
 
 fun Transaction.withAmount(amount: Int) = withAmount(amount.toDouble())
 fun Transaction.withAmount(amount: Double) = copy(money = money.copy(amount = BigDecimal.valueOf(amount)))
+fun Transaction.withAmount(amount: BigDecimal) = copy(money = money.copy(amount = amount))
 fun Transaction.withTimestamp(millis: Long) = copy(timestamp = Timestamp(millis))
+fun Transaction.withTimestamp(timestamp: Timestamp) = copy(timestamp = timestamp)
 fun Transaction.withTransactionType(transactionType: TransactionType) = copy(transactionType = transactionType)
 fun Transaction.withTransactionState(transactionState: TransactionState) = copy(transactionState = transactionState)
 fun Transaction.withTags(tags: Set<Tag>) = copy(tags = tags)

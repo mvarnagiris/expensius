@@ -15,8 +15,11 @@
 package com.mvcoding.expensius.model
 
 import com.memoizr.assertk.expect
+import com.mvcoding.expensius.model.extensions.aReportGroup
+import com.mvcoding.expensius.model.extensions.aTransaction
 import org.joda.time.DateTime
 import org.junit.Test
+import java.math.BigDecimal
 
 class ReportPeriodTest {
     @Test
@@ -68,5 +71,28 @@ class ReportPeriodTest {
         expect that januaryInterval.end isEqualTo januaryIntervalEnd
         expect that december2015Interval.start isEqualTo december2015IntervalStart
         expect that december2015Interval.end isEqualTo december2015IntervalEnd
+    }
+
+    @Test
+    fun `groups transactions in such a way that groups fill the whole period`() {
+        val transaction = aTransaction()
+        val transactions = listOf(transaction)
+        val reportGroup = aReportGroup()
+        val currency = transaction.money.currency
+        val transactionInterval = reportGroup.toInterval(transaction.timestamp)
+        val expectedDefaultMoney = Money(BigDecimal.ZERO, currency)
+
+        ReportPeriod.values().forEach {
+            val groupedMoneys = it.groupToFillWholePeriod(transactions, reportGroup, currency)
+            val totalInterval = it.interval(transaction.timestamp)
+            val splitInterval = reportGroup.splitIntoGroupIntervals(totalInterval)
+
+            expect that groupedMoneys.size isEqualTo splitInterval.size
+            groupedMoneys.forEachIndexed { index, groupedMoney ->
+                expect that groupedMoney isEqualTo
+                        if (groupedMoney.group == transactionInterval) GroupedMoney(splitInterval[index], transaction.money)
+                        else GroupedMoney(splitInterval[index], expectedDefaultMoney)
+            }
+        }
     }
 }
