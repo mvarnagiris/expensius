@@ -28,6 +28,7 @@ import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
 import com.mvcoding.expensius.feature.filter.provideRemoteFilterCache
+import com.mvcoding.expensius.feature.filter.provideSecondaryRemoteFilterCache
 import com.mvcoding.expensius.feature.tag.provideAllTagsSource
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.expensius.provideAppUserSource
@@ -49,18 +50,18 @@ class TransactionModule : ShankModule {
         transactionsOverviewPresenter()
     }
 
-    private fun realtimeTransactionsSource() = registerFactory(RealtimeTransactionsSource::class) { modelDisplayType: ModelDisplayType, scope: Scope ->
+    private fun realtimeTransactionsSource() = registerFactory(RealtimeTransactionsSource::class) { modelDisplayType: ModelDisplayType, isPrimary: Boolean, scope: Scope ->
         RealtimeTransactionsSource(
                 provideAllTagsSource(),
-                provideRemoteFilterCache(scope),
+                if (isPrimary) provideRemoteFilterCache(scope) else provideSecondaryRemoteFilterCache(scope),
                 {
                     if (modelDisplayType == VIEW_ARCHIVED) provideFirebaseTransactionsService().getArchivedTransactions(it)
                     else provideFirebaseTransactionsService().getTransactions(it)
                 })
     }
 
-    private fun transactionsSource() = registerFactory(TransactionsSource::class) { scope: Scope ->
-        TransactionsSource(provideRealtimeTransactionsSource(VIEW_NOT_ARCHIVED, scope))
+    private fun transactionsSource() = registerFactory(TransactionsSource::class) { isPrimary: Boolean, scope: Scope ->
+        TransactionsSource(provideRealtimeTransactionsSource(VIEW_NOT_ARCHIVED, isPrimary, scope))
     }
 
     private fun createTransactionsWriter() = registerFactory(CreateTransactionsWriter::class) { ->
@@ -76,13 +77,13 @@ class TransactionModule : ShankModule {
     }
 
     private fun transactionsOverviewSource() = registerFactory(TransactionsOverviewSource::class) { scope: Scope ->
-        TransactionsOverviewSource(provideTransactionsSource(scope))
+        TransactionsOverviewSource(provideTransactionsSource(true, scope))
     }
 
     private fun transactionsPresenter() = registerFactory(TransactionsPresenter::class) { modelDisplayType: ModelDisplayType, scope: Scope ->
         TransactionsPresenter(
                 modelDisplayType,
-                provideRealtimeTransactionsSource(modelDisplayType, scope),
+                provideRealtimeTransactionsSource(modelDisplayType, true, scope),
                 provideRxSchedulers())
     }
 
@@ -96,8 +97,8 @@ class TransactionModule : ShankModule {
     }
 }
 
-fun provideRealtimeTransactionsSource(modelDisplayType: ModelDisplayType, scope: Scope) = Shank.with(scope).provideSingletonFor<RealtimeTransactionsSource>(modelDisplayType, scope)
-fun provideTransactionsSource(scope: Scope) = provideNew<TransactionsSource>(scope)
+fun provideRealtimeTransactionsSource(modelDisplayType: ModelDisplayType, isPrimary: Boolean, scope: Scope) = Shank.with(scope).provideSingletonFor<RealtimeTransactionsSource>(modelDisplayType, isPrimary, scope)
+fun provideTransactionsSource(isPrimary: Boolean, scope: Scope) = provideNew<TransactionsSource>(isPrimary, scope)
 fun provideCreateTransactionsWriter() = provideNew<CreateTransactionsWriter>()
 fun provideTransactionsWriter() = provideNew<TransactionsWriter>()
 fun provideTransactionsOverviewSource(scope: Scope) = provideGlobalSingleton<TransactionsOverviewSource>(scope)

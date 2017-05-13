@@ -14,11 +14,9 @@
 
 package com.mvcoding.expensius.feature.reports
 
-import com.mvcoding.expensius.anAlwaysOneExchangeRateProvider
-
 class MoneyGroupingTest {
-    val exchangeRateProvider = anAlwaysOneExchangeRateProvider()
-    val moneyGrouping = MoneyGrouping(exchangeRateProvider)
+//    val exchangeRateProvider = anAlwaysOneExchangeRateProvider()
+//    val moneyGrouping = MoneyGrouping(exchangeRateProvider)
 
 //    @Test
 //    fun `groups amounts into intervals that fit within filter data`() {
