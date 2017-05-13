@@ -28,11 +28,11 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll" />
 
-        <!--<include-->
-        <!--layout="@layout/view_trend_report"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:layout_scrollFlags="scroll"/>-->
+        <include
+            layout="@layout/view_trend_report"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll" />
 
     </android.support.design.widget.AppBarLayout>
 

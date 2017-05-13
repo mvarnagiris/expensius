@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,13 +12,15 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius
+package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
-import com.mvcoding.expensius.model.Currency
-import java.math.BigDecimal
-import java.math.BigDecimal.ONE
+import com.mvcoding.expensius.data.testMemoryCache
+import com.mvcoding.expensius.model.extensions.aLocalFilter
+import org.junit.Test
 
-fun anAlwaysOneExchangeRateProvider() = object : ExchangeRatesProvider {
-    override fun getExchangeRate(fromCurrency: Currency, toCurrency: Currency): BigDecimal = ONE
+class LocalFilterMemoryCacheTest {
+    @Test
+    fun `behaves like memory cache`() {
+        testMemoryCache(aLocalFilter(), aLocalFilter()) { LocalFilterMemoryCache(it) }
+    }
 }

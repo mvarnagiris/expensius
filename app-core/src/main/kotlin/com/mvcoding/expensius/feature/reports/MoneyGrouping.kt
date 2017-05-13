@@ -14,9 +14,7 @@
 
 package com.mvcoding.expensius.feature.reports
 
-import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
-
-class MoneyGrouping(private val exchangeRatesProvider: ExchangeRatesProvider) {
+class MoneyGrouping {
 
 //    fun groupToIntervals(
 //            transactions: List<Transaction>,

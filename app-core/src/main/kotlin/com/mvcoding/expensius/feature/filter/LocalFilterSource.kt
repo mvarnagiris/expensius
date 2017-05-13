@@ -14,13 +14,13 @@
 
 package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.data.testMemoryCache
-import com.mvcoding.expensius.model.extensions.aRemoteFilter
-import org.junit.Test
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.model.LocalFilter
+import com.mvcoding.expensius.model.NullModels
+import rx.Observable
+import rx.Observable.just
 
-class MemoryRemoteFilterCacheTest {
-    @Test
-    fun `behaves like memory cache`() {
-        testMemoryCache(aRemoteFilter(), aRemoteFilter()) { MemoryRemoteFilterCache(it) }
-    }
+class LocalFilterSource : DataSource<LocalFilter> {
+
+    override fun data(): Observable<LocalFilter> = just(NullModels.noLocalFilter)
 }

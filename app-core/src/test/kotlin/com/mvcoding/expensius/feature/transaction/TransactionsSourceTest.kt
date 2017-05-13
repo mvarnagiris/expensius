@@ -15,24 +15,38 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.testParameterRealtimeDataSource
-import com.mvcoding.expensius.model.BasicTransaction
-import com.mvcoding.expensius.model.RemoteFilter
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.extensions.aRemoteFilter
+import com.mvcoding.expensius.data.RealtimeData
+import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.model.extensions.anInt
+import com.mvcoding.expensius.model.extensions.someTransactions
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Test
-import rx.Observable
+import rx.lang.kotlin.PublishSubject
+import rx.observers.TestSubscriber
 
 class TransactionsSourceTest {
 
     @Test
-    fun `behaves like parameter realtime data source`() {
-        val allTagsSource = mock<DataSource<List<Tag>>>()
-        whenever(allTagsSource.data()).thenReturn(Observable.just(emptyList()))
-        testParameterRealtimeDataSource<RemoteFilter, BasicTransaction, TransactionsSource>(aRemoteFilter(), aRemoteFilter()) { parameterDataSource, createRealtimeList ->
-            TransactionsSource(allTagsSource, parameterDataSource, createRealtimeList)
-        }
+    fun `extracts all items from realtime transactions and emits that`() {
+        val allItems = someTransactions()
+        val addedItems = someTransactions()
+        val changedItems = someTransactions()
+        val removedItems = someTransactions()
+        val movedItems = someTransactions()
+        val realtimeTransactionsSource = mock<DataSource<RealtimeData<Transaction>>>()
+        val transactionsSource = TransactionsSource(realtimeTransactionsSource)
+        val subscriber = TestSubscriber<List<Transaction>>()
+        val realtimeSubject = PublishSubject<RealtimeData<Transaction>>()
+        whenever(realtimeTransactionsSource.data()).thenReturn(realtimeSubject)
+
+        transactionsSource.data().subscribe(subscriber)
+        realtimeSubject.onNext(RealtimeData.AllItems(allItems))
+        realtimeSubject.onNext(RealtimeData.AddedItems(addedItems, someTransactions(), anInt()))
+        realtimeSubject.onNext(RealtimeData.ChangedItems(changedItems, someTransactions(), anInt()))
+        realtimeSubject.onNext(RealtimeData.RemovedItems(removedItems, someTransactions(), anInt()))
+        realtimeSubject.onNext(RealtimeData.MovedItems(movedItems, someTransactions(), anInt(), anInt()))
+
+        subscriber.assertValues(allItems, addedItems, changedItems, removedItems, movedItems)
     }
 }

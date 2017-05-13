@@ -18,7 +18,6 @@ import android.app.Activity
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
-import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
@@ -44,6 +43,4 @@ class SettingsModule : ShankModule {
 }
 
 fun Activity.provideSettingsPresenter() = withThisScope.provideSingletonFor<SettingsPresenter>()
-fun provideReportSettingsSource(scope: Scope? = null) =
-        if (scope == null) provideGlobalSingleton<ReportSettingsSource>()
-        else Shank.with(scope).provideSingletonFor<ReportSettingsSource>()
+fun provideReportSettingsSource(scope: Scope) = Shank.with(scope).provideSingletonFor<ReportSettingsSource>()

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,26 +15,41 @@
 package com.mvcoding.expensius.feature.reports
 
 import android.view.View
+import com.memoizrlabs.Scope
+import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
+import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.currency.provideMoneyConversionSource
+import com.mvcoding.expensius.feature.filter.provideLocalFilterCache
 import com.mvcoding.expensius.feature.reports.trends.TrendsPresenter
+import com.mvcoding.expensius.feature.reports.trends.TrendsSource
+import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
+import com.mvcoding.expensius.feature.transaction.provideTransactionsSource
+import com.mvcoding.expensius.provideRxSchedulers
+import memoizrlabs.com.shankandroid.activityScope
 import memoizrlabs.com.shankandroid.withActivityScope
 
 class ReportsModule : ShankModule {
     override fun registerFactories() {
-//        trendsPresenter()
+        trendsSource()
+        trendsPresenter()
 //        tagTotalsReportPresenter()
     }
 
-//    private fun trendsPresenter() = registerFactory(TrendsPresenter::class) { ->
-//        TrendsPresenter(
-//                provideAppUserService(),
-//                provideTransactionsService(),
-//                provideExchangeRatesProvider(),
-//                provideFilter().setTransactionType(EXPENSE).setTransactionState(CONFIRMED),
-//                provideRxSchedulers())
-//    }
-//
+    private fun trendsSource() = registerFactory(TrendsSource::class) { scope: Scope ->
+        TrendsSource(
+                provideTransactionsSource(scope),
+                provideTransactionsSource(scope), // TODO Should be secondary source
+                provideLocalFilterCache(scope),
+                provideReportSettingsSource(scope),
+                provideMoneyConversionSource())
+    }
+
+    private fun trendsPresenter() = registerFactory(TrendsPresenter::class) { scope: Scope ->
+        TrendsPresenter(provideTrendsSource(scope), provideRxSchedulers())
+    }
+
 //    private fun tagTotalsReportPresenter() = registerFactory(TagsTotalsReportPresenter::class) { ->
 //        TagsTotalsReportPresenter(
 //                provideAppUserService(),
@@ -45,5 +60,6 @@ class ReportsModule : ShankModule {
 //    }
 }
 
-fun View.provideExpenseTrendReportPresenter() = withActivityScope.provideSingletonFor<TrendsPresenter>()
+fun provideTrendsSource(scope: Scope) = Shank.with(scope).provideSingletonFor<TrendsSource>(scope)
+fun View.provideTrendsPresenter() = withActivityScope.provideSingletonFor<TrendsPresenter>(activityScope)
 fun View.provideTagTotalsReportPresenter() = withActivityScope.provideSingletonFor<TagsTotalsReportPresenter>()

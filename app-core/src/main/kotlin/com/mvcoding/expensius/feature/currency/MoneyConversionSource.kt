@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,11 @@
 
 package com.mvcoding.expensius.feature.currency
 
-import com.mvcoding.expensius.model.Currency
-import java.math.BigDecimal
+import com.mvcoding.expensius.data.ParameterDataSource
+import com.mvcoding.expensius.model.Money
+import com.mvcoding.expensius.model.MoneyConversion
+import rx.Observable
 
-
-interface ExchangeRatesProvider {
-    fun getExchangeRate(fromCurrency: Currency, toCurrency: Currency): BigDecimal
+class MoneyConversionSource : ParameterDataSource<MoneyConversion, Money> {
+    override fun data(parameter: MoneyConversion): Observable<Money> = Observable.just(parameter.money)
 }

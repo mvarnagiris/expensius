@@ -23,14 +23,15 @@ class CurrenciesModule : ShankModule {
     override fun registerFactories() {
         currenciesSource()
         currencyFormatsProvider()
-        exchangeRatesProvider()
+        moneyConversionSource()
+
     }
 
     private fun currenciesSource() = registerFactory(CurrenciesSource::class) { -> CurrenciesSource() }
     private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> SystemCurrencyFormatsProvider() }
-    private fun exchangeRatesProvider() = registerFactory(ExchangeRatesProvider::class) { -> StupidExchangeRatesProvider() }
+    private fun moneyConversionSource() = registerFactory(MoneyConversionSource::class) { -> MoneyConversionSource() }
 }
 
 fun provideCurrenciesSource(): CurrenciesSource = provideNew()
 fun provideCurrencyFormatsProvider(): CurrencyFormatsProvider = provideGlobalSingleton()
-fun provideExchangeRatesProvider(): ExchangeRatesProvider = provideGlobalSingleton()
+fun provideMoneyConversionSource() = provideGlobalSingleton<MoneyConversionSource>()

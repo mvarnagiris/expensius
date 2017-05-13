@@ -46,6 +46,8 @@ object NullModels {
 
     val noTrends = Trends(emptyList(), noMoney, emptyList(), noMoney)
 
+    val noLocalFilter = LocalFilter(null, null, emptySet(), null)
+
     fun newTransaction(timestamp: Timestamp, money: Money) = Transaction(
             noTransactionId,
             NONE,

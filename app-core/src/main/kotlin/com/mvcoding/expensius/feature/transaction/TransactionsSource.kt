@@ -15,36 +15,11 @@
 package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.ParameterRealtimeDataSource
 import com.mvcoding.expensius.data.RealtimeData
-import com.mvcoding.expensius.data.RealtimeData.*
-import com.mvcoding.expensius.data.RealtimeList
-import com.mvcoding.expensius.model.BasicTransaction
-import com.mvcoding.expensius.model.RemoteFilter
-import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Transaction
 import rx.Observable
-import rx.Observable.combineLatest
-import java.io.Closeable
 
-class TransactionsSource(
-        private val allTagsSource: DataSource<List<Tag>>,
-        remoteFilterSource: DataSource<RemoteFilter>,
-        createRealtimeList: (RemoteFilter) -> RealtimeList<BasicTransaction>) : DataSource<RealtimeData<Transaction>>, Closeable {
+class TransactionsSource(private val transactionsSource: DataSource<RealtimeData<Transaction>>) : DataSource<List<Transaction>> {
 
-    private val dataSource = ParameterRealtimeDataSource(remoteFilterSource, createRealtimeList) { it.transactionId.id }
-
-    override fun data(): Observable<RealtimeData<Transaction>> = combineLatest(dataSource.data(), allTagsSource.data()) { basicTransactions, tags ->
-        when (basicTransactions) {
-            is AllItems -> AllItems(allItems(basicTransactions, tags))
-            is AddedItems -> AddedItems(allItems(basicTransactions, tags), basicTransactions.addedItems.map { it.toTransaction(tags) }, basicTransactions.position)
-            is ChangedItems -> ChangedItems(allItems(basicTransactions, tags), basicTransactions.changedItems.map { it.toTransaction(tags) }, basicTransactions.position)
-            is RemovedItems -> RemovedItems(allItems(basicTransactions, tags), basicTransactions.removedItems.map { it.toTransaction(tags) }, basicTransactions.position)
-            is MovedItems -> MovedItems(allItems(basicTransactions, tags), basicTransactions.movedItems.map { it.toTransaction(tags) }, basicTransactions.fromPosition, basicTransactions.toPosition)
-        }
-    }
-
-    override fun close(): Unit = dataSource.close()
-
-    private fun allItems(basicTransactions: RealtimeData<BasicTransaction>, tags: List<Tag>) = basicTransactions.allItems.map { it.toTransaction(tags) }
+    override fun data(): Observable<List<Transaction>> = transactionsSource.data().map { it.allItems }
 }

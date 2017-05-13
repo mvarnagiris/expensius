@@ -17,7 +17,6 @@ package com.mvcoding.expensius.feature.reports
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.feature.FilterDataOld
 import com.mvcoding.expensius.feature.FilterOld
-import com.mvcoding.expensius.feature.currency.ExchangeRatesProvider
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.GroupedMoney
 import com.mvcoding.expensius.model.Tag
@@ -27,11 +26,11 @@ import com.mvcoding.mvp.Presenter
 class TagsTotalsReportPresenter(
         //        private val appUserService: AppUserService,
 //        private val transactionsService: TransactionsService,
-        exchangeRatesProvider: ExchangeRatesProvider,
+//        exchangeRatesProvider: ExchangeRatesProvider,
         private val filter: FilterOld,
         private val schedulers: RxSchedulers) : Presenter<TagsTotalsReportPresenter.View>() {
 
-    private val moneyGrouping = MoneyGrouping(exchangeRatesProvider)
+//    private val moneyGrouping = MoneyGrouping(exchangeRatesProvider)
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)

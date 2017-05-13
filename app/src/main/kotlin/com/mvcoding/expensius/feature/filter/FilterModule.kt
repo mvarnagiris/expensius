@@ -18,10 +18,10 @@ import android.view.View
 import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
-import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.memoizrlabs.shankkotlin.registerNamedFactory
 import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideRxSchedulers
@@ -32,22 +32,36 @@ import memoizrlabs.com.shankandroid.withActivityScope
 class FilterModule : ShankModule {
     override fun registerFactories() {
         remoteFilterSource()
-        memoryRemoteFilterCache()
+        localFilterSource()
+        remoteFilterMemoryCache()
+        secondaryRemoteFilterMemoryCache()
+        localFilterMemoryCache()
+        secondaryLocalFilterMemoryCache()
         filterPresenter()
     }
 
     private fun remoteFilterSource() = registerFactory(RemoteFilterSource::class) { -> RemoteFilterSource(provideAppUserSource(), provideTimestampProvider()) }
-    private fun memoryRemoteFilterCache() = registerFactory(MemoryRemoteFilterCache::class) { -> MemoryRemoteFilterCache(provideRemoteFilterSource()) }
+    private fun localFilterSource() = registerFactory(LocalFilterSource::class) { -> LocalFilterSource() }
+    private fun remoteFilterMemoryCache() = registerNamedFactory(RemoteFilterMemoryCache::class, NAME_PRIMARY_CACHE) { -> RemoteFilterMemoryCache(provideRemoteFilterSource()) }
+    private fun secondaryRemoteFilterMemoryCache() = registerNamedFactory(RemoteFilterMemoryCache::class, NAME_SECONDARY_CACHE) { -> RemoteFilterMemoryCache(provideRemoteFilterSource()) }
+    private fun localFilterMemoryCache() = registerNamedFactory(LocalFilterMemoryCache::class, NAME_PRIMARY_CACHE) { -> LocalFilterMemoryCache(provideLocalFilterSource()) }
+    private fun secondaryLocalFilterMemoryCache() = registerNamedFactory(LocalFilterMemoryCache::class, NAME_SECONDARY_CACHE) { -> LocalFilterMemoryCache(provideLocalFilterSource()) }
 
     private fun filterPresenter() = registerFactory(FilterPresenter::class) { scope: Scope ->
-        FilterPresenter(provideFilterSource(scope), provideReportSettingsSource(scope), provideRxSchedulers())
+        FilterPresenter(provideRemoteFilterCache(scope), provideReportSettingsSource(scope), provideRxSchedulers())
     }
 }
 
-fun provideRemoteFilterSource() = provideNew<RemoteFilterSource>()
+private val NAME_PRIMARY_CACHE = "NAME_PRIMARY_CACHE"
+private val NAME_SECONDARY_CACHE = "NAME_SECONDARY_CACHE"
 
-fun provideFilterSource(scope: Scope? = null) =
-        if (scope == null) provideGlobalSingleton<MemoryRemoteFilterCache>()
-        else Shank.with(scope).provideSingletonFor<MemoryRemoteFilterCache>()
+private fun provideRemoteFilterSource() = provideNew<RemoteFilterSource>()
+private fun provideLocalFilterSource() = provideNew<LocalFilterSource>()
+
+fun provideRemoteFilterCache(scope: Scope) = Shank.named(NAME_PRIMARY_CACHE).with(scope).provideSingletonFor<RemoteFilterMemoryCache>()
+fun provideSecondaryRemoteFilterCache(scope: Scope) = Shank.named(NAME_SECONDARY_CACHE).with(scope).provideSingletonFor<RemoteFilterMemoryCache>()
+
+fun provideLocalFilterCache(scope: Scope) = Shank.named(NAME_PRIMARY_CACHE).with(scope).provideSingletonFor<LocalFilterMemoryCache>()
+fun provideSecondaryLocalFilterCache(scope: Scope) = Shank.named(NAME_SECONDARY_CACHE).with(scope).provideSingletonFor<LocalFilterMemoryCache>()
 
 fun View.provideFilterPresenter() = withActivityScope.provideSingletonFor<FilterPresenter>(activityScope)

@@ -20,7 +20,7 @@ import com.mvcoding.expensius.data.MemoryCache
 import com.mvcoding.expensius.model.RemoteFilter
 import rx.Observable
 
-class MemoryRemoteFilterCache(remoteFilterSource: DataSource<RemoteFilter>) : Cache<RemoteFilter> {
+class RemoteFilterMemoryCache(remoteFilterSource: DataSource<RemoteFilter>) : Cache<RemoteFilter> {
 
     private val memoryCache = MemoryCache(remoteFilterSource)
 

@@ -12,14 +12,18 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.BusinessConstants
+import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.Transaction
+import com.mvcoding.expensius.data.MemoryCache
+import com.mvcoding.expensius.model.LocalFilter
 import rx.Observable
 
-class TransactionsOverviewSource(private val transactionsSource: DataSource<List<Transaction>>) : DataSource<List<Transaction>> {
+class LocalFilterMemoryCache(localFilterSource: DataSource<LocalFilter>) : Cache<LocalFilter> {
 
-    override fun data(): Observable<List<Transaction>> = transactionsSource.data().map { it.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW) }
+    private val memoryCache = MemoryCache(localFilterSource)
+
+    override fun data(): Observable<LocalFilter> = memoryCache.data()
+    override fun write(data: LocalFilter) = memoryCache.write(data)
 }

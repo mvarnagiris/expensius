@@ -12,14 +12,22 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.transaction
+package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.BusinessConstants
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.Transaction
-import rx.Observable
+import com.mvcoding.expensius.model.LocalFilter
+import com.mvcoding.expensius.model.NullModels.noLocalFilter
+import org.junit.Test
+import rx.observers.TestSubscriber
 
-class TransactionsOverviewSource(private val transactionsSource: DataSource<List<Transaction>>) : DataSource<List<Transaction>> {
+class LocalFilterSourceTest {
 
-    override fun data(): Observable<List<Transaction>> = transactionsSource.data().map { it.take(BusinessConstants.TRANSACTIONS_IN_OVERVIEW) }
+    @Test
+    fun `returns noLocalFilter`() {
+        val localFilterSource = LocalFilterSource()
+        val subscriber = TestSubscriber<LocalFilter>()
+
+        localFilterSource.data().subscribe(subscriber)
+
+        subscriber.assertValue(noLocalFilter)
+    }
 }

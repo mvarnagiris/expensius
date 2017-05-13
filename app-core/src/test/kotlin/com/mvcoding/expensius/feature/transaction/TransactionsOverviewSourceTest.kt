@@ -16,11 +16,7 @@ package com.mvcoding.expensius.feature.transaction
 
 import com.mvcoding.expensius.BusinessConstants
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.data.RealtimeData
-import com.mvcoding.expensius.data.RealtimeData.AddedItems
-import com.mvcoding.expensius.data.RealtimeData.AllItems
 import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.extensions.anInt
 import com.mvcoding.expensius.model.extensions.someTransactions
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -32,10 +28,10 @@ class TransactionsOverviewSourceTest {
 
     @Test
     fun `limits returned transactions count`() {
-        val transactionsSource = mock<DataSource<RealtimeData<Transaction>>>()
+        val transactionsSource = mock<DataSource<List<Transaction>>>()
         val transactions1 = someTransactions()
         val transactions2 = someTransactions()
-        whenever(transactionsSource.data()).thenReturn(from(listOf(AllItems(transactions1), AddedItems(transactions2, someTransactions(), anInt()))))
+        whenever(transactionsSource.data()).thenReturn(from(listOf(transactions1, transactions2)))
         val subscriber = TestSubscriber<List<Transaction>>()
         val transactionsOverviewSource = TransactionsOverviewSource(transactionsSource)
 
