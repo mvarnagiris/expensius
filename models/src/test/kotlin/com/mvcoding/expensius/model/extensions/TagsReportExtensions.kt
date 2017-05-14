@@ -14,9 +14,6 @@
 
 package com.mvcoding.expensius.model.extensions
 
-import com.mvcoding.expensius.model.GroupedMoney
+import com.mvcoding.expensius.model.TagsReport
 
-fun anIntervalGroupedMoney() = GroupedMoney(anInterval(), aMoney())
-fun aTagGroupedMoney() = GroupedMoney(aTag(), aMoney())
-fun someIntervalGroupedMoneys() = aRange().map { anIntervalGroupedMoney() }
-fun someTagGroupedMoneys() = aRange().map { aTagGroupedMoney() }
+fun aTagsReport() = TagsReport(someTagGroupedMoneys(), aMoney(), someTagGroupedMoneys(), aMoney())

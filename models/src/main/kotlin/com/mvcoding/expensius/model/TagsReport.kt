@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,11 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.paging
+package com.mvcoding.expensius.model
 
-data class PageResult<T>(private val page: Page, val items: List<T>, val isInvalidated: Boolean) {
-    val position = page.first
+import java.io.Serializable
 
-    fun hasPreviousPage() = page.first > 0
-    fun hasNextPage() = page.size <= items.size
-}
+data class TagsReport(
+        val currentMoneys: List<GroupedMoney<Tag>>,
+        val currentTotal: Money,
+        val otherMoneys: List<GroupedMoney<Tag>>,
+        val otherTotal: Money) : Serializable
