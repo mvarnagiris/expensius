@@ -74,6 +74,8 @@
 
     <style name="Text.Button" parent="TextAppearance.AppCompat.Button">
         <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">
@@ -208,6 +210,23 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="cardCornerRadius">0dp</item>
+    </style>
+
+    <style name="Card.Fab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/fab_height</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:layout_marginLeft">@dimen/keyline</item>
+        <item name="android:layout_marginRight">@dimen/keyline</item>
+        <item name="android:layout_marginTop">@dimen/grid_2x</item>
+        <item name="android:layout_marginBottom">@dimen/grid_2x</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="cardElevation">@dimen/elevation_fab</item>
+        <item name="cardBackgroundColor">?colorAccent</item>
+        <item name="cardCornerRadius">@dimen/fab_height_half</item>
+        <item name="contentPaddingLeft">@dimen/grid_2x</item>
+        <item name="contentPaddingRight">@dimen/grid_2x</item>
+        <item name="android:theme">?themeInverse</item>
     </style>
 
     <!-- EditText -->

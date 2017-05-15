@@ -23,6 +23,7 @@
     <string name="tag">Tag</string>
     <string name="error_title_empty">Title cannot be empty.</string>
     <string name="create">Create</string>
+    <string name="create_transaction">Create transaction</string>
     <string name="undo">Undo</string>
     <string name="restore">Restore</string>
     <string name="tag_restored">Tag restored</string>

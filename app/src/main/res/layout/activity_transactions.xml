@@ -43,7 +43,7 @@
             style="@style/ProgressBar" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/createTransactionFloatingActionButton"
+            android:id="@+id/createTransactionButton"
             style="@style/Button.Fab"
             android:src="@drawable/ic_action_add" />
 

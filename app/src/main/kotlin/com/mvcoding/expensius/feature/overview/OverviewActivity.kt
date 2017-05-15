@@ -64,7 +64,7 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
         return true
     }
 
-    override fun createTransactionSelects(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
+    override fun createTransactionSelects(): Observable<Unit> = createTransactionButton.clicks()
     override fun transactionsSelects(): Observable<Unit> = transactionsOverviewView.clicks()
     override fun tagsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
     override fun tagsReportSelects(): Observable<Unit> = Observable.never()//tagsTotalsReportView.clicks()

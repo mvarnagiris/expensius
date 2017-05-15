@@ -77,7 +77,7 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
 
     override fun transactionSelects(): Observable<Transaction> = adapter.itemClicks()
     override fun archivedTransactionsRequests(): Observable<Unit> = empty()
-    override fun createTransactionRequests(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
+    override fun createTransactionRequests(): Observable<Unit> = createTransactionButton.clicks()
     override fun showItems(items: List<Transaction>): Unit = adapter.setItems(items)
     override fun showAddedItems(items: List<Transaction>, position: Int): Unit = adapter.addItems(position, items)
     override fun showChangedItems(items: List<Transaction>, position: Int): Unit = adapter.changeItems(position, items)
