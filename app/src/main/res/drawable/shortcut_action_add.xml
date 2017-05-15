@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/shortcutBackground" />
+        </shape>
+    </item>
+
+    <item
+        android:width="44dp"
+        android:height="44dp"
+        android:drawable="@drawable/ic_action_add_shortcut"
+        android:gravity="center"
+        tools:targetApi="m" />
+
+</layer-list>

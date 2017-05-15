@@ -15,6 +15,7 @@
 <resources>
     <color name="backgroundWindow">#F7F7F7</color>
     <color name="backgroundWindowInverse">#333333</color>
+    <color name="shortcutBackground">#F5F5F5</color>
 
     <color name="red_50">#FFEBEE</color>
     <color name="red_100">#FFCDD2</color>
