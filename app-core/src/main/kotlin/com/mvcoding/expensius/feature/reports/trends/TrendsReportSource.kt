@@ -23,17 +23,17 @@ import rx.Observable.combineLatest
 import rx.Observable.from
 import java.math.BigDecimal
 
-class TrendsSource(
+class TrendsReportSource(
         private val transactionsSource: DataSource<List<Transaction>>,
         private val otherTransactionsSource: DataSource<List<Transaction>>,
         private val localFilterSource: DataSource<LocalFilter>,
         private val reportSettingsSource: DataSource<ReportSettings>,
-        private val moneyConversionSource: ParameterDataSource<MoneyConversion, Money>) : DataSource<Trends> {
+        private val moneyConversionSource: ParameterDataSource<MoneyConversion, Money>) : DataSource<TrendsReport> {
 
-    override fun data(): Observable<Trends> = combineLatest(
+    override fun data(): Observable<TrendsReport> = combineLatest(
             dataForTotalMoneyWithGroupedMoneys(transactionsSource),
             dataForTotalMoneyWithGroupedMoneys(otherTransactionsSource),
-            { (totalMoney, groupedMoney), (otherTotalMoney, otherGroupedMoney) -> Trends(groupedMoney, totalMoney, otherGroupedMoney, otherTotalMoney) })
+            { (totalMoney, groupedMoney), (otherTotalMoney, otherGroupedMoney) -> TrendsReport(groupedMoney, totalMoney, otherGroupedMoney, otherTotalMoney) })
 
     private fun dataForTotalMoneyWithGroupedMoneys(transactionsSource: DataSource<List<Transaction>>): Observable<Pair<Money, List<GroupedMoney<Interval>>>> {
         return combineLatest(

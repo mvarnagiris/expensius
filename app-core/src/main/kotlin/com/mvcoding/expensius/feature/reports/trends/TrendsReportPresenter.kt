@@ -20,14 +20,14 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.feature.ignoreError
 import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
-import com.mvcoding.expensius.model.Trends
+import com.mvcoding.expensius.model.TrendsReport
 import com.mvcoding.mvp.Presenter
 
-class TrendsPresenter(
-        private val trendsSource: DataSource<Trends>,
+class TrendsReportPresenter(
+        private val trendsReportSource: DataSource<TrendsReport>,
         reportSettingsSource: DataSource<ReportSettings>,
         private val secondaryRemoteFilterCache: Cache<RemoteFilter>,
-        private val schedulers: RxSchedulers) : Presenter<TrendsPresenter.View>() {
+        private val schedulers: RxSchedulers) : Presenter<TrendsReportPresenter.View>() {
 
     init {
         secondaryRemoteFilterCache.data()
@@ -39,7 +39,7 @@ class TrendsPresenter(
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        trendsSource.data()
+        trendsReportSource.data()
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
                 .ignoreError()
@@ -47,6 +47,6 @@ class TrendsPresenter(
     }
 
     interface View : Presenter.View {
-        fun showTrends(trends: Trends)
+        fun showTrends(trendsReport: TrendsReport)
     }
 }

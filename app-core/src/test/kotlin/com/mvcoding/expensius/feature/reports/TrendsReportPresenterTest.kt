@@ -16,10 +16,10 @@ package com.mvcoding.expensius.feature.reports
 
 import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.feature.reports.trends.TrendsPresenter
+import com.mvcoding.expensius.feature.reports.trends.TrendsReportPresenter
 import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
-import com.mvcoding.expensius.model.Trends
+import com.mvcoding.expensius.model.TrendsReport
 import com.mvcoding.expensius.model.extensions.aRemoteFilter
 import com.mvcoding.expensius.model.extensions.aReportSettings
 import com.mvcoding.expensius.model.extensions.aTrends
@@ -30,17 +30,17 @@ import org.junit.Test
 import rx.Observable.error
 import rx.Observable.just
 
-class TrendsPresenterTest {
+class TrendsReportPresenterTest {
 
     val trends = aTrends()
     val reportSettings = aReportSettings()
     val remoteFilter = aRemoteFilter(reportSettings.reportPeriod)
 
-    val trendsSource = mock<DataSource<Trends>>()
+    val trendsSource = mock<DataSource<TrendsReport>>()
     val reportSettingsSource = mock<DataSource<ReportSettings>>().apply { whenever(data()).thenReturn(just(reportSettings)) }
     val secondaryRemoteFilterCache = mock<Cache<RemoteFilter>>().apply { whenever(data()).thenReturn(just(remoteFilter)) }
-    val view = mock<TrendsPresenter.View>()
-    val presenter = TrendsPresenter(trendsSource, reportSettingsSource, secondaryRemoteFilterCache, rxSchedulers())
+    val view = mock<TrendsReportPresenter.View>()
+    val presenter = TrendsReportPresenter(trendsSource, reportSettingsSource, secondaryRemoteFilterCache, rxSchedulers())
 
     @Before
     fun setUp() {

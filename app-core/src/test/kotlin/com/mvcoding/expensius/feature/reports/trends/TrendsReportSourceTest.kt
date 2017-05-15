@@ -28,15 +28,15 @@ import org.junit.Test
 import rx.Observable.just
 import rx.observers.TestSubscriber
 
-class TrendsSourceTest {
+class TrendsReportSourceTest {
 
     val transactionsSource = mock<DataSource<List<Transaction>>>()
     val otherTransactionsSource = mock<DataSource<List<Transaction>>>()
     val localFilterSource = mock<DataSource<LocalFilter>>()
     val reportSettingsSource = mock<DataSource<ReportSettings>>()
     val moneyConversionSource = mock<ParameterDataSource<MoneyConversion, Money>>()
-    val trendsSource = TrendsSource(transactionsSource, otherTransactionsSource, localFilterSource, reportSettingsSource, moneyConversionSource)
-    val subscriber = TestSubscriber<Trends>()
+    val trendsSource = TrendsReportSource(transactionsSource, otherTransactionsSource, localFilterSource, reportSettingsSource, moneyConversionSource)
+    val subscriber = TestSubscriber<TrendsReport>()
 
     @Before
     fun setUp() {
@@ -81,7 +81,7 @@ class TrendsSourceTest {
                 otherTransactionWithRequiredCurrency,
                 otherTransactionWithOtherCurrency.withAmount(otherTransactionWithOtherCurrency.money.amount * exchangeRate))
 
-        val expectedTrends = Trends(
+        val expectedTrends = TrendsReport(
                 reportPeriod.groupToFillWholePeriod(filteredTransactionsWithCorrectCurrency, reportGroup, currency),
                 Money(totalAmount, currency),
                 reportPeriod.groupToFillWholePeriod(otherFilteredTransactionsWithCorrectCurrency, reportGroup, currency),

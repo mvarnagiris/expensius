@@ -23,8 +23,8 @@ import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.currency.provideMoneyConversionSource
 import com.mvcoding.expensius.feature.filter.provideLocalFilterCache
 import com.mvcoding.expensius.feature.filter.provideSecondaryRemoteFilterCache
-import com.mvcoding.expensius.feature.reports.trends.TrendsPresenter
-import com.mvcoding.expensius.feature.reports.trends.TrendsSource
+import com.mvcoding.expensius.feature.reports.trends.TrendsReportPresenter
+import com.mvcoding.expensius.feature.reports.trends.TrendsReportSource
 import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
 import com.mvcoding.expensius.feature.transaction.provideTransactionsSource
 import com.mvcoding.expensius.provideRxSchedulers
@@ -33,13 +33,13 @@ import memoizrlabs.com.shankandroid.withActivityScope
 
 class ReportsModule : ShankModule {
     override fun registerFactories() {
-        trendsSource()
-        trendsPresenter()
+        trendsReportSource()
+        trendsReportPresenter()
 //        tagTotalsReportPresenter()
     }
 
-    private fun trendsSource() = registerFactory(TrendsSource::class) { scope: Scope ->
-        TrendsSource(
+    private fun trendsReportSource() = registerFactory(TrendsReportSource::class) { scope: Scope ->
+        TrendsReportSource(
                 provideTransactionsSource(true, scope),
                 provideTransactionsSource(false, scope),
                 provideLocalFilterCache(scope),
@@ -47,8 +47,8 @@ class ReportsModule : ShankModule {
                 provideMoneyConversionSource())
     }
 
-    private fun trendsPresenter() = registerFactory(TrendsPresenter::class) { scope: Scope ->
-        TrendsPresenter(provideTrendsSource(scope), provideReportSettingsSource(scope), provideSecondaryRemoteFilterCache(scope), provideRxSchedulers())
+    private fun trendsReportPresenter() = registerFactory(TrendsReportPresenter::class) { scope: Scope ->
+        TrendsReportPresenter(provideTrendsReportSource(scope), provideReportSettingsSource(scope), provideSecondaryRemoteFilterCache(scope), provideRxSchedulers())
     }
 
 //    private fun tagTotalsReportPresenter() = registerFactory(TagsTotalsReportPresenter::class) { ->
@@ -61,6 +61,6 @@ class ReportsModule : ShankModule {
 //    }
 }
 
-fun provideTrendsSource(scope: Scope) = Shank.with(scope).provideSingletonFor<TrendsSource>(scope)
-fun View.provideTrendsPresenter() = withActivityScope.provideSingletonFor<TrendsPresenter>(activityScope)
+fun provideTrendsReportSource(scope: Scope) = Shank.with(scope).provideSingletonFor<TrendsReportSource>(scope)
+fun View.provideTrendsReportPresenter() = withActivityScope.provideSingletonFor<TrendsReportPresenter>(activityScope)
 fun View.provideTagTotalsReportPresenter() = withActivityScope.provideSingletonFor<TagsTotalsReportPresenter>()

@@ -25,17 +25,17 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
-import com.mvcoding.expensius.feature.reports.provideTrendsPresenter
+import com.mvcoding.expensius.feature.reports.provideTrendsReportPresenter
 import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.Trends
+import com.mvcoding.expensius.model.TrendsReport
 import com.mvcoding.expensius.provideMoneyFormatter
 import kotlinx.android.synthetic.main.view_trend_report.view.*
 import java.math.BigDecimal
 
 class TrendsReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        LinearLayout(context, attrs, defStyleAttr), TrendsPresenter.View {
+        LinearLayout(context, attrs, defStyleAttr), TrendsReportPresenter.View {
 
-    private val presenter by lazy { provideTrendsPresenter() }
+    private val presenter by lazy { provideTrendsReportPresenter() }
     private val moneyFormatter by lazy { provideMoneyFormatter() }
 
     override fun onFinishInflate() {
@@ -76,25 +76,25 @@ class TrendsReportView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     private val ANIMATION_DURATION_MILLIS = 500
 
-    override fun showTrends(trends: Trends) {
-        val lineDataSet = lineDataSet(trends.currentMoneys.map { it.money })
+    override fun showTrends(trendsReport: TrendsReport) {
+        val lineDataSet = lineDataSet(trendsReport.currentMoneys.map { it.money })
 
         lineDataSet.setDrawFilled(false)
         lineDataSet.color = getColorFromTheme(android.R.attr.textColorPrimary)
         lineDataSet.lineWidth = 3f
 
-        val lastLineDataSet = lineDataSet(trends.otherMoneys.map { it.money })
+        val lastLineDataSet = lineDataSet(trendsReport.otherMoneys.map { it.money })
         lastLineDataSet.setDrawFilled(true)
         lastLineDataSet.fillColor = Color.BLACK
         lastLineDataSet.fillAlpha = 20
         lastLineDataSet.setColor(Color.BLACK, 1)
 
-        val lineData = LineData(trends.currentMoneys.map { "" }, listOf(lastLineDataSet, lineDataSet))
+        val lineData = LineData(trendsReport.currentMoneys.map { "" }, listOf(lastLineDataSet, lineDataSet))
         lineChart.data = lineData
         lineChart.animateY(ANIMATION_DURATION_MILLIS)
 
         val animator = ValueAnimator.ofFloat(0f, 1f).setDuration(ANIMATION_DURATION_MILLIS.toLong())
-        animator.addUpdateListener { thisPeriodAmountTextView.text = moneyFormatter.format(trends.currentTotal.copy(amount = trends.currentTotal.amount * BigDecimal.valueOf(it.animatedFraction.toDouble()))) }
+        animator.addUpdateListener { thisPeriodAmountTextView.text = moneyFormatter.format(trendsReport.currentTotal.copy(amount = trendsReport.currentTotal.amount * BigDecimal.valueOf(it.animatedFraction.toDouble()))) }
         animator.start()
     }
 

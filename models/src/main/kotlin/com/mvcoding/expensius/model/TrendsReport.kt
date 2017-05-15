@@ -17,7 +17,7 @@ package com.mvcoding.expensius.model
 import org.joda.time.Interval
 import java.io.Serializable
 
-data class Trends(
+data class TrendsReport(
         val currentMoneys: List<GroupedMoney<Interval>>,
         val currentTotal: Money,
         val otherMoneys: List<GroupedMoney<Interval>>,
