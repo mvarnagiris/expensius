@@ -12,29 +12,46 @@
   ~ GNU General Public License for more details.
   -->
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent">
 
-        <include
-            layout="@layout/toolbar_flat"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll" />
+            android:clipToPadding="false"
+            android:orientation="vertical">
 
-        <include
-            layout="@layout/view_trend_report"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll" />
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/grid_2x"
+                android:theme="@style/AppTheme.AppBarOverlay">
 
-    </android.support.design.widget.AppBarLayout>
+                <include
+                    layout="@layout/toolbar_flat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/view_trend_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <include layout="@layout/view_tags_report_overview" />
+
+            <include layout="@layout/view_transactions_overview" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/createTransactionFloatingActionButton"
@@ -43,24 +60,4 @@
         android:layout_margin="@dimen/keyline"
         app:srcCompat="@drawable/ic_action_add" />
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/grid_2x">
-
-            <include layout="@layout/view_tags_report_overview" />
-
-            <include layout="@layout/view_transactions_overview" />
-
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>
