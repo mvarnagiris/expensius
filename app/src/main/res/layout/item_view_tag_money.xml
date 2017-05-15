@@ -13,6 +13,7 @@
   -->
 
 <com.mvcoding.expensius.feature.reports.TagMoneyItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/RecyclerViewItem"
     android:background="@null">
@@ -47,16 +48,17 @@
             style="@style/TextView"
             android:layout_width="match_parent"
             android:layout_toStartOf="@+id/amountTextView"
-            android:textAppearance="@style/Text.Tag"
+            android:textAppearance="@style/Text.Tag.Button"
             tools:text="Essential" />
 
-        <ProgressBar
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
             android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="4dp"
             android:layout_below="@id/titleTextView"
-            android:layout_marginTop="@dimen/grid_quarter" />
+            android:layout_marginTop="@dimen/grid_quarter"
+            app:rcBackgroundColor="?android:windowBackground"
+            app:rcRadius="2dp" />
 
     </RelativeLayout>
 

@@ -23,6 +23,8 @@ import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.currency.provideMoneyConversionSource
 import com.mvcoding.expensius.feature.filter.provideLocalFilterCache
 import com.mvcoding.expensius.feature.filter.provideSecondaryRemoteFilterCache
+import com.mvcoding.expensius.feature.reports.tags.TagsReportPresenter
+import com.mvcoding.expensius.feature.reports.tags.TagsReportSource
 import com.mvcoding.expensius.feature.reports.trends.TrendsReportPresenter
 import com.mvcoding.expensius.feature.reports.trends.TrendsReportSource
 import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
@@ -34,8 +36,9 @@ import memoizrlabs.com.shankandroid.withActivityScope
 class ReportsModule : ShankModule {
     override fun registerFactories() {
         trendsReportSource()
+        tagsReportSource()
         trendsReportPresenter()
-//        tagTotalsReportPresenter()
+        tagsReportPresenter()
     }
 
     private fun trendsReportSource() = registerFactory(TrendsReportSource::class) { scope: Scope ->
@@ -47,20 +50,25 @@ class ReportsModule : ShankModule {
                 provideMoneyConversionSource())
     }
 
+    private fun tagsReportSource() = registerFactory(TagsReportSource::class) { scope: Scope ->
+        TagsReportSource(
+                provideTransactionsSource(true, scope),
+                provideTransactionsSource(false, scope),
+                provideLocalFilterCache(scope),
+                provideReportSettingsSource(scope),
+                provideMoneyConversionSource())
+    }
+
     private fun trendsReportPresenter() = registerFactory(TrendsReportPresenter::class) { scope: Scope ->
         TrendsReportPresenter(provideTrendsReportSource(scope), provideReportSettingsSource(scope), provideSecondaryRemoteFilterCache(scope), provideRxSchedulers())
     }
 
-//    private fun tagTotalsReportPresenter() = registerFactory(TagsTotalsReportPresenter::class) { ->
-//        TagsTotalsReportPresenter(
-//                provideAppUserService(),
-//                provideTransactionsService(),
-//                provideExchangeRatesProvider(),
-//                provideFilter().setTransactionState(CONFIRMED),
-//                provideRxSchedulers())
-//    }
+    private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class) { scope: Scope ->
+        TagsReportPresenter(provideTagsReportSource(scope), provideReportSettingsSource(scope), provideSecondaryRemoteFilterCache(scope), provideRxSchedulers())
+    }
 }
 
 fun provideTrendsReportSource(scope: Scope) = Shank.with(scope).provideSingletonFor<TrendsReportSource>(scope)
+fun provideTagsReportSource(scope: Scope) = Shank.with(scope).provideSingletonFor<TagsReportSource>(scope)
 fun View.provideTrendsReportPresenter() = withActivityScope.provideSingletonFor<TrendsReportPresenter>(activityScope)
-fun View.provideTagTotalsReportPresenter() = withActivityScope.provideSingletonFor<TagsTotalsReportPresenter>()
+fun View.provideTagsReportPresenter() = withActivityScope.provideSingletonFor<TagsReportPresenter>(activityScope)

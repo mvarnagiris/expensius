@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.feature.reports
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -42,20 +41,22 @@ class TagMoneyItemView @JvmOverloads constructor(context: Context, attrs: Attrib
     override fun onFinishInflate() {
         super.onFinishInflate()
         colorImageView.makeOutlineProviderOval()
-        progressBar.max = 100
+        progressBar.max = 100f
     }
 
     fun setTag(tag: Tag) {
         if (tag == noTag) {
             val color = getColorFromTheme(R.attr.colorAccent)
             colorImageView.setColorFilter(color)
-            progressBar.progressTintList = ColorStateList.valueOf(color)
+            progressBar.progressColor = color
             titleTextView.text = getString(R.string.no_tags)
+            titleTextView.setTextColor(color)
         } else {
             val color = tag.color.rgb
             colorImageView.setColorFilter(color)
-            progressBar.progressTintList = ColorStateList.valueOf(color)
+            progressBar.progressColor = color
             titleTextView.text = tag.title.text
+            titleTextView.setTextColor(color)
         }
     }
 
@@ -64,6 +65,6 @@ class TagMoneyItemView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun setProgress(progress: Float) {
-        progressBar.progress = (100 * progress).toInt()
+        progressBar.progress = 100 * progress
     }
 }

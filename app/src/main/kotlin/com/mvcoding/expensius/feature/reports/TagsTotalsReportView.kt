@@ -18,14 +18,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.model.GroupedMoney
+import com.mvcoding.expensius.feature.reports.tags.TagsReportPresenter
 import com.mvcoding.expensius.model.NullModels.noMoney
-import com.mvcoding.expensius.model.Tag
+import com.mvcoding.expensius.model.TagsReport
 
 class TagsTotalsReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        LinearLayout(context, attrs, defStyleAttr), TagsTotalsReportPresenter.View {
+        LinearLayout(context, attrs, defStyleAttr), TagsReportPresenter.View {
 
-    private val presenter by lazy { provideTagTotalsReportPresenter() }
+    private val presenter by lazy { provideTagsReportPresenter() }
 
     init {
         orientation = VERTICAL
@@ -41,10 +41,10 @@ class TagsTotalsReportView @JvmOverloads constructor(context: Context, attrs: At
         presenter.detach(this)
     }
 
-    override fun showTagsTotals(tagAmounts: List<GroupedMoney<Tag>>) {
+    override fun showTagsReport(tagsReport: TagsReport) {
         removeAllViews()
-        val maxMoney = tagAmounts.firstOrNull()?.money ?: noMoney
-        tagAmounts.forEach {
+        val maxMoney = tagsReport.currentMoneys.firstOrNull()?.money ?: noMoney
+        tagsReport.currentMoneys.forEach {
             val tagReportItemView = TagMoneyItemView.inflate(this)
             addView(tagReportItemView)
             tagReportItemView.setTag(it.group)
