@@ -25,8 +25,8 @@
 
         <intent
             android:action="android.intent.action.MAIN"
-            android:targetClass="${applicationId}.feature.splash.SplashActivity"
-            android:targetPackage="${applicationId}" />
+            android:targetClass="com.mvcoding.expensius.feature.splash.SplashActivity"
+            android:targetPackage="com.mvcoding.expensius.debug" />
 
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
