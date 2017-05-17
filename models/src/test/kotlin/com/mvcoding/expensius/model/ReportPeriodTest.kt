@@ -15,7 +15,6 @@
 package com.mvcoding.expensius.model
 
 import com.memoizr.assertk.expect
-import com.mvcoding.expensius.model.extensions.aReportGroup
 import com.mvcoding.expensius.model.extensions.aTransaction
 import org.joda.time.DateTime
 import org.junit.Test
@@ -77,21 +76,27 @@ class ReportPeriodTest {
     fun `groups transactions in such a way that groups fill the whole period`() {
         val transaction = aTransaction()
         val transactions = listOf(transaction)
-        val reportGroup = aReportGroup()
         val currency = transaction.money.currency
-        val transactionInterval = reportGroup.toInterval(transaction.timestamp)
         val expectedDefaultMoney = Money(BigDecimal.ZERO, currency)
 
-        ReportPeriod.values().forEach {
-            val groupedMoneys = it.groupToFillWholePeriod(transactions, reportGroup, currency)
-            val totalInterval = it.interval(transaction.timestamp)
-            val splitInterval = reportGroup.splitIntoGroupIntervals(totalInterval)
+        ReportPeriod.values().forEach { reportPeriod ->
+            ReportGroup.values().forEach { reportGroup ->
+                val groupedMoneys = reportPeriod.groupToFillWholePeriod(transactions, reportGroup, currency)
+                val totalInterval = reportPeriod.interval(transaction.timestamp)
+                val splitInterval = reportGroup.splitIntoGroupIntervals(totalInterval)
+                val transactionInterval = reportGroup.interval(transaction.timestamp)
 
-            expect that groupedMoneys.size isEqualTo splitInterval.size
-            groupedMoneys.forEachIndexed { index, groupedMoney ->
-                expect that groupedMoney isEqualTo
-                        if (groupedMoney.group == transactionInterval) GroupedMoney(splitInterval[index], transaction.money)
-                        else GroupedMoney(splitInterval[index], expectedDefaultMoney)
+                expect that groupedMoneys.size isEqualTo when (reportPeriod) {
+                    ReportPeriod.MONTH -> when (reportGroup) {
+                        ReportGroup.DAY -> 31
+                    }
+                }
+
+                groupedMoneys.forEachIndexed { index, groupedMoney ->
+                    expect that groupedMoney isEqualTo
+                            if (groupedMoney.group == transactionInterval) GroupedMoney(splitInterval[index], transaction.money)
+                            else GroupedMoney(splitInterval[index], expectedDefaultMoney)
+                }
             }
         }
     }

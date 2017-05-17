@@ -16,6 +16,8 @@ package com.mvcoding.expensius.feature.filter
 
 import com.mvcoding.expensius.model.LocalFilter
 import com.mvcoding.expensius.model.NullModels.noLocalFilter
+import com.mvcoding.expensius.model.TransactionState
+import com.mvcoding.expensius.model.TransactionType
 import org.junit.Test
 import rx.observers.TestSubscriber
 
@@ -28,6 +30,6 @@ class LocalFilterSourceTest {
 
         localFilterSource.data().subscribe(subscriber)
 
-        subscriber.assertValue(noLocalFilter)
+        subscriber.assertValue(noLocalFilter.withTransactionType(TransactionType.EXPENSE).withTransactionState(TransactionState.CONFIRMED))
     }
 }

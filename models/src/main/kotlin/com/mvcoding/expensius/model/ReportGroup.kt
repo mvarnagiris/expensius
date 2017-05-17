@@ -21,21 +21,21 @@ import java.math.BigDecimal
 
 enum class ReportGroup { DAY;
 
-    fun toPeriod(): Period = when (this) {
+    fun period(): Period = when (this) {
         DAY -> Period.days(1)
     }
 
-    fun toInterval(timestamp: Timestamp) = toInterval(timestamp.millis)
+    fun interval(timestamp: Timestamp) = interval(timestamp.millis)
 
-    fun toInterval(millis: Long) = DateTime(millis).let {
+    fun interval(millis: Long) = DateTime(millis).let {
         when (this) {
             DAY -> it.withTimeAtStartOfDay()
         }
-    }.let { Interval(it, toPeriod()) }
+    }.let { Interval(it, period()) }
 
     fun group(transactions: List<Transaction>): Map<Interval, Money> {
         fun List<Transaction>.currencyOrNull() = firstOrNull()?.money?.currency
-        fun List<Transaction>.groupByInterval() = groupBy { toInterval(it.timestamp) }
+        fun List<Transaction>.groupByInterval() = groupBy { interval(it.timestamp) }
         fun Map<Interval, List<Transaction>>.sumAmounts() = mapValues { it.value.fold(BigDecimal.ZERO) { sum, transaction -> sum + transaction.money.amount } }
         fun Map<Interval, BigDecimal>.convertAmountsToMoney(currency: Currency) = mapValues { Money(it.value, currency) }
 
@@ -43,10 +43,10 @@ enum class ReportGroup { DAY;
     }
 
     fun splitIntoGroupIntervals(interval: Interval): List<Interval> {
-        val startInterval = toInterval(interval.startMillis)
+        val startInterval = interval(interval.startMillis)
         val groupIntervals = arrayListOf(startInterval)
 
-        val period = toPeriod()
+        val period = period()
         while (groupIntervals.last().endMillis < interval.endMillis) {
             groupIntervals.add(Interval(groupIntervals.last().end, period))
         }

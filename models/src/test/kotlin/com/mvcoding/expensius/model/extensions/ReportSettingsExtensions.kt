@@ -14,6 +14,8 @@
 
 package com.mvcoding.expensius.model.extensions
 
+import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.model.ReportSettings
 
 fun aReportSettings() = ReportSettings(aReportPeriod(), aReportGroup(), aCurrency())
+fun ReportSettings.withReportPeriod(reportPeriod: ReportPeriod) = copy(reportPeriod = reportPeriod)

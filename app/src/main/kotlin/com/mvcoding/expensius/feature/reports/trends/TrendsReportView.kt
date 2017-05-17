@@ -49,6 +49,7 @@ class TrendsReportView @JvmOverloads constructor(context: Context, attrs: Attrib
         lineChart.isScaleXEnabled = false
         lineChart.isScaleYEnabled = false
         lineChart.legend.isEnabled = false
+        lineChart.setTouchEnabled(false)
         lineChart.axisLeft.setDrawLabels(false)
         lineChart.axisLeft.setDrawGridLines(false)
         lineChart.axisLeft.setDrawAxisLine(false)
@@ -89,7 +90,7 @@ class TrendsReportView @JvmOverloads constructor(context: Context, attrs: Attrib
         lastLineDataSet.fillAlpha = 20
         lastLineDataSet.setColor(Color.BLACK, 1)
 
-        val lineData = LineData(trendsReport.currentMoneys.map { "" }, listOf(lastLineDataSet, lineDataSet))
+        val lineData = LineData(Math.max(lineDataSet.entryCount, lastLineDataSet.entryCount).downTo(1).map { "" }, listOf(lastLineDataSet, lineDataSet))
         lineChart.data = lineData
         lineChart.animateY(ANIMATION_DURATION_MILLIS)
 

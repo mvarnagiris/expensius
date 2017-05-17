@@ -38,9 +38,10 @@ class TrendsReportPresenterTest {
 
     val trendsSource = mock<DataSource<TrendsReport>>()
     val reportSettingsSource = mock<DataSource<ReportSettings>>().apply { whenever(data()).thenReturn(just(reportSettings)) }
+    val primaryRemoteFilterCache = mock<Cache<RemoteFilter>>().apply { whenever(data()).thenReturn(just(remoteFilter)) }
     val secondaryRemoteFilterCache = mock<Cache<RemoteFilter>>().apply { whenever(data()).thenReturn(just(remoteFilter)) }
     val view = mock<TrendsReportPresenter.View>()
-    val presenter = TrendsReportPresenter(trendsSource, reportSettingsSource, secondaryRemoteFilterCache, rxSchedulers())
+    val presenter = TrendsReportPresenter(trendsSource, reportSettingsSource, primaryRemoteFilterCache, secondaryRemoteFilterCache, rxSchedulers())
 
     @Before
     fun setUp() {
@@ -48,15 +49,17 @@ class TrendsReportPresenterTest {
     }
 
     @Test
-    fun `secondary remote filter points to previous period`() {
-        verify(secondaryRemoteFilterCache).write(remoteFilter.withPreviousInterval(reportSettings.reportPeriod))
-    }
-
-    @Test
     fun `shows trends`() {
         presenter.attach(view)
 
         verify(view).showTrends(trends)
+    }
+
+    @Test
+    fun `secondary remote filter points to previous period`() {
+        presenter.attach(view)
+
+        verify(secondaryRemoteFilterCache).write(remoteFilter.withPreviousInterval(reportSettings.reportPeriod))
     }
 
     @Test

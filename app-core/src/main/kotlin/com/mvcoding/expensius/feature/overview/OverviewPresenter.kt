@@ -35,6 +35,7 @@ class OverviewPresenter(
         view.createTransactionSelects().subscribeUntilDetached { view.displayCreateTransaction() }
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
+        view.trendsReportSelects().subscribeUntilDetached { view.displayTrendsReport() }
 //        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
         view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
         combineLatest(
@@ -50,6 +51,7 @@ class OverviewPresenter(
         fun createTransactionSelects(): Observable<Unit>
         fun transactionsSelects(): Observable<Unit>
         fun tagsSelects(): Observable<Unit>
+        fun trendsReportSelects(): Observable<Unit>
         fun tagsReportSelects(): Observable<Unit>
         fun settingsSelects(): Observable<Unit>
 
@@ -58,6 +60,7 @@ class OverviewPresenter(
         fun displayCreateTransaction()
         fun displayTransactions()
         fun displayTags()
+        fun displayTrendsReport()
         fun displayTagsReport()
         fun displaySettings()
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -61,6 +61,9 @@
         <activity
             android:name=".feature.reports.TagTotalsReportActivity"
             android:label="@string/tags_report" />
+        <activity
+            android:name=".feature.reports.trends.TrendsReportActivity"
+            android:label="@string/trends_report" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

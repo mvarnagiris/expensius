@@ -22,6 +22,11 @@ data class LocalFilter(
         val tags: Set<Tag>,
         val note: Note?) : Serializable {
 
+    fun withTransactionType(transactionType: TransactionType?) = copy(transactionType = transactionType)
+    fun withTransactionState(transactionState: TransactionState?) = copy(transactionState = transactionState)
+    fun withTags(tags: Set<Tag>) = copy(tags = tags)
+    fun withNote(note: Note) = copy(note = note)
+
     fun filter(transactions: List<Transaction>): List<Transaction> = transactions.filter { transaction ->
         transactionType?.let { transaction.transactionType == it } ?: true
                 && transactionState?.let { transaction.transactionState == it } ?: true

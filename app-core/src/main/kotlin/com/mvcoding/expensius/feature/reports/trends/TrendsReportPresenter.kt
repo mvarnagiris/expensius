@@ -25,19 +25,17 @@ import com.mvcoding.mvp.Presenter
 
 class TrendsReportPresenter(
         private val trendsReportSource: DataSource<TrendsReport>,
-        reportSettingsSource: DataSource<ReportSettings>,
+        private val reportSettingsSource: DataSource<ReportSettings>,
+        private val primaryRemoteFilterCache: Cache<RemoteFilter>,
         private val secondaryRemoteFilterCache: Cache<RemoteFilter>,
         private val schedulers: RxSchedulers) : Presenter<TrendsReportPresenter.View>() {
 
-    init {
-        secondaryRemoteFilterCache.data()
-                .first()
-                .withLatestFrom(reportSettingsSource.data()) { remoteFilter, reportSettings -> remoteFilter to reportSettings }
-                .subscribe { secondaryRemoteFilterCache.write(it.first.withPreviousInterval(it.second.reportPeriod)) }
-    }
-
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
+
+        primaryRemoteFilterCache.data()
+                .withLatestFrom(reportSettingsSource.data()) { primaryRemoteFilter, reportSettings -> primaryRemoteFilter to reportSettings }
+                .subscribeUntilDetached { secondaryRemoteFilterCache.write(it.first.withPreviousInterval(it.second.reportPeriod)) }
 
         trendsReportSource.data()
                 .subscribeOn(schedulers.io)

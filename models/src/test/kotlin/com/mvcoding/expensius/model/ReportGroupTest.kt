@@ -27,7 +27,7 @@ class ReportGroupTest {
     @Test
     fun `can convert to Period`() {
         ReportGroup.values().forEach {
-            val period = it.toPeriod()
+            val period = it.period()
             val expectedPeriod = when (it) {
                 ReportGroup.DAY -> Period.days(1)
             }
@@ -42,8 +42,8 @@ class ReportGroupTest {
         val timestamp = Timestamp(timestampMillis)
 
         ReportGroup.values().forEach {
-            val intervalFromMillis = it.toInterval(timestampMillis)
-            val intervalFromTimestamp = it.toInterval(timestamp)
+            val intervalFromMillis = it.interval(timestampMillis)
+            val intervalFromTimestamp = it.interval(timestamp)
             val expectedInterval = when (it) {
                 ReportGroup.DAY -> Interval(now.withTimeAtStartOfDay(), Period.days(1))
             }
@@ -55,7 +55,7 @@ class ReportGroupTest {
     @Test
     fun `groups moneys into intervals`() {
         ReportGroup.values().forEach { reportGroup ->
-            val period = reportGroup.toPeriod()
+            val period = reportGroup.period()
             val timestamp = DateTime().withTimeAtStartOfDay().millis
             val groupA1 = aTransaction().withTimestamp(timestamp)
             val groupA2 = aTransaction().withTimestamp(timestamp + 1)
@@ -63,8 +63,8 @@ class ReportGroupTest {
             val transactions = listOf(groupA1, groupA2, groupB1)
             val expectedCurrency = groupA1.money.currency
             val expectedGroupedMoneys = mapOf(
-                    reportGroup.toInterval(groupA1.timestamp) to Money(groupA1.money.amount + groupA2.money.amount, expectedCurrency),
-                    reportGroup.toInterval(groupB1.timestamp) to Money(groupB1.money.amount, expectedCurrency))
+                    reportGroup.interval(groupA1.timestamp) to Money(groupA1.money.amount + groupA2.money.amount, expectedCurrency),
+                    reportGroup.interval(groupB1.timestamp) to Money(groupB1.money.amount, expectedCurrency))
 
             val groupedMoneys = reportGroup.group(transactions)
 
@@ -77,10 +77,10 @@ class ReportGroupTest {
         val timestamp = DateTime.now().millis
 
         ReportGroup.values().forEach {
-            val firstInterval = it.toInterval(timestamp)
+            val firstInterval = it.interval(timestamp)
             val secondInterval = firstInterval
                     .withStart(firstInterval.end)
-                    .withPeriodAfterStart(it.toPeriod())
+                    .withPeriodAfterStart(it.period())
             val totalInterval = Interval(firstInterval.start, secondInterval.end)
             val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
 
@@ -93,7 +93,7 @@ class ReportGroupTest {
         val timestamp = DateTime.now().millis
 
         ReportGroup.values().forEach {
-            val interval = it.toInterval(timestamp)
+            val interval = it.interval(timestamp)
             val totalInterval = Interval(
                     interval.start.plusMinutes(1),
                     interval.end.minusMinutes(1))
@@ -108,20 +108,20 @@ class ReportGroupTest {
         val timestamp = DateTime.now().millis
 
         ReportGroup.values().forEach {
-            val firstInterval = it.toInterval(timestamp)
+            val firstInterval = it.interval(timestamp)
             val secondInterval = firstInterval
                     .withStart(firstInterval.end)
-                    .withPeriodAfterStart(it.toPeriod())
+                    .withPeriodAfterStart(it.period())
             val totalInterval = Interval(
                     firstInterval.start.minusMinutes(1),
                     secondInterval.end.plusMinutes(1))
             val splitIntervals = it.splitIntoGroupIntervals(totalInterval)
 
             expect that splitIntervals isEqualTo listOf(
-                    it.toInterval(firstInterval.startMillis - 1),
+                    it.interval(firstInterval.startMillis - 1),
                     firstInterval,
                     secondInterval,
-                    it.toInterval(secondInterval.endMillis + 1))
+                    it.interval(secondInterval.endMillis + 1))
         }
     }
 }

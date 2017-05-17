@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,8 +13,10 @@
   -->
 
 <com.mvcoding.expensius.feature.reports.trends.TrendsReportView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trendsReportView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:foreground="?selectableItemBackground"
     android:orientation="vertical">
 
     <com.github.mikephil.charting.charts.LineChart

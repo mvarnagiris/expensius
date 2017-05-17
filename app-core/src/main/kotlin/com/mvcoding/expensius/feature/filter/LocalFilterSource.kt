@@ -16,11 +16,13 @@ package com.mvcoding.expensius.feature.filter
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.LocalFilter
-import com.mvcoding.expensius.model.NullModels
+import com.mvcoding.expensius.model.NullModels.noLocalFilter
+import com.mvcoding.expensius.model.TransactionState.CONFIRMED
+import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import rx.Observable
 import rx.Observable.just
 
 class LocalFilterSource : DataSource<LocalFilter> {
 
-    override fun data(): Observable<LocalFilter> = just(NullModels.noLocalFilter)
+    override fun data(): Observable<LocalFilter> = just(noLocalFilter.withTransactionType(EXPENSE).withTransactionState(CONFIRMED))
 }

@@ -21,8 +21,8 @@ class MoneyGroupingTest {
 //    @Test
 //    fun `groups amounts into intervals that fit within filter data`() {
 //        val reportGroup = DAY
-//        val period = reportGroup.toPeriod()
-//        val interval = reportGroup.toInterval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
+//        val period = reportGroup.period()
+//        val interval = reportGroup.interval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
 //        val filterData = FilterDataOld(interval, EXPENSE, CONFIRMED)
 //        val currency = aCurrency()
 //
@@ -53,8 +53,8 @@ class MoneyGroupingTest {
 //    @Test
 //    fun `groups amounts into tags that fit within filter data`() {
 //        val reportGroup = DAY
-//        val period = reportGroup.toPeriod()
-//        val interval = reportGroup.toInterval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
+//        val period = reportGroup.period()
+//        val interval = reportGroup.interval(currentTimeMillis()).withPeriodAfterStart(period.multipliedBy(4))
 //        val timestamp = interval.startMillis
 //        val filterData = FilterDataOld(interval, EXPENSE, CONFIRMED)
 //        val currency = aCurrency()

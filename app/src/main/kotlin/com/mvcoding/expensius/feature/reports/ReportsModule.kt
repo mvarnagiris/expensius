@@ -22,6 +22,7 @@ import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.currency.provideMoneyConversionSource
 import com.mvcoding.expensius.feature.filter.provideLocalFilterCache
+import com.mvcoding.expensius.feature.filter.provideRemoteFilterCache
 import com.mvcoding.expensius.feature.filter.provideSecondaryRemoteFilterCache
 import com.mvcoding.expensius.feature.reports.tags.TagsReportPresenter
 import com.mvcoding.expensius.feature.reports.tags.TagsReportSource
@@ -60,7 +61,12 @@ class ReportsModule : ShankModule {
     }
 
     private fun trendsReportPresenter() = registerFactory(TrendsReportPresenter::class) { scope: Scope ->
-        TrendsReportPresenter(provideTrendsReportSource(scope), provideReportSettingsSource(scope), provideSecondaryRemoteFilterCache(scope), provideRxSchedulers())
+        TrendsReportPresenter(
+                provideTrendsReportSource(scope),
+                provideReportSettingsSource(scope),
+                provideRemoteFilterCache(scope),
+                provideSecondaryRemoteFilterCache(scope),
+                provideRxSchedulers())
     }
 
     private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class) { scope: Scope ->

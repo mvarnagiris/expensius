@@ -32,6 +32,7 @@ class OverviewPresenterTest {
     val newTransactionSelectedSubject = PublishSubject<Unit>()
     val transactionsSelectedSubject = PublishSubject<Unit>()
     val tagsSelectedSubject = PublishSubject<Unit>()
+    val trendsReportSelectsSubject = PublishSubject<Unit>()
     //    val tagsReportSelectedSubject = PublishSubject<Unit>()
     val settingsSelectedSubject = PublishSubject<Unit>()
     val filter = aRemoteFilter()
@@ -47,6 +48,7 @@ class OverviewPresenterTest {
         whenever(view.createTransactionSelects()).thenReturn(newTransactionSelectedSubject)
         whenever(view.transactionsSelects()).thenReturn(transactionsSelectedSubject)
         whenever(view.tagsSelects()).thenReturn(tagsSelectedSubject)
+        whenever(view.trendsReportSelects()).thenReturn(trendsReportSelectsSubject)
 //        whenever(view.tagsReportSelects()).thenReturn(tagsReportSelectedSubject)
         whenever(view.settingsSelects()).thenReturn(settingsSelectedSubject)
         whenever(filterSource.data()).thenReturn(just(filter))
@@ -87,6 +89,15 @@ class OverviewPresenterTest {
         verify(view).displayTags()
     }
 
+    @Test
+    fun `displays trends report`() {
+        presenter.attach(view)
+
+        selectTrendsReport()
+
+        verify(view).displayTrendsReport()
+    }
+
 //    @Test
 //    fun `displays tags report`() {
 //        presenter.attach(view)
@@ -108,6 +119,7 @@ class OverviewPresenterTest {
     private fun selectNewTransaction() = newTransactionSelectedSubject.onNext(Unit)
     private fun selectTransactions() = transactionsSelectedSubject.onNext(Unit)
     private fun selectTags() = tagsSelectedSubject.onNext(Unit)
+    private fun selectTrendsReport() = trendsReportSelectsSubject.onNext(Unit)
     //    private fun selectTagsReport() = tagsReportSelectedSubject.onNext(Unit)
     private fun selectSettings() = settingsSelectedSubject.onNext(Unit)
 }

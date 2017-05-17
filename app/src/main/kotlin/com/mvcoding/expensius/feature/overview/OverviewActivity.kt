@@ -25,6 +25,7 @@ import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.feature.reports.TagTotalsReportActivity
+import com.mvcoding.expensius.feature.reports.trends.TrendsReportActivity
 import com.mvcoding.expensius.feature.settings.SettingsActivity
 import com.mvcoding.expensius.feature.tag.TagsActivity
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
@@ -33,6 +34,7 @@ import com.mvcoding.expensius.provideDateFormatter
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.view_transactions_overview.*
+import kotlinx.android.synthetic.main.view_trend_report.*
 import org.joda.time.Interval
 import rx.Observable
 
@@ -67,12 +69,14 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
     override fun createTransactionSelects(): Observable<Unit> = createTransactionButton.clicks()
     override fun transactionsSelects(): Observable<Unit> = transactionsOverviewView.clicks()
     override fun tagsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_tags }.map { Unit }
+    override fun trendsReportSelects(): Observable<Unit> = trendsReportView.clicks()
     override fun tagsReportSelects(): Observable<Unit> = Observable.never()//tagsTotalsReportView.clicks()
     override fun settingsSelects(): Observable<Unit> = toolbarClicks.filter { it.itemId == R.id.action_settings }.map { Unit }
     override fun showInterval(interval: Interval, reportPeriod: ReportPeriod) = with(supportActionBar) { title = dateFormatter.formatInterval(reportPeriod, interval) }
     override fun displayCreateTransaction(): Unit = CalculatorActivity.start(this)
     override fun displayTransactions(): Unit = TransactionsActivity.start(this)
     override fun displayTags(): Unit = TagsActivity.startView(this)
+    override fun displayTrendsReport(): Unit = TrendsReportActivity.start(this)
     override fun displayTagsReport(): Unit = TagTotalsReportActivity.start(this)
     override fun displaySettings(): Unit = SettingsActivity.start(this)
 
