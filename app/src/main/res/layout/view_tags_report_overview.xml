@@ -32,7 +32,7 @@
         android:layout_marginBottom="@dimen/grid_2x"
         android:background="?selectableItemBackground">
 
-        <com.mvcoding.expensius.feature.reports.TagsTotalsReportView
+        <com.mvcoding.expensius.feature.reports.tags.TagsReportView
             android:id="@+id/tagsTotalsReportView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

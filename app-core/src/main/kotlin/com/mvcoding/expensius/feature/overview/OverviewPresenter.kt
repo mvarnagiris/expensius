@@ -36,7 +36,7 @@ class OverviewPresenter(
         view.transactionsSelects().subscribeUntilDetached { view.displayTransactions() }
         view.tagsSelects().subscribeUntilDetached { view.displayTags() }
         view.trendsReportSelects().subscribeUntilDetached { view.displayTrendsReport() }
-//        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
+        view.tagsReportSelects().subscribeUntilDetached { view.displayTagsReport() }
         view.settingsSelects().subscribeUntilDetached { view.displaySettings() }
         combineLatest(
                 remoteFilterSource.data(),

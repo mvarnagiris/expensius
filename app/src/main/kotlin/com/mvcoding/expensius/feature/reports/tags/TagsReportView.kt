@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,17 +12,17 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.reports
+package com.mvcoding.expensius.feature.reports.tags
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import com.mvcoding.expensius.extension.doNotInEditMode
-import com.mvcoding.expensius.feature.reports.tags.TagsReportPresenter
+import com.mvcoding.expensius.feature.reports.provideTagsReportPresenter
 import com.mvcoding.expensius.model.NullModels.noMoney
 import com.mvcoding.expensius.model.TagsReport
 
-class TagsTotalsReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class TagsReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr), TagsReportPresenter.View {
 
     private val presenter by lazy { provideTagsReportPresenter() }

@@ -59,7 +59,7 @@
             android:name=".feature.settings.SettingsActivity"
             android:label="@string/settings" />
         <activity
-            android:name=".feature.reports.TagTotalsReportActivity"
+            android:name=".feature.reports.tags.TagsReportActivity"
             android:label="@string/tags_report" />
         <activity
             android:name=".feature.reports.trends.TrendsReportActivity"

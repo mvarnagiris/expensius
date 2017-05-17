@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.reports
+package com.mvcoding.expensius.feature.reports.tags
 
 import android.content.Context
 import android.os.Bundle
@@ -20,14 +20,14 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 
-class TagTotalsReportActivity : BaseActivity() {
+class TagsReportActivity : BaseActivity() {
 
     companion object {
-        fun start(context: Context): Unit = ActivityStarter(context, TagTotalsReportActivity::class).start()
+        fun start(context: Context): Unit = ActivityStarter(context, TagsReportActivity::class).start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tag_totals_report)
+        setContentView(R.layout.activity_tags_report)
     }
 }

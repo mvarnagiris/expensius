@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.reports
+package com.mvcoding.expensius.feature.reports.tags
 
 import android.content.Context
 import android.util.AttributeSet
