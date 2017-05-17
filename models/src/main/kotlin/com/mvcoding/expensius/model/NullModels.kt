@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,12 @@ import java.math.BigDecimal.ZERO
 object NullModels {
     val noCurrency = Currency("")
     val noEmail = Email("")
+    val noImage = UriImage("")
     val noSettings = Settings(noCurrency, ReportPeriod.MONTH, ReportGroup.DAY, FREE)
 
     val noUserId = UserId("")
-    val noAppUser = AppUser(noUserId, noEmail, noSettings, emptySet())
+    val noName = Name("")
+    val noAppUser = AppUser(noUserId, noName, noImage, noEmail, noSettings, emptySet())
 
     val noTagId = TagId("")
     val noTitle = Title("")
@@ -40,6 +42,11 @@ object NullModels {
     val noMoney = Money(ZERO, noCurrency)
     val noNote = Note("")
     val noTransaction = Transaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
+    val noBasicTransaction = BasicTransaction(noTransactionId, NONE, EXPENSE, PENDING, noTimestamp, noMoney, emptySet(), noNote)
+
+    val noTrendsReport = TrendsReport(emptyList(), noMoney, emptyList(), noMoney)
+
+    val noLocalFilter = LocalFilter(null, null, emptySet(), null)
 
     fun newTransaction(timestamp: Timestamp, money: Money) = Transaction(
             noTransactionId,

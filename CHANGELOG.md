@@ -1,5 +1,13 @@
-### v0.4.1
+### v0.5.0
+- `new` Added trends report when you tap on it on home screen.
+- `new` Added tags report when you tap on it on home screen.
+- `new` Extensive code rewrite that should lead to faster development.
+
+### v0.4.2
 - `fix` Setting default currency instead of null.
+- `fix` UI fixes for tags report.
+
+### v0.4.1
 - `fix` Transactions can be modified.
 - `fix` Default tags will be created properly.
 - `new` Added ability to login after skipping login.

@@ -15,15 +15,13 @@
 package com.mvcoding.expensius.feature.premium
 
 import com.memoizrlabs.Scope
-import com.memoizrlabs.Shank.registerFactory
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.extension.provideSingleton
 import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.provideAppUserService
-import com.mvcoding.expensius.provideAppUserWriteService
+import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideContext
 import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
@@ -36,17 +34,15 @@ class PremiumModule : ShankModule {
     }
 
     private fun remoteBillingProductsService() = registerFactory(BillingProductsService::class) { ->
-        if (BuildConfig.DEBUG) DummyBillingProductsService(provideAppUserService())
+        if (BuildConfig.DEBUG) DummyBillingProductsService(provideAppUserSource())
         else BillingBillingProductsService(provideContext())
     }
 
-    private fun billingFlow() = registerFactory(BillingFlow::class) { scope: Scope ->
-        provideBillingProductsService(scope) as BillingFlow
-    }
+    private fun billingFlow() = registerFactory(BillingFlow::class) { scope: Scope -> provideBillingProductsService(scope) as BillingFlow }
 
-    private fun premiumPresenter() = registerFactory(PremiumPresenter::class.java) { scope: Scope ->
+    private fun premiumPresenter() = registerFactory(PremiumPresenter::class) { scope: Scope ->
         val billingProductsService = provideBillingProductsService(scope)
-        PremiumPresenter(provideAppUserService(), provideAppUserWriteService(), billingProductsService, provideRxSchedulers())
+        PremiumPresenter(provideAppUserSource(), provideAppUserSource(), billingProductsService, provideRxSchedulers())
     }
 }
 

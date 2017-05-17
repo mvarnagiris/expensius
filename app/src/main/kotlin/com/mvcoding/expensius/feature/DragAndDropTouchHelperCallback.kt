@@ -34,7 +34,7 @@ class DragAndDropTouchHelperCallback(
             fromPosition = viewHolder.adapterPosition
         }
         toPosition = target.adapterPosition
-        adapter.move(viewHolder.adapterPosition, toPosition)
+        adapter.moveItem(viewHolder.adapterPosition, toPosition)
         return true
     }
 

@@ -14,31 +14,34 @@
 
 package com.mvcoding.expensius.model
 
+import com.memoizr.assertk.expect
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
+import com.mvcoding.expensius.model.extensions.anAppUser
+import com.mvcoding.expensius.model.extensions.anAuthProvider
+import com.mvcoding.expensius.model.extensions.withAuthProvider
+import com.mvcoding.expensius.model.extensions.withNoAuthProviders
 import org.junit.Test
 
 class UserTest {
     @Test
-    fun appUserIsNotLoggedInWhenAuthProvidersAreEmpty() {
-        assertThat(anAppUser().withNoAuthProviders().isLoggedIn(), equalTo(false))
+    fun `AppUser is not logged in when auth providers are empty`() {
+        expect that anAppUser().withNoAuthProviders().isLoggedIn() _is false
     }
 
     @Test
-    fun appUserIsLoggedInWhenAuthProvidersAreNotEmpty() {
-        assertThat(anAppUser().withAuthProvider(anAuthProvider()).isLoggedIn(), equalTo(true))
+    fun `AppUser is logged in when auth providers are not empty`() {
+        expect that anAppUser().withAuthProvider(anAuthProvider()).isLoggedIn() _is true
     }
 
     @Test
-    fun appUserIsWithProperAccountWhenAtLeastOneAuthProviderIsNotAnonymous() {
-        assertThat(anAppUser().withAuthProvider(GOOGLE).isWithProperAccount(), equalTo(true))
+    fun `AppUser is with proper account when at least one auth provider is not anonymous`() {
+        expect that anAppUser().withAuthProvider(GOOGLE).isNotAnonymous() _is true
     }
 
     @Test
-    fun appUserIsNotWithProperAccountWhenNotLoggedInOrAuthProviderIsAnonymous() {
-        assertThat(anAppUser().withNoAuthProviders().isWithProperAccount(), equalTo(false))
-        assertThat(anAppUser().withAuthProvider(ANONYMOUS).isWithProperAccount(), equalTo(false))
+    fun `AppUser is not with proper account when not logged in or auth provider is anonymous`() {
+        expect that anAppUser().withNoAuthProviders().isNotAnonymous() _is false
+        expect that anAppUser().withAuthProvider(ANONYMOUS).isNotAnonymous() _is false
     }
 }

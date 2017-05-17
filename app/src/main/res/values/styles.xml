@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -74,6 +74,8 @@
 
     <style name="Text.Button" parent="TextAppearance.AppCompat.Button">
         <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">
@@ -111,6 +113,16 @@
         <item name="android:fontFeatureSettings">smcp,onum</item>
     </style>
 
+    <style name="Text.Title.Empty">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Text.Title.Section">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <!-- Button -->
     <!-- =============================================================================================================================== -->
 
@@ -118,12 +130,14 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">@style/Text.Button</item>
+        <item name="android:tint">?colorActionIcon</item>
     </style>
 
     <style name="Button.Flat" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">@style/Text.Button</item>
+        <item name="android:tint">?colorActionIcon</item>
     </style>
 
     <style name="Button.Flat.Borderless">
@@ -133,6 +147,7 @@
     <style name="Button.Flat.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:tint">?colorActionIcon</item>
     </style>
 
     <style name="Button.Flat.Borderless.Calc">
@@ -159,7 +174,7 @@
         <item name="elevation">@dimen/elevation_fab</item>
         <item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>
         <item name="rippleColor">?colorAccentDark</item>
-        <item name="borderWidth">1dp</item>
+        <item name="borderWidth">2dp</item>
         <item name="android:theme">@style/AppTheme.Inverse</item>
     </style>
 
@@ -195,6 +210,23 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="cardCornerRadius">0dp</item>
+    </style>
+
+    <style name="Card.Fab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/fab_height</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="android:layout_marginLeft">@dimen/keyline</item>
+        <item name="android:layout_marginRight">@dimen/keyline</item>
+        <item name="android:layout_marginTop">@dimen/grid_2x</item>
+        <item name="android:layout_marginBottom">@dimen/grid_2x</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+        <item name="cardElevation">@dimen/elevation_fab</item>
+        <item name="cardBackgroundColor">?colorAccent</item>
+        <item name="cardCornerRadius">@dimen/fab_height_half</item>
+        <item name="contentPaddingLeft">@dimen/grid_2x</item>
+        <item name="contentPaddingRight">@dimen/grid_2x</item>
+        <item name="android:theme">?themeInverse</item>
     </style>
 
     <!-- EditText -->

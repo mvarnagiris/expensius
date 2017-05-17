@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,136 +14,80 @@
 
 package com.mvcoding.expensius.firebase.service
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuth.AuthStateListener
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.mvcoding.expensius.firebase.model.FirebaseUserData
-import com.mvcoding.expensius.firebase.userDatabaseReference
-import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.AuthProvider
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.*
+import com.mvcoding.expensius.firebase.extensions.*
+import com.mvcoding.expensius.firebase.model.FirebaseAppUser
+import com.mvcoding.expensius.firebase.model.toFirebaseAppUser
+import com.mvcoding.expensius.model.*
 import com.mvcoding.expensius.model.AuthProvider.ANONYMOUS
 import com.mvcoding.expensius.model.AuthProvider.GOOGLE
-import com.mvcoding.expensius.model.Email
-import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.Login.AnonymousLogin
+import com.mvcoding.expensius.model.Login.GoogleLogin
 import com.mvcoding.expensius.model.NullModels.noAppUser
 import com.mvcoding.expensius.model.NullModels.noEmail
-import com.mvcoding.expensius.model.NullModels.noSettings
-import com.mvcoding.expensius.model.NullModels.noUserId
-import com.mvcoding.expensius.model.Settings
-import com.mvcoding.expensius.model.UserAlreadyLinkedException
-import com.mvcoding.expensius.model.UserId
-import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.LoginService
+import com.mvcoding.expensius.model.NullModels.noImage
+import com.mvcoding.expensius.model.NullModels.noName
 import rx.Observable
-import rx.Observable.combineLatest
-import rx.lang.kotlin.BehaviorSubject
-import rx.lang.kotlin.deferredObservable
-import rx.lang.kotlin.observable
+import rx.Observable.error
+import rx.Observable.just
+import rx.Scheduler
 
-class FirebaseAppUserService : AppUserService, LoginService {
+class FirebaseAppUserService(private val scheduler: Scheduler) {
 
-    private val firebaseAuth = FirebaseAuth.getInstance()
-    private val firebaseUserSubject = BehaviorSubject<FirebaseUser?>()
-    private val firebaseUserDataSubject = BehaviorSubject<FirebaseUserData?>()
+    fun getAppUser(): Observable<AppUser> = FirebaseAuth.getInstance()
+            .observeSingleCurrentFirebaseUser(scheduler)
+            .switchMap { if (it == null) just(noAppUser) else fetchAppUser(it) }
+            .onErrorReturn { noAppUser }
 
-    private val appUserObservable: Observable<AppUser>
+    fun setAppUser(appUser: AppUser): Task<Void> = getFirebaseDatabase()
+            .getReference("users")
+            .child(appUser.userId.id)
+            .setValue(appUser.toFirebaseAppUser())
 
-    private val authStateListener = AuthStateListener { onFirebaseUserChanged(it.currentUser) }
+    fun login(login: Login): Observable<LoggedInUserDetails> = FirebaseAuth.getInstance()
+            .observeSingleCurrentFirebaseUser(scheduler)
+            .switchMap { it.loginOrLinkAccount(login).observeSuccessfulComplete(scheduler) }
+            .map { (it.user ?: throw RuntimeException("Failed to log in")).toLoggedInUserDetails() }
+            .onErrorResumeNext { error(convertException(it)) }
 
-    private var userId: UserId = noUserId
-    private var userDataListener: ValueEventListener? = null
+    fun logout(): Unit = FirebaseAuth.getInstance().signOut()
 
-    init {
-        firebaseAuth.addAuthStateListener(authStateListener)
-        appUserObservable = combineLatest(firebaseUserSubject, firebaseUserDataSubject) { firebaseUser, firebaseUserData ->
-            val settings = firebaseUserData?.settings?.toSettings() ?: noSettings
-            firebaseUser?.toAppUser(settings) ?: noAppUser.copy(settings = settings)
-        }.distinctUntilChanged()
-    }
+    private fun fetchAppUser(firebaseUser: FirebaseUser): Observable<AppUser> = firebaseUser.getAppUserDatabaseReference()
+            .observeSingleValue(scheduler)
+            .map { it.getValue(FirebaseAppUser::class.java).toAppUser(firebaseUser.getAuthProviders()) }
 
-    override fun appUser(): Observable<AppUser> = appUserObservable
-
-    override fun loginAnonymously(): Observable<Unit> = deferredObservable {
-        observable<Unit> { subscriber ->
-            firebaseAuth.signInAnonymously()
-                    .addOnSuccessListener {
-                        subscriber.onNext(Unit)
-                        subscriber.onCompleted()
-                    }
-                    .addOnFailureListener { subscriber.onError(it) }
+    private fun FirebaseUser.getAuthProviders(): Set<AuthProvider> = providerData.map {
+        when (it.providerId) {
+            GoogleAuthProvider.PROVIDER_ID -> GOOGLE
+            else -> ANONYMOUS
         }
+    }.toSet()
+
+    private fun FirebaseUser?.loginOrLinkAccount(login: Login): Task<AuthResult> =
+            if (this == null) login.createLoginTask()
+            else login.createLinkAccountTask(this)
+
+    private fun FirebaseUser.toLoggedInUserDetails() = LoggedInUserDetails(
+            UserId(uid),
+            displayName?.let(::Name) ?: noName,
+            email?.let(::Email) ?: noEmail,
+            photoUrl?.toString()?.let(::UriImage) ?: noImage)
+
+    private fun Login.createLoginTask(): Task<AuthResult> = when (this) {
+        is AnonymousLogin -> FirebaseAuth.getInstance().signInAnonymously()
+        is GoogleLogin -> FirebaseAuth.getInstance().signInWithCredential(createCredential())
     }
 
-    override fun loginWithGoogle(googleToken: GoogleToken, noLinkLogin: Boolean): Observable<Unit> = appUser().first().switchMap {
-        if (it.isNotLoggedIn() || noLinkLogin) {
-            observable<Unit> { subscriber ->
-                val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
-                firebaseAuth.signInWithCredential(credential)
-                        .addOnSuccessListener {
-                            subscriber.onNext(Unit)
-                            subscriber.onCompleted()
-                        }
-                        .addOnFailureListener { subscriber.onError(it) }
-            }
-        } else {
-            observable<Unit> { subscriber ->
-                val credential = GoogleAuthProvider.getCredential(googleToken.token, null)
-                firebaseAuth.currentUser!!.linkWithCredential(credential)
-                        .addOnSuccessListener {
-                            subscriber.onNext(Unit)
-                            subscriber.onCompleted()
-                        }
-                        .addOnFailureListener {
-                            subscriber.onError(convertException(it))
-                        }
-            }
-        }
+    private fun Login.createLinkAccountTask(firebaseUser: FirebaseUser): Task<AuthResult> = when (this) {
+        is AnonymousLogin -> FirebaseAuth.getInstance().signInAnonymously()
+        is GoogleLogin -> firebaseUser.linkWithCredential(createCredential())
     }
 
-    private fun convertException(exception: Exception) = when (exception) {
+    private fun GoogleLogin.createCredential() = GoogleAuthProvider.getCredential(googleToken.token, null)
+
+    private fun convertException(exception: Throwable) = when (exception) {
         is FirebaseAuthUserCollisionException -> UserAlreadyLinkedException(exception)
         else -> exception
-    }
-
-    private fun onFirebaseUserChanged(firebaseUser: FirebaseUser?) {
-        firebaseUserSubject.onNext(firebaseUser)
-        val oldUserId = userId
-        val newUserId = firebaseUser?.let { UserId(it.uid) } ?: noUserId
-        userId = newUserId
-        if (firebaseUser == null) firebaseUserDataSubject.onNext(null)
-        else setupUserDataListener(oldUserId, newUserId)
-    }
-
-    private fun setupUserDataListener(oldUserId: UserId, userId: UserId) {
-        if (oldUserId != noUserId && userDataListener != null) {
-            userDatabaseReference(oldUserId).removeEventListener(userDataListener)
-        }
-
-        userDataListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                firebaseUserDataSubject.onNext(dataSnapshot.getValue(FirebaseUserData::class.java))
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // TODO Handle error
-            }
-        }
-        userDatabaseReference(userId).addValueEventListener(userDataListener)
-    }
-
-    private fun FirebaseUser.toAppUser(settings: Settings) = AppUser(
-            UserId(uid),
-            email?.let { Email(it) } ?: noEmail,
-            settings,
-            providerData.map { it.providerId.toAuthProvider() }.toSet())
-
-    private fun String.toAuthProvider(): AuthProvider = when (this) {
-        GoogleAuthProvider.PROVIDER_ID -> GOOGLE
-        else -> ANONYMOUS
     }
 }

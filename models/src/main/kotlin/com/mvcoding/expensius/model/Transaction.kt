@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,28 @@ data class CreateTransaction(
         val tags: Set<Tag>,
         val note: Note) : Serializable
 
+data class BasicTransaction(
+        val transactionId: TransactionId,
+        val modelState: ModelState,
+        val transactionType: TransactionType,
+        val transactionState: TransactionState,
+        val timestamp: Timestamp,
+        val money: Money,
+        val tagIds: Set<TagId>,
+        val note: Note) : Serializable {
+
+    fun toTransaction(allTags: Collection<Tag>) = Transaction(
+            transactionId,
+            modelState,
+            transactionType,
+            transactionState,
+            timestamp,
+            money,
+            tagIds.map { tagId -> allTags.firstOrNull { it.tagId == tagId } }.filterNotNull().toSet(),
+            note
+    )
+}
+
 data class Transaction(
         val transactionId: TransactionId,
         val modelState: ModelState,
@@ -41,7 +63,10 @@ data class Transaction(
         val timestamp: Timestamp,
         val money: Money,
         val tags: Set<Tag>,
-        val note: Note) : Serializable
+        val note: Note) : Serializable {
+
+    fun withMoney(money: Money) = copy(money = money)
+}
 
 interface TimestampProvider {
     fun currentTimestamp(): Timestamp

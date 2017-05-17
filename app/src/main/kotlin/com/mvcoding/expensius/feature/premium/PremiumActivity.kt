@@ -23,17 +23,13 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.TextView
 import com.jakewharton.rxbinding.support.v4.widget.refreshes
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.extension.snackbar
-import com.mvcoding.expensius.feature.ActivityStarter
-import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.BaseClickableAdapter
-import com.mvcoding.expensius.feature.ClickableViewHolder
-import com.mvcoding.expensius.feature.Error
+import com.mvcoding.expensius.feature.*
 import kotlinx.android.synthetic.main.activity_premium.*
+import kotlinx.android.synthetic.main.item_view_billing_product.view.*
 import rx.Observable
 import rx.subjects.PublishSubject
 
@@ -76,7 +72,7 @@ class PremiumActivity : BaseActivity(), PremiumPresenter.View {
     override fun showPremiumUser() = subscriptionTextView.setText(R.string.long_user_is_using_premium_version)
     override fun refreshes() = swipeRefreshLayout.refreshes()
     override fun billingProductSelects(): Observable<BillingProduct> = adapter.itemPositionClicks().map { adapter.getItem(it) }
-    override fun showBillingProducts(billingProducts: List<BillingProduct>) = adapter.set(billingProducts)
+    override fun showBillingProducts(billingProducts: List<BillingProduct>) = adapter.setItems(billingProducts)
     override fun displayBuyProcess(productId: String) = billingFlow.startPurchase(this, REQUEST_BILLING, productId)
     override fun showLoading(): Unit = with(swipeRefreshLayout) { isRefreshing = true }
     override fun hideLoading(): Unit = with(swipeRefreshLayout) { isRefreshing = false }
@@ -87,13 +83,13 @@ class PremiumActivity : BaseActivity(), PremiumPresenter.View {
         snackbar(R.string.error_refreshing_purchases, Snackbar.LENGTH_LONG).show()
     }
 
-    private class Adapter : BaseClickableAdapter<BillingProduct, ClickableViewHolder<View>>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, positionClickedSubject: PublishSubject<Int>) =
-                ClickableViewHolder<View>(parent.inflate(R.layout.item_view_billing_product), positionClickedSubject)
+    private class Adapter : BaseClickableAdapter<BillingProduct, ClickableViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, clickSubject: PublishSubject<Pair<View, Int>>) =
+                ClickableViewHolder(parent.inflate(R.layout.item_view_billing_product), clickSubject)
 
-        override fun onBindViewHolder(holder: ClickableViewHolder<View>, position: Int) {
-            (holder.view.findViewById(R.id.titleTextView) as TextView).text = getItem(position).title
-            (holder.view.findViewById(R.id.priceTextView) as TextView).text = getItem(position).price
+        override fun onBindViewHolder(holder: ClickableViewHolder, position: Int) {
+            holder.itemView.titleTextView.text = getItem(position).title
+            holder.itemView.priceTextView.text = getItem(position).price
         }
     }
 }

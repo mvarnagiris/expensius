@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@ package com.mvcoding.expensius.model
 import java.io.Serializable
 
 enum class SubscriptionType { FREE, PREMIUM_PAID }
-enum class ReportPeriod { MONTH }
-enum class ReportGroup { DAY }
 
 data class Settings(
         val mainCurrency: Currency,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,23 +15,32 @@
 package com.mvcoding.expensius.feature.settings
 
 import android.app.Activity
-import com.memoizrlabs.Shank.registerFactory
+import com.memoizrlabs.Scope
+import com.memoizrlabs.Shank
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
-import com.mvcoding.expensius.feature.currency.provideCurrenciesProvider
-import com.mvcoding.expensius.provideAppUserService
-import com.mvcoding.expensius.provideAppUserWriteService
+import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.currency.provideCurrenciesSource
+import com.mvcoding.expensius.model.ReportSettings
+import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
 class SettingsModule : ShankModule {
     override fun registerFactories() {
         settingsPresenter()
+        reportSettingsSource()
     }
 
-    private fun settingsPresenter() = registerFactory(SettingsPresenter::class.java) { ->
-        SettingsPresenter(provideAppUserService(), provideAppUserWriteService(), provideCurrenciesProvider(), provideRxSchedulers())
+    private fun settingsPresenter() = registerFactory(SettingsPresenter::class) { ->
+        SettingsPresenter(provideAppUserSource(), provideAppUserSource(), provideCurrenciesSource(), provideRxSchedulers())
+    }
+
+    private fun reportSettingsSource() = registerFactory(ReportSettingsSource::class) { ->
+        val appUserSource = provideAppUserSource()
+        ReportSettingsSource { appUserSource.data().map { ReportSettings(it.settings.reportPeriod, it.settings.reportGroup, it.settings.mainCurrency) } }
     }
 }
 
 fun Activity.provideSettingsPresenter() = withThisScope.provideSingletonFor<SettingsPresenter>()
+fun provideReportSettingsSource(scope: Scope) = Shank.with(scope).provideSingletonFor<ReportSettingsSource>()

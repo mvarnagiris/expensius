@@ -18,7 +18,7 @@ import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.provideAppUserService
+import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
@@ -28,7 +28,7 @@ class SplashModule : ShankModule {
     }
 
     private fun splashPresenter() = registerFactory(SplashPresenter::class) { ->
-        SplashPresenter(provideAppUserService(), provideRxSchedulers())
+        SplashPresenter(provideAppUserSource(), provideRxSchedulers())
     }
 }
 

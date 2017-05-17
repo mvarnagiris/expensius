@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import rx.Observable
 import rx.Observable.empty
 
 class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
+
     companion object {
         private const val EXTRA_DISPLAY_TYPE = "EXTRA_DISPLAY_TYPE"
 
@@ -70,14 +71,18 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
         supportActionBar?.title = if (modelDisplayType == VIEW_ARCHIVED) getString(R.string.archived_transactions) else getString(R.string.transactions)
     }
 
-    override fun transactionSelects(): Observable<Transaction> = adapter.itemPositionClicks().map { adapter.getItem(it) }
+    override fun showArchivedTransactionsRequest() {
+
+    }
+
+    override fun transactionSelects(): Observable<Transaction> = adapter.itemClicks()
     override fun archivedTransactionsRequests(): Observable<Unit> = empty()
-    override fun createTransactionRequests(): Observable<Unit> = createTransactionFloatingActionButton.clicks()
-    override fun showItems(items: List<Transaction>): Unit = adapter.set(items)
-    override fun showAddedItems(position: Int, items: List<Transaction>): Unit = adapter.add(position, items)
-    override fun showChangedItems(position: Int, items: List<Transaction>): Unit = adapter.change(position, items)
-    override fun showRemovedItems(position: Int, items: List<Transaction>): Unit = adapter.remove(position, items.size)
-    override fun showMovedItem(fromPosition: Int, toPosition: Int, item: Transaction): Unit = adapter.move(fromPosition, toPosition)
+    override fun createTransactionRequests(): Observable<Unit> = createTransactionButton.clicks()
+    override fun showItems(items: List<Transaction>): Unit = adapter.setItems(items)
+    override fun showAddedItems(items: List<Transaction>, position: Int): Unit = adapter.addItems(position, items)
+    override fun showChangedItems(items: List<Transaction>, position: Int): Unit = adapter.changeItems(position, items)
+    override fun showRemovedItems(items: List<Transaction>, position: Int): Unit = adapter.removeItems(position, items.size)
+    override fun showMovedItems(items: List<Transaction>, fromPosition: Int, toPosition: Int): Unit = adapter.moveItem(fromPosition, toPosition)
     override fun showLoading(): Unit = with(progressBar) { visibility = View.VISIBLE }
     override fun hideLoading(): Unit = with(progressBar) { visibility = View.GONE }
     override fun displayTransactionEdit(transaction: Transaction): Unit = TransactionActivity.start(this, transaction)

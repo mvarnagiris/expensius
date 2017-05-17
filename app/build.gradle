@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,11 +14,9 @@
 
 buildscript {
     repositories {
-        jcenter()
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
         classpath 'io.fabric.tools:gradle:1.21.6'
     }
 }
@@ -33,8 +31,8 @@ repositories {
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.1'
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion "$build_tools_version"
 
     lintOptions {
         abortOnError false
@@ -42,11 +40,11 @@ android {
 
     defaultConfig {
         applicationId "com.mvcoding.expensius"
-        minSdkVersion 21
-        targetSdkVersion 24
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
         multiDexEnabled true
-        versionCode 9
-        versionName "0.4.1"
+        versionCode 10
+        versionName "0.5.0"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 
@@ -76,7 +74,7 @@ android {
 }
 
 dependencies {
-    compile project(':core-app')
+    compile project(':app-core')
     compile project(':billing')
     compile project(':firebase')
     compile 'com.android.support:multidex:1.0.1'
@@ -86,12 +84,10 @@ dependencies {
     compile "com.android.support:percent:$support_version"
     compile "com.android.support:cardview-v7:$support_version"
     compile "com.android.support:customtabs:$support_version"
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha4'
     compile "com.google.firebase:firebase-core:$firebase_version"
     compile "com.google.firebase:firebase-crash:$firebase_version"
     compile "com.google.firebase:firebase-messaging:$firebase_version"
     compile 'com.firebaseui:firebase-ui-auth:0.4.2'
-    compile 'me.zhanghai.android.customtabshelper:library:1.0.1'
     compile 'com.github.memoizr:shank:v1.3.1'
     compile 'com.github.memoizr:shank-android:v1.3.6'
     compile "com.jakewharton.rxbinding:rxbinding-kotlin:$rxbinding_version"
@@ -108,6 +104,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,22 +14,10 @@
 
 package com.mvcoding.expensius.firebase.model
 
-import com.mvcoding.expensius.firebase.defaultCurrency
-import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.ModelState
-import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.model.Note
+import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.NullModels.noBasicTransaction
 import com.mvcoding.expensius.model.NullModels.noNote
 import com.mvcoding.expensius.model.NullModels.noTimestamp
-import com.mvcoding.expensius.model.NullModels.noTransactionId
-import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.TransactionId
-import com.mvcoding.expensius.model.TransactionState
-import com.mvcoding.expensius.model.TransactionState.PENDING
-import com.mvcoding.expensius.model.TransactionType
-import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import java.math.BigDecimal
 
 data class FirebaseTransaction(
@@ -43,14 +31,57 @@ data class FirebaseTransaction(
         val tags: List<String>? = null,
         val note: String? = null) {
 
-    fun toTransaction(modelState: ModelState, tagsCache: Map<String, Tag>) = Transaction(
-            id?.let { TransactionId(it) } ?: noTransactionId,
-            modelState,
-            transactionType?.let { TransactionType.valueOf(it) } ?: EXPENSE,
-            transactionState?.let { TransactionState.valueOf(it) } ?: PENDING,
-            timestamp?.let { Timestamp(it) } ?: noTimestamp,
-            Money(amount?.let { BigDecimal(it) } ?: BigDecimal.ZERO, currency?.let { Currency(it) } ?: defaultCurrency()),
-            (tags ?: emptyList()).filter { tagsCache.containsKey(it) }.map { tagsCache[it] }.filterNotNull().toSet(),
-            note?.let { Note(it) } ?: noNote
-    )
+    fun toBasicTransaction(modelState: ModelState): BasicTransaction {
+        if (id.isNullOrBlank()) return noBasicTransaction
+        return BasicTransaction(
+                TransactionId(id!!),
+                modelState,
+                transactionType(),
+                transactionState(),
+                timestamp?.let(::Timestamp) ?: noTimestamp,
+                Money(amount(), currency?.let { if (it.isBlank()) defaultCurrency() else Currency(it) } ?: defaultCurrency()),
+                tags.orEmpty().map(::TagId).toSet(),
+                note?.trim()?.let(::Note) ?: noNote
+        )
+    }
+
+    private fun amount() = try {
+        BigDecimal(amount!!)
+    } catch (e: Exception) {
+        BigDecimal.ZERO
+    }
+
+    private fun transactionType() = try {
+        TransactionType.valueOf(transactionType!!)
+    } catch (e: Exception) {
+        TransactionType.EXPENSE
+    }
+
+    private fun transactionState() = try {
+        TransactionState.valueOf(transactionState!!)
+    } catch (e: Exception) {
+        TransactionState.PENDING
+    }
 }
+
+internal fun CreateTransaction.toFirebaseTransaction(id: String) = FirebaseTransaction(
+        id,
+        transactionType.name,
+        transactionState.name,
+        timestamp.millis,
+        -timestamp.millis,
+        money.amount.toPlainString(),
+        money.currency.code,
+        tags.map { it.tagId.id },
+        note.text)
+
+internal fun Transaction.toFirebaseMap() = mapOf(
+        "id" to transactionId.id,
+        "transactionType" to transactionType.name,
+        "transactionState" to transactionState.name,
+        "timestamp" to timestamp.millis,
+        "timestampInverse" to -timestamp.millis,
+        "amount" to money.amount.toPlainString(),
+        "currency" to money.currency.code,
+        "tags" to tags.map { it.tagId.id },
+        "note" to note.text)

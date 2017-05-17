@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,10 +23,8 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/resultContainerView"
-        style="@style/Card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
+        style="@style/Card.EdgeToEdge"
+        app:cardElevation="@dimen/elevation_appbar"
         app:contentPadding="0dp">
 
         <FrameLayout

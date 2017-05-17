@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
     <string name="tag">Tag</string>
     <string name="error_title_empty">Title cannot be empty.</string>
     <string name="create">Create</string>
+    <string name="create_transaction">Create transaction</string>
     <string name="undo">Undo</string>
     <string name="restore">Restore</string>
     <string name="tag_restored">Tag restored</string>
@@ -56,6 +57,11 @@
     <string name="year">Year</string>
     <string name="settings">Settings</string>
     <string name="logged_in_as">Logged in as</string>
+    <string name="no_tags">No tags</string>
+    <string name="tags_report">Tags report</string>
+    <string name="trends_report">Trends report</string>
+
+    <string name="empty_transactions">There are no transactions</string>
 
     <string name="long_user_is_using_free_version">You are using free version</string>
     <string name="long_user_is_using_premium_version">Thank you for using premium version</string>

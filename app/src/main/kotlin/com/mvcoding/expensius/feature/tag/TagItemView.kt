@@ -16,8 +16,6 @@ package com.mvcoding.expensius.feature.tag
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -27,24 +25,14 @@ import com.mvcoding.expensius.extension.makeOutlineProviderOval
 import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.Tag
 
-class TagItemView : LinearLayout {
+class TagItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        LinearLayout(context, attrs, defStyleAttr) {
+
     private val colorImageView by lazy { findViewById(R.id.colorImageView) as ImageView }
     private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
 
     private val textColorPrimary by lazy { getColorFromTheme(context, android.R.attr.textColorPrimary) }
     private val textColorSecondary by lazy { getColorFromTheme(context, android.R.attr.textColorSecondary) }
-
-    constructor(context: Context?) : super(context)
-
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-    companion object {
-        fun inflate(viewGroup: ViewGroup): TagItemView {
-            return LayoutInflater.from(viewGroup.context).inflate(R.layout.item_view_tag, viewGroup, false) as TagItemView
-        }
-    }
 
     override fun onFinishInflate() {
         super.onFinishInflate()

@@ -15,71 +15,52 @@
 package com.mvcoding.expensius
 
 import com.memoizrlabs.ShankModule
-import com.memoizrlabs.shankkotlin.provideGlobalSingleton
-import com.memoizrlabs.shankkotlin.provideNew
-import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.firebase.service.FirebaseAppUserService
-import com.mvcoding.expensius.firebase.service.FirebaseAppUserWriteService
-import com.mvcoding.expensius.firebase.service.FirebaseArchivedTagsService
-import com.mvcoding.expensius.firebase.service.FirebaseArchivedTransactionsService
-import com.mvcoding.expensius.firebase.service.FirebaseTagsService
-import com.mvcoding.expensius.firebase.service.FirebaseTagsWriteService
-import com.mvcoding.expensius.firebase.service.FirebaseTransactionsService
-import com.mvcoding.expensius.firebase.service.FirebaseTransactionsWriteService
-import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.AppUserWriteService
-import com.mvcoding.expensius.service.LoginService
-import com.mvcoding.expensius.service.TagsService
-import com.mvcoding.expensius.service.TagsWriteService
-import com.mvcoding.expensius.service.TransactionsService
-import com.mvcoding.expensius.service.TransactionsWriteService
 
 class ServicesModule : ShankModule {
     override fun registerFactories() {
-        firebaseAppUserWriteService()
-        firebaseAppUserService()
-        firebaseTagsWriteService()
-        firebaseTagsService()
-        firebaseArchivedTagsService()
-        firebaseTransactionsWriteService()
-        firebaseTransactionsService()
-        firebaseArchivedTransactionsService()
+//        firebaseAppUserWriteService()
+//        firebaseAppUserService()
+//        firebaseTagsWriteService()
+//        firebaseTagsService()
+//        firebaseArchivedTagsService()
+//        firebaseTransactionsWriteService()
+//        firebaseTransactionsService()
+//        firebaseArchivedTransactionsService()
     }
 
-    private fun firebaseAppUserWriteService() = registerFactory(FirebaseAppUserWriteService::class) { -> FirebaseAppUserWriteService(provideAppUserService()) }
-    private fun firebaseAppUserService() = registerFactory(FirebaseAppUserService::class) { -> FirebaseAppUserService() }
-    private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { -> FirebaseTagsWriteService(provideAppUserService()) }
-    private fun firebaseTagsService() = registerFactory(FirebaseTagsService::class) { -> FirebaseTagsService(provideAppUserService()) }
-    private fun firebaseArchivedTagsService() = registerFactory(FirebaseArchivedTagsService::class) { -> FirebaseArchivedTagsService(provideAppUserService()) }
-
-    private fun firebaseTransactionsWriteService() = registerFactory(FirebaseTransactionsWriteService::class) { ->
-        FirebaseTransactionsWriteService(provideAppUserService())
-    }
-
-    private fun firebaseTransactionsService() = registerFactory(FirebaseTransactionsService::class) { ->
-        FirebaseTransactionsService(provideAppUserService(), provideTagsService(), provideArchivedTagsService())
-    }
-
-    private fun firebaseArchivedTransactionsService() = registerFactory(FirebaseArchivedTransactionsService::class) { ->
-        FirebaseArchivedTransactionsService(provideAppUserService(), provideTagsService(), provideArchivedTagsService())
-    }
+//    private fun firebaseAppUserWriteService() = registerFactory(FirebaseAppUserWriteService::class) { -> FirebaseAppUserWriteService(provideAppUserService()) }
+//    private fun firebaseAppUserService() = registerFactory(FirebaseAppUserService::class) { -> FirebaseAppUserService() }
+//    private fun firebaseTagsWriteService() = registerFactory(FirebaseTagsWriteService::class) { -> FirebaseTagsWriteService(provideAppUserService()) }
+//    private fun firebaseTagsService() = registerFactory(FirebaseTagsService::class) { -> FirebaseTagsService(provideAppUserService()) }
+//    private fun firebaseArchivedTagsService() = registerFactory(FirebaseArchivedTagsService::class) { -> FirebaseArchivedTagsService(provideAppUserService()) }
+//
+//    private fun firebaseTransactionsWriteService() = registerFactory(FirebaseTransactionsWriteService::class) { ->
+//        FirebaseTransactionsWriteService(provideAppUserService())
+//    }
+//
+//    private fun firebaseTransactionsService() = registerFactory(FirebaseTransactionsService::class) { ->
+//        FirebaseTransactionsService(provideAppUserService(), provideTagsService(), provideArchivedTagsService())
+//    }
+//
+//    private fun firebaseArchivedTransactionsService() = registerFactory(FirebaseArchivedTransactionsService::class) { ->
+//        FirebaseArchivedTransactionsService(provideAppUserService(), provideTagsService(), provideArchivedTagsService())
+//    }
 }
 
-fun provideAppUserWriteService(): AppUserWriteService = provideFirebaseAppUserWriteService()
-fun provideLoginService(): LoginService = provideFirebaseAppUserService()
-fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
-fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
-fun provideTagsService(): TagsService = provideFirebaseTagsService()
-fun provideArchivedTagsService(): TagsService = provideFirebaseArchivedTagsService()
-fun provideTransactionsWriteService(): TransactionsWriteService = provideFirebaseTransactionsWriteService()
-fun provideTransactionsService(): TransactionsService = provideFirebaseTransactionsService()
-fun provideArchivedTransactionsService(): TransactionsService = provideFirebaseArchivedTransactionsService()
-
-private fun provideFirebaseAppUserWriteService() = provideNew<FirebaseAppUserWriteService>()
-private fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
-private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()
-private fun provideFirebaseTagsService() = provideGlobalSingleton<FirebaseTagsService>()
-private fun provideFirebaseArchivedTagsService() = provideGlobalSingleton<FirebaseArchivedTagsService>()
-private fun provideFirebaseTransactionsWriteService() = provideNew<FirebaseTransactionsWriteService>()
-private fun provideFirebaseTransactionsService() = provideGlobalSingleton<FirebaseTransactionsService>()
-private fun provideFirebaseArchivedTransactionsService() = provideGlobalSingleton<FirebaseArchivedTransactionsService>()
+//fun provideAppUserWriteService(): AppUserWriteService = provideFirebaseAppUserWriteService()
+//fun provideAppUserService(): AppUserService = provideFirebaseAppUserService()
+//fun provideTagsWriteService(): TagsWriteService = provideFirebaseTagsWriteService()
+//fun provideTagsService(): TagsService = provideFirebaseTagsService()
+//fun provideArchivedTagsService(): TagsService = provideFirebaseArchivedTagsService()
+//fun provideTransactionsWriteService(): TransactionsWriteService = provideFirebaseTransactionsWriteService()
+//fun provideTransactionsService(): TransactionsService = provideFirebaseTransactionsService()
+//fun provideArchivedTransactionsService(): TransactionsService = provideFirebaseArchivedTransactionsService()
+//
+//private fun provideFirebaseAppUserWriteService() = provideNew<FirebaseAppUserWriteService>()
+//fun provideFirebaseAppUserService() = provideGlobalSingleton<FirebaseAppUserService>()
+//private fun provideFirebaseTagsWriteService() = provideNew<FirebaseTagsWriteService>()
+//private fun provideFirebaseTagsService() = provideGlobalSingleton<FirebaseTagsService>()
+//private fun provideFirebaseArchivedTagsService() = provideGlobalSingleton<FirebaseArchivedTagsService>()
+//private fun provideFirebaseTransactionsWriteService() = provideNew<FirebaseTransactionsWriteService>()
+//private fun provideFirebaseTransactionsService() = provideGlobalSingleton<FirebaseTransactionsService>()
+//private fun provideFirebaseArchivedTransactionsService() = provideGlobalSingleton<FirebaseArchivedTransactionsService>()

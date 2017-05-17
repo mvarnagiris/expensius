@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -12,9 +12,11 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.report.TagMoneyItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.expensius.feature.reports.tags.TagMoneyItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/RecyclerViewItem">
+    style="@style/RecyclerViewItem"
+    android:background="@null">
 
     <ImageView
         android:id="@+id/colorImageView"
@@ -46,17 +48,18 @@
             style="@style/TextView"
             android:layout_width="match_parent"
             android:layout_toStartOf="@+id/amountTextView"
-            android:textAppearance="@style/Text.Tag"
+            android:textAppearance="@style/Text.Tag.Button"
             tools:text="Essential" />
 
-        <ProgressBar
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
             android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="4dp"
             android:layout_below="@id/titleTextView"
-            android:layout_marginTop="@dimen/grid_quarter" />
+            android:layout_marginTop="@dimen/grid_quarter"
+            app:rcBackgroundColor="?android:windowBackground"
+            app:rcRadius="2dp" />
 
     </RelativeLayout>
 
-</com.mvcoding.expensius.feature.report.TagMoneyItemView>
+</com.mvcoding.expensius.feature.reports.tags.TagMoneyItemView>

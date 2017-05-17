@@ -16,12 +16,12 @@ apply plugin: 'com.android.library'
 apply plugin: "kotlin-android"
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion "$build_tools_version"
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 24
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
 
@@ -42,10 +42,16 @@ android {
 }
 
 dependencies {
-    compile project(':services')
+    compile project(':data')
+    compile project(':models')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "com.google.firebase:firebase-core:$firebase_version"
     compile "com.google.firebase:firebase-auth:$firebase_version"
     compile "com.google.firebase:firebase-database:$firebase_version"
     compile "com.google.android.gms:play-services-auth:$firebase_version"
+
+    testCompile project(path: ':models', configuration: 'testOutput')
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testCompile "junit:junit:$junit_version"
+    testCompile "com.github.memoizr:assertk-core:$assertk_version"
 }

@@ -41,5 +41,8 @@ fun View.doNotInEditMode(action: () -> Unit) {
 }
 
 fun View.getColorFromTheme(attrId: Int) = context.getColorFromTheme(attrId)
-fun View.getString(resId: Int) = context.getString(resId)
+fun View.getString(resId: Int): String = context.getString(resId)
 fun View.activity() = context.toBaseActivity()
+fun View.setVisible(): Unit = with(this) { visibility = View.VISIBLE }
+fun View.setGone(): Unit = with(this) { visibility = View.GONE }
+fun View.setInvisible(): Unit = with(this) { visibility = View.INVISIBLE }

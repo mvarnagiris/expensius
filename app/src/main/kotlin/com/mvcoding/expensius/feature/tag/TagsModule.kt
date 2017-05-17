@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,40 +17,67 @@ package com.mvcoding.expensius.feature.tag
 import android.app.Activity
 import android.view.View
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.provideNew
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.feature.ModelDisplayType
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
+import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.model.Tag
-import com.mvcoding.expensius.provideArchivedTagsService
+import com.mvcoding.expensius.provideAppUserIdSource
+import com.mvcoding.expensius.provideAppUserSource
+import com.mvcoding.expensius.provideFirebaseTagsService
 import com.mvcoding.expensius.provideRxSchedulers
-import com.mvcoding.expensius.provideTagsService
-import com.mvcoding.expensius.provideTagsWriteService
 import memoizrlabs.com.shankandroid.withActivityScope
 import memoizrlabs.com.shankandroid.withThisScope
 
 class TagsModule : ShankModule {
     override fun registerFactories() {
-        quickTagsPresenter()
+        createTagsWriter()
+        tagsSource()
+        allTagsSource()
+        notArchivedTagsSource()
+        tagsWriter()
         tagsPresenter()
         tagPresenter()
+        quickTagsPresenter()
     }
 
-    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { ->
-        QuickTagsPresenter(provideTagsService(), provideRxSchedulers())
+    private fun createTagsWriter() = registerFactory(CreateTagsWriter::class) { ->
+        CreateTagsWriter(provideAppUserSource()) { userId, createTags -> provideFirebaseTagsService().createTags(userId, createTags) }
     }
 
-    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideTagsWriteService()) }
+    private fun tagsSource() = registerFactory(TagsSource::class) { modelDisplayType: ModelDisplayType ->
+        TagsSource(provideAppUserIdSource()) {
+            if (modelDisplayType == VIEW_ARCHIVED) provideFirebaseTagsService().getArchivedTags(it)
+            else provideFirebaseTagsService().getTags(it)
+        }
+    }
+
+    private fun allTagsSource() = registerFactory(AllTagsSource::class) { -> AllTagsSource(provideTagsSource(VIEW_NOT_ARCHIVED), provideTagsSource(VIEW_ARCHIVED)) }
+    private fun notArchivedTagsSource() = registerFactory(NotArchivedTagsSource::class) { -> NotArchivedTagsSource(provideAllTagsSource()) }
+
+    private fun tagsWriter() = registerFactory(TagsWriter::class) { ->
+        TagsWriter(provideAppUserSource()) { userId, tags ->
+            provideFirebaseTagsService().updateTags(userId, tags)
+        }
+    }
 
     private fun tagsPresenter() = registerFactory(TagsPresenter::class) { modelDisplayType: ModelDisplayType ->
-        TagsPresenter(
-                modelDisplayType,
-                if (modelDisplayType == VIEW_ARCHIVED) provideArchivedTagsService() else provideTagsService(),
-                provideTagsWriteService(),
-                provideRxSchedulers())
+        TagsPresenter(modelDisplayType, provideTagsSource(modelDisplayType), provideTagsWriter(), provideRxSchedulers())
     }
+
+    private fun tagPresenter() = registerFactory(TagPresenter::class) { tag: Tag -> TagPresenter(tag, provideCreateTagsWriter(), provideTagsWriter()) }
+    private fun quickTagsPresenter() = registerFactory(QuickTagsPresenter::class) { -> QuickTagsPresenter(provideNotArchivedTagsSource(), provideRxSchedulers()) }
 }
 
-fun View.provideQuickTagsPresenter(): QuickTagsPresenter = withActivityScope.provideSingletonFor()
-fun Activity.provideTagPresenter(tag: Tag): TagPresenter = withThisScope.provideSingletonFor(tag)
+fun provideCreateTagsWriter() = provideNew<CreateTagsWriter>()
+fun provideTagsWriter() = provideNew<TagsWriter>()
+fun provideTagsSource(modelDisplayType: ModelDisplayType) = provideGlobalSingleton<TagsSource>(modelDisplayType)
+fun provideAllTagsSource() = provideNew<AllTagsSource>()
+fun provideNotArchivedTagsSource() = provideNew<NotArchivedTagsSource>()
+
 fun Activity.provideTagsPresenter(modelDisplayType: ModelDisplayType) = withThisScope.provideSingletonFor<TagsPresenter>(modelDisplayType)
+fun View.provideQuickTagsPresenter() = withActivityScope.provideSingletonFor<QuickTagsPresenter>()
+fun Activity.provideTagPresenter(tag: Tag) = withThisScope.provideSingletonFor<TagPresenter>(tag)

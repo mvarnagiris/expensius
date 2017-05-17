@@ -16,15 +16,16 @@ package com.mvcoding.expensius.feature.premium
 
 import android.app.Activity
 import android.content.Intent
+import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
-import com.mvcoding.expensius.service.AppUserService
 import rx.Observable
 import rx.Observable.just
 
-class DummyBillingProductsService(private val appUserService: AppUserService) : BillingProductsService, BillingFlow {
+class DummyBillingProductsService(private val appUserSource: DataSource<AppUser>) : BillingProductsService, BillingFlow {
 
-    override fun billingProducts(): Observable<List<BillingProduct>> = appUserService.appUser().first().map {
+    override fun billingProducts(): Observable<List<BillingProduct>> = appUserSource.data().first().map {
         listOf(
                 BillingProduct("premium_1", FREE, "Premium 1", "Unlocks all features", "3.99", it.settings.subscriptionType == PREMIUM_PAID),
                 BillingProduct("premium_2", FREE, "Premium 2", "Unlocks all features", "5.99", false),

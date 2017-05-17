@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,54 +15,53 @@
 package com.mvcoding.expensius.firebase.service
 
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
-import com.mvcoding.expensius.firebase.FirebaseItemsService
-import com.mvcoding.expensius.firebase.archivedTransactionsDatabaseReference
+import com.mvcoding.expensius.data.RealtimeList
+import com.mvcoding.expensius.firebase.FirebaseRealtimeList
+import com.mvcoding.expensius.firebase.extensions.getFirebaseDatabase
 import com.mvcoding.expensius.firebase.model.FirebaseTransaction
-import com.mvcoding.expensius.firebase.transactionsDatabaseReference
+import com.mvcoding.expensius.firebase.model.toFirebaseMap
+import com.mvcoding.expensius.firebase.model.toFirebaseTransaction
+import com.mvcoding.expensius.model.*
+import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
-import com.mvcoding.expensius.model.Transaction
-import com.mvcoding.expensius.model.UserId
-import com.mvcoding.expensius.service.AddedItems
-import com.mvcoding.expensius.service.AppUserService
-import com.mvcoding.expensius.service.ChangedItems
-import com.mvcoding.expensius.service.MovedItem
-import com.mvcoding.expensius.service.RemovedItems
-import com.mvcoding.expensius.service.TagsService
-import com.mvcoding.expensius.service.TransactionsService
-import rx.Observable
-import rx.Observable.Transformer
-import rx.Observable.combineLatest
 
-abstract class BaseFirebaseTransactionsService(
-        appUserService: AppUserService,
-        tagsService: TagsService,
-        archivedTagsService: TagsService,
-        private val databaseReference: (UserId) -> DatabaseReference) : TransactionsService {
+class FirebaseTransactionsService {
 
-    private val allTags = combineLatest(tagsService.items(), archivedTagsService.items()) { tags, archivedTags ->
-        tags.union(archivedTags).associateBy { it.tagId.id }
-    }.replay(1).autoConnect()
+    private val REF_TRANSACTIONS = "transactions"
+    private val REF_ARCHIVED_TRANSACTIONS = "archivedTransactions"
 
-    private val firebaseItemsService = FirebaseItemsService(queries(appUserService), transformer())
+    fun getTransactions(remoteFilter: RemoteFilter): RealtimeList<BasicTransaction> =
+            FirebaseRealtimeList(remoteFilter.userId
+                    .transactionsReference()
+                    .orderByChild("timestampInverse")
+                    .startAt(-remoteFilter.interval.endMillis.toDouble())
+                    .endAt(-remoteFilter.interval.startMillis.toDouble()), { it.toTransaction(NONE) })
 
-    override fun items(): Observable<List<Transaction>> = firebaseItemsService.items()
-    override fun addedItems(): Observable<AddedItems<Transaction>> = firebaseItemsService.addedItems()
-    override fun changedItems(): Observable<ChangedItems<Transaction>> = firebaseItemsService.changedItems()
-    override fun removedItems(): Observable<RemovedItems<Transaction>> = firebaseItemsService.removedItems()
-    override fun movedItem(): Observable<MovedItem<Transaction>> = firebaseItemsService.movedItem()
+    fun getArchivedTransactions(remoteFilter: RemoteFilter): RealtimeList<BasicTransaction> =
+            FirebaseRealtimeList(remoteFilter.userId
+                    .archivedTransactionsReference()
+                    .orderByChild("timestampInverse")
+                    .startAt(-remoteFilter.interval.endMillis.toDouble())
+                    .endAt(-remoteFilter.interval.startMillis.toDouble()), { it.toTransaction(ARCHIVED) })
 
-    private fun queries(appUserService: AppUserService) = appUserService.appUser().map { it.userId }.distinctUntilChanged().map { query(it) }
-    private fun query(userId: UserId) = databaseReference(userId).orderByChild("timestampInverse")
-    private fun transformer(): Transformer<List<DataSnapshot>, List<Transaction>> = Transformer {
-        it.withLatestFrom(allTags) { dataSnapshots, tags ->
-            dataSnapshots.map { dataSnapshot -> dataSnapshot.getValue(FirebaseTransaction::class.java).toTransaction(NONE, tags) }
+    fun createTransactions(userId: UserId, createTransactions: Set<CreateTransaction>) {
+        val transactionsReference = userId.transactionsReference()
+        createTransactions.forEach {
+            val newTransactionReference = transactionsReference.push()
+            val firebaseTransaction = it.toFirebaseTransaction(newTransactionReference.key)
+            newTransactionReference.setValue(firebaseTransaction)
         }
     }
+
+    fun updateTransactions(userId: UserId, updateTransactions: Set<Transaction>) {
+        val transactionsToUpdate = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == NONE) it.toFirebaseMap() else null })
+        val archivedTransactionsToUpdate = updateTransactions.associateBy({ it.transactionId.id }, { if (it.modelState == ARCHIVED) it.toFirebaseMap() else null })
+
+        if (transactionsToUpdate.isNotEmpty()) userId.transactionsReference().updateChildren(transactionsToUpdate)
+        if (archivedTransactionsToUpdate.isNotEmpty()) userId.archivedTransactionsReference().updateChildren(archivedTransactionsToUpdate)
+    }
+
+    private fun UserId.transactionsReference() = getFirebaseDatabase().getReference(REF_TRANSACTIONS).child(this.id)
+    private fun UserId.archivedTransactionsReference() = getFirebaseDatabase().getReference(REF_ARCHIVED_TRANSACTIONS).child(this.id)
+    private fun DataSnapshot.toTransaction(modelState: ModelState) = getValue(FirebaseTransaction::class.java).toBasicTransaction(modelState)
 }
-
-class FirebaseTransactionsService(appUserService: AppUserService, tagsService: TagsService, archivedTagsService: TagsService) :
-        BaseFirebaseTransactionsService(appUserService, tagsService, archivedTagsService, { transactionsDatabaseReference(it) })
-
-class FirebaseArchivedTransactionsService(appUserService: AppUserService, tagsService: TagsService, archivedTagsService: TagsService) :
-        BaseFirebaseTransactionsService(appUserService, tagsService, archivedTagsService, { archivedTransactionsDatabaseReference(it) })

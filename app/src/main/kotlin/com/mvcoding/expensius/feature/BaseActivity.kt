@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,16 @@ import com.mvcoding.expensius.extension.forEach
 import com.mvcoding.expensius.extension.getColorFromTheme
 import kotlinx.android.synthetic.main.toolbar.*
 import memoizrlabs.com.shankandroid.ShankAppCompatActivity
+import java.io.Closeable
 
 abstract class BaseActivity : ShankAppCompatActivity() {
-    override val finalAction: (Any) -> Unit = { if (it is Destroyable) it.onDestroy() }
+
+    override val finalAction: (Any) -> Unit = {
+        when (it) {
+            is Destroyable -> it.onDestroy()
+            is Closeable -> it.close()
+        }
+    }
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)

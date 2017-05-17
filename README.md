@@ -1,7 +1,7 @@
-# Expensius
+# Expensius <img src="web_icon.png" width="40" height="40">
+<img src="screenshot1.png" width="198" height="352"> <img src="screenshot2.png" width="198" height="352"> <img src="screenshot3.png" width="198" height="352">
 # Project setup
 - Create a file `private.properties` in root directory.
-
 ```
 CRASHLYTICS=your_id_goes_here
 GOOGLE_WEB_CLIENT_ID="your_id_goes_here"
@@ -11,6 +11,7 @@ GOOGLE_WEB_CLIENT_ID_DEBUG="your_id_goes_here"
 
 # Links
 - [Google+ community](https://plus.google.com/communities/101485799420505987783)
+- [Join beta test on Google Play](https://play.google.com/apps/testing/com.mvcoding.expensius)
 
 # Contribution
 Pull requests are welcome. Before starting any work, make sure to create new issue and discuss it there.

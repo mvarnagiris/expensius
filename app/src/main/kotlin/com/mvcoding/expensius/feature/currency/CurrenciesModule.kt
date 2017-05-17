@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,17 @@ import com.memoizrlabs.shankkotlin.registerFactory
 
 class CurrenciesModule : ShankModule {
     override fun registerFactories() {
-        currenciesProvider()
+        currenciesSource()
         currencyFormatsProvider()
-        exchangeRatesProvider()
+        moneyConversionSource()
+
     }
 
-    private fun currenciesProvider() = registerFactory(CurrenciesProvider::class) { -> CurrenciesProvider() }
+    private fun currenciesSource() = registerFactory(CurrenciesSource::class) { -> CurrenciesSource() }
     private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> SystemCurrencyFormatsProvider() }
-    private fun exchangeRatesProvider() = registerFactory(ExchangeRatesProvider::class) { -> StupidExchangeRatesProvider() }
+    private fun moneyConversionSource() = registerFactory(MoneyConversionSource::class) { -> MoneyConversionSource() }
 }
 
-fun provideCurrenciesProvider(): CurrenciesProvider = provideNew()
+fun provideCurrenciesSource(): CurrenciesSource = provideNew()
 fun provideCurrencyFormatsProvider(): CurrencyFormatsProvider = provideGlobalSingleton()
-fun provideExchangeRatesProvider(): ExchangeRatesProvider = provideGlobalSingleton()
+fun provideMoneyConversionSource() = provideGlobalSingleton<MoneyConversionSource>()

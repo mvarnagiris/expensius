@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -31,6 +31,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity android:name=".feature.login.LoginActivity" />
         <activity android:name=".feature.overview.OverviewActivity" />
@@ -55,6 +58,12 @@
         <activity
             android:name=".feature.settings.SettingsActivity"
             android:label="@string/settings" />
+        <activity
+            android:name=".feature.reports.tags.TagsReportActivity"
+            android:label="@string/tags_report" />
+        <activity
+            android:name=".feature.reports.trends.TrendsReportActivity"
+            android:label="@string/trends_report" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

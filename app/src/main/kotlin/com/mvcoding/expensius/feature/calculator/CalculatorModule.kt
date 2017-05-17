@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ import android.app.Activity
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.provideAppUserService
+import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideTimestampProvider
 import memoizrlabs.com.shankandroid.withThisScope
 import java.math.BigDecimal
@@ -30,7 +30,7 @@ class CalculatorModule : ShankModule {
 
     private fun calculatorPresenter() = registerFactory(CalculatorPresenter::class) {
         initialNumber: BigDecimal?, resultDestination: CalculatorPresenter.ResultDestination ->
-        CalculatorPresenter(Calculator(Interpreter()), resultDestination, provideAppUserService(), provideTimestampProvider(), initialNumber)
+        CalculatorPresenter(Calculator(Interpreter()), resultDestination, provideAppUserSource(), provideTimestampProvider(), initialNumber)
     }
 }
 

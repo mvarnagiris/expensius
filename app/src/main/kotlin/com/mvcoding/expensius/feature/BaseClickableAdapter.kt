@@ -14,16 +14,20 @@
 
 package com.mvcoding.expensius.feature
 
+import android.view.View
 import android.view.ViewGroup
+import rx.Observable
 import rx.lang.kotlin.PublishSubject
 import rx.subjects.PublishSubject
 
-abstract class BaseClickableAdapter<T, VH : ClickableViewHolder<*>> : BaseAdapter<T, VH>() {
-    private val positionClickedSubject = PublishSubject<Int>()
+abstract class BaseClickableAdapter<T, VH : ViewHolder> : BaseAdapter<T, VH>() {
+    private val positionClickedSubject = PublishSubject<Pair<View, Int>>()
 
-    fun itemPositionClicks() = positionClickedSubject.asObservable()
+    fun itemPositionClicks(): Observable<Int> = positionClickedSubject.map { it.second }
+    fun itemClicks(): Observable<T> = positionClickedSubject.map { getItem(it.second) }
+    fun itemViewClicks(): Observable<Triple<View, Int, T>> = positionClickedSubject.map { Triple(it.first, it.second, getItem(it.second)) }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(parent, viewType, positionClickedSubject)
 
-    protected abstract fun onCreateViewHolder(parent: ViewGroup, viewType: Int, positionClickedSubject: PublishSubject<Int>): VH
+    protected abstract fun onCreateViewHolder(parent: ViewGroup, viewType: Int, clickSubject: PublishSubject<Pair<View, Int>>): VH
 }

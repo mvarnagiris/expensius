@@ -17,56 +17,62 @@ package com.mvcoding.expensius.feature
 import android.support.v7.widget.RecyclerView
 
 abstract class BaseAdapter<ITEM, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
-    private var items = arrayListOf<ITEM>()
+    val items = arrayListOf<ITEM>()
 
     override fun getItemCount(): Int = items.size
 
     fun getItem(position: Int) = items[position]
 
-    fun set(items: List<ITEM>) {
+    fun setItems(items: List<ITEM>) {
         this.items.clear()
         this.items.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun add(position: Int, item: ITEM) {
+    fun addItems(position: Int, item: ITEM) {
         items.add(position, item)
         notifyItemInserted(position)
     }
 
-    fun add(position: Int, items: List<ITEM>) {
+    fun addItems(position: Int, items: List<ITEM>) {
         this.items.addAll(position, items)
         notifyItemRangeInserted(position, items.size)
     }
 
-    fun change(position: Int, items: List<ITEM>) {
+    fun addItems(items: List<ITEM>) {
+        val size = itemCount
+        this.items.addAll(items)
+        notifyItemRangeInserted(size, items.size)
+    }
+
+    fun changeItems(position: Int, items: List<ITEM>) {
         (position..(position + items.size - 1)).forEachIndexed { index, positionToReplace -> this.items[positionToReplace] = items[index] }
         notifyItemRangeChanged(position, items.size)
     }
 
-    fun remove(position: Int) {
+    fun removeItem(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
     }
 
-    fun remove(position: Int, count: Int) {
+    fun removeItems(position: Int, count: Int) {
         count.downTo(1).forEach { items.removeAt(position + it - 1) }
         notifyItemRangeRemoved(position, count)
     }
 
-    fun remove(item: ITEM) {
+    fun removeItem(item: ITEM) {
         val position = items.indexOf(item)
         items.remove(item)
         notifyItemRemoved(position)
     }
 
-    fun remove(items: List<ITEM>) {
+    fun removeItems(items: List<ITEM>) {
         val positions = items.map { this.items.indexOf(it) }.sorted()
         this.items.removeAll(items)
         positions.forEach { notifyItemRemoved(it) }
     }
 
-    fun move(fromPosition: Int, toPosition: Int) {
+    fun moveItem(fromPosition: Int, toPosition: Int) {
         val item = items.removeAt(fromPosition)
         items.add(toPosition, item)
         notifyItemMoved(fromPosition, toPosition)

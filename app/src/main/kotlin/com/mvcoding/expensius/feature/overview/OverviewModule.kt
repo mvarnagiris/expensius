@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,20 +14,24 @@
 
 package com.mvcoding.expensius.feature.overview
 
-import android.app.Activity
-import com.memoizrlabs.Shank.registerFactory
+import com.memoizrlabs.Scope
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
-import com.mvcoding.expensius.provideAppUserService
-import com.mvcoding.expensius.provideFilter
+import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.filter.provideRemoteFilterCache
+import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
+import com.mvcoding.expensius.provideRxSchedulers
 import memoizrlabs.com.shankandroid.withThisScope
 
-class OverviewModule() : ShankModule {
+class OverviewModule : ShankModule {
     override fun registerFactories() {
         overviewPresenter()
     }
 
-    private fun overviewPresenter() = registerFactory(OverviewPresenter::class.java, { -> OverviewPresenter(provideAppUserService(), provideFilter()) })
+    private fun overviewPresenter() = registerFactory(OverviewPresenter::class) { scope: Scope ->
+        OverviewPresenter(provideRemoteFilterCache(scope), provideReportSettingsSource(scope), provideRxSchedulers())
+    }
 }
 
-fun Activity.provideOverviewPresenter() = withThisScope.provideSingletonFor<OverviewPresenter>()
+fun BaseActivity.provideOverviewPresenter() = withThisScope.provideSingletonFor<OverviewPresenter>(scope)

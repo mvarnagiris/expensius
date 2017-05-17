@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,14 +16,14 @@ package com.mvcoding.expensius
 
 import android.support.multidex.MultiDexApplication
 import com.crashlytics.android.Crashlytics
-import com.google.firebase.database.FirebaseDatabase
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
 import com.mvcoding.expensius.feature.currency.CurrenciesModule
+import com.mvcoding.expensius.feature.filter.FilterModule
 import com.mvcoding.expensius.feature.login.LoginModule
 import com.mvcoding.expensius.feature.overview.OverviewModule
 import com.mvcoding.expensius.feature.premium.PremiumModule
-import com.mvcoding.expensius.feature.report.ReportsModule
+import com.mvcoding.expensius.feature.reports.ReportsModule
 import com.mvcoding.expensius.feature.settings.SettingsModule
 import com.mvcoding.expensius.feature.splash.SplashModule
 import com.mvcoding.expensius.feature.tag.TagsModule
@@ -32,14 +32,14 @@ import io.fabric.sdk.android.Fabric
 import net.danlew.android.joda.JodaTimeAndroid
 
 class App : MultiDexApplication() {
-    private var isFirebaseSetupComplete = false
-
     override fun onCreate() {
         super.onCreate()
         JodaTimeAndroid.init(this)
         Fabric.with(this, Crashlytics())
         initializeModules(
                 AppModule(this),
+                FirebaseModule(),
+                DataModule(),
                 ServicesModule(),
                 SplashModule(),
                 LoginModule(),
@@ -50,12 +50,7 @@ class App : MultiDexApplication() {
                 ReportsModule(),
                 CurrenciesModule(),
                 SettingsModule(),
-                PremiumModule())
-    }
-
-    fun setupFirebase() {
-        if (isFirebaseSetupComplete) return
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-        isFirebaseSetupComplete = true
+                PremiumModule(),
+                FilterModule())
     }
 }

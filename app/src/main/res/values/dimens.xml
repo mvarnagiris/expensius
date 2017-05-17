@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2017 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -37,12 +37,14 @@
 
     <dimen name="actionbar_2x">112dp</dimen>
 
+    <dimen name="elevation_appbar">8dp</dimen>
     <dimen name="elevation_toolbar">4dp</dimen>
-    <dimen name="elevation_fab">6dp</dimen>
+    <dimen name="elevation_fab">2dp</dimen>
     <dimen name="elevation_fab_pressed">6dp</dimen>
     <dimen name="elevation_card">2dp</dimen>
 
-    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_height">48dp</dimen>
+    <dimen name="fab_height_half">24dp</dimen>
     <dimen name="fab_size_half_negative">-28dp</dimen>
     <dimen name="fab_mini_height_half_negative">-40dp</dimen>
     <dimen name="fab_mini_vertical_padding_negative">-19dp</dimen>

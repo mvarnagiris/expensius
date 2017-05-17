@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,21 +13,28 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.0.3'
+    ext.kotlin_version = '1.1.2-3'
     ext.rxjava_version = '1.1.6'
     ext.rxkotlin_version = '0.60.0'
     ext.junit_version = '4.12'
-    ext.support_version = '24.1.1'
+    ext.mockito_kotlin_version = '1.1.0'
+    ext.support_version = '25.3.1'
     ext.rxbinding_version = '0.4.0'
-    ext.firebase_version = '9.2.1'
+    ext.firebase_version = '10.2.0'
     ext.hamkrest_version = '1.2.1.0'
+    ext.assertk_version = '0.1.1'
+    ext.build_tools_version = '25.0.2'
+    ext.compile_sdk_version = 25
+    ext.target_sdk_version = 25
+    ext.min_sdk_version = 21
     ext.privateProperties = new Properties()
     privateProperties.load(new FileInputStream("private.properties"))
     repositories {
         jcenter()
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:3.0.0'
     }
@@ -44,6 +51,7 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
     }
 }
 
