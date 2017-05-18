@@ -1,3 +1,6 @@
+### v0.5.2
+- `fix` Bug fixes.
+
 ### v0.5.1
 - `fix` Bug fixes.
 
