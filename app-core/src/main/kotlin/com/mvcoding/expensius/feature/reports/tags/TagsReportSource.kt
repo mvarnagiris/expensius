@@ -55,7 +55,8 @@ class TagsReportSource(
                                     val amount = transaction.money.amount
                                     totalAmount += amount
                                     transaction.tags.forEach {
-                                        tagsAmountMap.compute(it) { _, currentAmount -> currentAmount?.let { it + amount } ?: amount }
+                                        val currentAmount = tagsAmountMap.getOrElse(it) { BigDecimal.ZERO }
+                                        tagsAmountMap.put(it, currentAmount + amount)
                                     }
                                 }
 

@@ -179,13 +179,6 @@ class PremiumPresenterTest {
     }
 
     @Test
-    fun `billing products provider is closed on destroy`() {
-        presenter.onDestroy()
-
-        verify(billingProductsService).close()
-    }
-
-    @Test
     fun `successful premium purchase switches to premium paid`() {
         setSubscriptionType(FREE)
         val billingProducts = listOf(

@@ -1,3 +1,6 @@
+### v0.5.1
+- `fix` Bug fixes.
+
 ### v0.5.0
 - `new` Added trends report when you tap on it on home screen.
 - `new` Added tags report when you tap on it on home screen.

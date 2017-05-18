@@ -49,6 +49,6 @@ enum class ReportPeriod { MONTH;
         val totalInterval = interval(groupedMoneys.keys.first().startMillis)
         val splitIntervals = reportGroup.splitIntoGroupIntervals(totalInterval)
         val defaultMoney = Money(BigDecimal.ZERO, currencyForZeroValues)
-        return splitIntervals.map { GroupedMoney(it, groupedMoneys.getOrDefault(it, defaultMoney)) }
+        return splitIntervals.map { GroupedMoney(it, groupedMoneys.getOrElse(it) { defaultMoney }) }
     }
 }
