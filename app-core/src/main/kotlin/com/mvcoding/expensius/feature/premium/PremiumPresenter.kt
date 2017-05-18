@@ -30,7 +30,7 @@ class PremiumPresenter(
         private val appUserSource: DataSource<AppUser>,
         private val appUserWriter: DataWriter<AppUser>,
         private val billingProductsService: BillingProductsService,
-        private val schedulers: RxSchedulers) : Presenter<PremiumPresenter.View>(), Destroyable {
+        private val schedulers: RxSchedulers) : Presenter<PremiumPresenter.View>() {
 
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
@@ -58,10 +58,6 @@ class PremiumPresenter(
                 .observeOn(schedulers.io)
                 .withLatestFrom(appUserSource.data(), { _, appUser -> appUser })
                 .subscribeUntilDetached { updateToPremiumPaid(it) }
-    }
-
-    override fun onDestroy() {
-        billingProductsService.close()
     }
 
     private fun billingData(): Observable<BillingData> = combineLatest(appUserSource.data(), billingProductsService.billingProducts(), ::BillingData)
