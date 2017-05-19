@@ -45,7 +45,7 @@ class PremiumPresenter(
                 .startWith(Unit)
                 .doOnNext { view.showLoading() }
                 .observeOn(schedulers.io)
-                .switchMap { billingData() }
+                .switchMap { billingData().handleError(view, schedulers, doBeforeShowError = { view.hideLoading() }) }
                 .doOnNext { it.updateToPremiumPaidIfNecessary() }
                 .map { it.billingProducts() }
                 .observeOn(schedulers.main)
