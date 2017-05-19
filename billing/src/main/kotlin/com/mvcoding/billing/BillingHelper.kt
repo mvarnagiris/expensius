@@ -44,17 +44,17 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     private val BILLING_HELPER_SEND_INTENT_FAILED = -1004
     private val BILLING_HELPER_USER_CANCELLED = -1005
     private val BILLING_HELPER_UNKNOWN_PURCHASE_RESPONSE = -1006
-    private val BILLING_HELPER_MISSING_TOKEN = -1007;
+    private val BILLING_HELPER_MISSING_TOKEN = -1007
     private val BILLING_HELPER_UNKNOWN_ERROR = -1008
     private val BILLING_HELPER_SUBSCRIPTIONS_NOT_AVAILABLE = -1009
-    private val BILLING_HELPER_INVALID_CONSUMPTION = -1010;
+    private val BILLING_HELPER_INVALID_CONSUMPTION = -1010
     private val BILLING_HELPER_SUBSCRIPTION_UPDATE_NOT_AVAILABLE = -1011
 
     private val RESPONSE_CODE = "RESPONSE_CODE"
     private val RESPONSE_BUY_INTENT = "BUY_INTENT"
     private val RESPONSE_PURCHASE_DATA = "INAPP_PURCHASE_DATA"
     private val RESPONSE_DATA_SIGNATURE = "INAPP_DATA_SIGNATURE"
-    private val RESPONSE_GET_SKU_DETAILS_LIST = "DETAILS_LIST";
+    private val RESPONSE_GET_SKU_DETAILS_LIST = "DETAILS_LIST"
     private val RESPONSE_IN_APP_ITEM_LIST = "INAPP_PURCHASE_ITEM_LIST"
     private val RESPONSE_IN_APP_PURCHASE_DATA_LIST = "INAPP_PURCHASE_DATA_LIST"
     private val RESPONSE_IN_APP_SIGNATURE_LIST = "INAPP_DATA_SIGNATURE_LIST"
@@ -298,7 +298,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
             return Inventory(singleProducts.plus(subscriptionProducts), singlePurchases.plus(subscriptionPurchases))
         } catch (e: RemoteException) {
-            throw billingException(BILLING_HELPER_REMOTE_EXCEPTION, "Remote exception while refreshing inventory");
+            throw billingException(BILLING_HELPER_REMOTE_EXCEPTION, "Remote exception while refreshing inventory")
         } catch (e: JSONException) {
             throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error parsing JSON response while refreshing inventory")
         }
@@ -337,7 +337,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
         val allPurchases = arrayListOf<Purchase>()
         do {
-            log("Calling getPurchases with continuation token: $continueToken");
+            log("Calling getPurchases with continuation token: $continueToken")
             val ownedItemsBundle = billingService.getPurchases(API_VERSION, context.packageName, productType.value, continueToken)
 
             val response = ownedItemsBundle.getResponseCode()
@@ -361,7 +361,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             allPurchases.addAll(
                     purchases.mapIndexed { i, purchaseData ->
                         val signature = signatures[i]
-                        val productId = ownedProductIds[i];
+                        val productId = ownedProductIds[i]
 
                         if (Security.verifyPurchase(base64PublicKey, purchaseData, signature)) {
                             log("Product id is owned: $productId: $purchaseData")
@@ -438,9 +438,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
         if (it == null) {
             log("Bundle with null response code, assuming OK (known issue)")
             BILLING_RESPONSE_RESULT_OK
-        } else if (it is Int)
-            it.toInt()
-        else if (it is Long)
+        } else (it as? Int)?.toInt() ?: if (it is Long)
             it.toLong().toInt()
         else {
             log("Unexpected type for bundle response code: ${it.javaClass.name}.")
