@@ -44,7 +44,7 @@ android {
         targetSdkVersion target_sdk_version
         multiDexEnabled true
         versionCode 13
-        versionName "0.6.0"
+        versionName "0.5.3"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 
