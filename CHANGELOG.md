@@ -1,5 +1,11 @@
+### v0.5.3
+- `fix` Even more crash fixes.
+
+### v0.5.2
+- `fix` More crash fixes.
+
 ### v0.5.1
-- `fix` Bug fixes.
+- `fix` Crash fixes.
 
 ### v0.5.0
 - `new` Added trends report when you tap on it on home screen.

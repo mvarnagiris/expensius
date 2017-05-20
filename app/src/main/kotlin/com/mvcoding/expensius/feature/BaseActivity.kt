@@ -29,7 +29,6 @@ abstract class BaseActivity : ShankAppCompatActivity() {
 
     override val finalAction: (Any) -> Unit = {
         when (it) {
-            is Destroyable -> it.onDestroy()
             is Closeable -> it.close()
         }
     }

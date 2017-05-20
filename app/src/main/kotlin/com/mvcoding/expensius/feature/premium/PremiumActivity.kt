@@ -51,21 +51,18 @@ class PremiumActivity : BaseActivity(), PremiumPresenter.View {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+
+        presenter.attach(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detach(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         billingFlow.onActivityResult(requestCode, resultCode, data)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.attach(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.detach(this)
     }
 
     override fun showFreeUser() = subscriptionTextView.setText(R.string.long_user_is_using_free_version)

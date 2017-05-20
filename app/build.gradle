@@ -43,8 +43,8 @@ android {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         multiDexEnabled true
-        versionCode 12
-        versionName "0.5.2"
+        versionCode 13
+        versionName "0.5.3"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 
@@ -84,6 +84,7 @@ dependencies {
     compile "com.android.support:percent:$support_version"
     compile "com.android.support:cardview-v7:$support_version"
     compile "com.android.support:customtabs:$support_version"
+    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
     compile "com.google.firebase:firebase-core:$firebase_version"
     compile "com.google.firebase:firebase-crash:$firebase_version"
     compile "com.google.firebase:firebase-messaging:$firebase_version"

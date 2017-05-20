@@ -16,6 +16,7 @@ package com.mvcoding.expensius.feature.premium
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.DataWriter
+import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.SubscriptionType
 import com.mvcoding.expensius.model.SubscriptionType.FREE
@@ -25,6 +26,7 @@ import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
+import rx.Observable.error
 import rx.Observable.just
 import rx.lang.kotlin.BehaviorSubject
 import rx.lang.kotlin.PublishSubject
@@ -211,7 +213,7 @@ class PremiumPresenterTest {
     }
 
     @Test
-    fun `can make another purchase after aFailed one`() {
+    fun `can make another purchase after a failed one`() {
         setSubscriptionType(FREE)
         val billingProducts = listOf(
                 aBillingProduct().asPremium().notOwned(),
@@ -225,6 +227,19 @@ class PremiumPresenterTest {
         makeSuccessfulPurchase()
 
         verify(appUserWriter).write(appUser.copy(settings = appUser.settings.copy(subscriptionType = PREMIUM_PAID)))
+    }
+
+    @Test
+    fun `handles errors when getting products fails`() {
+        setSubscriptionType(FREE)
+        val throwable = Throwable()
+        whenever(billingProductsService.billingProducts()).thenReturn(error(throwable))
+
+        presenter.attach(view)
+
+        inOrder.verify(view).showLoading()
+        inOrder.verify(view).hideLoading()
+        inOrder.verify(view).showError(throwable.toError())
     }
 
     private fun setSubscriptionType(subscriptionType: SubscriptionType) =

@@ -14,10 +14,12 @@
 
 package com.mvcoding.expensius.feature
 
+import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.mvp.Presenter
 import rx.Observable
 import rx.Observable.empty
+import rx.Observable.just
 
 interface ErrorView : Presenter.View {
     fun showError(error: Error)
@@ -38,3 +40,10 @@ data class Error(val throwable: Throwable) {
 fun Throwable.toError() = Error(this)
 
 fun <T> Observable<T>.ignoreError(): Observable<T> = onErrorResumeNext { empty() }
+fun <T> Observable<T>.handleError(
+        errorView: ErrorView,
+        schedulers: RxSchedulers,
+        doBeforeShowError: (Throwable) -> Unit = {}): Observable<T> = onErrorResumeNext {
+    just(it).observeOn(schedulers.main).doOnNext { doBeforeShowError(it) }.subscribe { errorView.showError(it.toError()) }
+    empty()
+}
