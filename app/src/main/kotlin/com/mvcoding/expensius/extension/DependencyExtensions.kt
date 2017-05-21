@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,4 +18,4 @@ import com.memoizrlabs.Scope
 import com.memoizrlabs.Shank
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 
-inline fun <reified T : Any> Scope.provideSingleton() = Shank.with(this).provideSingletonFor<T>()
+inline fun <reified T : Any> Scope.provideSingletonFor() = Shank.with(this).provideSingletonFor<T>()

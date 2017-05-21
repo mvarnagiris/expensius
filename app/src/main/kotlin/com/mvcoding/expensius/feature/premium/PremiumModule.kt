@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.BuildConfig
-import com.mvcoding.expensius.extension.provideSingleton
+import com.mvcoding.expensius.extension.provideSingletonFor
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.provideAppUserSource
 import com.mvcoding.expensius.provideContext
@@ -46,6 +46,6 @@ class PremiumModule : ShankModule {
     }
 }
 
-private fun provideBillingProductsService(scope: Scope): BillingProductsService = scope.provideSingleton()
+private fun provideBillingProductsService(scope: Scope) = scope.provideSingletonFor<BillingProductsService>()
 fun BaseActivity.provideBillingFlow(): BillingFlow = withThisScope.provideSingletonFor(scope)
 fun BaseActivity.providePremiumPresenter(): PremiumPresenter = withThisScope.provideSingletonFor(scope)

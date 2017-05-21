@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ data class Purchase(
             Purchase(
                     ProductId(it.get("productId").asString),
                     productType,
-                    OrderId(it.get("orderId").asString),
+                    if (it.has("orderId")) OrderId(it.get("orderId").asString) else OrderId(""),
                     it.get("packageName").asString,
                     it.get("purchaseTime").asLong,
                     it.get("purchaseState").asInt,
