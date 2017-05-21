@@ -43,8 +43,8 @@ android {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         multiDexEnabled true
-        versionCode 13
-        versionName "0.5.3"
+        versionCode 14
+        versionName "0.5.4"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 
@@ -103,7 +103,7 @@ dependencies {
         exclude group: 'joda-time', module: 'joda-time'
     }
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
+        transitive = true
     }
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
 
