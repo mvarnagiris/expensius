@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import rx.Observable
 
-class BillingBillingProductsService(context: Context) : BillingProductsService, BillingFlow {
+class RealBillingProductsService(context: Context) : Billing {
 
     private val premiumItemsIds = listOf("premium_1", "premium_2", "premium_3")
 

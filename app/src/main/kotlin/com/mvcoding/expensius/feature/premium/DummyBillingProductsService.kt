@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
 import rx.Observable
 import rx.Observable.just
 
-class DummyBillingProductsService(private val appUserSource: DataSource<AppUser>) : BillingProductsService, BillingFlow {
+class DummyBillingProductsService(private val appUserSource: DataSource<AppUser>) : Billing {
 
     override fun billingProducts(): Observable<List<BillingProduct>> = appUserSource.data().first().map {
         listOf(

@@ -1,3 +1,6 @@
+### v0.5.4
+- `fix` This time for real fixed billing crash. Maybe.
+
 ### v0.5.3
 - `fix` Even more crash fixes.
 

@@ -12,10 +12,6 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.extension
+package com.mvcoding.expensius.feature.premium
 
-import com.memoizrlabs.Scope
-import com.memoizrlabs.Shank
-import com.memoizrlabs.shankkotlin.provideSingletonFor
-
-inline fun <reified T : Any> Scope.provideSingletonFor() = Shank.with(this).provideSingletonFor<T>()
+interface Billing : BillingFlow, BillingProductsService
