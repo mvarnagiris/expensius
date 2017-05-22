@@ -28,24 +28,20 @@ import memoizrlabs.com.shankandroid.withThisScope
 
 class PremiumModule : ShankModule {
     override fun registerFactories() {
-        remoteBillingProductsService()
-        billingFlow()
+        billing()
         premiumPresenter()
     }
 
-    private fun remoteBillingProductsService() = registerFactory(BillingProductsService::class) { ->
+    private fun billing() = registerFactory(Billing::class) { ->
         if (BuildConfig.DEBUG) DummyBillingProductsService(provideAppUserSource())
-        else BillingBillingProductsService(provideContext())
+        else RealBillingProductsService(provideContext())
     }
 
-    private fun billingFlow() = registerFactory(BillingFlow::class) { scope: Scope -> provideBillingProductsService(scope) as BillingFlow }
-
     private fun premiumPresenter() = registerFactory(PremiumPresenter::class) { scope: Scope ->
-        val billingProductsService = provideBillingProductsService(scope)
-        PremiumPresenter(provideAppUserSource(), provideAppUserSource(), billingProductsService, provideRxSchedulers())
+        PremiumPresenter(provideAppUserSource(), provideAppUserSource(), provideBilling(scope), provideRxSchedulers())
     }
 }
 
-private fun provideBillingProductsService(scope: Scope) = scope.provideSingletonFor<BillingProductsService>()
-fun BaseActivity.provideBillingFlow(): BillingFlow = withThisScope.provideSingletonFor(scope)
+private fun provideBilling(scope: Scope) = scope.provideSingletonFor<Billing>()
+fun BaseActivity.provideBillingFlow(): BillingFlow = provideBilling(scope)
 fun BaseActivity.providePremiumPresenter(): PremiumPresenter = withThisScope.provideSingletonFor(scope)
