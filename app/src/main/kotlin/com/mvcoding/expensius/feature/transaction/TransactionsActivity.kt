@@ -17,10 +17,11 @@ package com.mvcoding.expensius.feature.transaction
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
+import com.mvcoding.expensius.extension.setGone
+import com.mvcoding.expensius.extension.setVisible
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
 import com.mvcoding.expensius.feature.DividerItemDecoration
@@ -83,8 +84,10 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
     override fun showChangedItems(items: List<Transaction>, position: Int): Unit = adapter.changeItems(position, items)
     override fun showRemovedItems(items: List<Transaction>, position: Int): Unit = adapter.removeItems(position, items.size)
     override fun showMovedItems(items: List<Transaction>, fromPosition: Int, toPosition: Int): Unit = adapter.moveItem(fromPosition, toPosition)
-    override fun showLoading(): Unit = with(progressBar) { visibility = View.VISIBLE }
-    override fun hideLoading(): Unit = with(progressBar) { visibility = View.GONE }
+    override fun showLoading(): Unit = progressBar.setVisible()
+    override fun hideLoading(): Unit = progressBar.setGone()
+    override fun showEmptyView(): Unit = emptyTextView.setVisible()
+    override fun hideEmptyView(): Unit = emptyTextView.setGone()
     override fun displayTransactionEdit(transaction: Transaction): Unit = TransactionActivity.start(this, transaction)
     override fun displayCalculator(): Unit = CalculatorActivity.start(this)
     override fun displayArchivedTransactions(): Unit = TransactionsActivity.startArchived(this)

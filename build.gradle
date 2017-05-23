@@ -31,6 +31,7 @@ buildscript {
     privateProperties.load(new FileInputStream("private.properties"))
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
         maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
     }
     dependencies {

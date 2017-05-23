@@ -98,6 +98,20 @@ class TransactionsPresenterTest {
     }
 
     @Test
+    fun `shows empty when there are no transactions`() {
+        presenter().attach(view)
+
+        receiveTransactions(emptyList())
+        inOrder.verify(view).showEmptyView()
+
+        receiveTransactions(someTransactions())
+        inOrder.verify(view).hideEmptyView()
+
+        receiveTransactionsRemoved(emptyList(), 0)
+        inOrder.verify(view).showEmptyView()
+    }
+
+    @Test
     fun `displays transaction edit when selecting a transaction and display type is view`() {
         val transaction = aTransaction()
         presenter().attach(view)
@@ -125,13 +139,13 @@ class TransactionsPresenterTest {
         verify(view).displayArchivedTransactions()
     }
 
-    private fun receiveTransactions(tags: List<Transaction>) = transactionsSubject.onNext(RealtimeData.AllItems(tags))
+    private fun receiveTransactions(transactions: List<Transaction>) = transactionsSubject.onNext(RealtimeData.AllItems(transactions))
     private fun requestCreateTransaction() = createTransactionRequestsSubject.onNext(Unit)
     private fun requestArchivedTransactions() = displayArchivedTransactionsSubject.onNext(Unit)
-    private fun receiveTransactionsAdded(tags: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.AddedItems(tags, tags, position))
-    private fun receiveTransactionsChanged(tags: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.ChangedItems(tags, tags, position))
-    private fun receiveTransactionsRemoved(tags: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.RemovedItems(tags, tags, position))
-    private fun receiveTransactionsMoved(tags: List<Transaction>, fromPosition: Int, toPosition: Int) = transactionsSubject.onNext(RealtimeData.MovedItems(tags, tags, fromPosition, toPosition))
+    private fun receiveTransactionsAdded(transactions: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.AddedItems(transactions, transactions, position))
+    private fun receiveTransactionsChanged(transactions: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.ChangedItems(transactions, transactions, position))
+    private fun receiveTransactionsRemoved(transactions: List<Transaction>, position: Int) = transactionsSubject.onNext(RealtimeData.RemovedItems(transactions, transactions, position))
+    private fun receiveTransactionsMoved(transactions: List<Transaction>, fromPosition: Int, toPosition: Int) = transactionsSubject.onNext(RealtimeData.MovedItems(transactions, transactions, fromPosition, toPosition))
     private fun selectTransaction(transaction: Transaction) = transactionSelectsSubject.onNext(transaction)
     private fun presenter(modelViewType: ModelDisplayType = VIEW_NOT_ARCHIVED) = TransactionsPresenter(modelViewType, transactionsSource, rxSchedulers())
 }
