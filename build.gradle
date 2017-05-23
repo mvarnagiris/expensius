@@ -19,8 +19,8 @@ buildscript {
     ext.junit_version = '4.12'
     ext.mockito_kotlin_version = '1.1.0'
     ext.support_version = '25.3.1'
-    ext.rxbinding_version = '0.4.0'
-    ext.firebase_version = '10.2.0'
+    ext.rxbinding_version = '1.0.0'
+    ext.firebase_version = '10.2.6'
     ext.hamkrest_version = '1.2.1.0'
     ext.assertk_version = '0.1.1'
     ext.build_tools_version = '25.0.2'
@@ -31,6 +31,7 @@ buildscript {
     privateProperties.load(new FileInputStream("private.properties"))
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
         maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
     }
     dependencies {

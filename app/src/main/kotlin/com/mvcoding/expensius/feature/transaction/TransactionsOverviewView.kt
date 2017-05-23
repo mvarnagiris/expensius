@@ -39,6 +39,10 @@ class TransactionsOverviewView @JvmOverloads constructor(context: Context, attrs
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean = true
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         doNotInEditMode { presenter.attach(this) }

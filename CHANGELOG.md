@@ -1,3 +1,10 @@
+### v0.6.0
+- `new` Date formatting now includes year.
+- `new` Added empty state for transactions screen.
+- `new` Added ability to view and restore archived transactions.
+- `new` Showing *Yesterday* and *Tomorrow* for days around *Today*.
+- `new` Added empty state for tags report.
+
 ### v0.5.4
 - `fix` This time for real fixed billing crash. Maybe.
 

@@ -16,7 +16,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/transactionsOverviewView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_2x"
     android:orientation="vertical">
 
     <TextView

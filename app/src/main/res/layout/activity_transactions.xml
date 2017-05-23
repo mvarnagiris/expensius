@@ -42,6 +42,19 @@
             android:id="@+id/progressBar"
             style="@style/ProgressBar" />
 
+        <TextView
+            android:id="@+id/emptyTextView"
+            style="@style/TextView"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingBottom="@dimen/grid_2x"
+            android:paddingLeft="@dimen/keyline"
+            android:paddingRight="@dimen/keyline"
+            android:paddingTop="@dimen/grid_2x"
+            android:text="@string/empty_transactions"
+            android:textAppearance="@style/Text.Title.Empty"
+            android:visibility="gone" />
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/createTransactionButton"
             style="@style/Button.Fab"

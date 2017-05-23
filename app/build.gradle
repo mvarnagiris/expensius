@@ -17,7 +17,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.21.6'
+        classpath 'io.fabric.tools:gradle:1.22.1'
     }
 }
 
@@ -43,8 +43,8 @@ android {
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         multiDexEnabled true
-        versionCode 14
-        versionName "0.5.4"
+        versionCode 15
+        versionName "0.6.0"
         manifestPlaceholders = [crashlytics: privateProperties['CRASHLYTICS']]
     }
 

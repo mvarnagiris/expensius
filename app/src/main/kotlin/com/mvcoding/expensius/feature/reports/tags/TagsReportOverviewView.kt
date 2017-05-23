@@ -12,10 +12,16 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.model.extensions
+package com.mvcoding.expensius.feature.reports.tags
 
-import com.mvcoding.expensius.model.NullModels.noMoney
-import com.mvcoding.expensius.model.TagsReport
+import android.content.Context
+import android.util.AttributeSet
+import android.widget.LinearLayout
 
-fun aTagsReport() = TagsReport(someTagGroupedMoneys(), aMoney(), someTagGroupedMoneys(), aMoney())
-fun TagsReport.empty() = copy(emptyList(), noMoney, emptyList(), noMoney)
+class TagsReportOverviewView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        LinearLayout(context, attrs, defStyleAttr) {
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
+    }
+}

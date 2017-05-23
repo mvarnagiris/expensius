@@ -12,10 +12,10 @@
   ~ GNU General Public License for more details.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.expensius.feature.reports.tags.TagsReportOverviewView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tagsReportOverviewView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -29,15 +29,13 @@
 
     <android.support.v7.widget.CardView
         style="@style/Card.EdgeToEdge"
-        android:layout_marginBottom="@dimen/grid_2x"
-        android:background="?selectableItemBackground">
+        android:layout_marginBottom="@dimen/grid_2x">
 
-        <com.mvcoding.expensius.feature.reports.tags.TagsReportView
-            android:id="@+id/tagsTotalsReportView"
+        <include
+            layout="@layout/view_tags_report"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?selectableItemBackground" />
+            android:layout_height="wrap_content" />
 
     </android.support.v7.widget.CardView>
 
-</LinearLayout>
+</com.mvcoding.expensius.feature.reports.tags.TagsReportOverviewView>

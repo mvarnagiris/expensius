@@ -22,11 +22,13 @@ import com.mvcoding.expensius.model.TagsReport
 import com.mvcoding.expensius.model.extensions.aRemoteFilter
 import com.mvcoding.expensius.model.extensions.aReportSettings
 import com.mvcoding.expensius.model.extensions.aTagsReport
+import com.mvcoding.expensius.model.extensions.empty
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
+import rx.Observable.error
+import rx.Observable.just
 
 class TagsReportPresenterTest {
     val tagsReport = aTagsReport()
@@ -34,14 +36,14 @@ class TagsReportPresenterTest {
     val remoteFilter = aRemoteFilter(reportSettings.reportPeriod)
 
     val tagsReportSource = mock<DataSource<TagsReport>>()
-    val reportSettingsSource = mock<DataSource<ReportSettings>>().apply { whenever(data()).thenReturn(Observable.just(reportSettings)) }
-    val secondaryRemoteFilterCache = mock<Cache<RemoteFilter>>().apply { whenever(data()).thenReturn(Observable.just(remoteFilter)) }
+    val reportSettingsSource = mock<DataSource<ReportSettings>>().apply { whenever(data()).thenReturn(just(reportSettings)) }
+    val secondaryRemoteFilterCache = mock<Cache<RemoteFilter>>().apply { whenever(data()).thenReturn(just(remoteFilter)) }
     val view = mock<TagsReportPresenter.View>()
     val presenter = TagsReportPresenter(tagsReportSource, reportSettingsSource, secondaryRemoteFilterCache, rxSchedulers())
 
     @Before
     fun setUp() {
-        whenever(tagsReportSource.data()).thenReturn(Observable.just(tagsReport))
+        whenever(tagsReportSource.data()).thenReturn(just(tagsReport))
     }
 
     @Test
@@ -54,11 +56,22 @@ class TagsReportPresenterTest {
         presenter.attach(view)
 
         verify(view).showTagsReport(tagsReport)
+        verify(view).hideEmptyView()
+    }
+
+    @Test
+    fun `shows empty view when report is empty`() {
+        val emptyTagsReport = tagsReport.empty()
+        whenever(tagsReportSource.data()).thenReturn(just(emptyTagsReport))
+        presenter.attach(view)
+
+        verify(view).showTagsReport(emptyTagsReport)
+        verify(view).showEmptyView()
     }
 
     @Test
     fun `ignores errors`() {
-        whenever(tagsReportSource.data()).thenReturn(Observable.error(Throwable()))
+        whenever(tagsReportSource.data()).thenReturn(error(Throwable()))
 
         presenter.attach(view)
 

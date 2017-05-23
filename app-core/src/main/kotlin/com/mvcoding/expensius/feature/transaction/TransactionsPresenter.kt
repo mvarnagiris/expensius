@@ -17,9 +17,7 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
-import com.mvcoding.expensius.feature.LoadingView
-import com.mvcoding.expensius.feature.ModelDisplayType
-import com.mvcoding.expensius.feature.RealtimeItemsView
+import com.mvcoding.expensius.feature.*
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
 import rx.Observable
@@ -40,13 +38,13 @@ class TransactionsPresenter(
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
                 .doOnNext { view.hideLoading() }
-                .subscribeUntilDetached {
-                    when (it) {
-                        is RealtimeData.AllItems -> view.showItems(it.allItems)
-                        is RealtimeData.AddedItems -> view.showAddedItems(it.addedItems, it.position)
-                        is RealtimeData.ChangedItems -> view.showChangedItems(it.changedItems, it.position)
-                        is RealtimeData.RemovedItems -> view.showRemovedItems(it.removedItems, it.position)
-                        is RealtimeData.MovedItems -> view.showMovedItems(it.movedItems, it.fromPosition, it.toPosition)
+                .subscribeUntilDetached { realtimeData ->
+                    when (realtimeData) {
+                        is RealtimeData.AllItems -> view.showItems(realtimeData.allItems).also { view.updateEmptyView(realtimeData.allItems) }
+                        is RealtimeData.AddedItems -> view.showAddedItems(realtimeData.addedItems, realtimeData.position)
+                        is RealtimeData.ChangedItems -> view.showChangedItems(realtimeData.changedItems, realtimeData.position)
+                        is RealtimeData.RemovedItems -> view.showRemovedItems(realtimeData.removedItems, realtimeData.position).also { view.updateEmptyView(realtimeData.allItems) }
+                        is RealtimeData.MovedItems -> view.showMovedItems(realtimeData.movedItems, realtimeData.fromPosition, realtimeData.toPosition)
                     }
                 }
 
@@ -55,7 +53,7 @@ class TransactionsPresenter(
         view.archivedTransactionsRequests().subscribeUntilDetached { view.displayArchivedTransactions() }
     }
 
-    interface View : Presenter.View, RealtimeItemsView<Transaction>, LoadingView {
+    interface View : Presenter.View, RealtimeItemsView<Transaction>, LoadingView, EmptyView {
         fun transactionSelects(): Observable<Transaction>
         fun createTransactionRequests(): Observable<Unit>
         fun archivedTransactionsRequests(): Observable<Unit>
