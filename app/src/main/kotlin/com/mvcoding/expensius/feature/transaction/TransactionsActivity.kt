@@ -17,6 +17,8 @@ package com.mvcoding.expensius.feature.transaction
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Menu
+import com.jakewharton.rxbinding.support.v7.widget.itemClicks
 import com.jakewharton.rxbinding.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
@@ -31,8 +33,8 @@ import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.model.Transaction
 import kotlinx.android.synthetic.main.activity_transactions.*
+import kotlinx.android.synthetic.main.toolbar.*
 import rx.Observable
-import rx.Observable.empty
 
 class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
 
@@ -50,6 +52,7 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
 
     private val presenter by lazy { provideTransactionsPresenter(intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as ModelDisplayType) }
     private val adapter by lazy { TransactionsAdapter() }
+    private var showArchivedTransactionsAction = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,16 +71,24 @@ class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
         super.onDestroy()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.transactions, menu)
+        menu.findItem(R.id.action_archived_transactions).isVisible = showArchivedTransactionsAction
+        return true
+    }
+
     override fun showModelDisplayType(modelDisplayType: ModelDisplayType) {
         supportActionBar?.title = if (modelDisplayType == VIEW_ARCHIVED) getString(R.string.archived_transactions) else getString(R.string.transactions)
     }
 
     override fun showArchivedTransactionsRequest() {
-
+        showArchivedTransactionsAction = true
+        supportInvalidateOptionsMenu()
     }
 
     override fun transactionSelects(): Observable<Transaction> = adapter.itemClicks()
-    override fun archivedTransactionsRequests(): Observable<Unit> = empty()
+    override fun archivedTransactionsRequests(): Observable<Unit> = toolbar.itemClicks().filter { it.itemId == R.id.action_archived_transactions }.map { Unit }
     override fun createTransactionRequests(): Observable<Unit> = createTransactionButton.clicks()
     override fun showItems(items: List<Transaction>): Unit = adapter.setItems(items)
     override fun showAddedItems(items: List<Transaction>, position: Int): Unit = adapter.addItems(position, items)
