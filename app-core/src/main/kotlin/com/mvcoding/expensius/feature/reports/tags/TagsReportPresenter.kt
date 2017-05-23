@@ -17,7 +17,9 @@ package com.mvcoding.expensius.feature.reports.tags
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.data.DataSource
+import com.mvcoding.expensius.feature.EmptyView
 import com.mvcoding.expensius.feature.ignoreError
+import com.mvcoding.expensius.feature.updateEmptyView
 import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.expensius.model.TagsReport
@@ -43,10 +45,13 @@ class TagsReportPresenter(
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
                 .ignoreError()
-                .subscribeUntilDetached { view.showTagsReport(it) }
+                .subscribeUntilDetached {
+                    view.showTagsReport(it)
+                    view.updateEmptyView(it.currentMoneys)
+                }
     }
 
-    interface View : Presenter.View {
+    interface View : Presenter.View, EmptyView {
         fun showTagsReport(tagsReport: TagsReport)
     }
 }

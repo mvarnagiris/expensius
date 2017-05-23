@@ -33,6 +33,7 @@ import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.provideDateFormatter
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.view_tags_report.*
 import kotlinx.android.synthetic.main.view_tags_report_overview.*
 import kotlinx.android.synthetic.main.view_transactions_overview.*
 import kotlinx.android.synthetic.main.view_trend_report.*
@@ -54,6 +55,7 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
         setContentView(R.layout.activity_overview)
         removeUpArrowFromToolbar()
         presenter.attach(this)
+        tagsReportView.isEnabled = false
     }
 
     override fun onDestroy() {

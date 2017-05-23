@@ -47,11 +47,7 @@
 
             <include layout="@layout/view_tags_report_overview" />
 
-            <include
-                layout="@layout/view_transactions_overview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/grid_2x" />
+            <include layout="@layout/view_transactions_overview" />
 
         </LinearLayout>
 
