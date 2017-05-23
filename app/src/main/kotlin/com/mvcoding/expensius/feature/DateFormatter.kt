@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2017 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,20 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.isTomorrow
 import com.mvcoding.expensius.extension.isYesterday
 import com.mvcoding.expensius.model.ReportPeriod
-import net.danlew.android.joda.DateUtils.FORMAT_ABBREV_ALL
-import net.danlew.android.joda.DateUtils.FORMAT_SHOW_DATE
-import net.danlew.android.joda.DateUtils.FORMAT_SHOW_WEEKDAY
-import net.danlew.android.joda.DateUtils.formatDateTime
-import net.danlew.android.joda.DateUtils.isToday
+import net.danlew.android.joda.DateUtils.*
 import org.joda.time.DateTime
 import org.joda.time.Interval
+import org.joda.time.format.DateTimeFormatter
+import org.joda.time.format.DateTimeFormatterBuilder
 
 class DateFormatter(private val context: Context) {
+
+    val dateFormatter: DateTimeFormatter = DateTimeFormatterBuilder()
+            .appendMonthOfYearText()
+            .appendLiteral(" ")
+            .appendYear(0, 4)
+            .toFormatter()
+
     fun formatDateRelativeToToday(timestamp: Long): String {
         val dateTime = DateTime(timestamp)
 
@@ -43,5 +48,7 @@ class DateFormatter(private val context: Context) {
     }
 
     fun formatDateShort(dateTime: DateTime): String = formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_ABBREV_ALL)
-    fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String = interval.start.monthOfYear().asText
+    fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String = when (reportPeriod) {
+        ReportPeriod.MONTH -> dateFormatter.print(interval.start)
+    }
 }
