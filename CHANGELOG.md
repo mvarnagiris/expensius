@@ -1,3 +1,6 @@
+### v0.7.0
+- `new` Improved trends report graph. It should not have data cut offs where months have different length.
+
 ### v0.6.0
 - `new` Date formatting now includes year.
 - `new` Added empty state for transactions screen.

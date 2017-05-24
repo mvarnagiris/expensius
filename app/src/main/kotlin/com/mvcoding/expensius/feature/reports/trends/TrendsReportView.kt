@@ -26,10 +26,13 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.feature.reports.provideTrendsReportPresenter
+import com.mvcoding.expensius.model.GroupedMoney
 import com.mvcoding.expensius.model.Money
+import com.mvcoding.expensius.model.NullModels
 import com.mvcoding.expensius.model.TrendsReport
 import com.mvcoding.expensius.provideMoneyFormatter
 import kotlinx.android.synthetic.main.view_trend_report.view.*
+import org.joda.time.Interval
 import java.math.BigDecimal
 
 class TrendsReportView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -78,19 +81,28 @@ class TrendsReportView @JvmOverloads constructor(context: Context, attrs: Attrib
     private val ANIMATION_DURATION_MILLIS = 500
 
     override fun showTrends(trendsReport: TrendsReport) {
-        val lineDataSet = lineDataSet(trendsReport.currentMoneys.map { it.money })
+        val maxSize = maxOf(trendsReport.currentMoneys.size, trendsReport.otherMoneys.size)
+        val normalizeMoneys: (List<GroupedMoney<Interval>>) -> List<Money> = {
+            it.let {
+                val lastMoney = it.lastOrNull()?.money ?: NullModels.noMoney
+                it.map { it.money }.plus((it.size..maxSize).drop(1).map { lastMoney })
+            }
+        }
+        val currentMoneysNormalized = normalizeMoneys(trendsReport.currentMoneys)
+        val otherMoneysNormalized = normalizeMoneys(trendsReport.otherMoneys)
 
+        val lineDataSet = lineDataSet(currentMoneysNormalized)
         lineDataSet.setDrawFilled(false)
         lineDataSet.color = getColorFromTheme(android.R.attr.textColorPrimary)
         lineDataSet.lineWidth = 3f
 
-        val lastLineDataSet = lineDataSet(trendsReport.otherMoneys.map { it.money })
+        val lastLineDataSet = lineDataSet(otherMoneysNormalized)
         lastLineDataSet.setDrawFilled(true)
         lastLineDataSet.fillColor = Color.BLACK
         lastLineDataSet.fillAlpha = 20
         lastLineDataSet.setColor(Color.BLACK, 1)
 
-        val lineData = LineData(Math.max(lineDataSet.entryCount, lastLineDataSet.entryCount).downTo(1).map { "" }, listOf(lastLineDataSet, lineDataSet))
+        val lineData = LineData(currentMoneysNormalized.map { "" }, listOf(lastLineDataSet, lineDataSet))
         lineChart.data = lineData
         lineChart.animateY(ANIMATION_DURATION_MILLIS)
 
