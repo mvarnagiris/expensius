@@ -26,6 +26,7 @@ import com.mvcoding.expensius.feature.filter.provideRemoteFilterCache
 import com.mvcoding.expensius.feature.filter.provideSecondaryRemoteFilterCache
 import com.mvcoding.expensius.feature.reports.tags.TagsReportPresenter
 import com.mvcoding.expensius.feature.reports.tags.TagsReportSource
+import com.mvcoding.expensius.feature.reports.trends.TrendsIntervalsPresenter
 import com.mvcoding.expensius.feature.reports.trends.TrendsReportPresenter
 import com.mvcoding.expensius.feature.reports.trends.TrendsReportSource
 import com.mvcoding.expensius.feature.settings.provideReportSettingsSource
@@ -40,6 +41,7 @@ class ReportsModule : ShankModule {
         tagsReportSource()
         trendsReportPresenter()
         tagsReportPresenter()
+        trendsIntervalsPresenter()
     }
 
     private fun trendsReportSource() = registerFactory(TrendsReportSource::class) { scope: Scope ->
@@ -72,9 +74,14 @@ class ReportsModule : ShankModule {
     private fun tagsReportPresenter() = registerFactory(TagsReportPresenter::class) { scope: Scope ->
         TagsReportPresenter(provideTagsReportSource(scope), provideReportSettingsSource(scope), provideSecondaryRemoteFilterCache(scope), provideRxSchedulers())
     }
+
+    private fun trendsIntervalsPresenter() = registerFactory(TrendsIntervalsPresenter::class) { scope: Scope ->
+        TrendsIntervalsPresenter(provideTrendsReportSource(scope), provideRxSchedulers())
+    }
 }
 
 fun provideTrendsReportSource(scope: Scope) = Shank.with(scope).provideSingletonFor<TrendsReportSource>(scope)
 fun provideTagsReportSource(scope: Scope) = Shank.with(scope).provideSingletonFor<TagsReportSource>(scope)
 fun View.provideTrendsReportPresenter() = withActivityScope.provideSingletonFor<TrendsReportPresenter>(activityScope)
 fun View.provideTagsReportPresenter() = withActivityScope.provideSingletonFor<TagsReportPresenter>(activityScope)
+fun View.provideTrendsIntervalsPresenter() = withActivityScope.provideSingletonFor<TrendsIntervalsPresenter>(activityScope)

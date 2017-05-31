@@ -18,12 +18,16 @@ import android.content.Context
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.isTomorrow
 import com.mvcoding.expensius.extension.isYesterday
+import com.mvcoding.expensius.model.ReportGroup
 import com.mvcoding.expensius.model.ReportPeriod
 import net.danlew.android.joda.DateUtils.*
 import org.joda.time.DateTime
 import org.joda.time.Interval
+import org.joda.time.Period
+import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import org.joda.time.format.DateTimeFormatterBuilder
+import org.joda.time.format.PeriodFormat
 
 class DateFormatter(private val context: Context) {
 
@@ -50,5 +54,14 @@ class DateFormatter(private val context: Context) {
     fun formatDateShort(dateTime: DateTime): String = formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_ABBREV_ALL)
     fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String = when (reportPeriod) {
         ReportPeriod.MONTH -> dateFormatter.print(interval.start)
+    }
+
+    fun formatInterval(reportGroup: ReportGroup, interval: Interval): String = when (reportGroup) {
+        ReportGroup.DAY -> DateTimeFormat.shortDate().print(interval.start)
+    }
+
+    fun formatInterval(interval: Interval): String = when (interval.toPeriod()) {
+        Period.days(1) -> interval.start.dayOfMonth().asText
+        else -> PeriodFormat.getDefault().print(interval.toPeriod())
     }
 }

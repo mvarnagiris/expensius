@@ -16,4 +16,4 @@ package com.mvcoding.expensius.model.extensions
 
 import com.mvcoding.expensius.model.TrendsReport
 
-fun aTrends() = TrendsReport(someIntervalGroupedMoneys(), aMoney(), someIntervalGroupedMoneys(), aMoney())
+fun aTrendsReport() = TrendsReport(someIntervalGroupedMoneys(), aMoney(), someIntervalGroupedMoneys(), aMoney())

@@ -22,7 +22,7 @@ import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.expensius.model.TrendsReport
 import com.mvcoding.expensius.model.extensions.aRemoteFilter
 import com.mvcoding.expensius.model.extensions.aReportSettings
-import com.mvcoding.expensius.model.extensions.aTrends
+import com.mvcoding.expensius.model.extensions.aTrendsReport
 import com.mvcoding.expensius.rxSchedulers
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
@@ -32,7 +32,7 @@ import rx.Observable.just
 
 class TrendsReportPresenterTest {
 
-    val trends = aTrends()
+    val trends = aTrendsReport()
     val reportSettings = aReportSettings()
     val remoteFilter = aRemoteFilter(reportSettings.reportPeriod)
 

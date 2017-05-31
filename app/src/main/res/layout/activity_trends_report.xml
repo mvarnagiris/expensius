@@ -12,25 +12,33 @@
   ~ GNU General Public License for more details.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include layout="@layout/toolbar" />
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?colorPrimary"
-        android:elevation="@dimen/elevation_appbar"
-        android:orientation="vertical"
-        android:theme="?themeInverse">
+        android:orientation="vertical">
 
-        <include layout="@layout/view_filter" />
+        <include layout="@layout/toolbar" />
 
-        <include layout="@layout/view_trend_report" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorPrimary"
+            android:elevation="@dimen/elevation_appbar"
+            android:orientation="vertical"
+            android:theme="?themeInverse">
+
+            <include layout="@layout/view_filter" />
+
+            <include layout="@layout/view_trend_report" />
+
+        </LinearLayout>
+
+        <include layout="@layout/view_trends_intervals" />
 
     </LinearLayout>
 
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

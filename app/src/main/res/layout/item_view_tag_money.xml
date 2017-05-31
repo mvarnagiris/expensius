@@ -40,7 +40,7 @@
             android:id="@+id/amountTextView"
             style="@style/TextView"
             android:layout_alignParentEnd="true"
-            android:textAppearance="@style/Text.Money"
+            android:textAppearance="@style/Text.Money.Small"
             tools:text="$ 258.36" />
 
         <TextView

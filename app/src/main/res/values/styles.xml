@@ -53,6 +53,12 @@
 
     <style name="Text.Money" parent="TextAppearance.AppCompat.Body2">
         <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+    </style>
+
+    <style name="Text.Money.Small" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
     </style>

@@ -12,7 +12,15 @@
   ~ GNU General Public License for more details.
   -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#66000000" android:state_enabled="false" />
-    <item android:color="#de000000" />
-</selector>
+<com.mvcoding.expensius.feature.reports.trends.TrendsIntervalsView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        style="@style/RecyclerView"
+        android:nestedScrollingEnabled="false"
+        tools:listitem="@layout/item_view_trend_interval" />
+
+</com.mvcoding.expensius.feature.reports.trends.TrendsIntervalsView>
