@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,5 +63,5 @@ class FirebaseTransactionsService {
 
     private fun UserId.transactionsReference() = getFirebaseDatabase().getReference(REF_TRANSACTIONS).child(this.id)
     private fun UserId.archivedTransactionsReference() = getFirebaseDatabase().getReference(REF_ARCHIVED_TRANSACTIONS).child(this.id)
-    private fun DataSnapshot.toTransaction(modelState: ModelState) = getValue(FirebaseTransaction::class.java).toBasicTransaction(modelState)
+    private fun DataSnapshot.toTransaction(modelState: ModelState) = getValue(FirebaseTransaction::class.java)!!.toBasicTransaction(modelState)
 }

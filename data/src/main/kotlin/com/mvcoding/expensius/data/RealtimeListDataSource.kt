@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,12 +14,9 @@
 
 package com.mvcoding.expensius.data
 
-import rx.Observable
-import rx.Observable.just
-import rx.Subscriber
-import rx.lang.kotlin.deferredObservable
-import rx.lang.kotlin.filterNotNull
-import rx.lang.kotlin.observable
+import io.reactivex.Observable
+import io.reactivex.Observable.just
+import io.reactivex.ObservableEmitter
 import java.io.Closeable
 import java.lang.Math.max
 import java.lang.Math.min
@@ -30,9 +27,9 @@ class RealtimeListDataSource<ITEM>(
 
     private var allItems: List<ITEM>? = null
 
-    private val observable = deferredObservable {
-        observable<RealtimeData<ITEM>> { subscriber ->
-            val allItems = realtimeList.getAllItems().first()
+    private val observable = Observable.defer {
+        Observable.create<RealtimeData<ITEM>> { subscriber ->
+            val allItems = realtimeList.getAllItems().firstOrError().toObservable()
             handleAllItems(allItems, subscriber)
             handleAddedItems(allItems, subscriber)
             handleChangedItems(allItems, subscriber)
@@ -41,13 +38,13 @@ class RealtimeListDataSource<ITEM>(
         }
     }.share()
 
-    private fun handleAllItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleAllItems(allItems: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: ObservableEmitter<in RealtimeData<ITEM>>) {
         allItems.map { RealtimeData.AllItems(it.items) }
                 .doOnNext { this.allItems = it.allItems }
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleAddedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleAddedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: ObservableEmitter<in RealtimeData<ITEM>>) {
         realtimeList.getAddedItems()
                 .skipUntil(allItemsObservable)
                 .map {
@@ -59,7 +56,7 @@ class RealtimeListDataSource<ITEM>(
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleChangedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleChangedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: ObservableEmitter<in RealtimeData<ITEM>>) {
         realtimeList.getChangedItems()
                 .skipUntil(allItemsObservable)
                 .map {
@@ -71,11 +68,10 @@ class RealtimeListDataSource<ITEM>(
                         RealtimeData.ChangedItems(newAllItems, it.items, position)
                     } else null
                 }
-                .filterNotNull()
-                .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
+                .subscribe({ subscriber.onNext(it as RealtimeData<ITEM>) }, { subscriber.onError(it) })
     }
 
-    private fun handleRemovedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleRemovedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: ObservableEmitter<in RealtimeData<ITEM>>) {
         realtimeList.getRemovedItems()
                 .skipUntil(allItemsObservable)
                 .map {
@@ -87,7 +83,7 @@ class RealtimeListDataSource<ITEM>(
                 .subscribe({ subscriber.onNext(it) }, { subscriber.onError(it) })
     }
 
-    private fun handleMovedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: Subscriber<in RealtimeData<ITEM>>) {
+    private fun handleMovedItems(allItemsObservable: Observable<RawRealtimeData.AllItems<ITEM>>, subscriber: ObservableEmitter<in RealtimeData<ITEM>>) {
         realtimeList.getMovedItem()
                 .skipUntil(allItemsObservable)
                 .map {
@@ -108,7 +104,7 @@ class RealtimeListDataSource<ITEM>(
     override fun data(): Observable<RealtimeData<ITEM>> = observable.mergeWith(currentState())
     override fun close() = realtimeList.close()
 
-    private fun currentState() = just(allItems).filterNotNull().map { RealtimeData.AllItems(it) }
+    private fun currentState() = just(allItems).map { RealtimeData.AllItems(it) }
     private fun keyToPosition(previousKey: String?) = previousKey?.let { key -> allItems.orEmpty().indexOfFirst { itemToKey(it) == key } } ?: -1
 
     private fun <T> List<T>.insert(items: List<T>, position: Int) = take(position).plus(items).plus(takeLast(size - position))

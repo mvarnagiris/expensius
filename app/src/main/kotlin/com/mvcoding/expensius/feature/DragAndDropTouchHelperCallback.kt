@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.support.v7.widget.helper.ItemTouchHelper.DOWN
 import android.support.v7.widget.helper.ItemTouchHelper.UP
-import rx.subjects.PublishSubject
+import io.reactivex.subjects.PublishSubject
 
 class DragAndDropTouchHelperCallback(
         private val adapter: BaseAdapter<*, *>,

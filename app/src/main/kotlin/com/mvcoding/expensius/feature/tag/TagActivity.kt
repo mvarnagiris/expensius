@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,9 @@ import android.support.v4.graphics.ColorUtils
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.Pair
 import android.view.Menu
-import com.jakewharton.rxbinding.support.v7.widget.itemClicks
-import com.jakewharton.rxbinding.view.clicks
-import com.jakewharton.rxbinding.widget.textChanges
+import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
+import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.textChanges
 import com.larswerkman.lobsterpicker.ColorAdapter
 import com.larswerkman.lobsterpicker.OnColorListener
 import com.mvcoding.expensius.R
@@ -41,11 +41,10 @@ import com.mvcoding.expensius.model.ModelState
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.expensius.model.Title
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
 import kotlinx.android.synthetic.main.activity_tag.*
 import kotlinx.android.synthetic.main.toolbar.*
-import rx.Observable
-import rx.Subscriber
-import rx.lang.kotlin.observable
 
 class TagActivity : BaseActivity(), TagPresenter.View {
     companion object {
@@ -91,7 +90,7 @@ class TagActivity : BaseActivity(), TagPresenter.View {
     }
 
     override fun titleChanges(): Observable<String> = titleEditText.textChanges().map { it.toString() }.distinctUntilChanged()
-    override fun colorChanges(): Observable<Int> = observable<Int> { withColorPickerListener(it) }.distinctUntilChanged()
+    override fun colorChanges(): Observable<Int> = Observable.create<Int> { withColorPickerListener(it) }.distinctUntilChanged()
     override fun archiveToggles(): Observable<Unit> = toolbar.itemClicks().filter { it.itemId == R.id.action_archive }.map { Unit }
     override fun saveRequests(): Observable<Unit> = saveButton.clicks()
     override fun showTitle(title: Title): Unit = titleEditText.setTextIfChanged(title.text)
@@ -105,8 +104,7 @@ class TagActivity : BaseActivity(), TagPresenter.View {
             val colorAdapter = lobsterPicker.colorAdapter
             colorAdapter.size().minus(1)
                     .downTo(0)
-                    .flatMap {
-                        colorPosition ->
+                    .flatMap { colorPosition ->
                         colorAdapter.shades(colorPosition).minus(1).downTo(0).map { Pair(colorPosition, it) }
                     }
                     .find { colorAdapter.color(it.first, it.second) == color.rgb }
@@ -162,7 +160,7 @@ class TagActivity : BaseActivity(), TagPresenter.View {
         window.statusBarColor = color
     }
 
-    private fun withColorPickerListener(subscriber: Subscriber<in Int>) {
+    private fun withColorPickerListener(subscriber: ObservableEmitter<in Int>) {
         lobsterPicker.addOnColorListener(object : OnColorListener {
             override fun onColorChanged(color: Int) {
                 subscriber.onNext(color)

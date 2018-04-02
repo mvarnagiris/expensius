@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.expensius.model.TrendsReport
 import com.mvcoding.mvp.Presenter
+import io.reactivex.rxkotlin.withLatestFrom
 
 class TrendsReportPresenter(
         private val trendsReportSource: DataSource<TrendsReport>,

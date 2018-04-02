@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@ import com.mvcoding.expensius.model.Login
 import com.mvcoding.expensius.model.Login.AnonymousLogin
 import com.mvcoding.expensius.model.Login.GoogleLogin
 import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Subscription
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 
 class LoginPresenter(
         private val destination: Destination,
@@ -56,14 +56,14 @@ class LoginPresenter(
         rxState.unsubscribe()
     }
 
-    private fun stateWaitingForLoginSelection(view: View): List<Subscription> {
+    private fun stateWaitingForLoginSelection(view: View): List<Disposable> {
         if (destination == APP) view.showAllLoginOptions() else view.showAllLoginOptionsExceptSkip()
         return listOf(
                 view.googleLogins().subscribeUntilDetached { requestGoogleToken() },
                 view.skipLogins().subscribeUntilDetached { loginAnonymously() })
     }
 
-    private fun stateAskingForGoogleToken(view: View): List<Subscription> {
+    private fun stateAskingForGoogleToken(view: View): List<Disposable> {
         return view.showGoogleTokenRequest()
                 .subscribeUntilDetached {
                     when (it) {
@@ -74,7 +74,7 @@ class LoginPresenter(
                 .putInList()
     }
 
-    private fun stateLoggingIn(view: View, login: Login): List<Subscription> {
+    private fun stateLoggingIn(view: View, login: Login): List<Disposable> {
         view.showLoggingIn(login.toAuthProvider())
         return loginSource.data(login)
                 .subscribeOn(schedulers.io)
@@ -83,7 +83,7 @@ class LoginPresenter(
                 .putInList()
     }
 
-    private fun stateResolvableFailedLogin(view: View, login: Login, throwable: Throwable): List<Subscription> {
+    private fun stateResolvableFailedLogin(view: View, login: Login, throwable: Throwable): List<Disposable> {
         waitForLoginSelection()
         return view.showResolvableError(throwable.toError())
                 .subscribeUntilDetached { if (it == POSITIVE && login is GoogleLogin) login(login.googleToken, forceLogin = true) }

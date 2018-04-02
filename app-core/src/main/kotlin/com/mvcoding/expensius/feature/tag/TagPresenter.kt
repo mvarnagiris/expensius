@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,9 @@ import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.NullModels.noColor
 import com.mvcoding.expensius.model.NullModels.noTagId
 import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Observable.combineLatest
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables.combineLatest
+import io.reactivex.rxkotlin.withLatestFrom
 
 class TagPresenter(
         private var tag: Tag,

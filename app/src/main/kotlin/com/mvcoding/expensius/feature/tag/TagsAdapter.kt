@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import com.mvcoding.expensius.feature.BaseClickableAdapter
 import com.mvcoding.expensius.feature.ClickableViewHolder
 import com.mvcoding.expensius.feature.ViewHolder
 import com.mvcoding.expensius.model.Tag
-import rx.subjects.PublishSubject
+import io.reactivex.subjects.PublishSubject
 
 class TagsAdapter : BaseClickableAdapter<Tag, ViewHolder>() {
 

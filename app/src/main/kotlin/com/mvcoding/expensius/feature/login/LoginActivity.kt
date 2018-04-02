@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding2.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.setGone
 import com.mvcoding.expensius.extension.setVisible
@@ -30,8 +30,8 @@ import com.mvcoding.expensius.feature.login.LoginPresenter.GoogleTokenResult
 import com.mvcoding.expensius.feature.overview.OverviewActivity
 import com.mvcoding.expensius.feature.premium.PremiumActivity
 import com.mvcoding.expensius.model.AuthProvider
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_login.*
-import rx.Observable
 
 class LoginActivity : BaseActivity(), LoginPresenter.View {
 

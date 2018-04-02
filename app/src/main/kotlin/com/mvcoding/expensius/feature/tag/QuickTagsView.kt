@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@ import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.feature.tag.QuickTagView.QuickTag
 import com.mvcoding.expensius.model.Tag
-import rx.lang.kotlin.BehaviorSubject
-import rx.lang.kotlin.PublishSubject
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.lang.Math.max
 
 class QuickTagsView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -33,9 +33,9 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private val presenter by lazy { provideQuickTagsPresenter() }
 
-    private val selectedTagsSubject  by lazy { PublishSubject<Set<Tag>>() }
-    private val selectableTagToggledSubject by lazy { PublishSubject<SelectableTag>() }
-    private val selectedTagsUpdatedSubject by lazy { BehaviorSubject<Set<Tag>>() }
+    private val selectedTagsSubject by lazy { PublishSubject.create<Set<Tag>>() }
+    private val selectableTagToggledSubject by lazy { PublishSubject.create<SelectableTag>() }
+    private val selectedTagsUpdatedSubject by lazy { BehaviorSubject.create<Set<Tag>>() }
     private val selectableTags = arrayListOf<SelectableTag>()
 
     private var allowShowSelectedTags = true
@@ -72,7 +72,7 @@ class QuickTagsView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
     }
 
-    fun selectedTagsChanges() = selectedTagsSubject.asObservable()
+    fun selectedTagsChanges() = selectedTagsSubject
 
     private fun setQuickTags(quickTags: List<QuickTag>) {
         removeAllViews()

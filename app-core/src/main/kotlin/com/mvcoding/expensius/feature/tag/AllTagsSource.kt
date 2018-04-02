@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,14 @@ package com.mvcoding.expensius.feature.tag
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.model.Tag
-import rx.Observable
-import rx.Observable.combineLatest
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables.combineLatest
 
 class AllTagsSource(
         private val tagsSource: DataSource<RealtimeData<Tag>>,
         private val archivedTagsSource: DataSource<RealtimeData<Tag>>) : DataSource<List<Tag>> {
 
-    override fun data(): Observable<List<Tag>> = combineLatest(tagsSource.data().map { it.allItems }, archivedTagsSource.data().map { it.allItems }) {
-        tags, archivedTags ->
+    override fun data(): Observable<List<Tag>> = combineLatest(tagsSource.data().map { it.allItems }, archivedTagsSource.data().map { it.allItems }) { tags, archivedTags ->
         tags + archivedTags
     }
 

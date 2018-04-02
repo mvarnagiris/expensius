@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
-import com.jakewharton.rxbinding.support.v7.widget.itemClicks
-import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
+import com.jakewharton.rxbinding2.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.getColorFromTheme
 import com.mvcoding.expensius.extension.setGone
@@ -32,9 +32,9 @@ import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.calculator.CalculatorActivity
 import com.mvcoding.expensius.model.Transaction
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_transactions.*
 import kotlinx.android.synthetic.main.toolbar.*
-import rx.Observable
 
 class TransactionsActivity : BaseActivity(), TransactionsPresenter.View {
 

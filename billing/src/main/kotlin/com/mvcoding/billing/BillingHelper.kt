@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,10 @@ import com.mvcoding.billing.BillingResult.Companion.billingResult
 import com.mvcoding.billing.BillingResult.Companion.getResponseDescription
 import com.mvcoding.billing.ProductType.SINGLE
 import com.mvcoding.billing.ProductType.SUBSCRIPTION
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.subjects.BehaviorSubject
 import org.json.JSONException
-import rx.Observable
-import rx.Subscriber
-import rx.lang.kotlin.BehaviorSubject
 
 class BillingHelper(private val context: Context, private val base64PublicKey: String, private val loggingEnabled: Boolean = false) {
     private val API_VERSION = 3
@@ -62,13 +62,13 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
 
     private val GET_SKU_DETAILS_ITEM_LIST = "ITEM_ID_LIST"
 
-    private var setupCompleteSubject = BehaviorSubject<BillingResult>()
+    private var setupCompleteSubject = BehaviorSubject.create<BillingResult>()
 
     private var isDisposed = false
     private var isSetupDone = false
     private var isSubscriptionsSupported = false
     private var isSubscriptionsUpdateSupported = false
-    private var purchaseSubscriber: Subscriber<in PurchaseResult>? = null
+    private var purchaseSubscriber: ObservableEmitter<in PurchaseResult>? = null
     private var purchaseRequestCode = 0
     private var purchaseProductType = SINGLE
 
@@ -93,7 +93,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
         } else {
             setupCompleteSubject.onError(
                     billingException(BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE, "Billing service unavailable on device."))
-            setupCompleteSubject = BehaviorSubject()
+            setupCompleteSubject = BehaviorSubject.create()
         }
     }
 
@@ -101,7 +101,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
         log("Disposing.")
         makeSureSetupIsDone()
         makeSureItIsNotDisposed()
-        setupCompleteSubject = BehaviorSubject<BillingResult>()
+        setupCompleteSubject = BehaviorSubject.create<BillingResult>()
         isSetupDone = false
         context.unbindService(serviceConnection)
         isDisposed = true
@@ -131,7 +131,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     }
 
     private fun tryToStartBuyActivity(
-            subscriber: Subscriber<in PurchaseResult>,
+            subscriber: ObservableEmitter<in PurchaseResult>,
             activity: Activity,
             requestCode: Int,
             productId: ProductId,
@@ -152,7 +152,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
     }
 
     private fun startBuyActivity(
-            subscriber: Subscriber<in PurchaseResult>,
+            subscriber: ObservableEmitter<in PurchaseResult>,
             activity: Activity,
             requestCode: Int,
             productId: ProductId,
@@ -246,7 +246,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             }
 
             purchaseSubscriber?.onNext(PurchaseResult(billingResult(BILLING_RESPONSE_RESULT_OK, "Success"), purchase))
-            purchaseSubscriber?.onCompleted()
+            purchaseSubscriber?.onComplete()
         } else if (resultCode == Activity.RESULT_OK) {
             log("Result code was OK but in-app billing response was not OK: ${getResponseDescription(responseCode)}")
             purchaseSubscriber?.onError(billingException(responseCode, "Problem purchasing item."))
@@ -348,8 +348,8 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
             }
 
             if (!ownedItemsBundle.containsKey(RESPONSE_IN_APP_ITEM_LIST)
-                || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_PURCHASE_DATA_LIST)
-                || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_SIGNATURE_LIST)) {
+                    || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_PURCHASE_DATA_LIST)
+                    || !ownedItemsBundle.containsKey(RESPONSE_IN_APP_SIGNATURE_LIST)) {
                 log("Bundle returned from getPurchases doesn't contain required fields")
                 throw billingException(BILLING_HELPER_BAD_RESPONSE, "Error getting owned items")
             }
@@ -465,7 +465,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                     var response = billingService.isBillingSupported(API_VERSION, packageName, SINGLE.value)
                     if (response != BILLING_RESPONSE_RESULT_OK) {
                         setupCompleteSubject.onError(billingException(response, "Error checking for billing v3 support."))
-                        setupCompleteSubject = BehaviorSubject()
+                        setupCompleteSubject = BehaviorSubject.create()
                         isSubscriptionsSupported = false
                         isSubscriptionsUpdateSupported = false
                         return
@@ -500,7 +500,7 @@ class BillingHelper(private val context: Context, private val base64PublicKey: S
                 } catch (e: RemoteException) {
                     setupCompleteSubject.onError(
                             billingException(BILLING_HELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing"))
-                    setupCompleteSubject = BehaviorSubject()
+                    setupCompleteSubject = BehaviorSubject.create()
                     e.printStackTrace()
                     return
                 }

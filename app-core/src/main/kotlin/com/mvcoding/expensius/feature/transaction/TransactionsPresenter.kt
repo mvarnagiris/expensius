@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ import com.mvcoding.expensius.data.RealtimeData
 import com.mvcoding.expensius.feature.*
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
-import rx.Observable
+import io.reactivex.Observable
 
 class TransactionsPresenter(
         private val modelDisplayType: ModelDisplayType,

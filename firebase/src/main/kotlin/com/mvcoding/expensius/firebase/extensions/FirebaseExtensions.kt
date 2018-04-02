@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,15 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import rx.Observable
-import rx.Scheduler
-import rx.lang.kotlin.deferredObservable
-import rx.lang.kotlin.observable
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Scheduler
 
 private val firebaseDatabaseInstance by lazy { FirebaseDatabase.getInstance().apply { setPersistenceEnabled(true) } }
 fun getFirebaseDatabase(): FirebaseDatabase = firebaseDatabaseInstance
 
-fun Query.observeSingleValue(scheduler: Scheduler): Observable<DataSnapshot> = deferredObservable {
-    observable<DataSnapshot> { subscriber ->
+fun Query.observeSingleValue(scheduler: Scheduler): Observable<DataSnapshot> = Observable.defer {
+    Observable.create<DataSnapshot> { subscriber ->
         addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(databaseError: DatabaseError) {
                 subscriber.onError(databaseError.toException())
@@ -35,32 +34,33 @@ fun Query.observeSingleValue(scheduler: Scheduler): Observable<DataSnapshot> = d
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 subscriber.onNext(dataSnapshot)
-                subscriber.onCompleted()
+                subscriber.onComplete()
             }
         })
     }
 }.observeOn(scheduler)
 
-fun <T> Task<T>.observeSuccessfulComplete(scheduler: Scheduler): Observable<T> = deferredObservable {
-    observable<T> { subscriber ->
+fun <T> Task<T>.observeSuccessfulComplete(scheduler: Scheduler): Observable<T> = Observable.defer {
+    Observable.create<T> { subscriber ->
         addOnCompleteListener {
             if (it.isSuccessful) {
                 subscriber.onNext(it.result)
-                subscriber.onCompleted()
+                subscriber.onComplete()
             } else {
-                subscriber.onError(it.exception)
+                subscriber.onError(it.exception!!)
             }
         }
     }
 }.observeOn(scheduler)
 
-fun FirebaseAuth.observeSingleCurrentFirebaseUser(scheduler: Scheduler): Observable<FirebaseUser?> = deferredObservable {
-    observable<FirebaseUser?> { subscriber ->
+fun FirebaseAuth.observeSingleCurrentFirebaseUser(scheduler: Scheduler): Maybe<FirebaseUser> = Maybe.defer {
+    Maybe.create<FirebaseUser> { subscriber ->
         val authStateListener = object : FirebaseAuth.AuthStateListener {
             override fun onAuthStateChanged(firebaseAuth: FirebaseAuth) {
                 firebaseAuth.removeAuthStateListener(this)
-                subscriber.onNext(firebaseAuth.currentUser)
-                subscriber.onCompleted()
+                val user = firebaseAuth.currentUser
+                if (user != null) subscriber.onSuccess(user)
+                else subscriber.onComplete()
             }
         }
         addAuthStateListener(authStateListener)
@@ -70,3 +70,4 @@ fun FirebaseAuth.observeSingleCurrentFirebaseUser(scheduler: Scheduler): Observa
 fun FirebaseUser.getAppUserDatabaseReference(): DatabaseReference = getFirebaseDatabase()
         .getReference("users")
         .child(uid)
+

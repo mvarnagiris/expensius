@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,6 @@ class CreateTransactionsWriter(
         private val createTransactions: (UserId, Set<CreateTransaction>) -> Unit) : DataWriter<Set<CreateTransaction>> {
 
     override fun write(data: Set<CreateTransaction>) {
-        appUserSource.data().first().map { it.userId }.subscribe { createTransactions(it, data) }
+        appUserSource.data().firstOrError().toObservable().map { it.userId }.subscribe { createTransactions(it, data) }
     }
 }

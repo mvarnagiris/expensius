@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ import android.support.v4.app.FragmentManager
 import android.widget.DatePicker
 import com.mvcoding.expensius.RxBus
 import com.mvcoding.expensius.provideRxBus
+import io.reactivex.Observable
 import org.joda.time.DateTime
-import rx.Observable
 
 class DateDialogFragment : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
     private val rxBus = provideRxBus()
@@ -58,15 +58,15 @@ class DateDialogFragment : BaseDialogFragment(), DatePickerDialog.OnDateSetListe
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val year = arguments.getInt(ARG_YEAR)
-        val monthOfYear = arguments.getInt(ARG_MONTH_OF_YEAR)
-        val dayOfMonth = arguments.getInt(ARG_DAY_OF_MONTH)
+        val year = arguments!!.getInt(ARG_YEAR)
+        val monthOfYear = arguments!!.getInt(ARG_MONTH_OF_YEAR)
+        val dayOfMonth = arguments!!.getInt(ARG_DAY_OF_MONTH)
 
         return DatePickerDialog(activity, this, year, monthOfYear - 1, dayOfMonth)
     }
 
     override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        rxBus.send(DateDialogResult(arguments.getInt(ARG_REQUEST_CODE), year, monthOfYear + 1, dayOfMonth))
+        rxBus.send(DateDialogResult(arguments!!.getInt(ARG_REQUEST_CODE), year, monthOfYear + 1, dayOfMonth))
     }
 
     class DateDialogResult(requestCode: Int, val year: Int, val monthOfYear: Int, val dayOfMonth: Int) : DialogResult(requestCode)

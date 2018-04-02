@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ package com.mvcoding.expensius.feature
 
 import android.support.design.widget.Snackbar
 import android.view.View
-import com.jakewharton.rxbinding.support.design.widget.dismisses
+import com.jakewharton.rxbinding2.support.design.widget.dismisses
 
 class SnackbarBuilder(private val view: View, private val resId: Int, private val duration: Int) {
     var actionResId: Int = 0
@@ -49,7 +49,7 @@ class SnackbarBuilder(private val view: View, private val resId: Int, private va
             snackbar.dismisses().subscribe { onDismiss!!.invoke() }
         }
 
-        snackbar.show();
+        snackbar.show()
         return snackbar
     }
 }

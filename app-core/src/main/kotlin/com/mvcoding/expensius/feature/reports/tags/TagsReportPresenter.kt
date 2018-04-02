@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.expensius.model.TagsReport
 import com.mvcoding.mvp.Presenter
+import io.reactivex.rxkotlin.withLatestFrom
 
 class TagsReportPresenter(
         private val tagsReportSource: DataSource<TagsReport>,
@@ -33,7 +34,8 @@ class TagsReportPresenter(
 
     init {
         secondaryRemoteFilterCache.data()
-                .first()
+                .firstOrError()
+                .toObservable()
                 .withLatestFrom(reportSettingsSource.data()) { remoteFilter, reportSettings -> remoteFilter to reportSettings }
                 .subscribe { secondaryRemoteFilterCache.write(it.first.withPreviousInterval(it.second.reportPeriod)) }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@ package com.mvcoding.expensius.feature.currency
 
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Currency
-import rx.Observable
-import rx.Observable.just
+import io.reactivex.Observable
+import io.reactivex.Observable.just
 import java.util.*
+
 
 class CurrenciesSource : DataSource<List<Currency>> {
 
@@ -31,7 +32,7 @@ class CurrenciesSource : DataSource<List<Currency>> {
 
     private fun Locale.toCurrency() = try {
         java.util.Currency.getInstance(this)
-    } catch(e: Exception) {
+    } catch (e: Exception) {
         java.util.Currency.getInstance("USD")
     }
 }

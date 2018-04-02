@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,17 +28,17 @@ import com.mvcoding.expensius.model.NullModels.noAppUser
 import com.mvcoding.expensius.model.NullModels.noEmail
 import com.mvcoding.expensius.model.NullModels.noImage
 import com.mvcoding.expensius.model.NullModels.noName
-import rx.Observable
-import rx.Observable.error
-import rx.Observable.just
-import rx.Scheduler
+import io.reactivex.Observable
+import io.reactivex.Observable.just
+import io.reactivex.Scheduler
 
 class FirebaseAppUserService(private val scheduler: Scheduler) {
 
     fun getAppUser(): Observable<AppUser> = FirebaseAuth.getInstance()
             .observeSingleCurrentFirebaseUser(scheduler)
-            .switchMap { if (it == null) just(noAppUser) else fetchAppUser(it) }
+            .flatMapObservable { fetchAppUser(it) }
             .onErrorReturn { noAppUser }
+            .switchIfEmpty { just(noAppUser) }
 
     fun setAppUser(appUser: AppUser): Task<Void> = getFirebaseDatabase()
             .getReference("users")
@@ -47,15 +47,15 @@ class FirebaseAppUserService(private val scheduler: Scheduler) {
 
     fun login(login: Login): Observable<LoggedInUserDetails> = FirebaseAuth.getInstance()
             .observeSingleCurrentFirebaseUser(scheduler)
-            .switchMap { it.loginOrLinkAccount(login).observeSuccessfulComplete(scheduler) }
+            .flatMapObservable { it.loginOrLinkAccount(login).observeSuccessfulComplete(scheduler) }
             .map { (it.user ?: throw RuntimeException("Failed to log in")).toLoggedInUserDetails() }
-            .onErrorResumeNext { error(convertException(it)) }
+            .onErrorResumeNext { it: Throwable -> error(convertException(it)) }
 
     fun logout(): Unit = FirebaseAuth.getInstance().signOut()
 
     private fun fetchAppUser(firebaseUser: FirebaseUser): Observable<AppUser> = firebaseUser.getAppUserDatabaseReference()
             .observeSingleValue(scheduler)
-            .map { it.getValue(FirebaseAppUser::class.java).toAppUser(firebaseUser.getAuthProviders()) }
+            .map { it.getValue(FirebaseAppUser::class.java)!!.toAppUser(firebaseUser.getAuthProviders()) }
 
     private fun FirebaseUser.getAuthProviders(): Set<AuthProvider> = providerData.map {
         when (it.providerId) {

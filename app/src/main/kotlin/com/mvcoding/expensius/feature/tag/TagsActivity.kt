@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding2.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -30,9 +30,9 @@ import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_ARCHIVED
 import com.mvcoding.expensius.feature.ModelDisplayType.VIEW_NOT_ARCHIVED
 import com.mvcoding.expensius.feature.tag.TagsPresenter.TagMove
 import com.mvcoding.expensius.model.Tag
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_tags.*
-import rx.Observable
-import rx.lang.kotlin.PublishSubject
 
 class TagsActivity : BaseActivity(), TagsPresenter.View {
 
@@ -49,7 +49,7 @@ class TagsActivity : BaseActivity(), TagsPresenter.View {
     }
 
     private val presenter by lazy { provideTagsPresenter(intent.getSerializableExtra(EXTRA_DISPLAY_TYPE) as ModelDisplayType) }
-    private val tagMoveSubject by lazy { PublishSubject<DragAndDropTouchHelperCallback.ItemMoved>() }
+    private val tagMoveSubject by lazy { PublishSubject.create<DragAndDropTouchHelperCallback.ItemMoved>() }
     private val adapter by lazy { TagsAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {

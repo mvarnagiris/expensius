@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,15 @@ package com.mvcoding.expensius.feature
 import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.TransactionState
 import com.mvcoding.expensius.model.TransactionType
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import org.joda.time.Interval
-import rx.Observable
-import rx.lang.kotlin.BehaviorSubject
 import kotlin.Long.Companion.MAX_VALUE
 import kotlin.Long.Companion.MIN_VALUE
 
 class FilterOld(/*appUserService: AppUserService,*/ timestampProvider: TimestampProvider) {
     private var filterData: FilterDataOld = FilterDataOld(Interval(MIN_VALUE, MAX_VALUE))
-    private val filterDataSubject = BehaviorSubject(filterData)
+    private val filterDataSubject = BehaviorSubject.createDefault(filterData)
 
     init {
 //        appUserService.appUser()

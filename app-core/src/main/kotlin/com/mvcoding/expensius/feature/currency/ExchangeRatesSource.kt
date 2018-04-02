@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@ import com.mvcoding.expensius.data.FunctionParameterDataSource
 import com.mvcoding.expensius.data.MemoryParameterDataSource
 import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.model.ExchangeRateCurrencies
-import rx.Observable
-import rx.Observable.just
+import io.reactivex.Observable
+import io.reactivex.Observable.just
 import java.math.BigDecimal
 
 class ExchangeRatesSource(getExchangeRate: (ExchangeRateCurrencies) -> Observable<BigDecimal>) : ParameterDataSource<ExchangeRateCurrencies, BigDecimal> {

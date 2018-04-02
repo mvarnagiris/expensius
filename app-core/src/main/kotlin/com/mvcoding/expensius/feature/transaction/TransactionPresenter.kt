@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,9 @@ import com.mvcoding.expensius.model.ModelState.ARCHIVED
 import com.mvcoding.expensius.model.ModelState.NONE
 import com.mvcoding.expensius.model.NullModels.noTransactionId
 import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Observable.combineLatest
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables.combineLatest
+import io.reactivex.rxkotlin.withLatestFrom
 import java.math.BigDecimal
 
 class TransactionPresenter(
@@ -51,8 +52,7 @@ class TransactionPresenter(
         val tags = view.tagsChanges().startWith(transaction.tags).doOnNext { view.showTags(it) }
         val notes = view.noteChanges().map(::Note).startWith(transaction.note).doOnNext { view.showNote(it) }
 
-        val transaction = combineLatest(transactionStates, transactionTypes, timestamps, money, tags, notes, {
-            transactionState, transactionType, timestamp, money, tags, note ->
+        val transaction = combineLatest(transactionStates, transactionTypes, timestamps, money, tags, notes, { transactionState, transactionType, timestamp, money, tags, note ->
             transaction.copy(
                     transactionState = transactionState,
                     transactionType = transactionType,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ class TransactionItemView @JvmOverloads constructor(context: Context, attrs: Att
             ssb.append("$NON_BREAKABLE_SPACE$NON_BREAKABLE_SPACE")
             ssb.append(it.title.text.replace(" ", NON_BREAKABLE_SPACE))
 
-            val drawable = tagDrawable.constantState.newDrawable().mutate()
+            val drawable = tagDrawable!!.constantState.newDrawable().mutate()
             val drawableSize = tagsTextView.paint.textSize - tagsTextView.paint.textSize * 0.25f
             drawable.setColorFilter(it.color.rgb, SRC_ATOP)
             drawable.bounds = Rect(0, 0, drawableSize.toInt(), drawableSize.toInt())

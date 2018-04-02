@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,12 +14,12 @@
 
 package com.mvcoding.expensius.data
 
-import rx.Observable
-import rx.lang.kotlin.BehaviorSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 
 class MemoryCache<DATA>(dataSource: DataSource<DATA>) : Cache<DATA> {
 
-    private val subject = BehaviorSubject<DATA>()
+    private val subject = BehaviorSubject.create<DATA>()
     private val dataSource = MemoryDataSource(FunctionDataSource { dataSource.data().mergeWith(subject) })
 
     override fun write(data: DATA): Unit = subject.onNext(data)

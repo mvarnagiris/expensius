@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,9 @@ package com.mvcoding.expensius.feature.reports.trends
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.model.*
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables.combineLatest
 import org.joda.time.Interval
-import rx.Observable
-import rx.Observable.combineLatest
-import rx.Observable.from
 import java.math.BigDecimal
 
 class TrendsReportSource(
@@ -46,9 +45,10 @@ class TrendsReportSource(
                     val filteredTransactions = it.localFilter.filter(it.transactions)
                     val currency = reportSettings.currency
 
-                    from(filteredTransactions)
+                    Observable.fromIterable(filteredTransactions)
                             .flatMap { transaction -> moneyConversionSource.data(MoneyConversion(transaction.money, currency)).map { transaction.withMoney(it) } }
                             .toList()
+                            .toObservable()
                             .map {
                                 val groupedMoneys = reportSettings.reportPeriod.groupToFillWholePeriod(it, reportSettings.reportGroup, currency)
                                 val totalMoney = groupedMoneys

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ package com.mvcoding.expensius.data
 
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.UserId
-import rx.Observable
+import io.reactivex.Observable
 
 class AppUserIdSource(private val appUserSource: DataSource<AppUser>) : DataSource<UserId> {
     override fun data(): Observable<UserId> = appUserSource.data().map { it.userId }.distinctUntilChanged()

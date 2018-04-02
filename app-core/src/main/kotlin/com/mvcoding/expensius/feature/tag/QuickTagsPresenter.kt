@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@ import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Observable.combineLatest
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables.combineLatest
 
 class QuickTagsPresenter(
         private val tagsSource: DataSource<List<Tag>>,
@@ -31,8 +31,7 @@ class QuickTagsPresenter(
         super.onViewAttached(view)
 
         val selectedTags = view.selectedTagsUpdates().doOnNext { it.forEach { toggledTags.put(it, true) } }
-        val allTags = combineLatest(tagsSource.data(), selectedTags, {
-            tags, selectedTags ->
+        val allTags = combineLatest(tagsSource.data(), selectedTags, { tags, selectedTags ->
             tags.plus(selectedTags.filterNot { tags.contains(it) }).sortedBy(Tag::order)
         })
 

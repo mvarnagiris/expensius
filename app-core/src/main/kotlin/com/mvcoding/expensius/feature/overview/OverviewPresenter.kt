@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@ import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.model.ReportSettings
 import com.mvcoding.mvp.Presenter
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.Observables.combineLatest
 import org.joda.time.Interval
-import rx.Observable
-import rx.Observable.combineLatest
 
 class OverviewPresenter(
         private val remoteFilterSource: DataSource<RemoteFilter>,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@ import android.os.Bundle
 import android.support.v7.widget.ListPopupWindow
 import android.view.Menu
 import android.widget.ArrayAdapter
-import com.jakewharton.rxbinding.support.v7.widget.itemClicks
-import com.jakewharton.rxbinding.view.clicks
-import com.jakewharton.rxbinding.widget.checkedChanges
-import com.jakewharton.rxbinding.widget.textChanges
+import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
+import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.checkedChanges
+import com.jakewharton.rxbinding2.widget.textChanges
 import com.mvcoding.expensius.*
 import com.mvcoding.expensius.extension.displayName
 import com.mvcoding.expensius.extension.getDimensionFromTheme
@@ -37,12 +37,11 @@ import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionState.PENDING
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
 import com.mvcoding.expensius.model.TransactionType.INCOME
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_transaction.*
 import kotlinx.android.synthetic.main.toolbar.*
 import org.joda.time.DateTime
-import rx.Observable
-import rx.lang.kotlin.PublishSubject
-import rx.lang.kotlin.observable
 import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 
@@ -64,8 +63,8 @@ class TransactionActivity : BaseActivity(), TransactionPresenter.View {
     private val presenter by lazy { provideTransactionPresenter(intent.getSerializableExtra(EXTRA_TRANSACTION) as Transaction) }
     private val moneyFormatter by lazy { provideMoneyFormatter() }
     private val dateFormatter by lazy { provideDateFormatter() }
-    private val amountSubject by lazy { PublishSubject<BigDecimal>() }
-    private val exchangeRateSubject by lazy { PublishSubject<BigDecimal>() }
+    private val amountSubject by lazy { PublishSubject.create<BigDecimal>() }
+    private val exchangeRateSubject by lazy { PublishSubject.create<BigDecimal>() }
     private val rxBus by lazy { provideRxBus() }
 
     private var isArchiveToggleVisible = true
@@ -126,7 +125,7 @@ class TransactionActivity : BaseActivity(), TransactionPresenter.View {
     override fun saveRequests(): Observable<Unit> = saveButton.clicks()
     override fun currencyChangeRequests(): Observable<Unit> = currencyButton.clicks()
 
-    override fun currencyChanges(currencies: List<Currency>): Observable<Currency> = observable {
+    override fun currencyChanges(currencies: List<Currency>): Observable<Currency> = Observable.create {
         val displayCurrencies = currencies.map { it.displayName() }
         val itemHeight = getDimensionFromTheme(this, R.attr.actionBarSize)
         val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
@@ -135,7 +134,7 @@ class TransactionActivity : BaseActivity(), TransactionPresenter.View {
         popupWindow.anchorView = currencyButton
         popupWindow.setAdapter(ArrayAdapter<String>(this, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
         popupWindow.setOnItemClickListener { _, _, position, _ -> it.onNext(currencies[position]); popupWindow.dismiss() }
-        popupWindow.setOnDismissListener { it.onCompleted() }
+        popupWindow.setOnDismissListener { it.onComplete() }
         popupWindow.width = contentView.width - keyline
         popupWindow.height = Math.min(contentView.height - buttonBarView.height - currencyButton.height - keylineHalf, itemHeight * 7)
         popupWindow.isModal = true

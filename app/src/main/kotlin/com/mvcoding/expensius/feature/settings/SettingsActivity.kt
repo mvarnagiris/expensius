@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.v7.widget.ListPopupWindow
 import android.widget.ArrayAdapter
-import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding2.view.clicks
 import com.mvcoding.expensius.BuildConfig
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.displayName
@@ -35,8 +35,8 @@ import com.mvcoding.expensius.feature.premium.PremiumActivity
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.Currency
 import com.mvcoding.expensius.model.SubscriptionType
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_settings.*
-import rx.Observable
 import java.lang.Math.min
 
 class SettingsActivity : BaseActivity(), SettingsPresenter.View {
@@ -86,7 +86,7 @@ class SettingsActivity : BaseActivity(), SettingsPresenter.View {
         popupWindow.anchorView = mainCurrencySettingsItemView
         popupWindow.setAdapter(ArrayAdapter<String>(this, R.layout.item_view_currency, R.id.currencyCodeTextView, displayCurrencies))
         popupWindow.setOnItemClickListener { _, _, position, _ -> it.onNext(currencies[position]); popupWindow.dismiss() }
-        popupWindow.setOnDismissListener { it.onCompleted() }
+        popupWindow.setOnDismissListener { it.onComplete() }
         popupWindow.width = contentView.width - keyline
         popupWindow.height = min(contentView.height - mainCurrencySettingsItemView.bottom - itemHeight - keylineHalf, itemHeight * 7)
         popupWindow.isModal = true

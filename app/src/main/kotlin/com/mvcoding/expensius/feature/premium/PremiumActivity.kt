@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,15 +23,15 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import com.jakewharton.rxbinding.support.v4.widget.refreshes
+import com.jakewharton.rxbinding2.support.v4.widget.refreshes
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.extension.inflate
 import com.mvcoding.expensius.extension.snackbar
 import com.mvcoding.expensius.feature.*
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_premium.*
 import kotlinx.android.synthetic.main.item_view_billing_product.view.*
-import rx.Observable
-import rx.subjects.PublishSubject
 
 class PremiumActivity : BaseActivity(), PremiumPresenter.View {
     companion object {

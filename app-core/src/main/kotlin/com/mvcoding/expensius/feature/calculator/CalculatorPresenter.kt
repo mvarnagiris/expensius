@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ import com.mvcoding.expensius.model.NullModels.newTransaction
 import com.mvcoding.expensius.model.TimestampProvider
 import com.mvcoding.expensius.model.Transaction
 import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Observable.merge
-import rx.lang.kotlin.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.withLatestFrom
+import io.reactivex.subjects.PublishSubject
 import java.math.BigDecimal
 
 class CalculatorPresenter(
@@ -45,9 +45,9 @@ class CalculatorPresenter(
     override fun onViewAttached(view: View) {
         super.onViewAttached(view)
 
-        val saves = PublishSubject<Unit>()
-        unsubscribeOnDetach(view.saveRequests().subscribe(saves))
-        val expressionChanges = merge(arrayOf(
+        val saves = PublishSubject.create<Unit>()
+        view.saveRequests().subscribeUntilDetached { saves.onNext(it) }
+        val expressionChanges = Observable.merge(listOf(
                 view.digit0().doOnNext { calculator.digit0() },
                 view.digit1().doOnNext { calculator.digit1() },
                 view.digit2().doOnNext { calculator.digit2() },

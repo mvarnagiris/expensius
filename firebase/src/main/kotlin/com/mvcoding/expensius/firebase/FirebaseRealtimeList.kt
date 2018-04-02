@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,19 @@ package com.mvcoding.expensius.firebase
 import com.google.firebase.database.*
 import com.mvcoding.expensius.data.RawRealtimeData.*
 import com.mvcoding.expensius.data.RealtimeList
-import rx.Observable
-import rx.lang.kotlin.BehaviorSubject
-import rx.lang.kotlin.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 class FirebaseRealtimeList<ITEM>(
         private val query: Query,
         private val converter: (DataSnapshot) -> ITEM) : RealtimeList<ITEM> {
 
-    private val allItemsSubject = BehaviorSubject<AllItems<ITEM>>()
-    private val addedItemsSubject = PublishSubject<AddedItems<ITEM>>()
-    private val changedItemsSubject = PublishSubject<ChangedItems<ITEM>>()
-    private val removedItemsSubject = PublishSubject<RemovedItems<ITEM>>()
-    private val movedItemSubject = PublishSubject<MovedItems<ITEM>>()
+    private val allItemsSubject = BehaviorSubject.create<AllItems<ITEM>>()
+    private val addedItemsSubject = PublishSubject.create<AddedItems<ITEM>>()
+    private val changedItemsSubject = PublishSubject.create<ChangedItems<ITEM>>()
+    private val removedItemsSubject = PublishSubject.create<RemovedItems<ITEM>>()
+    private val movedItemSubject = PublishSubject.create<MovedItems<ITEM>>()
 
     private val valueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {

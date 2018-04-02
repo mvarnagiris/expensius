@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ import com.mvcoding.expensius.data.Cache
 import com.mvcoding.expensius.data.FunctionDataSource
 import com.mvcoding.expensius.data.MemoryCache
 import com.mvcoding.expensius.model.ReportSettings
-import rx.Observable
+import io.reactivex.Observable
 
 class ReportSettingsSource(getReportSettings: () -> Observable<ReportSettings>) : Cache<ReportSettings> {
 

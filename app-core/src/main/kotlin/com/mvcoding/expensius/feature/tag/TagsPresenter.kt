@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@ import com.mvcoding.expensius.model.NullModels.noTag
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Tag
 import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Observable.merge
+import io.reactivex.Observable
+import io.reactivex.Observable.merge
 import java.lang.Math.max
 import java.lang.Math.min
 

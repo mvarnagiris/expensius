@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,11 @@ apply plugin: "kotlin"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "io.reactivex:rxkotlin:$rxkotlin_version"
+    compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
 
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "junit:junit:$junit_version"
-    testCompile "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"
+    testCompile "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
 }
 
 task jarTest(type: Jar) {

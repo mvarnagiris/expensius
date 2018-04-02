@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@ package com.mvcoding.expensius.feature
 import com.mvcoding.expensius.RxSchedulers
 import com.mvcoding.expensius.model.UserAlreadyLinkedException
 import com.mvcoding.mvp.Presenter
-import rx.Observable
-import rx.Observable.empty
-import rx.Observable.just
+import io.reactivex.Observable
+import io.reactivex.Observable.empty
+import io.reactivex.Observable.just
 
 interface ErrorView : Presenter.View {
     fun showError(error: Error)
@@ -39,11 +39,11 @@ data class Error(val throwable: Throwable) {
 
 fun Throwable.toError() = Error(this)
 
-fun <T> Observable<T>.ignoreError(): Observable<T> = onErrorResumeNext { empty() }
+fun <T> Observable<T>.ignoreError(): Observable<T> = onErrorResumeNext { error: Throwable -> empty() }
 fun <T> Observable<T>.handleError(
         errorView: ErrorView,
         schedulers: RxSchedulers,
-        doBeforeShowError: (Throwable) -> Unit = {}): Observable<T> = onErrorResumeNext {
-    just(it).observeOn(schedulers.main).doOnNext { doBeforeShowError(it) }.subscribe { errorView.showError(it.toError()) }
+        doBeforeShowError: (Throwable) -> Unit = {}): Observable<T> = onErrorResumeNext { error: Throwable ->
+    just(error).observeOn(schedulers.main).doOnNext { doBeforeShowError(it) }.subscribe { errorView.showError(it.toError()) }
     empty()
 }

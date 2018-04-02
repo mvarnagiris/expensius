@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@ package com.mvcoding.expensius.feature
 
 import android.view.View
 import android.view.ViewGroup
-import rx.Observable
-import rx.lang.kotlin.PublishSubject
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 abstract class BaseClickableAdapter<T, VH : ViewHolder> : BaseAdapter<T, VH>() {
-    private val positionClickedSubject = PublishSubject<Pair<View, Int>>()
+    private val positionClickedSubject = PublishSubject.create<Pair<View, Int>>()
 
     fun itemPositionClicks(): Observable<Int> = positionClickedSubject.map { it.second }
     fun itemClicks(): Observable<T> = positionClickedSubject.map { getItem(it.second) }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ import com.mvcoding.expensius.feature.DateFormatter
 import com.mvcoding.expensius.feature.FilterOld
 import com.mvcoding.expensius.feature.MoneyFormatter
 import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
-import rx.android.schedulers.AndroidSchedulers.mainThread
-import rx.schedulers.Schedulers.computation
-import rx.schedulers.Schedulers.io
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers.computation
+import io.reactivex.schedulers.Schedulers.io
 
 class AppModule(val context: Context) : ShankModule {
 

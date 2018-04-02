@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@ package com.mvcoding.expensius.feature.filter
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding2.view.clicks
 import com.mvcoding.expensius.extension.doNotInEditMode
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.provideDateFormatter
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.view_filter.view.*
 import org.joda.time.Interval
-import rx.Observable
 
 class FilterView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr), FilterPresenter.View {

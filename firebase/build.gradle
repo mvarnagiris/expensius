@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@ apply plugin: "kotlin-android"
 
 android {
     compileSdkVersion compile_sdk_version
-    buildToolsVersion "$build_tools_version"
 
     defaultConfig {
         minSdkVersion min_sdk_version
@@ -42,16 +41,16 @@ android {
 }
 
 dependencies {
-    compile project(':data')
-    compile project(':models')
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "com.google.firebase:firebase-core:$firebase_version"
-    compile "com.google.firebase:firebase-auth:$firebase_version"
-    compile "com.google.firebase:firebase-database:$firebase_version"
-    compile "com.google.android.gms:play-services-auth:$firebase_version"
+    implementation project(':data')
+    implementation project(':models')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "com.google.firebase:firebase-core:$firebase_version"
+    implementation "com.google.firebase:firebase-auth:$firebase_version"
+    implementation "com.google.firebase:firebase-database:$firebase_version"
+    implementation "com.google.android.gms:play-services-auth:$firebase_version"
 
-    testCompile project(path: ':models', configuration: 'testOutput')
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "junit:junit:$junit_version"
-    testCompile "com.github.memoizr:assertk-core:$assertk_version"
+    testImplementation project(path: ':models', configuration: 'testOutput')
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "com.github.memoizr:assertk-core:$assertk_version"
 }

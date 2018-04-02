@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@ import com.mvcoding.expensius.model.Color
 import com.mvcoding.expensius.model.CreateTag
 import com.mvcoding.expensius.model.Order
 import com.mvcoding.expensius.model.Title
-import rx.Observable
-import rx.Observable.just
+import io.reactivex.Observable
+import io.reactivex.Observable.just
 
 class TranslatedDefaultTagsSource(private val context: Context) : DataSource<List<CreateTag>> {
 

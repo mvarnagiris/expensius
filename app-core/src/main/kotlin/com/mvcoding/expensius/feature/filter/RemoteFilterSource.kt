@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.expensius.model.RemoteFilter
 import com.mvcoding.expensius.model.TimestampProvider
-import rx.Observable
+import io.reactivex.Observable
 
 class RemoteFilterSource(
         private val appUserSource: DataSource<AppUser>,

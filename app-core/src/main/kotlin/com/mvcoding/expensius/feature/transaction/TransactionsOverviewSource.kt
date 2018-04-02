@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ package com.mvcoding.expensius.feature.transaction
 import com.mvcoding.expensius.BusinessConstants
 import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.model.Transaction
-import rx.Observable
+import io.reactivex.Observable
 
 class TransactionsOverviewSource(private val transactionsSource: DataSource<List<Transaction>>) : DataSource<List<Transaction>> {
 

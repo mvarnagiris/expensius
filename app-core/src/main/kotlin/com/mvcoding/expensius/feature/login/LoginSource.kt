@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@ import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.data.DataWriter
 import com.mvcoding.expensius.data.ParameterDataSource
 import com.mvcoding.expensius.model.*
-import rx.Observable
-import rx.Observable.just
+import io.reactivex.Observable
+import io.reactivex.Observable.just
 
 class LoginSource(
         private val login: (Login) -> Observable<LoggedInUserDetails>,
@@ -33,7 +33,7 @@ class LoginSource(
     override fun data(parameter: Login): Observable<Unit> = login(parameter)
             .switchMap { loggedInUserDetails -> getAppUser().map { it.withLoggedInUserDetails(loggedInUserDetails) } }
             .doOnNext { appUserWriter.write(it) }
-            .switchMap { tagsSource.data().first() }
+            .switchMap { tagsSource.data().firstOrError().toObservable() }
             .switchMap { if (it.isEmpty()) defaultTagsSource.data() else just(emptyList()) }
             .doOnNext { if (it.isNotEmpty()) createTagsWriter.write(it.toSet()) }
             .doOnError { logout() }

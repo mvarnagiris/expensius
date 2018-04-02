@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 
 package com.mvcoding.expensius
 
-import android.support.multidex.MultiDexApplication
+import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.memoizrlabs.ShankModuleInitializer.initializeModules
 import com.mvcoding.expensius.feature.calculator.CalculatorModule
@@ -31,7 +31,7 @@ import com.mvcoding.expensius.feature.transaction.TransactionModule
 import io.fabric.sdk.android.Fabric
 import net.danlew.android.joda.JodaTimeAndroid
 
-class App : MultiDexApplication() {
+class App : Application() {
     override fun onCreate() {
         super.onCreate()
         JodaTimeAndroid.init(this)

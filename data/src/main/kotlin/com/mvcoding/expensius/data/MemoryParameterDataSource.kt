@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,7 @@
 
 package com.mvcoding.expensius.data
 
-import rx.Observable
-import rx.lang.kotlin.onError
+import io.reactivex.Observable
 import java.util.concurrent.ConcurrentHashMap
 
 class MemoryParameterDataSource<in PARAMETER, DATA>(private val dataSource: ParameterDataSource<PARAMETER, DATA>) : ParameterDataSource<PARAMETER, DATA> {
@@ -26,12 +25,12 @@ class MemoryParameterDataSource<in PARAMETER, DATA>(private val dataSource: Para
         var observable = observablesMap[parameter]
         if (observable == null) {
             observable = dataSource.data(parameter)
-                    .onError { observablesMap.remove(parameter) }
+                    .doOnError { observablesMap.remove(parameter) }
                     .replay(1)
                     .autoConnect()
             observablesMap.put(parameter, observable)
         }
 
-        return observable!!
+        return observable
     }
 }

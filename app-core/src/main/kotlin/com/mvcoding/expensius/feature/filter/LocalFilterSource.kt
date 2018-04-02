@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@ import com.mvcoding.expensius.model.LocalFilter
 import com.mvcoding.expensius.model.NullModels.noLocalFilter
 import com.mvcoding.expensius.model.TransactionState.CONFIRMED
 import com.mvcoding.expensius.model.TransactionType.EXPENSE
-import rx.Observable
-import rx.Observable.just
+import io.reactivex.Observable
+import io.reactivex.Observable.just
 
 class LocalFilterSource : DataSource<LocalFilter> {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import com.mvcoding.billing.ProductId
 import com.mvcoding.billing.ProductType.SINGLE
 import com.mvcoding.expensius.model.SubscriptionType.FREE
 import com.mvcoding.expensius.model.SubscriptionType.PREMIUM_PAID
-import rx.Observable
+import io.reactivex.Observable
 
 class RealBillingProductsService(context: Context) : Billing {
 

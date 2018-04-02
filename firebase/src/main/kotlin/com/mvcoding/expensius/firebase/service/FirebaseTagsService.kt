@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,5 +55,5 @@ class FirebaseTagsService {
 
     private fun UserId.tagsReference() = getFirebaseDatabase().getReference(REF_TAGS).child(this.id)
     private fun UserId.archivedTagsReference() = getFirebaseDatabase().getReference(REF_ARCHIVED_TAGS).child(this.id)
-    private fun DataSnapshot.toTag(modelState: ModelState) = getValue(FirebaseTag::class.java).toTag(modelState)
+    private fun DataSnapshot.toTag(modelState: ModelState) = getValue(FirebaseTag::class.java)!!.toTag(modelState)
 }

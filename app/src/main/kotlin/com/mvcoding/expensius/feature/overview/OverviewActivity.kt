@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
 import android.view.Menu
-import com.jakewharton.rxbinding.support.v7.widget.itemClicks
-import com.jakewharton.rxbinding.view.clicks
+import com.jakewharton.rxbinding2.support.v7.widget.itemClicks
+import com.jakewharton.rxbinding2.view.clicks
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.ActivityStarter
 import com.mvcoding.expensius.feature.BaseActivity
@@ -31,6 +31,7 @@ import com.mvcoding.expensius.feature.tag.TagsActivity
 import com.mvcoding.expensius.feature.transaction.TransactionsActivity
 import com.mvcoding.expensius.model.ReportPeriod
 import com.mvcoding.expensius.provideDateFormatter
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.view_tags_report.*
@@ -38,7 +39,6 @@ import kotlinx.android.synthetic.main.view_tags_report_overview.*
 import kotlinx.android.synthetic.main.view_transactions_overview.*
 import kotlinx.android.synthetic.main.view_trend_report.*
 import org.joda.time.Interval
-import rx.Observable
 
 class OverviewActivity : BaseActivity(), OverviewPresenter.View {
 
@@ -85,7 +85,7 @@ class OverviewActivity : BaseActivity(), OverviewPresenter.View {
 
     private fun removeUpArrowFromToolbar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val keyline = resources.getDimensionPixelSize(R.dimen.keyline)
         toolbar.setContentInsetsRelative(keyline, keyline)
     }
