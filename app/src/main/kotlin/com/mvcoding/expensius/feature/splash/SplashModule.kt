@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideSingletonFor
 import com.memoizrlabs.shankkotlin.registerFactory
 import com.mvcoding.expensius.provideAppUserSource
-import com.mvcoding.expensius.provideRxSchedulers
+import com.mvcoding.expensius.provideRxSchedulers2
 import memoizrlabs.com.shankandroid.withThisScope
 
 class SplashModule : ShankModule {
@@ -28,7 +28,8 @@ class SplashModule : ShankModule {
     }
 
     private fun splashPresenter() = registerFactory(SplashPresenter::class) { ->
-        SplashPresenter(provideAppUserSource(), provideRxSchedulers())
+        val appUserSource = provideAppUserSource()
+        SplashPresenter({ appUserSource.data().firstOrError() }, provideRxSchedulers2())
     }
 }
 

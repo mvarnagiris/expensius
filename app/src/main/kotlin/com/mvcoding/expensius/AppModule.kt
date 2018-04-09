@@ -33,6 +33,7 @@ class AppModule(val context: Context) : ShankModule {
     override fun registerFactories() {
         appContext()
         rxSchedulers()
+        rxSchedulers2()
         dateFormatter()
         moneyFormatter()
 //        filter()
@@ -41,6 +42,7 @@ class AppModule(val context: Context) : ShankModule {
 
     private fun appContext() = registerFactory(Context::class) { -> context }
     private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
+    private fun rxSchedulers2() = registerFactory(com.mvcoding.mvp.RxSchedulers::class) { -> com.mvcoding.mvp.RxSchedulers(io(), mainThread(), computation()) }
     private fun dateFormatter() = registerFactory(DateFormatter::class) { -> DateFormatter(context) }
     private fun moneyFormatter() {
         registerFactory(MoneyFormatter::class.java) { -> MoneyFormatter(provideCurrencyFormatsProvider()) }
@@ -53,6 +55,7 @@ class AppModule(val context: Context) : ShankModule {
 
 fun provideContext() = provideGlobalSingleton<Context>()
 fun provideRxSchedulers() = provideGlobalSingleton<RxSchedulers>()
+fun provideRxSchedulers2() = provideGlobalSingleton<com.mvcoding.mvp.RxSchedulers>()
 fun provideDateFormatter() = provideGlobalSingleton<DateFormatter>()
 fun provideMoneyFormatter() = provideGlobalSingleton<MoneyFormatter>()
 fun provideFilter() = provideNew<FilterOld>()

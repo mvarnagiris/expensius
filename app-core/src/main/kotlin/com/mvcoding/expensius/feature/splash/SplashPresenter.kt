@@ -24,13 +24,16 @@ import com.mvcoding.mvp.RxSchedulers
 import com.mvcoding.mvp.behaviors.InitializationBehavior
 import io.reactivex.Single
 
-class SplashPresenter(
+class SplashPresenter internal constructor(
         getAppUser: () -> Single<AppUser>,
         schedulers: RxSchedulers,
-        isSuccess: (AppUser) -> Boolean = { it.isLoggedIn() },
-        getSuccess: (AppUser) -> Unit = { Unit },
-        getFailure: (AppUser) -> Destination = { APP },
-        mapError: (Throwable) -> Error = { it.toError() }) : Presenter<SplashPresenter.View>(
+        isSuccess: (AppUser) -> Boolean,
+        getSuccess: (AppUser) -> Unit,
+        getFailure: (AppUser) -> Destination,
+        mapError: (Throwable) -> Error) : Presenter<SplashPresenter.View>(
         InitializationBehavior(getAppUser, isSuccess, getSuccess, getFailure, mapError, schedulers)) {
+
+    constructor(getAppUser: () -> Single<AppUser>, schedulers: RxSchedulers) : this(getAppUser, schedulers, { it.isLoggedIn() }, { Unit }, { APP }, { it.toError() })
+
     interface View : Presenter.View, InitializationBehavior.View<Unit, Destination, Error>
 }
