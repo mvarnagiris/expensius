@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,41 +14,29 @@
 
 package com.mvcoding.expensius.data
 
-import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.Name
-import com.mvcoding.expensius.model.UserId
-import com.mvcoding.expensius.model.extensions.anAppUser
-import com.mvcoding.expensius.model.extensions.withId
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Test
-import rx.Observable.from
-import rx.Observable.just
-import rx.observers.TestSubscriber
-
 class AppUserIdSourceTest {
 
-    val appUserSource = mock<DataSource<AppUser>>()
-    val appUserIdSource = AppUserIdSource(appUserSource)
-    val subscriber = TestSubscriber<UserId>()
-
-    @Test
-    fun `returns user id from app user`() {
-        val appUser = anAppUser()
-        whenever(appUserSource.data()).thenReturn(just(appUser))
-
-        appUserIdSource.data().subscribe(subscriber)
-
-        subscriber.assertValue(appUser.userId)
-    }
-
-    @Test
-    fun `emits new user id only after it changes`() {
-        val appUser = anAppUser().withId("initial")
-        whenever(appUserSource.data()).thenReturn(from(listOf(appUser, appUser.copy(name = Name("changed")), appUser.withId("changed"))))
-
-        appUserIdSource.data().subscribe(subscriber)
-
-        subscriber.assertValues(appUser.userId, UserId("changed"))
-    }
+//    val appUserSource = mock<DataSource<AppUser>>()
+//    val appUserIdSource = AppUserIdSource(appUserSource)
+//    val subscriber = TestSubscriber<UserId>()
+//
+//    @Test
+//    fun `returns user id from app user`() {
+//        val appUser = anAppUser()
+//        whenever(appUserSource.data()).thenReturn(just(appUser))
+//
+//        appUserIdSource.data().subscribe(subscriber)
+//
+//        subscriber.assertValue(appUser.userId)
+//    }
+//
+//    @Test
+//    fun `emits new user id only after it changes`() {
+//        val appUser = anAppUser().withId("initial")
+//        whenever(appUserSource.data()).thenReturn(from(listOf(appUser, appUser.copy(name = Name("changed")), appUser.withId("changed"))))
+//
+//        appUserIdSource.data().subscribe(subscriber)
+//
+//        subscriber.assertValues(appUser.userId, UserId("changed"))
+//    }
 }

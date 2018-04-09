@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,9 @@
 
 package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.RemoteFilter
-import com.mvcoding.expensius.model.TimestampProvider
-import com.mvcoding.expensius.model.extensions.aTimestamp
-import com.mvcoding.expensius.model.extensions.anAppUser
-import com.mvcoding.expensius.model.extensions.withId
-import com.mvcoding.expensius.model.extensions.withReportPeriod
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Before
-import org.junit.Test
-import rx.Observable.from
-import rx.Observable.just
-import rx.observers.TestSubscriber
-
 class RemoteFilterSourceTest {
 
-    val appUser = anAppUser()
+    /*val appUser = anAppUser()
     val timestamp = aTimestamp()
 
     val appUserSource = mock<DataSource<AppUser>>()
@@ -78,5 +62,5 @@ class RemoteFilterSourceTest {
         remoteFilterSource.data().subscribe(subscriber)
 
         subscriber.assertValue(RemoteFilter(appUser.userId, appUser.settings.reportPeriod.interval(timestamp)))
-    }
+    }*/
 }

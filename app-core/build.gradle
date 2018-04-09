@@ -20,11 +20,12 @@ dependencies {
     compile project(':models')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
-    compile 'com.github.mvarnagiris.mvp:mvp:2.0.0-alpha11'
+    compile 'com.github.mvarnagiris.mvp:mvp:2.0.0-alpha14'
 
     testCompile project(path: ':models', configuration: 'testOutput')
     testCompile project(path: ':data', configuration: 'testOutput')
     testCompile "junit:junit:$junit_version"
     testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
+    testCompile 'com.github.mvarnagiris.mvp:mvp-test:2.0.0-alpha14'
 }

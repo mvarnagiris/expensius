@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,22 +14,15 @@
 
 package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.model.LocalFilter
-import com.mvcoding.expensius.model.NullModels.noLocalFilter
-import com.mvcoding.expensius.model.TransactionState
-import com.mvcoding.expensius.model.TransactionType
-import org.junit.Test
-import rx.observers.TestSubscriber
-
 class LocalFilterSourceTest {
 
-    @Test
-    fun `returns noLocalFilter`() {
-        val localFilterSource = LocalFilterSource()
-        val subscriber = TestSubscriber<LocalFilter>()
-
-        localFilterSource.data().subscribe(subscriber)
-
-        subscriber.assertValue(noLocalFilter.withTransactionType(TransactionType.EXPENSE).withTransactionState(TransactionState.CONFIRMED))
-    }
+//    @Test
+//    fun `returns noLocalFilter`() {
+//        val localFilterSource = LocalFilterSource()
+//        val subscriber = TestSubscriber<LocalFilter>()
+//
+//        localFilterSource.data().subscribe(subscriber)
+//
+//        subscriber.assertValue(noLocalFilter.withTransactionType(TransactionType.EXPENSE).withTransactionState(TransactionState.CONFIRMED))
+//    }
 }

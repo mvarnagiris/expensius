@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,9 +14,9 @@
 
 package com.mvcoding.expensius
 
-import rx.Scheduler
-import rx.schedulers.Schedulers.immediate
+import io.reactivex.Scheduler
+import io.reactivex.schedulers.Schedulers.trampoline
 
-fun rxSchedulers() = RxSchedulers(immediate(), immediate(), immediate())
+fun rxSchedulers() = RxSchedulers(trampoline(), trampoline(), trampoline())
 fun RxSchedulers.withIo(scheduler: Scheduler) = copy(io = scheduler)
 fun RxSchedulers.withMain(scheduler: Scheduler) = copy(main = scheduler)

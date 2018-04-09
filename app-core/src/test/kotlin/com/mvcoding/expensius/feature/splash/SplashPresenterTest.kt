@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,39 +14,22 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import com.mvcoding.expensius.data.DataSource
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
+import com.mvcoding.expensius.feature.toError
 import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.NullModels.noAppUser
-import com.mvcoding.expensius.model.extensions.anAppUser
-import com.mvcoding.expensius.rxSchedulers
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.mvcoding.mvp.behaviors.testInitializationBehavior
+import com.mvcoding.mvp.trampolines
 import org.junit.Test
-import rx.Observable.just
+import ro.kreator.aRandom
 
 class SplashPresenterTest {
 
-    val appUserSource = mock<DataSource<AppUser>>()
-    val view: SplashPresenter.View = mock()
-    val presenter = SplashPresenter(appUserSource, rxSchedulers())
+    private val appUser by aRandom<AppUser>()
 
     @Test
-    fun `displays login if user is not loggedIn`() {
-        whenever(appUserSource.data()).thenReturn(just(noAppUser))
-
-        presenter.attach(view)
-
-        verify(view).displayLogin(APP)
-    }
-
-    @Test
-    fun `displays app if user is logged in`() {
-        whenever(appUserSource.data()).thenReturn(just(anAppUser()))
-
-        presenter.attach(view)
-
-        verify(view).displayApp()
+    fun `behaves like initialization behavior`() {
+        testInitializationBehavior(appUser, Unit, APP, Throwable().toError()) { initialize, isSuccess, getSuccess, getFailure, mapError ->
+            SplashPresenter(initialize, trampolines, isSuccess, getSuccess, getFailure, mapError)
+        }
     }
 }

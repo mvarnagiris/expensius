@@ -1,37 +1,38 @@
+/*
+ * Copyright (C) 2018 Mantas Varnagiris.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.mvcoding.expensius.feature.tag
 
-import com.mvcoding.expensius.data.DataSource
-import com.mvcoding.expensius.model.AppUser
-import com.mvcoding.expensius.model.CreateTag
-import com.mvcoding.expensius.model.UserId
-import com.mvcoding.expensius.model.extensions.aCreateTag
-import com.mvcoding.expensius.model.extensions.anAppUser
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Before
-import org.junit.Test
-import rx.Observable.just
-
 class CreateTagsWriterTest {
-
-    val appUser = anAppUser()
-
-    val appUserSource = mock<DataSource<AppUser>>()
-    val createTags = mock<(UserId, Set<CreateTag>) -> Unit>()
-    val createTagsWriter = CreateTagsWriter(appUserSource, createTags)
-
-    @Before
-    fun setUp() {
-        whenever(appUserSource.data()).thenReturn(just(appUser))
-    }
-
-    @Test
-    fun `writes tags for app user`() {
-        val createTagsSet = setOf(aCreateTag(), aCreateTag(), aCreateTag())
-
-        createTagsWriter.write(createTagsSet)
-
-        verify(createTags).invoke(appUser.userId, createTagsSet)
-    }
+//
+//    val appUser = anAppUser()
+//
+//    val appUserSource = mock<DataSource<AppUser>>()
+//    val createTags = mock<(UserId, Set<CreateTag>) -> Unit>()
+//    val createTagsWriter = CreateTagsWriter(appUserSource, createTags)
+//
+//    @Before
+//    fun setUp() {
+//        whenever(appUserSource.data()).thenReturn(just(appUser))
+//    }
+//
+//    @Test
+//    fun `writes tags for app user`() {
+//        val createTagsSet = setOf(aCreateTag(), aCreateTag(), aCreateTag())
+//
+//        createTagsWriter.write(createTagsSet)
+//
+//        verify(createTags).invoke(appUser.userId, createTagsSet)
+//    }
 }
