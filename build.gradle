@@ -13,7 +13,7 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.2.31'
+    ext.kotlin_version = '1.2.41'
     ext.rxkotlin_version = '2.2.0'
     ext.junit_version = '4.12'
     ext.mockito_kotlin_version = '2.0.0-alpha03'
@@ -33,7 +33,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.1'
+        classpath 'com.android.tools.build:gradle:3.2.0-alpha15'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:3.2.0'
     }

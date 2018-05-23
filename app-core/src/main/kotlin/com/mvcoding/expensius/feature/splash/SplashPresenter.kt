@@ -35,5 +35,10 @@ class SplashPresenter internal constructor(
 
     constructor(getAppUser: () -> Single<AppUser>, schedulers: RxSchedulers) : this(getAppUser, schedulers, { it.isLoggedIn() }, { Unit }, { APP }, { it.toError() })
 
-    interface View : Presenter.View, InitializationBehavior.View<Unit, Destination, Error>
+    interface View : Presenter.View, InitializationBehavior.View<Unit, Destination, Error> {
+        override fun displayInitialized(success: Unit) = displayApp()
+        override fun displayNotInitialized(data: Destination) = displayLogin(data)
+        fun displayLogin(destination: Destination)
+        fun displayApp()
+    }
 }

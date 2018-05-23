@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,9 +15,12 @@
 package com.mvcoding.expensius.feature.splash
 
 import com.mvcoding.expensius.feature.BaseActivity
+import com.mvcoding.expensius.feature.Error
 import com.mvcoding.expensius.feature.login.LoginActivity
 import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
 import com.mvcoding.expensius.feature.overview.OverviewActivity
+import com.mvcoding.mvp.views.ErrorResolution
+import io.reactivex.Single
 
 class SplashActivity : BaseActivity(), SplashPresenter.View {
 
@@ -33,13 +36,20 @@ class SplashActivity : BaseActivity(), SplashPresenter.View {
         presenter.detach(this)
     }
 
-    override fun displayLogin(destination: Destination) {
-        LoginActivity.start(this, destination)
-        finish()
+    override fun hideLoading() {
     }
 
-    override fun displayApp() {
-        OverviewActivity.start(this)
-        finish()
+    override fun showError(error: Error) {
     }
+
+    override fun showLoading() {
+    }
+
+    override fun showResolvableError(error: Error): Single<ErrorResolution> {
+        return Single.just(ErrorResolution.NEGATIVE)
+    }
+
+    override fun displayLogin(destination: Destination) = LoginActivity.start(this, destination)
+    override fun displayApp() = OverviewActivity.start(this)
+    override fun close() = finish()
 }
