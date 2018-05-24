@@ -23,7 +23,7 @@ buildscript {
     ext.hamkrest_version = '1.2.1.0'
     ext.assertk_version = '1.0.0-beta.2'
     ext.gson_version = '2.8.0'
-    ext.compile_sdk_version = 27
+    ext.compile_sdk_version = 'android-P'
     ext.target_sdk_version = 27
     ext.min_sdk_version = 21
     ext.privateProperties = new Properties()

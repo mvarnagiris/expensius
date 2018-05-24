@@ -20,7 +20,7 @@ dependencies {
     compile project(':models')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
-    compile 'com.github.mvarnagiris.mvp:mvp:2.0.0-alpha14'
+    compile 'com.github.mvarnagiris.mvp:mvp:2.0.0-alpha19'
 
     testCompile project(path: ':models', configuration: 'testOutput')
     testCompile project(path: ':data', configuration: 'testOutput')
