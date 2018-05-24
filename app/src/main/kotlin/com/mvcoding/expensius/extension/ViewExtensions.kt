@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@ import android.graphics.Outline
 import android.view.View
 import android.view.ViewOutlineProvider
 import com.memoizrlabs.Scope
-import com.mvcoding.expensius.feature.SnackbarBuilder.Companion.snackbar
 
 fun View.scope(): Scope = context.toBaseActivity().scope
 
@@ -30,7 +29,7 @@ fun View.makeOutlineProviderOval() {
     }
 }
 
-fun View.snackbar(resId: Int, duration: Int) = snackbar(this, resId, duration)
+//fun View.snackbar(resId: Int, duration: Int) = snackbar(this, resId, duration)
 
 fun View.doInEditMode(action: () -> Unit) {
     if (isInEditMode) action()

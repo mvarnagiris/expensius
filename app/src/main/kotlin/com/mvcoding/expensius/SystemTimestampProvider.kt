@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,6 @@
 
 package com.mvcoding.expensius
 
-import com.mvcoding.expensius.model.Timestamp
-import com.mvcoding.expensius.model.TimestampProvider
-import java.lang.System.currentTimeMillis
-
-class SystemTimestampProvider : TimestampProvider {
-    override fun currentTimestamp(): Timestamp = Timestamp(currentTimeMillis())
-}
+//class SystemTimestampProvider : TimestampProvider {
+//    override fun currentTimestamp(): Timestamp = Timestamp(currentTimeMillis())
+//}

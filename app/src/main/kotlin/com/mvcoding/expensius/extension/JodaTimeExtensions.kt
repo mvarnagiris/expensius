@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,9 +14,5 @@
 
 package com.mvcoding.expensius.extension
 
-import android.text.format.DateUtils
-import org.joda.time.LocalDate
-import org.joda.time.ReadableInstant
-
-fun isYesterday(readableInstant: ReadableInstant): Boolean = LocalDate.now().compareTo(LocalDate(readableInstant.millis + DateUtils.DAY_IN_MILLIS)) == 0
-fun isTomorrow(readableInstant: ReadableInstant): Boolean = LocalDate.now().compareTo(LocalDate(readableInstant.millis - DateUtils.DAY_IN_MILLIS)) == 0
+//fun isYesterday(readableInstant: ReadableInstant): Boolean = LocalDate.now().compareTo(LocalDate(readableInstant.millis + DateUtils.DAY_IN_MILLIS)) == 0
+//fun isTomorrow(readableInstant: ReadableInstant): Boolean = LocalDate.now().compareTo(LocalDate(readableInstant.millis - DateUtils.DAY_IN_MILLIS)) == 0

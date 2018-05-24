@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,8 @@
 
 package com.mvcoding.expensius.extension
 
-import android.support.design.widget.TabLayout
-
-fun TabLayout.forEachTabIndexed(action: (Int, TabLayout.Tab) -> Unit) {
-    0.rangeTo(tabCount - 1).forEach {
-        action.invoke(it, getTabAt(it)!!)
-    }
-}
+//fun TabLayout.forEachTabIndexed(action: (Int, TabLayout.Tab) -> Unit) {
+//    0.rangeTo(tabCount - 1).forEach {
+//        action.invoke(it, getTabAt(it)!!)
+//    }
+//}

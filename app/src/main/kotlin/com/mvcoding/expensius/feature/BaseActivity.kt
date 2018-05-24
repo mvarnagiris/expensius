@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,73 +14,93 @@
 
 package com.mvcoding.expensius.feature
 
-import android.graphics.PorterDuff
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import com.mvcoding.expensius.extension.forEach
-import com.mvcoding.expensius.extension.getColorFromTheme
-import kotlinx.android.synthetic.main.toolbar.*
-import memoizrlabs.com.shankandroid.ShankAppCompatActivity
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
+import com.memoizrlabs.Scope
+import memoizrlabs.com.shankandroid.Scoped
 import java.io.Closeable
+import java.util.*
 
-abstract class BaseActivity : ShankAppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), Scoped {
 
-    override val finalAction: (Any) -> Unit = {
+    private val STATE_SCOPE_ID = "STATE_SCOPE_ID"
+
+    private lateinit var scopeUUID: UUID
+
+    private val finalAction: (Any) -> Unit = {
         when (it) {
             is Closeable -> it.close()
         }
     }
 
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(layoutResID)
-        setupToolbar()
+    override val scope: Scope by lazy { Scope.scope(scopeUUID) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        scopeUUID = savedInstanceState?.getSerializable(STATE_SCOPE_ID) as UUID? ?: UUID.randomUUID()
     }
 
-    override fun setContentView(view: View?) {
-        super.setContentView(view)
-        setupToolbar()
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(STATE_SCOPE_ID, scopeUUID)
     }
 
-    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
-        super.setContentView(view, params)
-        setupToolbar()
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        tintToolbarIcons(menu)
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    protected fun setupToolbar() {
-        toolbar?.run {
-            setSupportActionBar(this)
-            supportActionBar?.run {
-                setDisplayHomeAsUpEnabled(true)
-                setHomeButtonEnabled(true)
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing) {
+            scope.clearWithFinalAction { finalAction(it) }
         }
     }
 
-    private fun tintToolbarIcons(menu: Menu) {
-        toolbar?.apply {
-            val tintColor = getColorFromTheme(context, android.R.attr.textColorPrimary)
-            menu.forEach {
-                val icon = it.icon
-                if (icon != null) {
-                    icon.mutate()
-                    icon.setColorFilter(tintColor, PorterDuff.Mode.SRC_ATOP)
-                }
-            }
-        }
-    }
+//
+//    override fun setContentView(layoutResID: Int) {
+//        super.setContentView(layoutResID)
+//        setupToolbar()
+//    }
+//
+//    override fun setContentView(view: View?) {
+//        super.setContentView(view)
+//        setupToolbar()
+//    }
+//
+//    override fun setContentView(view: View?, params: ViewGroup.LayoutParams?) {
+//        super.setContentView(view, params)
+//        setupToolbar()
+//    }
+//
+//    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+//        tintToolbarIcons(menu)
+//        return super.onPrepareOptionsMenu(menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if (item.itemId == android.R.id.home) {
+//            onBackPressed()
+//            return true
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
+//
+//    protected fun setupToolbar() {
+//        toolbar?.run {
+//            setSupportActionBar(this)
+//            supportActionBar?.run {
+//                setDisplayHomeAsUpEnabled(true)
+//                setHomeButtonEnabled(true)
+//            }
+//        }
+//    }
+//
+//    private fun tintToolbarIcons(menu: Menu) {
+//        toolbar?.apply {
+//            val tintColor = getColorFromTheme(context, android.R.attr.textColorPrimary)
+//            menu.forEach {
+//                val icon = it.icon
+//                if (icon != null) {
+//                    icon.mutate()
+//                    icon.setColorFilter(tintColor, PorterDuff.Mode.SRC_ATOP)
+//                }
+//            }
+//        }
+//    }
 }

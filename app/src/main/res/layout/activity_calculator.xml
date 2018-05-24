@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/calculatorView"
     android:layout_width="match_parent"
@@ -21,177 +20,177 @@
     android:orientation="vertical"
     tools:ignore="NestedWeights">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/resultContainerView"
-        style="@style/Card.EdgeToEdge"
-        app:cardElevation="@dimen/elevation_appbar"
-        app:contentPadding="0dp">
+    <!--<android.support.v7.widget.CardView-->
+    <!--android:id="@+id/resultContainerView"-->
+    <!--style="@style/Card.EdgeToEdge"-->
+    <!--app:cardElevation="@dimen/elevation_appbar"-->
+    <!--app:contentPadding="0dp">-->
 
-        <FrameLayout
-            android:id="@+id/revealView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?colorPrimaryDark"
-            android:visibility="gone" />
+    <!--<FrameLayout-->
+    <!--android:id="@+id/revealView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="?colorPrimaryDark"-->
+    <!--android:visibility="gone" />-->
 
-        <me.grantland.widget.AutofitTextView
-            android:id="@+id/resultTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/keyline"
-            android:gravity="end|center_vertical"
-            android:maxLines="1"
-            android:textAppearance="@style/Text.Money.Big"
-            tools:text="123.45" />
+    <!--<me.grantland.widget.AutofitTextView-->
+    <!--android:id="@+id/resultTextView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_margin="@dimen/keyline"-->
+    <!--android:gravity="end|center_vertical"-->
+    <!--android:maxLines="1"-->
+    <!--android:textAppearance="@style/Text.Money.Big"-->
+    <!--tools:text="123.45" />-->
 
-    </android.support.v7.widget.CardView>
+    <!--</android.support.v7.widget.CardView>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:orientation="vertical">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:clipToPadding="false"-->
+    <!--android:orientation="vertical">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1">-->
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3" />
+    <!--<Space-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="3" />-->
 
-            <ImageButton
-                android:id="@+id/deleteImageButton"
-                style="@style/Button.Flat.Borderless.Calc.Action"
-                android:contentDescription="@string/delete"
-                android:src="@drawable/ic_action_delete"
-                android:textAppearance="@style/Text.Title"
-                android:tint="?colorActionIcon" />
+    <!--<ImageButton-->
+    <!--android:id="@+id/deleteImageButton"-->
+    <!--style="@style/Button.Flat.Borderless.Calc.Action"-->
+    <!--android:contentDescription="@string/delete"-->
+    <!--android:src="@drawable/ic_action_delete"-->
+    <!--android:textAppearance="@style/Text.Title"-->
+    <!--android:tint="?colorActionIcon" />-->
 
-        </LinearLayout>
+    <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1">-->
 
-            <Button
-                android:id="@+id/divideButton"
-                style="@style/Button.Flat.Borderless.Calc.Action"
-                android:text="@string/calculator_divide" />
+    <!--<Button-->
+    <!--android:id="@+id/divideButton"-->
+    <!--style="@style/Button.Flat.Borderless.Calc.Action"-->
+    <!--android:text="@string/calculator_divide" />-->
 
-            <Button
-                android:id="@+id/number7Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_7" />
+    <!--<Button-->
+    <!--android:id="@+id/number7Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_7" />-->
 
-            <Button
-                android:id="@+id/number8Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_8" />
+    <!--<Button-->
+    <!--android:id="@+id/number8Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_8" />-->
 
-            <Button
-                android:id="@+id/number9Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_9" />
+    <!--<Button-->
+    <!--android:id="@+id/number9Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_9" />-->
 
-        </LinearLayout>
+    <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1">-->
 
-            <Button
-                android:id="@+id/multiplyButton"
-                style="@style/Button.Flat.Borderless.Calc.Action"
-                android:text="@string/calculator_multiply" />
+    <!--<Button-->
+    <!--android:id="@+id/multiplyButton"-->
+    <!--style="@style/Button.Flat.Borderless.Calc.Action"-->
+    <!--android:text="@string/calculator_multiply" />-->
 
-            <Button
-                android:id="@+id/number4Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_4" />
+    <!--<Button-->
+    <!--android:id="@+id/number4Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_4" />-->
 
-            <Button
-                android:id="@+id/number5Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_5" />
+    <!--<Button-->
+    <!--android:id="@+id/number5Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_5" />-->
 
-            <Button
-                android:id="@+id/number6Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_6" />
+    <!--<Button-->
+    <!--android:id="@+id/number6Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_6" />-->
 
-        </LinearLayout>
+    <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1">-->
 
-            <Button
-                android:id="@+id/subtractButton"
-                style="@style/Button.Flat.Borderless.Calc.Action"
-                android:text="@string/calculator_minus" />
+    <!--<Button-->
+    <!--android:id="@+id/subtractButton"-->
+    <!--style="@style/Button.Flat.Borderless.Calc.Action"-->
+    <!--android:text="@string/calculator_minus" />-->
 
-            <Button
-                android:id="@+id/number1Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_1" />
+    <!--<Button-->
+    <!--android:id="@+id/number1Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_1" />-->
 
-            <Button
-                android:id="@+id/number2Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_2" />
+    <!--<Button-->
+    <!--android:id="@+id/number2Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_2" />-->
 
-            <Button
-                android:id="@+id/number3Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_3" />
+    <!--<Button-->
+    <!--android:id="@+id/number3Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_3" />-->
 
-        </LinearLayout>
+    <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false">
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:clipToPadding="false">-->
 
-            <Button
-                android:id="@+id/addButton"
-                style="@style/Button.Flat.Borderless.Calc.Action"
-                android:text="@string/calculator_plus" />
+    <!--<Button-->
+    <!--android:id="@+id/addButton"-->
+    <!--style="@style/Button.Flat.Borderless.Calc.Action"-->
+    <!--android:text="@string/calculator_plus" />-->
 
-            <Button
-                android:id="@+id/number0Button"
-                style="@style/Button.Flat.Borderless.Calc"
-                android:text="@string/calculator_0" />
+    <!--<Button-->
+    <!--android:id="@+id/number0Button"-->
+    <!--style="@style/Button.Flat.Borderless.Calc"-->
+    <!--android:text="@string/calculator_0" />-->
 
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:clipToPadding="false">
+    <!--<FrameLayout-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1"-->
+    <!--android:clipToPadding="false">-->
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/equalsFloatingActionButton"
-                    style="@style/Button.Fab"
-                    android:layout_gravity="center"
-                    android:src="@drawable/done_equals"
-                    android:text="@string/calculator_equals"
-                    tools:ignore="UnusedAttribute" />
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/equalsFloatingActionButton"-->
+    <!--style="@style/Button.Fab"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:src="@drawable/done_equals"-->
+    <!--android:text="@string/calculator_equals"-->
+    <!--tools:ignore="UnusedAttribute" />-->
 
-            </FrameLayout>
+    <!--</FrameLayout>-->
 
-            <Button
-                android:id="@+id/decimalButton"
-                style="@style/Button.Flat.Borderless.Calc.Action"
-                android:text="@string/calculator_decimal" />
+    <!--<Button-->
+    <!--android:id="@+id/decimalButton"-->
+    <!--style="@style/Button.Flat.Borderless.Calc.Action"-->
+    <!--android:text="@string/calculator_decimal" />-->
 
-        </LinearLayout>
+    <!--</LinearLayout>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </LinearLayout>

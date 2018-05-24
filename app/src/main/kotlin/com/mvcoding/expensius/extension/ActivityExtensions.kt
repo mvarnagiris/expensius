@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,9 +14,5 @@
 
 package com.mvcoding.expensius.extension
 
-import android.app.Activity
-import com.mvcoding.expensius.App
-import com.mvcoding.expensius.feature.SnackbarBuilder
-
-fun Activity.snackbar(resId: Int, duration: Int) = SnackbarBuilder.snackbar(findViewById(android.R.id.content), resId, duration)
-fun Activity.app() = applicationContext as App
+//fun Activity.snackbar(resId: Int, duration: Int) = SnackbarBuilder.snackbar(findViewById(android.R.id.content), resId, duration)
+//fun Activity.app() = applicationContext as App

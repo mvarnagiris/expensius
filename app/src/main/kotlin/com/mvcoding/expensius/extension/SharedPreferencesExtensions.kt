@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,14 @@
 
 package com.mvcoding.expensius.extension
 
-import android.content.SharedPreferences
-import com.google.gson.Gson
-import kotlin.reflect.KClass
-
-fun <T : Any> SharedPreferences.getObject(key: String, kClass: KClass<T>, defaultValue: () -> T): T {
-    return getString(key, null)?.let { Gson().fromJson(it, kClass.java) } ?: defaultValue()
-}
-
-fun <T : Any> SharedPreferences.putObject(key: String, obj: T) {
-    edit().putString(key, Gson().toJson(obj)).apply()
-}
-
-fun SharedPreferences.putBoolean(key: String, value: Boolean) {
-    edit().putBoolean(key, value).apply()
-}
+//fun <T : Any> SharedPreferences.getObject(key: String, kClass: KClass<T>, defaultValue: () -> T): T {
+//    return getString(key, null)?.let { Gson().fromJson(it, kClass.java) } ?: defaultValue()
+//}
+//
+//fun <T : Any> SharedPreferences.putObject(key: String, obj: T) {
+//    edit().putString(key, Gson().toJson(obj)).apply()
+//}
+//
+//fun SharedPreferences.putBoolean(key: String, value: Boolean) {
+//    edit().putBoolean(key, value).apply()
+//}

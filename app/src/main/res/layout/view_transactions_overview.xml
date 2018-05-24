@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,48 +13,47 @@
   -->
 
 <com.mvcoding.expensius.feature.transaction.TransactionsOverviewView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/transactionsOverviewView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_2x"
     android:orientation="vertical">
 
-    <TextView
-        style="@style/TextView"
-        android:layout_marginBottom="@dimen/grid_1x"
-        android:layout_marginLeft="@dimen/keyline"
-        android:layout_marginRight="@dimen/keyline"
-        android:layout_marginTop="@dimen/grid_2x"
-        android:text="@string/transactions"
-        android:textAppearance="@style/Text.Title.Section" />
+    <!--<TextView-->
+    <!--style="@style/TextView"-->
+    <!--android:layout_marginBottom="@dimen/grid_1x"-->
+    <!--android:layout_marginLeft="@dimen/keyline"-->
+    <!--android:layout_marginRight="@dimen/keyline"-->
+    <!--android:layout_marginTop="@dimen/grid_2x"-->
+    <!--android:text="@string/transactions"-->
+    <!--android:textAppearance="@style/Text.Title.Section" />-->
 
-    <android.support.v7.widget.CardView
-        style="@style/Card.EdgeToEdge"
-        android:layout_marginBottom="@dimen/grid_2x"
-        android:background="?selectableItemBackground">
+    <!--<android.support.v7.widget.CardView-->
+    <!--style="@style/Card.EdgeToEdge"-->
+    <!--android:layout_marginBottom="@dimen/grid_2x"-->
+    <!--android:background="?selectableItemBackground">-->
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            style="@style/RecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_view_transaction" />
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/recyclerView"-->
+    <!--style="@style/RecyclerView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:listitem="@layout/item_view_transaction" />-->
 
-        <TextView
-            android:id="@+id/emptyTextView"
-            style="@style/TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="@dimen/grid_2x"
-            android:paddingLeft="@dimen/keyline"
-            android:paddingRight="@dimen/keyline"
-            android:paddingTop="@dimen/grid_2x"
-            android:text="@string/empty_transactions"
-            android:textAppearance="@style/Text.Title.Empty"
-            android:visibility="gone" />
+    <!--<TextView-->
+    <!--android:id="@+id/emptyTextView"-->
+    <!--style="@style/TextView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:paddingBottom="@dimen/grid_2x"-->
+    <!--android:paddingLeft="@dimen/keyline"-->
+    <!--android:paddingRight="@dimen/keyline"-->
+    <!--android:paddingTop="@dimen/grid_2x"-->
+    <!--android:text="@string/empty_transactions"-->
+    <!--android:textAppearance="@style/Text.Title.Empty"-->
+    <!--android:visibility="gone" />-->
 
-    </android.support.v7.widget.CardView>
+    <!--</android.support.v7.widget.CardView>-->
 
 </com.mvcoding.expensius.feature.transaction.TransactionsOverviewView>

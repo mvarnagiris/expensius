@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,54 +14,39 @@
 
 package com.mvcoding.expensius.feature
 
-import android.content.Context
-import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.isTomorrow
-import com.mvcoding.expensius.extension.isYesterday
-import com.mvcoding.expensius.model.ReportGroup
-import com.mvcoding.expensius.model.ReportPeriod
-import net.danlew.android.joda.DateUtils.*
-import org.joda.time.DateTime
-import org.joda.time.Interval
-import org.joda.time.Period
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
-import org.joda.time.format.DateTimeFormatterBuilder
-import org.joda.time.format.PeriodFormat
-
-class DateFormatter(private val context: Context) {
-
-    val dateFormatter: DateTimeFormatter = DateTimeFormatterBuilder()
-            .appendMonthOfYearText()
-            .appendLiteral(" ")
-            .appendYear(0, 4)
-            .toFormatter()
-
-    fun formatDateRelativeToToday(timestamp: Long): String {
-        val dateTime = DateTime(timestamp)
-
-        if (isToday(dateTime)) {
-            return context.getString(R.string.today)
-        } else if (isYesterday(dateTime)) {
-            return context.getString(R.string.yesterday)
-        } else if (isTomorrow(dateTime)) {
-            return context.getString(R.string.tomorrow)
-        }
-
-        return formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_SHOW_WEEKDAY or FORMAT_ABBREV_ALL)
-    }
-
-    fun formatDateShort(dateTime: DateTime): String = formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_ABBREV_ALL)
-    fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String = when (reportPeriod) {
-        ReportPeriod.MONTH -> dateFormatter.print(interval.start)
-    }
-
-    fun formatInterval(reportGroup: ReportGroup, interval: Interval): String = when (reportGroup) {
-        ReportGroup.DAY -> DateTimeFormat.shortDate().print(interval.start)
-    }
-
-    fun formatInterval(interval: Interval): String = when (interval.toPeriod()) {
-        Period.days(1) -> interval.start.dayOfMonth().asText
-        else -> PeriodFormat.getDefault().print(interval.toPeriod())
-    }
-}
+//class DateFormatter(private val context: Context) {
+//
+//    val dateFormatter: DateTimeFormatter = DateTimeFormatterBuilder()
+//            .appendMonthOfYearText()
+//            .appendLiteral(" ")
+//            .appendYear(0, 4)
+//            .toFormatter()
+//
+//    fun formatDateRelativeToToday(timestamp: Long): String {
+//        val dateTime = DateTime(timestamp)
+//
+//        if (isToday(dateTime)) {
+//            return context.getString(R.string.today)
+//        } else if (isYesterday(dateTime)) {
+//            return context.getString(R.string.yesterday)
+//        } else if (isTomorrow(dateTime)) {
+//            return context.getString(R.string.tomorrow)
+//        }
+//
+//        return formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_SHOW_WEEKDAY or FORMAT_ABBREV_ALL)
+//    }
+//
+//    fun formatDateShort(dateTime: DateTime): String = formatDateTime(context, dateTime, FORMAT_SHOW_DATE or FORMAT_ABBREV_ALL)
+//    fun formatInterval(reportPeriod: ReportPeriod, interval: Interval): String = when (reportPeriod) {
+//        ReportPeriod.MONTH -> dateFormatter.print(interval.start)
+//    }
+//
+//    fun formatInterval(reportGroup: ReportGroup, interval: Interval): String = when (reportGroup) {
+//        ReportGroup.DAY -> DateTimeFormat.shortDate().print(interval.start)
+//    }
+//
+//    fun formatInterval(interval: Interval): String = when (interval.toPeriod()) {
+//        Period.days(1) -> interval.start.dayOfMonth().asText
+//        else -> PeriodFormat.getDefault().print(interval.toPeriod())
+//    }
+//}

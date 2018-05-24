@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,10 @@ package com.mvcoding.expensius.feature.settings
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.item_view_settings.view.*
 
 class SettingsItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         LinearLayout(context, attrs, defStyleAttr) {
 
-    fun setTitle(title: String) = with(titleTextView) { text = title }
-    fun setSubtitle(subtitle: String) = with(subtitleTextView) { text = subtitle;  visibility = if (subtitle.isBlank()) GONE else VISIBLE }
+//    fun setTitle(title: String) = with(titleTextView) { text = title }
+//    fun setSubtitle(subtitle: String) = with(subtitleTextView) { text = subtitle;  visibility = if (subtitle.isBlank()) GONE else VISIBLE }
 }

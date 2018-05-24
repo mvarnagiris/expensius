@@ -14,42 +14,34 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import com.mvcoding.expensius.feature.BaseActivity
-import com.mvcoding.expensius.feature.Error
-import com.mvcoding.expensius.feature.login.LoginActivity
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.feature.overview.OverviewActivity
-import com.mvcoding.mvp.views.ErrorResolution
-import io.reactivex.Single
+//class SplashActivity : BaseActivity(), SplashPresenter.View {
 
-class SplashActivity : BaseActivity(), SplashPresenter.View {
-
-    private val presenter by lazy { provideSplashPresenter() }
-
-    override fun onStart() {
-        super.onStart()
-        presenter.attach(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        presenter.detach(this)
-    }
-
-    override fun hideLoading() {
-    }
-
-    override fun showError(error: Error) {
-    }
-
-    override fun showLoading() {
-    }
-
-    override fun showResolvableError(error: Error): Single<ErrorResolution> {
-        return Single.just(ErrorResolution.NEGATIVE)
-    }
-
-    override fun displayLogin(destination: Destination) = LoginActivity.start(this, destination)
-    override fun displayApp() = OverviewActivity.start(this)
-    override fun close() = finish()
-}
+//    private val presenter by lazy { provideSplashPresenter() }
+//
+//    override fun onStart() {
+//        super.onStart()
+//        presenter.attach(this)
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        presenter.detach(this)
+//    }
+//
+//    override fun hideLoading() {
+//    }
+//
+//    override fun showError(error: Error) {
+//    }
+//
+//    override fun showLoading() {
+//    }
+//
+//    override fun showResolvableError(error: Error): Single<ErrorResolution> {
+//        return Single.just(ErrorResolution.NEGATIVE)
+//    }
+//
+//    override fun displayLogin(destination: Destination) = LoginActivity.start(this, destination)
+//    override fun displayApp() = OverviewActivity.start(this)
+//    override fun close() = finish()
+//}

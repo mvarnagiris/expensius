@@ -14,31 +14,21 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import android.view.View
-import android.view.ViewGroup
-import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.inflate
-import com.mvcoding.expensius.feature.BaseClickableAdapter
-import com.mvcoding.expensius.feature.ClickableViewHolder
-import com.mvcoding.expensius.feature.ViewHolder
-import com.mvcoding.expensius.model.Tag
-import io.reactivex.subjects.PublishSubject
-
-class TagsAdapter : BaseClickableAdapter<Tag, ViewHolder>() {
-
-    var showArchivedTagsRequest: Boolean = false
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
-    fun isTagPosition(position: Int) = !showArchivedTagsRequest || position < itemCount - 1
-    override fun getItemCount(): Int = super.getItemCount() + if (showArchivedTagsRequest && super.getItemCount() > 0) 1 else 0
-    override fun getItemViewType(position: Int): Int = if (isTagPosition(position)) R.layout.item_view_tag else R.layout.item_view_archived
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, clickSubject: PublishSubject<Pair<View, Int>>) =
-            ClickableViewHolder(parent.inflate(viewType), clickSubject)
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (holder.itemView is TagItemView) holder.itemView.setTag(getItem(position))
-    }
-}
+//class TagsAdapter : BaseClickableAdapter<Tag, ViewHolder>() {
+//
+//    var showArchivedTagsRequest: Boolean = false
+//        set(value) {
+//            field = value
+//            notifyDataSetChanged()
+//        }
+//
+//    fun isTagPosition(position: Int) = !showArchivedTagsRequest || position < itemCount - 1
+//    override fun getItemCount(): Int = super.getItemCount() + if (showArchivedTagsRequest && super.getItemCount() > 0) 1 else 0
+//    override fun getItemViewType(position: Int): Int = if (isTagPosition(position)) R.layout.item_view_tag else R.layout.item_view_archived
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, clickSubject: PublishSubject<Pair<View, Int>>) =
+//            ClickableViewHolder(parent.inflate(viewType), clickSubject)
+//
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        if (holder.itemView is TagItemView) holder.itemView.setTag(getItem(position))
+//    }
+//}

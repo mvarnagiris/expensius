@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -17,23 +17,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        style="@style/RecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/recyclerView"-->
+    <!--style="@style/RecyclerView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 
-    <TextView
-        android:id="@+id/emptyTextView"
-        style="@style/TextView"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:paddingBottom="@dimen/grid_2x"
-        android:paddingLeft="@dimen/keyline"
-        android:paddingRight="@dimen/keyline"
-        android:paddingTop="@dimen/grid_2x"
-        android:text="@string/empty_transactions"
-        android:textAppearance="@style/Text.Title.Empty"
-        android:visibility="gone" />
+    <!--<TextView-->
+    <!--android:id="@+id/emptyTextView"-->
+    <!--style="@style/TextView"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:gravity="center"-->
+    <!--android:paddingBottom="@dimen/grid_2x"-->
+    <!--android:paddingLeft="@dimen/keyline"-->
+    <!--android:paddingRight="@dimen/keyline"-->
+    <!--android:paddingTop="@dimen/grid_2x"-->
+    <!--android:text="@string/empty_transactions"-->
+    <!--android:textAppearance="@style/Text.Title.Empty"-->
+    <!--android:visibility="gone" />-->
 
 </com.mvcoding.expensius.feature.reports.tags.TagsReportView>

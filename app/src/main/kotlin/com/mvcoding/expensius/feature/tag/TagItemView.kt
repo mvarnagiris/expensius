@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,37 +14,26 @@
 
 package com.mvcoding.expensius.feature.tag
 
-import android.content.Context
-import android.util.AttributeSet
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import com.mvcoding.expensius.R
-import com.mvcoding.expensius.extension.getColorFromTheme
-import com.mvcoding.expensius.extension.makeOutlineProviderOval
-import com.mvcoding.expensius.model.ModelState.ARCHIVED
-import com.mvcoding.expensius.model.Tag
-
-class TagItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        LinearLayout(context, attrs, defStyleAttr) {
-
-    private val colorImageView by lazy { findViewById(R.id.colorImageView) as ImageView }
-    private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
-
-    private val textColorPrimary by lazy { getColorFromTheme(context, android.R.attr.textColorPrimary) }
-    private val textColorSecondary by lazy { getColorFromTheme(context, android.R.attr.textColorSecondary) }
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        colorImageView.makeOutlineProviderOval()
-    }
-
-    fun setTag(tag: Tag) {
-        colorImageView.setColorFilter(getIconColor(tag))
-        titleTextView.setTextColor(getTextColor(tag))
-        titleTextView.text = tag.title.text
-    }
-
-    private fun getIconColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else tag.color.rgb
-    private fun getTextColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else textColorPrimary
-}
+//class TagItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+//        LinearLayout(context, attrs, defStyleAttr) {
+//
+//    private val colorImageView by lazy { findViewById(R.id.colorImageView) as ImageView }
+//    private val titleTextView by lazy { findViewById(R.id.titleTextView) as TextView }
+//
+//    private val textColorPrimary by lazy { getColorFromTheme(context, android.R.attr.textColorPrimary) }
+//    private val textColorSecondary by lazy { getColorFromTheme(context, android.R.attr.textColorSecondary) }
+//
+//    override fun onFinishInflate() {
+//        super.onFinishInflate()
+//        colorImageView.makeOutlineProviderOval()
+//    }
+//
+//    fun setTag(tag: Tag) {
+//        colorImageView.setColorFilter(getIconColor(tag))
+//        titleTextView.setTextColor(getTextColor(tag))
+//        titleTextView.text = tag.title.text
+//    }
+//
+//    private fun getIconColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else tag.color.rgb
+//    private fun getTextColor(tag: Tag) = if (tag.modelState == ARCHIVED) textColorSecondary else textColorPrimary
+//}

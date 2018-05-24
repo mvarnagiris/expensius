@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,42 +14,30 @@
 
 package com.mvcoding.expensius.feature.login
 
-import android.app.Activity
 import com.memoizrlabs.ShankModule
-import com.memoizrlabs.shankkotlin.provideNew
-import com.memoizrlabs.shankkotlin.provideSingletonFor
-import com.memoizrlabs.shankkotlin.registerFactory
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.feature.tag.provideAllTagsSource
-import com.mvcoding.expensius.feature.tag.provideCreateTagsWriter
-import com.mvcoding.expensius.provideAppUserSource
-import com.mvcoding.expensius.provideDefaultTagsSource
-import com.mvcoding.expensius.provideFirebaseAppUserService
-import com.mvcoding.expensius.provideRxSchedulers
-import memoizrlabs.com.shankandroid.withThisScope
 
 class LoginModule : ShankModule {
     override fun registerFactories() {
-        loginSource()
-        loginPresenter()
+//        loginSource()
+//        loginPresenter()
     }
 
-    private fun loginSource() = registerFactory(LoginSource::class) { ->
-        val firebaseAppUserService = provideFirebaseAppUserService()
-        LoginSource(
-                { firebaseAppUserService.login(it) },
-                { firebaseAppUserService.logout() },
-                { firebaseAppUserService.getAppUser() },
-                provideAppUserSource(),
-                provideAllTagsSource(),
-                provideDefaultTagsSource(),
-                provideCreateTagsWriter())
-    }
-
-    private fun loginPresenter() = registerFactory(LoginPresenter::class) { destination: Destination ->
-        LoginPresenter(destination, provideLoginSource(), provideRxSchedulers())
-    }
+//    private fun loginSource() = registerFactory(LoginSource::class) { ->
+//        val firebaseAppUserService = provideFirebaseAppUserService()
+//        LoginSource(
+//                { firebaseAppUserService.login(it) },
+//                { firebaseAppUserService.logout() },
+//                { firebaseAppUserService.getAppUser() },
+//                provideAppUserSource(),
+//                provideAllTagsSource(),
+//                provideDefaultTagsSource(),
+//                provideCreateTagsWriter())
+//    }
+//
+//    private fun loginPresenter() = registerFactory(LoginPresenter::class) { destination: Destination ->
+//        LoginPresenter(destination, provideLoginSource(), provideRxSchedulers())
+//    }
 }
 
-fun provideLoginSource() = provideNew<LoginSource>()
-fun Activity.provideLoginPresenter(destination: Destination) = withThisScope.provideSingletonFor<LoginPresenter>(destination)
+//fun provideLoginSource() = provideNew<LoginSource>()
+//fun Activity.provideLoginPresenter(destination: Destination) = withThisScope.provideSingletonFor<LoginPresenter>(destination)

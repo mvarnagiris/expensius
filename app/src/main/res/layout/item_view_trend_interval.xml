@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,29 +13,28 @@
   -->
 
 <com.mvcoding.expensius.feature.reports.trends.TrendIntervalItemView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/RecyclerViewItem">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/amountTextView"
-        style="@style/TextView"
-        android:textAppearance="@style/Text.Money"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="$ 28.54" />
+    <!--<TextView-->
+    <!--android:id="@+id/amountTextView"-->
+    <!--style="@style/TextView"-->
+    <!--android:textAppearance="@style/Text.Money"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--tools:text="$ 28.54" />-->
 
-    <TextView
-        android:id="@+id/intervalTextView"
-        style="@style/TextView"
-        android:layout_width="0dp"
-        android:layout_marginEnd="@dimen/grid_2x"
-        android:textAppearance="@style/Text.ListItemTitle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/amountTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="1-5 May" />
+    <!--<TextView-->
+    <!--android:id="@+id/intervalTextView"-->
+    <!--style="@style/TextView"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_marginEnd="@dimen/grid_2x"-->
+    <!--android:textAppearance="@style/Text.ListItemTitle"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toStartOf="@+id/amountTextView"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--tools:text="1-5 May" />-->
 
 </com.mvcoding.expensius.feature.reports.trends.TrendIntervalItemView>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
   -->
 
 <com.mvcoding.expensius.feature.settings.SettingsItemView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
@@ -25,16 +24,16 @@
     android:paddingRight="@dimen/keyline"
     android:paddingTop="@dimen/space_normal">
 
-    <TextView
-        android:id="@+id/titleTextView"
-        style="@style/TextView"
-        android:textAppearance="@style/Text.ListItemTitle"
-        tools:text="Title" />
+    <!--<TextView-->
+    <!--android:id="@+id/titleTextView"-->
+    <!--style="@style/TextView"-->
+    <!--android:textAppearance="@style/Text.ListItemTitle"-->
+    <!--tools:text="Title" />-->
 
-    <TextView
-        android:id="@+id/subtitleTextView"
-        style="@style/TextView"
-        android:textAppearance="@style/Text.ListItemSubtitle"
-        tools:text="Subtitle" />
+    <!--<TextView-->
+    <!--android:id="@+id/subtitleTextView"-->
+    <!--style="@style/TextView"-->
+    <!--android:textAppearance="@style/Text.ListItemSubtitle"-->
+    <!--tools:text="Subtitle" />-->
 
 </com.mvcoding.expensius.feature.settings.SettingsItemView>

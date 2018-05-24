@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- TextView -->
     <!-- =============================================================================================================================== -->
 
@@ -24,272 +24,272 @@
     <!-- Text -->
     <!-- =============================================================================================================================== -->
 
-    <style name="Text.Tag" parent="TextAppearance.AppCompat.Subhead">
-        <item name="android:textColor">?android:textColorPrimary</item>
+    <!--<style name="Text.Tag" parent="TextAppearance.AppCompat.Subhead">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--&lt;!&ndash;<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>&ndash;&gt;-->
+    <!--</style>-->
+
+    <!--<style name="Text.Tag.Button" parent="TextAppearance.AppCompat.Body2">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--</style>-->
+
+    <!--<style name="Text.Tag.Small">-->
+    <!--<item name="android:textSize">12sp</item>-->
+    <!--</style>-->
+
+    <!--<style name="Text.Tag.Big" parent="TextAppearance.AppCompat.Display1">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
         <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
-    </style>
+    <!--</style>-->
 
-    <style name="Text.Tag.Button" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
+    <!--<style name="Text.ListItemTitle" parent="TextAppearance.AppCompat.Subhead">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--</style>-->
 
-    <style name="Text.Tag.Small">
-        <item name="android:textSize">12sp</item>
-    </style>
+    <!--<style name="Text.ListItemSubtitle" parent="TextAppearance.AppCompat.Caption">-->
+    <!--<item name="android:textColor">?android:textColorSecondary</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    <!--</style>-->
 
-    <style name="Text.Tag.Big" parent="TextAppearance.AppCompat.Display1">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
-    </style>
+    <!--<style name="Text.Money" parent="TextAppearance.AppCompat.Body2">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:textSize">18sp</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    <!--</style>-->
 
-    <style name="Text.ListItemTitle" parent="TextAppearance.AppCompat.Subhead">
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
+    <!--<style name="Text.Money.Small" parent="TextAppearance.AppCompat.Body2">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:textSize">14sp</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    <!--</style>-->
 
-    <style name="Text.ListItemSubtitle" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
-    </style>
+    <!--<style name="Text.Money.Big" parent="TextAppearance.AppCompat.Display3">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    <!--</style>-->
 
-    <style name="Text.Money" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
-    </style>
+    <!--<style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:textSize">14sp</item>-->
+    <!--</style>-->
 
-    <style name="Text.Money.Small" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
-    </style>
+    <!--<style name="Text.Body2" parent="TextAppearance.AppCompat.Body2">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:textSize">14sp</item>-->
+    <!--</style>-->
 
-    <style name="Text.Money.Big" parent="TextAppearance.AppCompat.Display3">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
-    </style>
+    <!--<style name="Text.Button" parent="TextAppearance.AppCompat.Button">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:fontFamily">sans-serif</item>-->
+    <!--<item name="android:textStyle">bold</item>-->
+    <!--</style>-->
 
-    <style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textSize">14sp</item>
-    </style>
+    <!--<style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    <!--</style>-->
 
-    <style name="Text.Body2" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textSize">14sp</item>
-    </style>
+    <!--<style name="Text.Display1" parent="TextAppearance.AppCompat.Display1">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:fontFeatureSettings">onum</item>-->
+    <!--</style>-->
 
-    <style name="Text.Button" parent="TextAppearance.AppCompat.Button">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+    <!--<style name="Text.Display2" parent="TextAppearance.AppCompat.Display2">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--</style>-->
 
-    <style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
-    </style>
+    <!--<style name="Text.Display3" parent="TextAppearance.AppCompat.Display3">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--</style>-->
 
-    <style name="Text.Display1" parent="TextAppearance.AppCompat.Display1">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">onum</item>
-    </style>
+    <!--<style name="Text.Display4" parent="TextAppearance.AppCompat.Display4">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--</style>-->
 
-    <style name="Text.Display2" parent="TextAppearance.AppCompat.Display2">
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
+    <!--<style name="Text.Headline" parent="TextAppearance.AppCompat.Headline">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--</style>-->
 
-    <style name="Text.Display3" parent="TextAppearance.AppCompat.Display3">
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
+    <!--<style name="Text.Subhead" parent="TextAppearance.AppCompat.Subhead">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--</style>-->
 
-    <style name="Text.Display4" parent="TextAppearance.AppCompat.Display4">
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
+    <!--<style name="Text.Title" parent="TextAppearance.AppCompat.Title">-->
+    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,onum</item>-->
+    <!--</style>-->
 
-    <style name="Text.Headline" parent="TextAppearance.AppCompat.Headline">
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
+    <!--<style name="Text.Title.Empty">-->
+    <!--<item name="android:textColor">?android:textColorSecondary</item>-->
+    <!--<item name="android:textSize">16sp</item>-->
+    <!--</style>-->
 
-    <style name="Text.Subhead" parent="TextAppearance.AppCompat.Subhead">
-        <item name="android:textColor">?android:textColorPrimary</item>
-    </style>
-
-    <style name="Text.Title" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,onum</item>
-    </style>
-
-    <style name="Text.Title.Empty">
-        <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="Text.Title.Section">
-        <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="android:textSize">14sp</item>
-    </style>
+    <!--<style name="Text.Title.Section">-->
+    <!--<item name="android:textColor">?android:textColorSecondary</item>-->
+    <!--<item name="android:textSize">14sp</item>-->
+    <!--</style>-->
 
     <!-- Button -->
     <!-- =============================================================================================================================== -->
 
-    <style name="Button" parent="Widget.AppCompat.Button">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">@style/Text.Button</item>
-        <item name="android:tint">?colorActionIcon</item>
-    </style>
+    <!--<style name="Button" parent="Widget.AppCompat.Button">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:textAppearance">@style/Text.Button</item>-->
+    <!--<item name="android:tint">?colorActionIcon</item>-->
+    <!--</style>-->
 
-    <style name="Button.Flat" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">@style/Text.Button</item>
-        <item name="android:tint">?colorActionIcon</item>
-    </style>
+    <!--<style name="Button.Flat" parent="Widget.AppCompat.Button.Borderless">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:textAppearance">@style/Text.Button</item>-->
+    <!--<item name="android:tint">?colorActionIcon</item>-->
+    <!--</style>-->
 
-    <style name="Button.Flat.Borderless">
-        <item name="android:background">?selectableItemBackgroundBorderless</item>
-    </style>
+    <!--<style name="Button.Flat.Borderless">-->
+    <!--<item name="android:background">?selectableItemBackgroundBorderless</item>-->
+    <!--</style>-->
 
-    <style name="Button.Flat.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:tint">?colorActionIcon</item>
-    </style>
+    <!--<style name="Button.Flat.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:tint">?colorActionIcon</item>-->
+    <!--</style>-->
 
-    <style name="Button.Flat.Borderless.Calc">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
-        <item name="android:textAppearance">@style/Text.Display1</item>
-    </style>
+    <!--<style name="Button.Flat.Borderless.Calc">-->
+    <!--<item name="android:layout_width">0dp</item>-->
+    <!--<item name="android:layout_height">match_parent</item>-->
+    <!--<item name="android:layout_weight">1</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    <!--<item name="android:textAppearance">@style/Text.Display1</item>-->
+    <!--</style>-->
 
-    <style name="Button.Flat.Borderless.Calc.Action">
-        <item name="android:textColor">?android:textColorSecondary</item>
-    </style>
+    <!--<style name="Button.Flat.Borderless.Calc.Action">-->
+    <!--<item name="android:textColor">?android:textColorSecondary</item>-->
+    <!--</style>-->
 
-    <style name="Button.Fab" parent="Widget.Design.FloatingActionButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">bottom|end</item>
-        <item name="android:layout_marginLeft">@dimen/keyline</item>
-        <item name="android:layout_marginRight">@dimen/keyline</item>
-        <item name="android:layout_marginTop">@dimen/keyline</item>
-        <item name="android:layout_marginBottom">@dimen/keyline</item>
-        <item name="android:tint">?colorActionIcon</item>
-        <item name="elevation">@dimen/elevation_fab</item>
-        <item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>
-        <item name="rippleColor">?colorAccentDark</item>
-        <item name="borderWidth">2dp</item>
-        <item name="android:theme">@style/AppTheme.Inverse</item>
-    </style>
+    <!--<style name="Button.Fab" parent="Widget.Design.FloatingActionButton">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:layout_gravity">bottom|end</item>-->
+    <!--<item name="android:layout_marginLeft">@dimen/keyline</item>-->
+    <!--<item name="android:layout_marginRight">@dimen/keyline</item>-->
+    <!--<item name="android:layout_marginTop">@dimen/keyline</item>-->
+    <!--<item name="android:layout_marginBottom">@dimen/keyline</item>-->
+    <!--<item name="android:tint">?colorActionIcon</item>-->
+    <!--<item name="elevation">@dimen/elevation_fab</item>-->
+    <!--<item name="pressedTranslationZ">@dimen/elevation_fab_pressed</item>-->
+    <!--<item name="rippleColor">?colorAccentDark</item>-->
+    <!--<item name="borderWidth">2dp</item>-->
+    <!--<item name="android:theme">@style/AppTheme.Inverse</item>-->
+    <!--</style>-->
 
-    <style name="Button.Fab.Secondary">
-        <item name="android:theme">@style/AppTheme</item>
-        <item name="backgroundTint">?colorBackgroundPrimary</item>
-    </style>
+    <!--<style name="Button.Fab.Secondary">-->
+    <!--<item name="android:theme">@style/AppTheme</item>-->
+    <!--<item name="backgroundTint">?colorBackgroundPrimary</item>-->
+    <!--</style>-->
 
     <!-- ButtonBar -->
     <!-- =============================================================================================================================== -->
 
-    <style name="ButtonBar" parent="Widget.AppCompat.ButtonBar">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?actionBarSize</item>
-        <item name="android:gravity">right</item>
-        <item name="android:elevation" tools:targetApi="lollipop">@dimen/elevation_fab</item>
-        <item name="android:background">?colorBackgroundPrimary</item>
-    </style>
+    <!--<style name="ButtonBar" parent="Widget.AppCompat.ButtonBar">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">?actionBarSize</item>-->
+    <!--<item name="android:gravity">right</item>-->
+    <!--<item name="android:elevation" tools:targetApi="lollipop">@dimen/elevation_fab</item>-->
+    <!--<item name="android:background">?colorBackgroundPrimary</item>-->
+    <!--</style>-->
 
     <!-- CardView -->
     <!-- =============================================================================================================================== -->
 
-    <style name="Card" parent="CardView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:foreground">?selectableItemBackground</item>
-        <item name="cardUseCompatPadding">false</item>
-        <item name="cardElevation">@dimen/elevation_card</item>
-        <item name="cardBackgroundColor">?colorBackgroundPrimary</item>
-    </style>
+    <!--<style name="Card" parent="CardView">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:foreground">?selectableItemBackground</item>-->
+    <!--<item name="cardUseCompatPadding">false</item>-->
+    <!--<item name="cardElevation">@dimen/elevation_card</item>-->
+    <!--<item name="cardBackgroundColor">?colorBackgroundPrimary</item>-->
+    <!--</style>-->
 
-    <style name="Card.EdgeToEdge">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="cardCornerRadius">0dp</item>
-    </style>
+    <!--<style name="Card.EdgeToEdge">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="cardCornerRadius">0dp</item>-->
+    <!--</style>-->
 
-    <style name="Card.Fab">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">@dimen/fab_height</item>
-        <item name="android:layout_gravity">bottom|end</item>
-        <item name="android:layout_marginLeft">@dimen/keyline</item>
-        <item name="android:layout_marginRight">@dimen/keyline</item>
-        <item name="android:layout_marginTop">@dimen/grid_2x</item>
-        <item name="android:layout_marginBottom">@dimen/grid_2x</item>
-        <item name="android:foreground">?selectableItemBackground</item>
-        <item name="cardElevation">@dimen/elevation_fab</item>
-        <item name="cardBackgroundColor">?colorAccent</item>
-        <item name="cardCornerRadius">@dimen/fab_height_half</item>
-        <item name="contentPaddingLeft">@dimen/grid_2x</item>
-        <item name="contentPaddingRight">@dimen/grid_2x</item>
-        <item name="android:theme">?themeInverse</item>
-    </style>
+    <!--<style name="Card.Fab">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">@dimen/fab_height</item>-->
+    <!--<item name="android:layout_gravity">bottom|end</item>-->
+    <!--<item name="android:layout_marginLeft">@dimen/keyline</item>-->
+    <!--<item name="android:layout_marginRight">@dimen/keyline</item>-->
+    <!--<item name="android:layout_marginTop">@dimen/grid_2x</item>-->
+    <!--<item name="android:layout_marginBottom">@dimen/grid_2x</item>-->
+    <!--<item name="android:foreground">?selectableItemBackground</item>-->
+    <!--<item name="cardElevation">@dimen/elevation_fab</item>-->
+    <!--<item name="cardBackgroundColor">?colorAccent</item>-->
+    <!--<item name="cardCornerRadius">@dimen/fab_height_half</item>-->
+    <!--<item name="contentPaddingLeft">@dimen/grid_2x</item>-->
+    <!--<item name="contentPaddingRight">@dimen/grid_2x</item>-->
+    <!--<item name="android:theme">?themeInverse</item>-->
+    <!--</style>-->
 
     <!-- EditText -->
     <!-- =============================================================================================================================== -->
 
-    <style name="EditText" parent="Widget.AppCompat.EditText">
-        <item name="android:textAppearance">@style/Text.Subhead</item>
-        <item name="android:textColorHint">?android:textColorSecondary</item>
-    </style>
+    <!--<style name="EditText" parent="Widget.AppCompat.EditText">-->
+    <!--<item name="android:textAppearance">@style/Text.Subhead</item>-->
+    <!--<item name="android:textColorHint">?android:textColorSecondary</item>-->
+    <!--</style>-->
 
-    <style name="EditText.Big">
-        <item name="android:textAppearance">@style/Text.Display1</item>
-    </style>
+    <!--<style name="EditText.Big">-->
+    <!--<item name="android:textAppearance">@style/Text.Display1</item>-->
+    <!--</style>-->
 
     <!-- RecyclerView -->
     <!-- =============================================================================================================================== -->
 
-    <style name="RecyclerView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:clipToPadding">false</item>
-    </style>
+    <!--<style name="RecyclerView">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">match_parent</item>-->
+    <!--<item name="android:clipToPadding">false</item>-->
+    <!--</style>-->
 
     <!--<style name="RecyclerView.Cards">-->
     <!--<item name="android:padding">@dimen/keyline_half</item>-->
     <!--</style>-->
 
-    <style name="RecyclerViewItem">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">?actionBarSize</item>
-        <item name="android:paddingLeft">@dimen/keyline</item>
-        <item name="android:paddingRight">@dimen/keyline</item>
-        <item name="android:paddingTop">@dimen/grid_2x</item>
-        <item name="android:paddingBottom">@dimen/grid_2x</item>
-        <item name="android:clipToPadding">false</item>
-        <item name="android:background">?selectableItemBackground</item>
-    </style>
+    <!--<style name="RecyclerViewItem">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:minHeight">?actionBarSize</item>-->
+    <!--<item name="android:paddingLeft">@dimen/keyline</item>-->
+    <!--<item name="android:paddingRight">@dimen/keyline</item>-->
+    <!--<item name="android:paddingTop">@dimen/grid_2x</item>-->
+    <!--<item name="android:paddingBottom">@dimen/grid_2x</item>-->
+    <!--<item name="android:clipToPadding">false</item>-->
+    <!--<item name="android:background">?selectableItemBackground</item>-->
+    <!--</style>-->
 
     <!-- Divider -->
     <!-- =============================================================================================================================== -->
 
-    <style name="Divider">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/divider</item>
-        <item name="android:background">?colorDivider</item>
-    </style>
+    <!--<style name="Divider">-->
+    <!--<item name="android:layout_width">match_parent</item>-->
+    <!--<item name="android:layout_height">@dimen/divider</item>-->
+    <!--<item name="android:background">?colorDivider</item>-->
+    <!--</style>-->
 
     <!-- ProgressBar -->
     <!-- =============================================================================================================================== -->
 
-    <style name="ProgressBar">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:layout_centerInParent">true</item>
-    </style>
+    <!--<style name="ProgressBar">-->
+    <!--<item name="android:layout_width">wrap_content</item>-->
+    <!--<item name="android:layout_height">wrap_content</item>-->
+    <!--<item name="android:layout_gravity">center</item>-->
+    <!--<item name="android:layout_centerInParent">true</item>-->
+    <!--</style>-->
 
     <!-- ScrollView -->
     <!-- =============================================================================================================================== -->
@@ -302,9 +302,9 @@
     <!-- QuickTagsView -->
     <!-- =============================================================================================================================== -->
 
-    <style name="QuickTagsView">
-        <item name="tagPaddingHorizontal">12dp</item>
-        <item name="tagPaddingVertical">8dp</item>
-        <item name="tagCornerRadius">16dp</item>
-    </style>
+    <!--<style name="QuickTagsView">-->
+    <!--<item name="tagPaddingHorizontal">12dp</item>-->
+    <!--<item name="tagPaddingVertical">8dp</item>-->
+    <!--<item name="tagCornerRadius">16dp</item>-->
+    <!--</style>-->
 </resources>

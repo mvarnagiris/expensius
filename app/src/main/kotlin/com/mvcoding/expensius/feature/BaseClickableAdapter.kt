@@ -14,19 +14,14 @@
 
 package com.mvcoding.expensius.feature
 
-import android.view.View
-import android.view.ViewGroup
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-
-abstract class BaseClickableAdapter<T, VH : ViewHolder> : BaseAdapter<T, VH>() {
-    private val positionClickedSubject = PublishSubject.create<Pair<View, Int>>()
-
-    fun itemPositionClicks(): Observable<Int> = positionClickedSubject.map { it.second }
-    fun itemClicks(): Observable<T> = positionClickedSubject.map { getItem(it.second) }
-    fun itemViewClicks(): Observable<Triple<View, Int, T>> = positionClickedSubject.map { Triple(it.first, it.second, getItem(it.second)) }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(parent, viewType, positionClickedSubject)
-
-    protected abstract fun onCreateViewHolder(parent: ViewGroup, viewType: Int, clickSubject: PublishSubject<Pair<View, Int>>): VH
-}
+//abstract class BaseClickableAdapter<T, VH : ViewHolder> : BaseAdapter<T, VH>() {
+//    private val positionClickedSubject = PublishSubject.create<Pair<View, Int>>()
+//
+//    fun itemPositionClicks(): Observable<Int> = positionClickedSubject.map { it.second }
+//    fun itemClicks(): Observable<T> = positionClickedSubject.map { getItem(it.second) }
+//    fun itemViewClicks(): Observable<Triple<View, Int, T>> = positionClickedSubject.map { Triple(it.first, it.second, getItem(it.second)) }
+//
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = onCreateViewHolder(parent, viewType, positionClickedSubject)
+//
+//    protected abstract fun onCreateViewHolder(parent: ViewGroup, viewType: Int, clickSubject: PublishSubject<Pair<View, Int>>): VH
+//}

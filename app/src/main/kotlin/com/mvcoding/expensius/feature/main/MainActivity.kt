@@ -12,10 +12,8 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.feature.main
 
-//class ErrorDisplayer(private val context: Context) {
-//    fun show(error: Error) {
-//        Toast.makeText(context, error.throwable.message, Toast.LENGTH_LONG).show()
-//    }
-//}
+import com.mvcoding.expensius.feature.BaseActivity
+
+class MainActivity : BaseActivity()

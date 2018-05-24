@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,23 +15,20 @@
 package com.mvcoding.expensius.feature.currency
 
 import com.memoizrlabs.ShankModule
-import com.memoizrlabs.shankkotlin.provideGlobalSingleton
-import com.memoizrlabs.shankkotlin.provideNew
-import com.memoizrlabs.shankkotlin.registerFactory
 
 class CurrenciesModule : ShankModule {
     override fun registerFactories() {
-        currenciesSource()
-        currencyFormatsProvider()
-        moneyConversionSource()
+//        currenciesSource()
+//        currencyFormatsProvider()
+//        moneyConversionSource()
 
     }
 
-    private fun currenciesSource() = registerFactory(CurrenciesSource::class) { -> CurrenciesSource() }
-    private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> SystemCurrencyFormatsProvider() }
-    private fun moneyConversionSource() = registerFactory(MoneyConversionSource::class) { -> MoneyConversionSource() }
+//    private fun currenciesSource() = registerFactory(CurrenciesSource::class) { -> CurrenciesSource() }
+//    private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> SystemCurrencyFormatsProvider() }
+//    private fun moneyConversionSource() = registerFactory(MoneyConversionSource::class) { -> MoneyConversionSource() }
 }
 
-fun provideCurrenciesSource(): CurrenciesSource = provideNew()
-fun provideCurrencyFormatsProvider(): CurrencyFormatsProvider = provideGlobalSingleton()
-fun provideMoneyConversionSource() = provideGlobalSingleton<MoneyConversionSource>()
+//fun provideCurrenciesSource(): CurrenciesSource = provideNew()
+//fun provideCurrencyFormatsProvider(): CurrencyFormatsProvider = provideGlobalSingleton()
+//fun provideMoneyConversionSource() = provideGlobalSingleton<MoneyConversionSource>()

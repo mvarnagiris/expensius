@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2015 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,27 +13,27 @@
   -->
 
 <com.mvcoding.expensius.feature.tag.TagItemView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="@style/RecyclerViewItem">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/colorImageView"
-        android:layout_width="@dimen/keyline_content_minus_keyline_3x"
-        android:layout_height="@dimen/keyline_content_minus_keyline_3x"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/keyline_2x"
-        android:contentDescription="@string/color"
-        android:elevation="@dimen/elevation_card"
-        android:src="@drawable/oval"
-        tools:ignore="UnusedAttribute"
-        tools:tint="#ffcc00" />
+    <!--<ImageView-->
+    <!--android:id="@+id/colorImageView"-->
+    <!--android:layout_width="@dimen/keyline_content_minus_keyline_3x"-->
+    <!--android:layout_height="@dimen/keyline_content_minus_keyline_3x"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:layout_marginEnd="@dimen/keyline_2x"-->
+    <!--android:contentDescription="@string/color"-->
+    <!--android:elevation="@dimen/elevation_card"-->
+    <!--android:src="@drawable/oval"-->
+    <!--tools:ignore="UnusedAttribute"-->
+    <!--tools:tint="#ffcc00" />-->
 
-    <TextView
-        android:id="@+id/titleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:textAppearance="@style/Text.Tag"
-        tools:text="Essential" />
+    <!--<TextView-->
+    <!--android:id="@+id/titleTextView"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--android:textAppearance="@style/Text.Tag"-->
+    <!--tools:text="Essential" />-->
 
 </com.mvcoding.expensius.feature.tag.TagItemView>

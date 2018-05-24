@@ -14,42 +14,38 @@
 
 package com.mvcoding.expensius.feature
 
-import android.support.design.widget.Snackbar
-import android.view.View
-import com.jakewharton.rxbinding2.support.design.widget.dismisses
-
-class SnackbarBuilder(private val view: View, private val resId: Int, private val duration: Int) {
-    var actionResId: Int = 0
-    var action: (() -> Unit)? = null
-    var onDismiss: (() -> Unit)? = null
-
-    companion object {
-        fun snackbar(view: View, resId: Int, duration: Int) = SnackbarBuilder(view, resId, duration)
-    }
-
-    fun action(resId: Int, action: () -> Unit): SnackbarBuilder {
-        this.actionResId = resId
-        this.action = action
-        return this
-    }
-
-    fun onDismiss(onDismiss: () -> Unit): SnackbarBuilder {
-        this.onDismiss = onDismiss
-        return this
-    }
-
-    fun show(): Snackbar {
-        val snackbar = Snackbar.make(view, resId, duration)
-
-        if (actionResId != 0) {
-            snackbar.setAction(actionResId, { action!!.invoke() })
-        }
-
-        if (onDismiss != null) {
-            snackbar.dismisses().subscribe { onDismiss!!.invoke() }
-        }
-
-        snackbar.show()
-        return snackbar
-    }
-}
+//class SnackbarBuilder(private val view: View, private val resId: Int, private val duration: Int) {
+//    var actionResId: Int = 0
+//    var action: (() -> Unit)? = null
+//    var onDismiss: (() -> Unit)? = null
+//
+//    companion object {
+//        fun snackbar(view: View, resId: Int, duration: Int) = SnackbarBuilder(view, resId, duration)
+//    }
+//
+//    fun action(resId: Int, action: () -> Unit): SnackbarBuilder {
+//        this.actionResId = resId
+//        this.action = action
+//        return this
+//    }
+//
+//    fun onDismiss(onDismiss: () -> Unit): SnackbarBuilder {
+//        this.onDismiss = onDismiss
+//        return this
+//    }
+//
+//    fun show(): Snackbar {
+//        val snackbar = Snackbar.make(view, resId, duration)
+//
+//        if (actionResId != 0) {
+//            snackbar.setAction(actionResId, { action!!.invoke() })
+//        }
+//
+//        if (onDismiss != null) {
+//            snackbar.dismisses().subscribe { onDismiss!!.invoke() }
+//        }
+//
+//        snackbar.show()
+//        return snackbar
+//    }
+//}

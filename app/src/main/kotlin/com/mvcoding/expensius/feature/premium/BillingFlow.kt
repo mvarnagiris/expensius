@@ -14,11 +14,7 @@
 
 package com.mvcoding.expensius.feature.premium
 
-import android.app.Activity
-import android.content.Intent
-import io.reactivex.Observable
-
-interface BillingFlow {
-    fun startPurchase(activity: Activity, requestCode: Int, productId: String): Observable<Unit>
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean
-}
+//interface BillingFlow {
+//    fun startPurchase(activity: Activity, requestCode: Int, productId: String): Observable<Unit>
+//    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean
+//}
