@@ -25,11 +25,11 @@ import com.memoizrlabs.Scope
 import com.memoizrlabs.ScopedCache
 import com.memoizrlabs.Shank.with
 
-fun Activity.withThisScope(): ScopedCache = with(getScope(this))
-fun Fragment.withThisScope(): ScopedCache = with(getScope(this))
-fun View.withActivityScope(): ScopedCache = with(activityScope())
-fun View.withFragmentScope(): ScopedCache = with(fragmentScope())
-fun View.withSmallestScope(): ScopedCache = with(smallestScope())
+val Activity.withThisScope get(): ScopedCache = with(getScope(this))
+val Fragment.withThisScope get(): ScopedCache = with(getScope(this))
+val View.withActivityScope get(): ScopedCache = with(activityScope())
+val View.withFragmentScope get(): ScopedCache = with(fragmentScope())
+val View.withSmallestScope get(): ScopedCache = with(smallestScope())
 
 fun View.activityScope(): Scope = getScope(context) ?: throw IllegalArgumentException("Context $context is not Scoped")
 fun View.fragmentScope(): Scope = getFragment()!!.let { getScope(it) ?: throw IllegalArgumentException("Fragment $it and its' parents are not Scoped") }

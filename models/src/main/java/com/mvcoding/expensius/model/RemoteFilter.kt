@@ -12,21 +12,15 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.model
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Test
+import org.joda.time.Interval
+import java.io.Serializable
 
-class SplashPresenterTest {
+data class RemoteFilter(
+        val userId: UserId,
+        val interval: Interval) : Serializable {
 
-    private val presenter = SplashPresenter()
-    private val view = mock<SplashPresenter.View>()
-
-    @Test
-    fun `displays app`() {
-        presenter attach view
-
-        verify(view).displayApp()
-    }
+    fun withNextInterval(reportPeriod: ReportPeriod) = copy(interval = reportPeriod.nextInterval(interval))
+    fun withPreviousInterval(reportPeriod: ReportPeriod) = copy(interval = reportPeriod.previousInterval(interval))
 }

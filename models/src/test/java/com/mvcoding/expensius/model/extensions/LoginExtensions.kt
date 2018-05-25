@@ -12,21 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.model.extensions
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Test
+import com.mvcoding.expensius.model.GoogleToken
+import com.mvcoding.expensius.model.LoggedInUserDetails
+import com.mvcoding.expensius.model.Login
 
-class SplashPresenterTest {
-
-    private val presenter = SplashPresenter()
-    private val view = mock<SplashPresenter.View>()
-
-    @Test
-    fun `displays app`() {
-        presenter attach view
-
-        verify(view).displayApp()
-    }
-}
+fun aGoogleToken() = GoogleToken(aString("token"))
+fun anAnonymousLogin() = Login.AnonymousLogin
+fun aGoogleLogin() = Login.GoogleLogin(aGoogleToken(), aBoolean())
+fun aLoggedInUserDetails() = LoggedInUserDetails(aUserId(), aName(), anEmail(), anImage())

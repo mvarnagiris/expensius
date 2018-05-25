@@ -14,31 +14,16 @@
 
 package com.mvcoding.expensius.feature.splash
 
-import com.mvcoding.expensius.feature.Error
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination
-import com.mvcoding.expensius.feature.login.LoginPresenter.Destination.APP
-import com.mvcoding.expensius.feature.toError
-import com.mvcoding.expensius.model.AppUser
 import com.mvcoding.mvp.Presenter
-import com.mvcoding.mvp.RxSchedulers
-import com.mvcoding.mvp.behaviors.InitializationBehavior
-import io.reactivex.Single
 
-class SplashPresenter internal constructor(
-        getAppUser: () -> Single<AppUser>,
-        schedulers: RxSchedulers,
-        isSuccess: (AppUser) -> Boolean,
-        getSuccess: (AppUser) -> Unit,
-        getFailure: (AppUser) -> Destination,
-        mapError: (Throwable) -> Error) : Presenter<SplashPresenter.View>(
-        InitializationBehavior(getAppUser, isSuccess, getSuccess, getFailure, mapError, schedulers)) {
+class SplashPresenter : Presenter<SplashPresenter.View>() {
 
-    constructor(getAppUser: () -> Single<AppUser>, schedulers: RxSchedulers) : this(getAppUser, schedulers, { it.isLoggedIn() }, { Unit }, { APP }, { it.toError() })
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
+        view.displayApp()
+    }
 
-    interface View : Presenter.View, InitializationBehavior.View<Unit, Destination, Error> {
-        override fun displayInitialized(success: Unit) = displayApp()
-        override fun displayNotInitialized(data: Destination) = displayLogin(data)
-        fun displayLogin(destination: Destination)
+    interface View : Presenter.View {
         fun displayApp()
     }
 }

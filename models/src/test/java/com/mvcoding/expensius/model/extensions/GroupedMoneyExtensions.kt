@@ -12,21 +12,11 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.model.extensions
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Test
+import com.mvcoding.expensius.model.GroupedMoney
 
-class SplashPresenterTest {
-
-    private val presenter = SplashPresenter()
-    private val view = mock<SplashPresenter.View>()
-
-    @Test
-    fun `displays app`() {
-        presenter attach view
-
-        verify(view).displayApp()
-    }
-}
+fun anIntervalGroupedMoney() = GroupedMoney(anInterval(), aMoney())
+fun aTagGroupedMoney() = GroupedMoney(aTag(), aMoney())
+fun someIntervalGroupedMoneys() = aRange().map { anIntervalGroupedMoney() }
+fun someTagGroupedMoneys() = aRange().map { aTagGroupedMoney() }

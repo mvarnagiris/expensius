@@ -28,4 +28,4 @@ class SplashModule : ShankModule {
     private fun splashPresenter() = registerFactory(SplashPresenter::class) { -> SplashPresenter() }
 }
 
-fun BaseFragment.provideSplashPresenter() = withThisScope().provideSingletonFor<SplashPresenter>()
+fun BaseFragment.provideSplashPresenter() = withThisScope.provideSingletonFor<SplashPresenter>()

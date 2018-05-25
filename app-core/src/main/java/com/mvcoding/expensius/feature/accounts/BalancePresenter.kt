@@ -12,21 +12,13 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.feature.accounts
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Test
+import com.mvcoding.mvp.Presenter
 
-class SplashPresenterTest {
+class BalancePresenter : Presenter<BalancePresenter.View>() {
 
-    private val presenter = SplashPresenter()
-    private val view = mock<SplashPresenter.View>()
-
-    @Test
-    fun `displays app`() {
-        presenter attach view
-
-        verify(view).displayApp()
+    interface View : Presenter.View {
+        fun showBalance()
     }
 }

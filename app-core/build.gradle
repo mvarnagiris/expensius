@@ -12,20 +12,19 @@
  * GNU General Public License for more details.
  */
 
-apply plugin: 'java'
 apply plugin: "kotlin"
 
 dependencies {
-    compile project(':data')
-    compile project(':models')
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
-    compile 'com.github.mvarnagiris.mvp:mvp:2.0.0-alpha19'
+    def mvp_version = "2.0.0-alpha19"
 
-    testCompile project(path: ':models', configuration: 'testOutput')
-    testCompile project(path: ':data', configuration: 'testOutput')
-    testCompile "junit:junit:$junit_version"
-    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
-    testCompile "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
-    testCompile 'com.github.mvarnagiris.mvp:mvp-test:2.0.0-alpha14'
+    implementation project(':data')
+    implementation project(':models')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
+    implementation "com.github.mvarnagiris.mvp:mvp:$mvp_version"
+
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockito_kotlin_version"
+    testImplementation "com.github.mvarnagiris.mvp:mvp-test:$mvp_version"
 }

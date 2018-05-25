@@ -55,7 +55,7 @@ android {
 dependencies {
     def ktx_version = "1.0.0-alpha1"
 
-//    implementation project(':app-core')
+    implementation project(':app-core')
 //    implementation project(':billing')
 //    implementation project(':firebase')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -98,7 +98,7 @@ dependencies {
 
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation "junit:junit:$junit_version"
-    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-alpha03'
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-alpha04'
 }
 
 apply plugin: 'com.google.gms.google-services'

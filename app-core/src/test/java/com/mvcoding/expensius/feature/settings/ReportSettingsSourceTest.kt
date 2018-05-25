@@ -14,13 +14,9 @@
 
 package com.mvcoding.expensius.feature.settings
 
-import com.mvcoding.expensius.data.testMemoryCache
-import com.mvcoding.expensius.model.extensions.aReportSettings
-import org.junit.Test
-
 class ReportSettingsSourceTest {
-    @Test
-    fun `behaves like memory cache`() {
-        testMemoryCache(aReportSettings(), aReportSettings()) { ReportSettingsSource { it.data() } }
-    }
+//    @Test
+//    fun `behaves like memory cache`() {
+//        testMemoryCache(aReportSettings(), aReportSettings()) { ReportSettingsSource { it.data() } }
+//    }
 }

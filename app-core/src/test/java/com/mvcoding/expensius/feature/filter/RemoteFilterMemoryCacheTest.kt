@@ -14,13 +14,9 @@
 
 package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.data.testMemoryCache
-import com.mvcoding.expensius.model.extensions.aRemoteFilter
-import org.junit.Test
-
 class RemoteFilterMemoryCacheTest {
-    @Test
-    fun `behaves like memory cache`() {
-        testMemoryCache(aRemoteFilter(), aRemoteFilter()) { RemoteFilterMemoryCache(it) }
-    }
+//    @Test
+//    fun `behaves like memory cache`() {
+//        testMemoryCache(aRemoteFilter(), aRemoteFilter()) { RemoteFilterMemoryCache(it) }
+//    }
 }

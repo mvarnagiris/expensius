@@ -12,21 +12,10 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.model
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Test
+import java.io.Serializable
 
-class SplashPresenterTest {
-
-    private val presenter = SplashPresenter()
-    private val view = mock<SplashPresenter.View>()
-
-    @Test
-    fun `displays app`() {
-        presenter attach view
-
-        verify(view).displayApp()
-    }
+data class ExchangeRateCurrencies(val fromCurrency: Currency, val toCurrency: Currency) : Serializable {
+    fun hasSameCurrencies(): Boolean = fromCurrency == toCurrency
 }

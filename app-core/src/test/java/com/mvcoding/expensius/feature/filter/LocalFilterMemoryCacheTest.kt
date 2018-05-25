@@ -14,13 +14,9 @@
 
 package com.mvcoding.expensius.feature.filter
 
-import com.mvcoding.expensius.data.testMemoryCache
-import com.mvcoding.expensius.model.extensions.aLocalFilter
-import org.junit.Test
-
 class LocalFilterMemoryCacheTest {
-    @Test
-    fun `behaves like memory cache`() {
-        testMemoryCache(aLocalFilter(), aLocalFilter()) { LocalFilterMemoryCache(it) }
-    }
+//    @Test
+//    fun `behaves like memory cache`() {
+//        testMemoryCache(aLocalFilter(), aLocalFilter()) { LocalFilterMemoryCache(it) }
+//    }
 }

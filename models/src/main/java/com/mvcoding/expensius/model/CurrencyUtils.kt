@@ -12,21 +12,12 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature.splash
+package com.mvcoding.expensius.model
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Test
+import java.util.*
 
-class SplashPresenterTest {
-
-    private val presenter = SplashPresenter()
-    private val view = mock<SplashPresenter.View>()
-
-    @Test
-    fun `displays app`() {
-        presenter attach view
-
-        verify(view).displayApp()
-    }
+fun defaultCurrency(): Currency = try {
+    java.util.Currency.getInstance(Locale.getDefault()).let { Currency(it.currencyCode) }
+} catch (e: Exception) {
+    Currency("USD")
 }
