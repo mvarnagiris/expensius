@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,20 +14,17 @@
 
 package com.mvcoding.expensius.firebase.model
 
-import com.mvcoding.expensius.model.*
-import com.mvcoding.expensius.model.SubscriptionType.FREE
-
-data class FirebaseSettings(
-        val mainCurrency: String? = null,
-        val subscriptionType: String? = null) {
-
-    fun toSettings() = Settings(
-            if (mainCurrency.isNullOrBlank()) defaultCurrency() else Currency(mainCurrency!!),
-            ReportPeriod.MONTH,
-            ReportGroup.DAY,
-            if (subscriptionType.isNullOrBlank()) FREE else SubscriptionType.valueOf(subscriptionType!!))
-}
-
-internal fun Settings.toFirebaseSettings() = FirebaseSettings(
-        mainCurrency = mainCurrency.code,
-        subscriptionType = subscriptionType.name)
+//data class FirebaseSettings(
+//        val mainCurrency: String? = null,
+//        val subscriptionType: String? = null) {
+//
+//    fun toSettings() = Settings(
+//            if (mainCurrency.isNullOrBlank()) defaultCurrency() else Currency(mainCurrency!!),
+//            ReportPeriod.MONTH,
+//            ReportGroup.DAY,
+//            if (subscriptionType.isNullOrBlank()) FREE else SubscriptionType.valueOf(subscriptionType!!))
+//}
+//
+//internal fun Settings.toFirebaseSettings() = FirebaseSettings(
+//        mainCurrency = mainCurrency.code,
+//        subscriptionType = subscriptionType.name)

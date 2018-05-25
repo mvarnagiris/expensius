@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,31 +14,26 @@
 
 package com.mvcoding.expensius.firebase.model
 
-import com.mvcoding.expensius.model.*
-import com.mvcoding.expensius.model.NullModels.noColor
-import com.mvcoding.expensius.model.NullModels.noOrder
-import com.mvcoding.expensius.model.NullModels.noTag
-
-data class FirebaseTag(
-        val id: String? = null,
-        val title: String? = null,
-        val color: Int? = null,
-        val order: Int? = null) {
-
-    fun toTag(modelState: ModelState): Tag {
-        if (id.isNullOrBlank() || title.isNullOrBlank()) return noTag
-        return Tag(
-                TagId(id!!),
-                modelState,
-                Title(title!!),
-                color?.let(::Color) ?: noColor,
-                order?.let(::Order) ?: noOrder)
-    }
-}
-
-internal fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
-internal fun Tag.toFirebaseMap() = mapOf(
-        "id" to tagId.id,
-        "title" to title.text,
-        "color" to color.rgb,
-        "order" to order.value)
+//data class FirebaseTag(
+//        val id: String? = null,
+//        val title: String? = null,
+//        val color: Int? = null,
+//        val order: Int? = null) {
+//
+//    fun toTag(modelState: ModelState): Tag {
+//        if (id.isNullOrBlank() || title.isNullOrBlank()) return noTag
+//        return Tag(
+//                TagId(id!!),
+//                modelState,
+//                Title(title!!),
+//                color?.let(::Color) ?: noColor,
+//                order?.let(::Order) ?: noOrder)
+//    }
+//}
+//
+//internal fun CreateTag.toFirebaseTag(id: String) = FirebaseTag(id, title.text, color.rgb, order.value)
+//internal fun Tag.toFirebaseMap() = mapOf(
+//        "id" to tagId.id,
+//        "title" to title.text,
+//        "color" to color.rgb,
+//        "order" to order.value)

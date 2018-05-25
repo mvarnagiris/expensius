@@ -18,6 +18,8 @@ import android.content.Context
 import com.memoizrlabs.ShankModule
 import com.memoizrlabs.shankkotlin.provideGlobalSingleton
 import com.memoizrlabs.shankkotlin.registerFactory
+import com.mvcoding.expensius.feature.MoneyFormatter
+import com.mvcoding.expensius.feature.currency.provideCurrencyFormatsProvider
 
 class AppModule(val context: Context) : ShankModule {
 
@@ -26,18 +28,17 @@ class AppModule(val context: Context) : ShankModule {
 //        rxSchedulers()
 //        rxSchedulers2()
 //        dateFormatter()
-//        moneyFormatter()
+        moneyFormatter()
 //        filter()
 //        rxBus()
     }
 
     private fun appContext() = registerFactory(Context::class) { -> context }
-//    private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
+    //    private fun rxSchedulers() = registerFactory(RxSchedulers::class) { -> RxSchedulers(mainThread(), io(), computation()) }
 //    private fun rxSchedulers2() = registerFactory(com.mvcoding.mvp.RxSchedulers::class) { -> com.mvcoding.mvp.RxSchedulers(io(), mainThread(), computation()) }
 //    private fun dateFormatter() = registerFactory(DateFormatter::class) { -> DateFormatter(context) }
-//    private fun moneyFormatter() {
-//        registerFactory(MoneyFormatter::class.java) { -> MoneyFormatter(provideCurrencyFormatsProvider()) }
-//    }
+    private fun moneyFormatter() = registerFactory(MoneyFormatter::class) { -> MoneyFormatter(provideCurrencyFormatsProvider()) }
+
 //
 //    //        private fun filter() = registerFactory(FilterOld::class) { -> FilterOld(provideAppUserService(), provideTimestampProvider()) }
 //    private fun rxBus() = registerFactory(RxBus::class) { -> RxBus() }
@@ -48,7 +49,7 @@ fun provideContext() = provideGlobalSingleton<Context>()
 //fun provideRxSchedulers() = provideGlobalSingleton<RxSchedulers>()
 //fun provideRxSchedulers2() = provideGlobalSingleton<com.mvcoding.mvp.RxSchedulers>()
 //fun provideDateFormatter() = provideGlobalSingleton<DateFormatter>()
-//fun provideMoneyFormatter() = provideGlobalSingleton<MoneyFormatter>()
+fun provideMoneyFormatter() = provideGlobalSingleton<MoneyFormatter>()
 //fun provideFilter() = provideNew<FilterOld>()
 //fun provideRxBus() = provideGlobalSingleton<RxBus>()
 //fun provideTimestampProvider() = SystemTimestampProvider()

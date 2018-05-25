@@ -24,8 +24,8 @@ package com.mvcoding.expensius.feature.tag
 //    }
 //
 //    private val presenter by lazy { provideTagPresenter(intent.getSerializableExtra(TagActivity.EXTRA_TAG) as Tag) }
-//    private val darkTextColor by lazy { getColor(this, R.color.text_primary) }
-//    private val lightTextColor by lazy { getColor(this, R.color.text_primary_inverse) }
+//    private val darkTextColor by lazy { getColor(this, R.color.text_dark) }
+//    private val lightTextColor by lazy { getColor(this, R.color.text_light) }
 //    private var colorAnimator: ValueAnimator? = null
 //    private var isArchiveToggleVisible = true
 //    private var archiveToggleTitle: String? = null

@@ -39,7 +39,7 @@
 
     <!--<style name="Text.Tag.Big" parent="TextAppearance.AppCompat.Display1">-->
     <!--<item name="android:textColor">?android:textColorPrimary</item>-->
-        <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
+    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
     <!--</style>-->
 
     <!--<style name="Text.ListItemTitle" parent="TextAppearance.AppCompat.Subhead">-->
@@ -63,10 +63,10 @@
     <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
     <!--</style>-->
 
-    <!--<style name="Text.Money.Big" parent="TextAppearance.AppCompat.Display3">-->
-    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
-    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
-    <!--</style>-->
+    <style name="Text.Money.Big" parent="TextAppearance.MaterialComponents.Headline3">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+    </style>
 
     <!--<style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">-->
     <!--<item name="android:textColor">?android:textColorPrimary</item>-->
@@ -139,16 +139,11 @@
     <!--<item name="android:tint">?colorActionIcon</item>-->
     <!--</style>-->
 
-    <!--<style name="Button.Flat" parent="Widget.AppCompat.Button.Borderless">-->
-    <!--<item name="android:layout_width">wrap_content</item>-->
-    <!--<item name="android:layout_height">wrap_content</item>-->
-    <!--<item name="android:textAppearance">@style/Text.Button</item>-->
-    <!--<item name="android:tint">?colorActionIcon</item>-->
-    <!--</style>-->
+    <style name="Button.Flat" parent="Widget.MaterialComponents.Button.UnelevatedButton" />
 
-    <!--<style name="Button.Flat.Borderless">-->
-    <!--<item name="android:background">?selectableItemBackgroundBorderless</item>-->
-    <!--</style>-->
+    <style name="Button.Flat.Borderless">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+    </style>
 
     <!--<style name="Button.Flat.Colored" parent="Widget.AppCompat.Button.Borderless.Colored">-->
     <!--<item name="android:layout_width">wrap_content</item>-->

@@ -14,11 +14,28 @@
 
 package com.mvcoding.expensius.feature.accounts
 
+import com.mvcoding.expensius.model.Money
 import com.mvcoding.mvp.Presenter
+import com.mvcoding.mvp.RxSchedulers
+import com.mvcoding.mvp.views.LoadingView
+import io.reactivex.Observable
 
-class BalancePresenter : Presenter<BalancePresenter.View>() {
+class BalancePresenter(
+        private val getBalance: () -> Observable<Money>,
+        private val schedulers: RxSchedulers) : Presenter<BalancePresenter.View>() {
 
-    interface View : Presenter.View {
-        fun showBalance()
+    override fun onViewAttached(view: View) {
+        super.onViewAttached(view)
+
+        view.showLoading()
+        getBalance()
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .doOnNext { view.hideLoading() }
+                .subscribeUntilDetached { view.showBalance(it) }
+    }
+
+    interface View : Presenter.View, LoadingView {
+        fun showBalance(balance: Money)
     }
 }

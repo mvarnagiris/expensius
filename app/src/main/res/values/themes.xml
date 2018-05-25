@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2016 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -14,15 +14,20 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="themeInverse">@style/AppTheme.Inverse</item>
 
-        <item name="colorPrimary">#8bc34a</item>
-        <item name="colorPrimaryDark">#689f38</item>
-        <item name="colorPrimaryLight">#dcedc8</item>
-        <item name="colorAccent">#03a9f4</item>
-        <item name="colorAccentLight">#4fc3f7</item>
-        <item name="colorAccentDark">#0288d1</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">#66697b</item>
+        <item name="android:navigationBarColor">#3b3e4f</item>
+
+        <item name="colorPrimary">#66697b</item>
+        <item name="colorPrimaryDark">#3b3e4f</item>
+        <item name="colorPrimaryLight">#9497aa</item>
+        <item name="colorAccent">#81d4fa</item>
+        <item name="colorAccentLight">#b6ffff</item>
+        <item name="colorAccentDark">#4ba3c7</item>
+
         <item name="colorActionIcon">#727272</item>
         <item name="colorDivider">#33333333</item>
         <item name="colorExpense">@color/red_700</item>
@@ -31,27 +36,26 @@
         <item name="colorBackgroundSecondary">#aaaaaa</item>
         <item name="colorOverlay">#13000000</item>
 
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColorPrimaryInverse">@color/text_primary_inverse</item>
-        <item name="android:textColorSecondary">@color/text_secondary</item>
-        <item name="android:textColorSecondaryInverse">@color/text_secondary_inverse</item>
+        <item name="android:textColorPrimary">@color/text_light</item>
+        <item name="android:textColorPrimaryInverse">@color/text_dark</item>
+        <item name="android:textColorSecondary">@color/text_light_secondary</item>
+        <item name="android:textColorSecondaryInverse">@color/text_dark_secondary</item>
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/backgroundWindow</item>
     </style>
 
-    <style name="AppTheme.Inverse">
+    <style name="AppTheme.Inverse" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="themeInverse">@style/AppTheme</item>
 
         <item name="colorActionIcon">#fefefe</item>
         <item name="colorBackgroundPrimary">#333333</item>
         <item name="colorBackgroundSecondary">#666666</item>
 
-        <item name="android:textColorPrimary">@color/text_primary_inverse</item>
-        <item name="android:textColorPrimaryInverse">@color/text_primary</item>
-        <item name="android:textColorSecondary">@color/text_secondary_inverse</item>
-        <item name="android:textColorSecondaryInverse">@color/text_secondary</item>
+        <item name="android:textColorPrimary">@color/text_light</item>
+        <item name="android:textColorPrimaryInverse">@color/text_dark</item>
+        <item name="android:textColorSecondary">@color/text_light_secondary</item>
+        <item name="android:textColorSecondaryInverse">@color/text_dark_secondary</item>
 
         <item name="android:windowBackground">@color/backgroundWindowInverse</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>

@@ -56,19 +56,19 @@ dependencies {
     def ktx_version = "1.0.0-alpha1"
 
     implementation project(':app-core')
+    implementation project(':models')
 //    implementation project(':billing')
 //    implementation project(':firebase')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
-    implementation 'com.github.memoizr:shank:v1.4.0-beta'
-    implementation 'com.github.memoizr:shank-kotlin:v1.3.4'
-    implementation 'com.github.mvarnagiris.mvp:mvp:2.0.0-alpha19'
+    implementation 'com.google.android.material:material:1.0.0-alpha1'
     implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1'
     implementation "androidx.core:core-ktx:$ktx_version"
     implementation "androidx.fragment:fragment-ktx:$ktx_version"
     implementation "androidx.collection:collection-ktx:$ktx_version"
+    implementation 'com.github.memoizr:shank:v1.4.0-beta'
+    implementation 'com.github.memoizr:shank-kotlin:v1.3.4'
 
 //    implementation "com.android.support:design:$support_version"
 //    implementation "com.android.support:percent:$support_version"

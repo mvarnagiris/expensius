@@ -14,66 +14,59 @@
 
 package com.mvcoding.expensius.firebase
 
-import com.google.firebase.database.*
-import com.mvcoding.expensius.data.RawRealtimeData.*
-import com.mvcoding.expensius.data.RealtimeList
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
-
-class FirebaseRealtimeList<ITEM>(
-        private val query: Query,
-        private val converter: (DataSnapshot) -> ITEM) : RealtimeList<ITEM> {
-
-    private val allItemsSubject = BehaviorSubject.create<AllItems<ITEM>>()
-    private val addedItemsSubject = PublishSubject.create<AddedItems<ITEM>>()
-    private val changedItemsSubject = PublishSubject.create<ChangedItems<ITEM>>()
-    private val removedItemsSubject = PublishSubject.create<RemovedItems<ITEM>>()
-    private val movedItemSubject = PublishSubject.create<MovedItems<ITEM>>()
-
-    private val valueEventListener = object : ValueEventListener {
-        override fun onDataChange(dataSnapshot: DataSnapshot) {
-            val items = dataSnapshot.children
-            val convertedItems = items.map { converter(it) }
-            allItemsSubject.onNext(AllItems(convertedItems))
-        }
-
-        override fun onCancelled(databaseError: DatabaseError) {
-            // TODO: Implement
-        }
-    }
-
-    private val childEventListener = object : ChildEventListener {
-        override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildKey: String?) {
-            addedItemsSubject.onNext(AddedItems(listOf(converter(dataSnapshot)), previousChildKey))
-        }
-
-        override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildKey: String?) {
-            changedItemsSubject.onNext(ChangedItems(listOf(converter(dataSnapshot))))
-        }
-
-        override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-            removedItemsSubject.onNext(RemovedItems(listOf(converter(dataSnapshot))))
-        }
-
-        override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildKey: String?) {
-            movedItemSubject.onNext(MovedItems(listOf(converter(dataSnapshot)), previousChildKey))
-        }
-
-        override fun onCancelled(databaseError: DatabaseError) {
-            // TODO: Implement
-        }
-    }
-
-    init {
-        query.addChildEventListener(childEventListener)
-        query.addListenerForSingleValueEvent(valueEventListener)
-    }
-
-    override fun getAllItems(): Observable<AllItems<ITEM>> = allItemsSubject
-    override fun getAddedItems(): Observable<AddedItems<ITEM>> = addedItemsSubject
-    override fun getChangedItems(): Observable<ChangedItems<ITEM>> = changedItemsSubject
-    override fun getRemovedItems(): Observable<RemovedItems<ITEM>> = removedItemsSubject
-    override fun getMovedItem(): Observable<MovedItems<ITEM>> = movedItemSubject
-    override fun close(): Unit = query.removeEventListener(childEventListener)
-}
+//class FirebaseRealtimeList<ITEM>(
+//        private val query: Query,
+//        private val converter: (DataSnapshot) -> ITEM) : RealtimeList<ITEM> {
+//
+//    private val allItemsSubject = BehaviorSubject.create<AllItems<ITEM>>()
+//    private val addedItemsSubject = PublishSubject.create<AddedItems<ITEM>>()
+//    private val changedItemsSubject = PublishSubject.create<ChangedItems<ITEM>>()
+//    private val removedItemsSubject = PublishSubject.create<RemovedItems<ITEM>>()
+//    private val movedItemSubject = PublishSubject.create<MovedItems<ITEM>>()
+//
+//    private val valueEventListener = object : ValueEventListener {
+//        override fun onDataChange(dataSnapshot: DataSnapshot) {
+//            val items = dataSnapshot.children
+//            val convertedItems = items.map { converter(it) }
+//            allItemsSubject.onNext(AllItems(convertedItems))
+//        }
+//
+//        override fun onCancelled(databaseError: DatabaseError) {
+//            // TODO: Implement
+//        }
+//    }
+//
+//    private val childEventListener = object : ChildEventListener {
+//        override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildKey: String?) {
+//            addedItemsSubject.onNext(AddedItems(listOf(converter(dataSnapshot)), previousChildKey))
+//        }
+//
+//        override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildKey: String?) {
+//            changedItemsSubject.onNext(ChangedItems(listOf(converter(dataSnapshot))))
+//        }
+//
+//        override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+//            removedItemsSubject.onNext(RemovedItems(listOf(converter(dataSnapshot))))
+//        }
+//
+//        override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildKey: String?) {
+//            movedItemSubject.onNext(MovedItems(listOf(converter(dataSnapshot)), previousChildKey))
+//        }
+//
+//        override fun onCancelled(databaseError: DatabaseError) {
+//            // TODO: Implement
+//        }
+//    }
+//
+//    init {
+//        query.addChildEventListener(childEventListener)
+//        query.addListenerForSingleValueEvent(valueEventListener)
+//    }
+//
+//    override fun getAllItems(): Observable<AllItems<ITEM>> = allItemsSubject
+//    override fun getAddedItems(): Observable<AddedItems<ITEM>> = addedItemsSubject
+//    override fun getChangedItems(): Observable<ChangedItems<ITEM>> = changedItemsSubject
+//    override fun getRemovedItems(): Observable<RemovedItems<ITEM>> = removedItemsSubject
+//    override fun getMovedItem(): Observable<MovedItems<ITEM>> = movedItemSubject
+//    override fun close(): Unit = query.removeEventListener(childEventListener)
+//}

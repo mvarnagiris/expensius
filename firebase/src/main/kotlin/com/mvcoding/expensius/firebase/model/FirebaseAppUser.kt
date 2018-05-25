@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Mantas Varnagiris.
+ * Copyright (C) 2018 Mantas Varnagiris.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,36 +14,29 @@
 
 package com.mvcoding.expensius.firebase.model
 
-import com.mvcoding.expensius.model.*
-import com.mvcoding.expensius.model.NullModels.noAppUser
-import com.mvcoding.expensius.model.NullModels.noEmail
-import com.mvcoding.expensius.model.NullModels.noImage
-import com.mvcoding.expensius.model.NullModels.noName
-import com.mvcoding.expensius.model.NullModels.noSettings
-
-data class FirebaseAppUser(
-        val id: String? = null,
-        val name: String? = null,
-        val photoUrl: String? = null,
-        val email: String? = null,
-        val settings: FirebaseSettings? = null) {
-
-    fun toAppUser(authProviders: Set<AuthProvider>): AppUser {
-        if (id.isNullOrBlank()) return noAppUser
-
-        return AppUser(
-                UserId(id!!),
-                if (name.isNullOrBlank()) noName else Name(name!!),
-                if (photoUrl.isNullOrBlank()) noImage else UriImage(photoUrl!!),
-                if (email.isNullOrBlank()) noEmail else Email(email!!),
-                settings?.toSettings() ?: noSettings,
-                authProviders)
-    }
-}
-
-internal fun AppUser.toFirebaseAppUser() = FirebaseAppUser(
-        id = userId.id,
-        name = name.displayName,
-        photoUrl = photo.uri,
-        email = email.address,
-        settings = settings.toFirebaseSettings())
+//data class FirebaseAppUser(
+//        val id: String? = null,
+//        val name: String? = null,
+//        val photoUrl: String? = null,
+//        val email: String? = null,
+//        val settings: FirebaseSettings? = null) {
+//
+//    fun toAppUser(authProviders: Set<AuthProvider>): AppUser {
+//        if (id.isNullOrBlank()) return noAppUser
+//
+//        return AppUser(
+//                UserId(id!!),
+//                if (name.isNullOrBlank()) noName else Name(name!!),
+//                if (photoUrl.isNullOrBlank()) noImage else UriImage(photoUrl!!),
+//                if (email.isNullOrBlank()) noEmail else Email(email!!),
+//                settings?.toSettings() ?: noSettings,
+//                authProviders)
+//    }
+//}
+//
+//internal fun AppUser.toFirebaseAppUser() = FirebaseAppUser(
+//        id = userId.id,
+//        name = name.displayName,
+//        photoUrl = photo.uri,
+//        email = email.address,
+//        settings = settings.toFirebaseSettings())

@@ -12,15 +12,6 @@
   ~ GNU General Public License for more details.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <include
-        layout="@layout/bottom_app_bar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
-
-</FrameLayout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="#8a000000" />
+</selector>

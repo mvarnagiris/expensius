@@ -15,20 +15,22 @@
 package com.mvcoding.expensius.feature.currency
 
 import com.memoizrlabs.ShankModule
+import com.memoizrlabs.shankkotlin.provideGlobalSingleton
+import com.memoizrlabs.shankkotlin.registerFactory
 
 class CurrenciesModule : ShankModule {
     override fun registerFactories() {
 //        currenciesSource()
-//        currencyFormatsProvider()
+        currencyFormatsProvider()
 //        moneyConversionSource()
 
     }
 
-//    private fun currenciesSource() = registerFactory(CurrenciesSource::class) { -> CurrenciesSource() }
-//    private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> SystemCurrencyFormatsProvider() }
+    //    private fun currenciesSource() = registerFactory(CurrenciesSource::class) { -> CurrenciesSource() }
+    private fun currencyFormatsProvider() = registerFactory(CurrencyFormatsProvider::class) { -> SystemCurrencyFormatsProvider() }
 //    private fun moneyConversionSource() = registerFactory(MoneyConversionSource::class) { -> MoneyConversionSource() }
 }
 
 //fun provideCurrenciesSource(): CurrenciesSource = provideNew()
-//fun provideCurrencyFormatsProvider(): CurrencyFormatsProvider = provideGlobalSingleton()
+fun provideCurrencyFormatsProvider() = provideGlobalSingleton<CurrencyFormatsProvider>()
 //fun provideMoneyConversionSource() = provideGlobalSingleton<MoneyConversionSource>()
