@@ -40,9 +40,10 @@ class BottomAppBarView @JvmOverloads constructor(context: Context, attrs: Attrib
                 createFab.measuredHeight / 2f + paddingTop)
         val bg = MaterialShapeDrawable(shapePathModel).apply {
             setUseTintColorForShadow(false)
+            isShadowEnabled = true
             setShadowColor(Color.BLACK)
             shadowElevation = 5
-            shadowRadius = 10
+            shadowRadius = 20
         }
         ViewCompat.setBackground(this, bg)
     }

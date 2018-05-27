@@ -37,6 +37,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
         android:layout_marginTop="@dimen/grid_1x"
+        android:src="@drawable/ic_action_add"
+        android:tint="?android:textColorPrimaryInverse"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
