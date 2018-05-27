@@ -17,4 +17,4 @@
     app:fontProviderAuthority="com.google.android.gms.fonts"
     app:fontProviderCerts="@array/com_google_android_gms_fonts_certs"
     app:fontProviderPackage="com.google.android.gms"
-    app:fontProviderQuery="name=Source Code Pro&amp;weight=300"></font-family>
+    app:fontProviderQuery="name=Work Sans&amp;weight=300"></font-family>

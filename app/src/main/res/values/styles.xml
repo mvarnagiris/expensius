@@ -67,11 +67,15 @@
     <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
     <!--</style>-->
 
-    <style name="Text.Money.Big" parent="TextAppearance.MaterialComponents.Headline3">
+    <style name="Text.Money.Big" parent="TextAppearance.MaterialComponents.Headline5">
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFamily">@font/source_code_pro_light</item>
+        <item name="fontFamily">@font/monda</item>
         <item name="autoSizeTextType">uniform</item>
         <item name="autoSizeMinTextSize">8sp</item>
+    </style>
+
+    <style name="Text.Money.Big.Expense">
+        <item name="android:textColor">?colorExpense</item>
     </style>
 
     <!--<style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">-->
@@ -90,10 +94,11 @@
     <!--<item name="android:textStyle">bold</item>-->
     <!--</style>-->
 
-    <!--<style name="Text.Caption" parent="TextAppearance.AppCompat.Caption">-->
-    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
-    <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
-    <!--</style>-->
+    <style name="Text.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="textAllCaps">true</item>
+    </style>
 
     <!--<style name="Text.Display1" parent="TextAppearance.AppCompat.Display1">-->
     <!--<item name="android:textColor">?android:textColorPrimary</item>-->

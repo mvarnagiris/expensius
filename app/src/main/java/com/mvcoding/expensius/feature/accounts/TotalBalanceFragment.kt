@@ -37,5 +37,6 @@ class TotalBalanceFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         balanceTextView.text = moneyFormatter.format(Money(BigDecimal(35476.87), Currency("GBP")))
+        expensesTextView.text = moneyFormatter.format(Money(BigDecimal(1246.52), Currency("GBP")))
     }
 }

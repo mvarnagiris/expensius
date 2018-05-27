@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
   -->
 
 <resources>
-    <string name="app_name">Expensius</string>
+    <string name="app_name">Financius</string>
     <string name="skip">Skip</string>
     <string name="login">Login</string>
     <string name="save">Save</string>
@@ -82,4 +82,5 @@
     <string name="tag_bills_and_utilities">Bills &amp; utilities</string>
     <string name="tag_pets">Pets</string>
     <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="balance">Balance</string>
 </resources>
