@@ -15,6 +15,7 @@
 package com.mvcoding.expensius.feature.main
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
@@ -33,11 +34,16 @@ class BottomAppBarView @JvmOverloads constructor(context: Context, attrs: Attrib
         val cradleDiameter = createFab.measuredWidth + grid1x * 2
 
         val shapePathModel = ShapePathModel()
-        shapePathModel.topEdge = AppBarTopEdgeTreatment(cradleDiameter, grid1x * 2f, createFab.measuredHeight / 2f)
+        shapePathModel.topEdge = AppBarTopEdgeTreatment(
+                cradleDiameter,
+                grid1x * 4f,
+                createFab.measuredHeight / 2f + paddingTop)
         val bg = MaterialShapeDrawable(shapePathModel).apply {
             setUseTintColorForShadow(false)
+            setShadowColor(Color.BLACK)
+            shadowElevation = 5
+            shadowRadius = 10
         }
         ViewCompat.setBackground(this, bg)
     }
-
 }

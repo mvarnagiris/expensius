@@ -18,6 +18,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:backgroundTint="?colorPrimaryDark"
+    android:clipToPadding="false"
+    android:paddingTop="@dimen/grid_1x"
     tools:layout_gravity="bottom">
 
     <ImageButton
@@ -34,6 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
+        android:layout_marginTop="@dimen/grid_1x"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
