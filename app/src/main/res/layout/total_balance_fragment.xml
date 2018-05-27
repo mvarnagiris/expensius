@@ -24,14 +24,15 @@
 
     <TextView
         android:id="@+id/balanceTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView.SingleLine"
+        android:layout_marginTop="@dimen/grid_4x"
+        android:fontFamily="@font/source_code_pro_light"
         android:textAppearance="@style/Text.Money.Big"
-        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:fontFamily="@font/source_code_pro_light"
         tools:text="$ 35,897.41" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2017 Mantas Varnagiris.
+  ~ Copyright (C) 2018 Mantas Varnagiris.
   ~
   ~ This program is free software; you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
     <dimen name="grid_half">4dp</dimen>
     <dimen name="grid_1x">8dp</dimen>
     <dimen name="grid_2x">16dp</dimen>
+    <dimen name="grid_3x">24dp</dimen>
+    <dimen name="grid_4x">32dp</dimen>
 
     <dimen name="space_small">4dp</dimen>
     <dimen name="space_normal">8dp</dimen>

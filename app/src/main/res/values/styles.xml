@@ -21,6 +21,10 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="TextView.SingleLine">
+        <item name="android:maxLines">1</item>
+    </style>
+
     <!-- Text -->
     <!-- =============================================================================================================================== -->
 
@@ -65,7 +69,9 @@
 
     <style name="Text.Money.Big" parent="TextAppearance.MaterialComponents.Headline3">
         <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:fontFeatureSettings">smcp,s2cp,onum</item>
+        <item name="android:fontFamily">@font/source_code_pro_light</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">8sp</item>
     </style>
 
     <!--<style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">-->
