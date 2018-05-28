@@ -14,65 +14,17 @@
 
 package com.mvcoding.expensius.feature
 
-//abstract class BaseAdapter<ITEM, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
-//    val items = arrayListOf<ITEM>()
-//
-//    override fun getItemCount(): Int = items.size
-//
-//    fun getItem(position: Int) = items[position]
-//
-//    fun setItems(items: List<ITEM>) {
-//        this.items.clear()
-//        this.items.addAll(items)
-//        notifyDataSetChanged()
-//    }
-//
-//    fun addItems(position: Int, item: ITEM) {
-//        items.add(position, item)
-//        notifyItemInserted(position)
-//    }
-//
-//    fun addItems(position: Int, items: List<ITEM>) {
-//        this.items.addAll(position, items)
-//        notifyItemRangeInserted(position, items.size)
-//    }
-//
-//    fun addItems(items: List<ITEM>) {
-//        val size = itemCount
-//        this.items.addAll(items)
-//        notifyItemRangeInserted(size, items.size)
-//    }
-//
-//    fun changeItems(position: Int, items: List<ITEM>) {
-//        (position..(position + items.size - 1)).forEachIndexed { index, positionToReplace -> this.items[positionToReplace] = items[index] }
-//        notifyItemRangeChanged(position, items.size)
-//    }
-//
-//    fun removeItem(position: Int) {
-//        items.removeAt(position)
-//        notifyItemRemoved(position)
-//    }
-//
-//    fun removeItems(position: Int, count: Int) {
-//        count.downTo(1).forEach { items.removeAt(position + it - 1) }
-//        notifyItemRangeRemoved(position, count)
-//    }
-//
-//    fun removeItem(item: ITEM) {
-//        val position = items.indexOf(item)
-//        items.remove(item)
-//        notifyItemRemoved(position)
-//    }
-//
-//    fun removeItems(items: List<ITEM>) {
-//        val positions = items.map { this.items.indexOf(it) }.sorted()
-//        this.items.removeAll(items)
-//        positions.forEach { notifyItemRemoved(it) }
-//    }
-//
-//    fun moveItem(fromPosition: Int, toPosition: Int) {
-//        val item = items.removeAt(fromPosition)
-//        items.add(toPosition, item)
-//        notifyItemMoved(fromPosition, toPosition)
-//    }
-//}
+import androidx.recyclerview.widget.RecyclerView
+
+abstract class BaseAdapter<ITEM, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
+    private var items: List<ITEM> = emptyList()
+
+    override fun getItemCount(): Int = items.size
+
+    fun getItem(position: Int) = items[position]
+
+    open fun setItems(items: List<ITEM>) {
+        this.items = items
+        notifyDataSetChanged()
+    }
+}

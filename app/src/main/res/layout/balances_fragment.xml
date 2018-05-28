@@ -12,16 +12,19 @@
   ~ GNU General Public License for more details.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <fragment
-        android:id="@+id/totalBalanceFragment"
-        class="com.mvcoding.expensius.feature.accounts.BalancesFragment"
-        android:layout_width="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        style="@style/RecyclerView"
         android:layout_height="wrap_content"
-        tools:layout="@layout/balances_fragment" />
+        android:paddingBottom="@dimen/grid_1x"
+        android:paddingEnd="@dimen/grid_1x"
+        android:paddingStart="@dimen/grid_1x"
+        android:paddingTop="@dimen/grid_1x"
+        tools:listitem="@layout/total_balance_view" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -18,25 +18,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mvcoding.expensius.R
 import com.mvcoding.expensius.feature.BaseFragment
-import com.mvcoding.expensius.model.Currency
-import com.mvcoding.expensius.model.Money
-import com.mvcoding.expensius.provideMoneyFormatter
-import kotlinx.android.synthetic.main.total_balance_fragment.*
-import java.math.BigDecimal
+import com.mvcoding.expensius.feature.SimpleAdapter
+import kotlinx.android.synthetic.main.balances_fragment.*
 
-class TotalBalanceFragment : BaseFragment() {
-
-    private val moneyFormatter by lazy { provideMoneyFormatter() }
+class BalancesFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.total_balance_fragment, container, false)
+        return inflater.inflate(R.layout.balances_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        balanceTextView.text = moneyFormatter.format(Money(BigDecimal(35476.87), Currency("GBP")))
-        expensesTextView.text = moneyFormatter.format(Money(BigDecimal(1246.52), Currency("GBP")))
+
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.adapter = SimpleAdapter<Int>(R.layout.total_balance_view) { viewHolder, value -> Unit }.apply { setItems(listOf(1)) }
     }
 }

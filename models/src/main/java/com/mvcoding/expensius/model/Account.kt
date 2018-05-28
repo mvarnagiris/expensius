@@ -12,12 +12,9 @@
  * GNU General Public License for more details.
  */
 
-package com.mvcoding.expensius.feature
+package com.mvcoding.expensius.model
 
-import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import java.io.Serializable
 
-open class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    @Suppress("UNCHECKED_CAST")
-    fun <VIEW_TYPE> getView() = itemView as VIEW_TYPE
-}
+data class AccountId(val id: String) : Serializable
+data class Account(val accountId: AccountId) : Serializable

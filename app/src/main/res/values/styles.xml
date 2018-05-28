@@ -67,14 +67,14 @@
     <!--<item name="android:fontFeatureSettings">smcp,s2cp,onum</item>-->
     <!--</style>-->
 
-    <style name="Text.Money.Big" parent="TextAppearance.MaterialComponents.Headline5">
+    <style name="Text.Money.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textColor">?android:textColorPrimary</item>
         <item name="fontFamily">@font/monda</item>
         <item name="autoSizeTextType">uniform</item>
         <item name="autoSizeMinTextSize">8sp</item>
     </style>
 
-    <style name="Text.Money.Big.Expense">
+    <style name="Text.Money.Headline6.Expense">
         <item name="android:textColor">?colorExpense</item>
     </style>
 
@@ -96,6 +96,7 @@
 
     <style name="Text.Caption" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
         <item name="textAllCaps">true</item>
     </style>
@@ -206,17 +207,16 @@
     <!--<item name="android:background">?colorBackgroundPrimary</item>-->
     <!--</style>-->
 
-    <!-- CardView -->
-    <!-- =============================================================================================================================== -->
+    CardView
+    ===============================================================================================================================
 
-    <!--<style name="Card" parent="CardView">-->
-    <!--<item name="android:layout_width">match_parent</item>-->
-    <!--<item name="android:layout_height">wrap_content</item>-->
-    <!--<item name="android:foreground">?selectableItemBackground</item>-->
-    <!--<item name="cardUseCompatPadding">false</item>-->
-    <!--<item name="cardElevation">@dimen/elevation_card</item>-->
-    <!--<item name="cardBackgroundColor">?colorBackgroundPrimary</item>-->
-    <!--</style>-->
+    <style name="Card" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardElevation">@dimen/elevation_card</item>
+        <item name="cardBackgroundColor">?colorBackgroundPrimary</item>
+        <item name="cardCornerRadius">12dp</item>
+    </style>
 
     <!--<style name="Card.EdgeToEdge">-->
     <!--<item name="android:layout_width">match_parent</item>-->
@@ -256,11 +256,11 @@
     <!-- RecyclerView -->
     <!-- =============================================================================================================================== -->
 
-    <!--<style name="RecyclerView">-->
-    <!--<item name="android:layout_width">match_parent</item>-->
-    <!--<item name="android:layout_height">match_parent</item>-->
-    <!--<item name="android:clipToPadding">false</item>-->
-    <!--</style>-->
+    <style name="RecyclerView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
 
     <!--<style name="RecyclerView.Cards">-->
     <!--<item name="android:padding">@dimen/keyline_half</item>-->

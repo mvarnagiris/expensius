@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="fab_mini_height_half_negative">-20dp</dimen>
-    <dimen name="fab_mini_vertical_padding_negative">0dp</dimen>
-    <dimen name="fab_mini_horizontal_margin">16dp</dimen>
-</resources>

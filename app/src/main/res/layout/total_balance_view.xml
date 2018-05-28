@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2018 Mantas Varnagiris.
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
+<com.mvcoding.expensius.feature.accounts.TotalBalanceView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_1x"
+    android:layout_marginEnd="@dimen/grid_1x"
+    android:layout_marginStart="@dimen/grid_1x"
+    android:layout_marginTop="@dimen/grid_1x">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/grid_4x"
+        android:paddingEnd="@dimen/grid_4x"
+        android:paddingStart="@dimen/grid_4x"
+        android:paddingTop="@dimen/grid_4x">
+
+        <TextView
+            android:id="@+id/balanceTextView"
+            style="@style/TextView.SingleLine"
+            android:gravity="end"
+            android:textAppearance="@style/Text.Money.Headline6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$ 35,897.41" />
+
+        <TextView
+            android:id="@+id/expensesTextView"
+            style="@style/TextView.SingleLine"
+            android:layout_marginTop="@dimen/grid_1x"
+            android:gravity="end"
+            android:textAppearance="@style/Text.Money.Headline6.Expense"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/balanceTextView"
+            tools:text="$ 2,125.87" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="balanceTextView, expensesTextView" />
+
+        <TextView
+            android:id="@+id/balanceCaptionTextView"
+            style="@style/TextView"
+            android:layout_marginEnd="@dimen/grid_2x"
+            android:text="@string/balance"
+            android:textAppearance="@style/Text.Caption"
+            app:layout_constraintBaseline_toBaselineOf="@+id/balanceTextView"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/expensesCaptionTextView"
+            style="@style/TextView"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="@dimen/grid_2x"
+            android:text="@string/expenses"
+            android:textAppearance="@style/Text.Caption"
+            app:layout_constraintBaseline_toBaselineOf="@+id/expensesTextView"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.mvcoding.expensius.feature.accounts.TotalBalanceView>

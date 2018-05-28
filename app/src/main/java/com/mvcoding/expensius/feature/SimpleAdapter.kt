@@ -14,10 +14,10 @@
 
 package com.mvcoding.expensius.feature
 
-import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
+import com.mvcoding.expensius.extension.inflate
 
-open class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    @Suppress("UNCHECKED_CAST")
-    fun <VIEW_TYPE> getView() = itemView as VIEW_TYPE
+class SimpleAdapter<ITEM>(private val layoutId: Int, private val bind: (ViewHolder, ITEM) -> Unit) : BaseAdapter<ITEM, ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(parent.inflate(layoutId))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = bind(holder, getItem(position))
 }
