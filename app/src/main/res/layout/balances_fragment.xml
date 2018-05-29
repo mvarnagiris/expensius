@@ -25,6 +25,6 @@
         android:paddingEnd="@dimen/grid_1x"
         android:paddingStart="@dimen/grid_1x"
         android:paddingTop="@dimen/grid_1x"
-        tools:listitem="@layout/total_balance_view" />
+        tools:listitem="@layout/balance_view" />
 
 </FrameLayout>

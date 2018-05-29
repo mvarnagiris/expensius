@@ -31,7 +31,7 @@
         <item name="colorActionIcon">#727272</item>
         <item name="colorDivider">#33333333</item>
         <item name="colorExpense">@color/red_A100</item>
-        <item name="colorIncome">@color/light_green_700</item>
+        <item name="colorIncome">@color/light_green_A100</item>
         <item name="colorBackgroundPrimary">#3b3e4f</item>
         <item name="colorBackgroundSecondary">#aaaaaa</item>
         <item name="colorOverlay">#13000000</item>

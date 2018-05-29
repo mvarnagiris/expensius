@@ -74,8 +74,19 @@
         <item name="autoSizeMinTextSize">8sp</item>
     </style>
 
+    <style name="Text.Money.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontFamily">@font/monda</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">8sp</item>
+    </style>
+
     <style name="Text.Money.Headline6.Expense">
         <item name="android:textColor">?colorExpense</item>
+    </style>
+
+    <style name="Text.Money.Headline6.Income">
+        <item name="android:textColor">?colorIncome</item>
     </style>
 
     <!--<style name="Text.Body1" parent="TextAppearance.AppCompat.Body1">-->
@@ -122,14 +133,14 @@
     <!--<item name="android:textColor">?android:textColorPrimary</item>-->
     <!--</style>-->
 
-    <!--<style name="Text.Subhead" parent="TextAppearance.AppCompat.Subhead">-->
-    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
-    <!--</style>-->
+    <style name="Text.Subtitle" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
 
-    <!--<style name="Text.Title" parent="TextAppearance.AppCompat.Title">-->
-    <!--<item name="android:textColor">?android:textColorPrimary</item>-->
-    <!--<item name="android:fontFeatureSettings">smcp,onum</item>-->
-    <!--</style>-->
+    <style name="Text.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="fontFamily">sans-serif-condensed</item>
+    </style>
 
     <!--<style name="Text.Title.Empty">-->
     <!--<item name="android:textColor">?android:textColorSecondary</item>-->

@@ -16,15 +16,4 @@ package com.mvcoding.expensius.model
 
 import java.io.Serializable
 
-data class TagId(val id: String) : Serializable
-data class Order(val value: Int) : Serializable, Comparable<Order> {
-    override fun compareTo(other: Order): Int = value.compareTo(other.value)
-}
-
-data class CreateTag(val title: Title, val color: Color, val order: Order) : Serializable
-data class Tag(
-        val tagId: TagId,
-        val modelState: ModelState,
-        val title: Title,
-        val color: Color,
-        val order: Order) : Serializable
+data class Title(val text: String) : Serializable

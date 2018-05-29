@@ -12,7 +12,7 @@
   ~ GNU General Public License for more details.
   -->
 
-<com.mvcoding.expensius.feature.accounts.TotalBalanceView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mvcoding.expensius.feature.accounts.BalanceView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Card"
@@ -26,29 +26,54 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/grid_4x"
+        android:paddingBottom="@dimen/grid_2x"
         android:paddingEnd="@dimen/grid_4x"
         android:paddingStart="@dimen/grid_4x"
-        android:paddingTop="@dimen/grid_4x">
+        android:paddingTop="@dimen/grid_2x">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            style="@style/TextView"
+            android:textAppearance="@style/Text.Subtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/total_balance" />
 
         <TextView
             android:id="@+id/balanceTextView"
+            android:shadowColor="#000"
+            android:shadowDy="1"
+            android:shadowRadius="4"
             style="@style/TextView.SingleLine"
-            android:gravity="end"
-            android:textAppearance="@style/Text.Money.Headline6"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textAppearance="@style/Text.Money.Headline5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleTextView"
             tools:text="$ 35,897.41" />
 
         <TextView
             android:id="@+id/expensesTextView"
             style="@style/TextView.SingleLine"
-            android:layout_marginTop="@dimen/grid_1x"
+            android:layout_marginTop="@dimen/grid_2x"
             android:gravity="end"
+            android:shadowColor="#000"
+            android:shadowDy="1"
+            android:shadowRadius="4"
             android:textAppearance="@style/Text.Money.Headline6.Expense"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/balanceTextView"
+            tools:text="$ 35,897.41" />
+
+        <TextView
+            android:id="@+id/incomeTextView"
+            style="@style/TextView.SingleLine"
+            android:gravity="end"
+            android:shadowColor="#000"
+            android:shadowDy="1"
+            android:shadowRadius="4"
+            android:textAppearance="@style/Text.Money.Headline6.Income"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/balanceTextView"
+            app:layout_constraintTop_toBottomOf="@+id/expensesTextView"
             tools:text="$ 2,125.87" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -56,23 +81,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="start"
-            app:constraint_referenced_ids="balanceTextView, expensesTextView" />
-
-        <TextView
-            android:id="@+id/balanceCaptionTextView"
-            style="@style/TextView"
-            android:layout_marginEnd="@dimen/grid_2x"
-            android:text="@string/balance"
-            android:textAppearance="@style/Text.Caption"
-            app:layout_constraintBaseline_toBaselineOf="@+id/balanceTextView"
-            app:layout_constraintEnd_toStartOf="@id/barrier"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:constraint_referenced_ids="expensesTextView, incomeTextView" />
 
         <TextView
             android:id="@+id/expensesCaptionTextView"
             style="@style/TextView"
-            android:layout_width="wrap_content"
             android:layout_marginEnd="@dimen/grid_2x"
             android:text="@string/expenses"
             android:textAppearance="@style/Text.Caption"
@@ -81,6 +94,18 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <TextView
+            android:id="@+id/incomeCaptionTextView"
+            style="@style/TextView"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="@dimen/grid_2x"
+            android:text="@string/income"
+            android:textAppearance="@style/Text.Caption"
+            app:layout_constraintBaseline_toBaselineOf="@+id/incomeTextView"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.mvcoding.expensius.feature.accounts.TotalBalanceView>
+</com.mvcoding.expensius.feature.accounts.BalanceView>

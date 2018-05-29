@@ -83,4 +83,5 @@
     <string name="tag_pets">Pets</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="balance">Balance</string>
+    <string name="total_balance">Total balance</string>
 </resources>
